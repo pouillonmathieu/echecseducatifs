@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La balance des pièces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../css/commun.css">
+<link rel="stylesheet" href="../../css/jeux.css">
+<link rel="stylesheet" href="balance.css">
+<script src="../../js/commun.js"></script>
+</head>
+<body data-mode="libre">
+<!-- illustrations pour les non-lecteurs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mini-pion" viewBox="0 0 10 12">
+    <circle cx="5" cy="3.2" r="2.4"/><path d="M2 11.2h6L7 7.3H3Z"/>
+  </symbol>
+  <symbol id="ico-libre" viewBox="0 0 48 48">
+    <rect x="16" y="40" width="16" height="4" rx="2" style="fill:var(--bois)"/>
+    <rect x="22.8" y="14" width="2.4" height="27" rx="1" style="fill:var(--laiton-fonce)"/>
+    <path d="M7 14 3 27M7 14l8 13M41 14l-4 13M41 14l4 13" style="fill:none;stroke:var(--laiton-fonce)" stroke-width="1.2"/>
+    <rect x="5" y="12.2" width="38" height="3.4" rx="1.7" style="fill:var(--laiton)"/>
+    <circle cx="24" cy="13.9" r="4" style="fill:var(--laiton);stroke:var(--laiton-trait)" stroke-width="1"/>
+    <use href="#mini-pion" x="4.5" y="15" width="9" height="11" style="fill:var(--piece-blanc);stroke:var(--piece-blanc-trait)" stroke-width="1.3"/>
+    <use href="#mini-pion" x="34.5" y="15" width="9" height="11" style="fill:var(--piece-noir);stroke:var(--piece-noir-trait)" stroke-width="1.3"/>
+    <path d="M1.5 27h15c-.6 3-3.2 4.4-7.5 4.4S2.1 30 1.5 27ZM31.5 27h15c-.6 3-3.2 4.4-7.5 4.4S32.1 30 31.5 27Z" style="fill:var(--laiton);stroke:var(--laiton-trait)" stroke-width=".8"/>
+  </symbol>
+  <symbol id="ico-penchee" viewBox="0 0 48 48">
+    <rect x="16" y="40" width="16" height="4" rx="2" style="fill:var(--bois)"/>
+    <rect x="22.8" y="14" width="2.4" height="27" rx="1" style="fill:var(--laiton-fonce)"/>
+    <g transform="translate(7.2 17.6)">
+      <path d="M0 0-4 13M0 0l8 13" style="fill:none;stroke:var(--laiton-fonce)" stroke-width="1.2"/>
+      <use href="#mini-pion" x="-2.5" y="2" width="9" height="11" style="fill:var(--piece-blanc);stroke:var(--piece-blanc-trait)" stroke-width="1.3"/>
+      <path d="M-5.5 13h15c-.6 3-3.2 4.4-7.5 4.4S-4.9 16-5.5 13Z" style="fill:var(--laiton);stroke:var(--laiton-trait)" stroke-width=".8"/>
+    </g>
+    <g transform="translate(40.8 10.2)">
+      <path d="M0 0-4 13M0 0l4 13" style="fill:none;stroke:var(--laiton-fonce)" stroke-width="1.2"/>
+      <path d="M-7.5 13h15c-.6 3-3.2 4.4-7.5 4.4S-6.9 16-7.5 13Z" style="fill:var(--laiton);stroke:var(--laiton-trait)" stroke-width=".8"/>
+    </g>
+    <rect x="5" y="12.2" width="38" height="3.4" rx="1.7" transform="rotate(-12 24 13.9)" style="fill:var(--laiton)"/>
+    <circle cx="24" cy="13.9" r="4" style="fill:var(--laiton);stroke:var(--laiton-trait)" stroke-width="1"/>
+  </symbol>
+  <symbol id="ico-defi" viewBox="0 0 48 48">
+    <use href="#ico-penchee" width="48" height="48"/>
+    <circle cx="36" cy="33" r="10" style="fill:var(--or);stroke:var(--surface)" stroke-width="2"/>
+    <path d="M36 27.2l1.8 3.7 4 .5-3 2.8.8 4L36 36.2l-3.6 2 .8-4-3-2.8 4-.5Z" style="fill:var(--surface)"/>
+  </symbol>
+  <symbol id="ico-chrono" viewBox="0 0 48 48">
+    <use href="#ico-penchee" width="48" height="48"/>
+    <circle cx="36" cy="33" r="10" style="fill:var(--accent);stroke:var(--surface)" stroke-width="2"/>
+    <circle cx="36" cy="34.6" r="5" style="fill:none;stroke:var(--sur-accent)" stroke-width="1.7"/>
+    <path d="M36 34.6l2.3-2.1M36 27.6v1.4M34.4 27.4h3.2M40.2 29.6l1-1" style="fill:none;stroke:var(--sur-accent)" stroke-width="1.6" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<main class="ecran">
+  <header class="barre">
+    <a class="bouton-icone seulement-libre" href="../../index.html" aria-label="Retour à l'accueil" title="Accueil" data-hors-artifact>
+      <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>
+    </a>
+    <button id="btn-retour" class="bouton-icone bouton-illus seulement-defi" type="button" aria-label="Quitter le défi et revenir au mode libre" title="Mode libre">
+      <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-libre"/></svg>
+    </button>
+    <h1 class="titre" id="titre">La balance</h1>
+    <button id="btn-defis" class="bouton-defis seulement-libre" type="button" aria-haspopup="dialog" title="Défis">
+      <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-defi"/></svg>
+      <span>Défis</span>
+    </button>
+    <button id="btn-vider" class="bouton-icone" type="button" aria-label="Vider la balance" title="Vider la balance">
+      <svg viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
+    </button>
+    <button id="btn-theme" class="bouton-icone bouton-theme" type="button">
+      <svg class="icone-lune" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
+      <svg class="icone-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+    </button>
+    <div class="reglages">
+      <button id="btn-reglages" class="bouton-icone" type="button" aria-label="Réglages" title="Réglages" aria-controls="panneau-reglages" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+      </button>
+      <div id="panneau-reglages" class="panneau" hidden>
+        <button id="reg-valeurs" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><path d="M5 20h6M6 20c0-3 .8-6 2-8.5 1.2 2.5 2 5.5 2 8.5"/><path d="M16 10l2-1.5V17M16 17h4"/></svg>
+          <span>Valeur des pièces</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-totaux" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M3 13h18c-1 4-4.5 6-9 6s-8-2-9-6Z"/><path d="M9 4v5M6.5 6.5h5M14 6.5h4"/></svg>
+          <span>Totaux des plateaux</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-son" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+          <span>Son</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- progression des défis -->
+  <div class="bandeau-defi seulement-defi">
+    <ol id="points" class="points" aria-label="Progression des défis"></ol>
+    <button id="btn-passer" class="bouton-secondaire bouton-passer" type="button">
+      Passer
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5l8 7-8 7"/><path d="M18 5v14"/></svg>
+    </button>
+  </div>
+
+  <section class="scene">
+    <svg id="balance" viewBox="0 0 560 420" role="img" aria-labelledby="balance-resume">
+      <title id="balance-resume">Balance</title>
+      <defs>
+        <linearGradient id="g-laiton" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:var(--laiton-clair)"/>
+          <stop offset=".5" style="stop-color:var(--laiton)"/>
+          <stop offset="1" style="stop-color:var(--laiton-fonce)"/>
+        </linearGradient>
+        <linearGradient id="g-laiton-h" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" style="stop-color:var(--laiton-fonce)"/>
+          <stop offset=".32" style="stop-color:var(--laiton-clair)"/>
+          <stop offset=".62" style="stop-color:var(--laiton)"/>
+          <stop offset="1" style="stop-color:var(--laiton-fonce)"/>
+        </linearGradient>
+        <radialGradient id="g-medaillon" cx=".36" cy=".3" r=".85">
+          <stop offset="0" style="stop-color:var(--laiton-clair)"/>
+          <stop offset=".55" style="stop-color:var(--laiton)"/>
+          <stop offset="1" style="stop-color:var(--laiton-fonce)"/>
+        </radialGradient>
+        <linearGradient id="g-coupe" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:var(--laiton-clair)"/>
+          <stop offset=".45" style="stop-color:var(--laiton)"/>
+          <stop offset="1" style="stop-color:var(--laiton-fonce)"/>
+        </linearGradient>
+        <linearGradient id="g-bois" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style="stop-color:var(--bois-clair)"/>
+          <stop offset=".4" style="stop-color:var(--bois)"/>
+          <stop offset="1" style="stop-color:var(--bois-fonce)"/>
+        </linearGradient>
+      </defs>
+
+      <!-- signe de comparaison -->
+      <text id="signe" x="280" y="52">=</text>
+
+      <!-- socle en noyer -->
+      <ellipse class="ombre-sol" cx="280" cy="409" rx="160" ry="7"/>
+      <rect class="bois" x="172" y="384" width="216" height="22" rx="6"/>
+      <rect class="bois" x="204" y="364" width="152" height="24" rx="6"/>
+      <path class="veine" d="M186 394 C222 391 256 398 296 394 S352 391 374 396"/>
+      <path class="veine" d="M186 400 C232 398 270 403 318 400 S360 398 372 401"/>
+      <path class="veine" d="M218 373 C246 370 284 377 340 372"/>
+
+      <!-- colonne en laiton -->
+      <rect class="laiton-h" x="258" y="352" width="44" height="14" rx="4"/>
+      <path class="laiton-h" d="M272 140 L268 354 H292 L288 140 Z"/>
+      <rect class="laiton-h" x="264" y="146" width="32" height="9" rx="3"/>
+      <rect class="laiton-h" x="264" y="340" width="32" height="8" rx="3"/>
+
+      <!-- cadran gradué -->
+      <path id="cadran" class="cadran"/>
+      <g id="graduations"></g>
+
+      <!-- plateaux suspendus : (0,0) = crochet au bout du fléau -->
+      <g id="pan-gauche" class="pan">
+        <path class="chaine" d="M0 4 L-84 165 M0 4 L84 165"/>
+        <ellipse class="coupe-fond" cx="0" cy="165" rx="92" ry="8"/>
+        <g id="pile-gauche"></g>
+        <path class="coupe" d="M-92 165 A92 8 0 0 0 92 165 C90 182 58 191 0 191 C-58 191 -90 182 -92 165 Z"/>
+        <path class="reflet" d="M-70 175 C-52 183 -30 185 -8 185"/>
+        <path class="tige" d="M0 191 V201"/>
+        <rect class="plaque" x="-31" y="200" width="62" height="30" rx="15"/>
+        <text id="total-gauche" class="total" y="221">0</text>
+        <circle class="anneau" r="5"/>
+      </g>
+      <g id="pan-droite" class="pan">
+        <path class="chaine" d="M0 4 L-84 165 M0 4 L84 165"/>
+        <ellipse class="coupe-fond" cx="0" cy="165" rx="92" ry="8"/>
+        <g id="pile-droite"></g>
+        <path class="coupe" d="M-92 165 A92 8 0 0 0 92 165 C90 182 58 191 0 191 C-58 191 -90 182 -92 165 Z"/>
+        <path class="reflet" d="M-70 175 C-52 183 -30 185 -8 185"/>
+        <path class="tige" d="M0 191 V201"/>
+        <rect class="plaque" x="-31" y="200" width="62" height="30" rx="15"/>
+        <text id="total-droite" class="total" y="221">0</text>
+        <circle class="anneau" r="5"/>
+      </g>
+
+      <!-- fléau et aiguille -->
+      <g id="fleau">
+        <path class="aiguille" d="M277.5 128 L280 229 L282.5 128 Z"/>
+        <path class="poutre" d="M84 115 Q280 104 476 115 L476 125 Q280 136 84 125 Z"/>
+        <path class="poutre-reflet" d="M96 116.5 Q280 107.5 464 116.5"/>
+        <circle class="embout" cx="82" cy="120" r="7"/>
+        <circle class="embout" cx="478" cy="120" r="7"/>
+      </g>
+
+      <!-- fleuron au sommet -->
+      <path class="laiton-h" d="M276 92 h8 v-5 h-8 Z"/>
+      <circle class="embout" cx="280" cy="81" r="6.5"/>
+
+      <!-- médaillon avec le visage -->
+      <g id="pivot" transform="translate(280 120)">
+        <circle class="chrono-fond" r="39"/>
+        <circle id="chrono" r="39" transform="rotate(-90)"/>
+        <circle id="onde" r="31"/>
+        <g id="visage">
+          <circle class="medaillon" r="31"/>
+          <circle class="medaillon-bord" r="26.5"/>
+          <circle class="joue" cx="-16" cy="8" r="5"/>
+          <circle class="joue" cx="16" cy="8" r="5"/>
+          <g id="yeux">
+            <ellipse class="oeil" cx="-9" cy="-5" rx="3.2" ry="4.2"/>
+            <ellipse class="oeil" cx="9" cy="-5" rx="3.2" ry="4.2"/>
+          </g>
+          <path id="bouche" d="M-7 10 H7"/>
+        </g>
+      </g>
+
+      <g id="confettis"></g>
+    </svg>
+  </section>
+
+  <!-- réserves de pièces -->
+  <section class="plateaux" aria-label="Pièces à poser">
+    <div class="plateau" id="plateau-gauche"></div>
+    <div class="plateau" id="plateau-droite"></div>
+  </section>
+</main>
+
+<!-- choix du défi -->
+<div id="choix-defi" class="voile" hidden>
+  <div class="carte-choix" role="dialog" aria-modal="true" aria-labelledby="choix-titre">
+    <div class="carte-choix-tete">
+      <h2 id="choix-titre">Défis</h2>
+      <button id="btn-fermer-choix" class="bouton-icone" type="button" aria-label="Fermer" title="Fermer">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <p class="carte-choix-intro">Équilibre 10 balances.</p>
+    <div class="tuiles">
+      <button id="mode-defi" class="tuile" type="button">
+        <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-defi"/></svg>
+        <span class="tuile-titre">Sans chrono</span>
+        <span class="tuile-sous">Prends ton temps</span>
+      </button>
+      <button id="mode-chrono" class="tuile" type="button">
+        <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-chrono"/></svg>
+        <span class="tuile-titre">Chrono</span>
+        <span class="tuile-sous">20 secondes par balance</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- résultats des défis -->
+<div id="resultats" class="voile" hidden>
+  <div class="pluie" id="pluie" aria-hidden="true"></div>
+  <div class="carte-resultats" role="dialog" aria-modal="true" aria-labelledby="res-titre">
+    <div class="etoiles" id="etoiles" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+    </div>
+    <h2 id="res-titre" class="res-titre">Bravo !</h2>
+    <p class="res-score"><span id="res-score">0</span><span class="res-sur">/ 10</span></p>
+    <ol id="res-liste" class="res-liste" aria-label="Détail des défis"></ol>
+    <p id="res-temps" class="res-temps"></p>
+    <div class="res-actions">
+      <button id="btn-rejouer" class="bouton-principal" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
+        Rejouer
+      </button>
+      <button id="btn-menu" class="bouton-secondaire" type="button">
+        <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-libre"/></svg>
+        Mode libre
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/pieces.js"></script>
+<script src="../../js/sons.js"></script>
+<script src="balance.js"></script>
+</body>
+</html>

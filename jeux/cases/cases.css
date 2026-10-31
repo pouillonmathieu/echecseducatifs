@@ -1,0 +1,268 @@
+/* Jeu : trouve la case
+   Mise en page : la consigne (pastille verte) au-dessus d'un échiquier encadré
+   de la couleur du camp (cadre blanc ou noir, avec lettres et chiffres). */
+:root {
+  --case-claire: #ECECD7;
+  --case-foncee: #739A62;
+  --cadre-blanc: #FBFBF8;
+  --cadre-noir: #22252C;
+  --texte-cadre-blanc: #2A2E38;
+  --texte-cadre-noir: #F1F2F4;
+  /* fond de la consigne : le blanc comme le noir y ressortent (contraste ≥ 4:1 pour les deux) */
+  --pastille: #3A8A64;
+  --juste: rgba(47, 163, 107, .72);
+  --faux: rgba(210, 85, 63, .72);
+  --indice: #F5C542;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --case-claire: #D6D6C0;
+    --case-foncee: #628751;
+  }
+}
+:root[data-theme="dark"] {
+  --case-claire: #D6D6C0;
+  --case-foncee: #628751;
+}
+
+/* ---------- Affichage selon le défi ---------- */
+body[data-chrono="oui"] .seulement-sans-chrono,
+body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
+
+/* ---------- Scène ---------- */
+.scene-cases {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ---------- Consigne ---------- */
+.consigne {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 132px;
+  min-height: 68px;
+  box-sizing: border-box;
+  padding: 6px 24px;
+  border-radius: 20px;
+  background: var(--pastille);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .14), 0 8px 20px rgba(0, 0, 0, .12);
+}
+.consigne.cote-blanc { color: #FFFFFF; }
+.consigne.cote-noir { color: #111317; }
+.consigne .texte { font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.consigne .animal {
+  width: 58px;
+  height: 58px;
+  padding: 3px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .9);
+}
+.consigne .mains { height: 60px; width: auto; }
+.consigne.nouvelle { animation: nouvelle .4s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes nouvelle { from { transform: scale(.82); opacity: .2; } }
+
+/* ---------- Échiquier ---------- */
+.cadre {
+  --bord: .62fr;
+  --bord-debut: var(--bord);   /* gauche et haut */
+  --bord-fin: var(--bord);     /* droite et bas */
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, var(--bord-debut)) repeat(8, minmax(0, 1fr)) minmax(0, var(--bord-fin));
+  grid-template-rows: minmax(0, var(--bord-fin)) repeat(8, minmax(0, 1fr)) minmax(0, var(--bord-debut));
+  width: min(100%, 600px, calc(100vh - 300px));
+  width: min(100%, 600px, calc(100dvh - 300px));
+  min-width: min(100%, 280px);
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: background-color .3s, color .3s;
+  touch-action: manipulation;
+  user-select: none;
+}
+.tout-petits .cadre { --bord: 1.45fr; }
+.cadre.cote-blanc { background: var(--cadre-blanc); color: var(--texte-cadre-blanc); box-shadow: 0 0 0 1px var(--ligne), 0 12px 32px rgba(0, 0, 0, .10); }
+.cadre.cote-noir { background: var(--cadre-noir); color: var(--texte-cadre-noir); box-shadow: 0 0 0 1px #000, 0 12px 32px rgba(0, 0, 0, .22); }
+.cadre.retourne { animation: retourne .6s cubic-bezier(.3, 1.15, .5, 1); }
+@keyframes retourne { from { transform: rotate(-180deg) scale(.86); } }
+
+.etiquette {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  font-weight: 600;
+  font-size: 3.6cqi;
+  line-height: 1;
+}
+/* mode tout-petits : animal + lettre, chiffre + doigts (bords plus larges) */
+.etiquette.colonne { flex-direction: column; gap: .3cqi; }
+.etiquette.rangee { flex-direction: column; gap: .2cqi; }
+.etiquette .animal { width: 7.2cqi; height: 7.2cqi; flex: none; }
+.etiquette .lettre, .etiquette .chiffre { font-size: 3cqi; line-height: 1; }
+.etiquette .mains { height: 6cqi; width: auto; flex: none; }
+.sans-coordonnees .etiquette > * { visibility: hidden; }
+
+.case {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.case.claire { background: var(--case-claire); }
+.case.foncee { background: var(--case-foncee); }
+@media (hover: hover) {
+  .case:hover { filter: brightness(1.07); }
+}
+.case:focus-visible { outline: 3px solid var(--indice); outline-offset: -3px; z-index: 1; }
+.case::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.case.juste::after { opacity: 1; background: var(--juste); }
+.case.fausse::after { opacity: 1; background: var(--faux); }
+.case.fausse { animation: tremble .35s; z-index: 1; }
+.case.montre::after { opacity: 1; background: var(--juste); box-shadow: inset 0 0 0 3px #FFFFFF; }
+.case.indice::after { opacity: 1; box-shadow: inset 0 0 0 4px var(--indice); animation: indice 1.1s ease-in-out infinite; }
+@keyframes tremble {
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+@keyframes indice { 50% { opacity: .35; } }
+
+/* nom de la case (au survol, ou après un clic) */
+.nom-case {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: .3cqi;
+  padding: .5cqi 1.1cqi;
+  border-radius: 1.4cqi;
+  background: rgba(255, 255, 255, .92);
+  color: #1A1E27;
+  font-weight: 700;
+  font-size: 3.4cqi;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity .15s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.nom-case .animal { width: 4.6cqi; height: 4.6cqi; }
+.case.juste .nom-case, .case.fausse .nom-case, .case.montre .nom-case { opacity: 1; }
+@media (hover: hover) {
+  body.survol[data-mode="libre"] .case:hover .nom-case { opacity: 1; }
+}
+
+/* ---------- Compteurs ---------- */
+.trouvees, .compteur {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.trouvees { min-height: 26px; font-size: 18px; }
+.compteur { min-width: 64px; justify-content: flex-end; font-size: 24px; }
+.trouvees svg, .compteur svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+
+.minuteur {
+  flex: 1;
+  height: 14px;
+  border: 1px solid var(--ligne);
+  border-radius: 7px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+#minuteur-barre {
+  height: 100%;
+  border-radius: 7px;
+  background: var(--accent);
+  transform-origin: left center;
+  transition: background .3s;
+}
+body.presse #minuteur-barre { background: var(--alerte); }
+
+/* ---------- Choix du camp (blancs, noirs, au hasard) ---------- */
+.camps { display: flex; gap: 8px; margin-bottom: 16px; }
+.camp {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px 9px;
+  border: 2px solid var(--ligne);
+  border-radius: 14px;
+  background: var(--fond);
+  color: var(--encre);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.camp[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-doux); }
+.pion-icone {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .18);
+}
+.pion-icone svg { width: 26px; height: 32px; }
+.camp[data-orientation="hasard"] .pion-icone svg { width: 40px; }
+.camp[data-orientation="blanc"] .pion-icone { background: var(--cadre-blanc); }
+.camp[data-orientation="noir"] .pion-icone { background: var(--cadre-noir); }
+.camp[data-orientation="hasard"] .pion-icone { background: linear-gradient(90deg, var(--cadre-blanc) 50%, var(--cadre-noir) 50%); }
+
+.ligne-reglage-bloc { display: flex; flex-direction: column; gap: 8px; padding: 10px 10px 8px; }
+.ligne-titre { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+.ligne-titre svg { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--encre-douce); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.camps-petits { margin: 0; gap: 6px; }
+.camps-petits .camp { padding: 6px 2px 5px; font-size: 12px; border-radius: 10px; gap: 4px; }
+.camps-petits .pion-icone { width: 32px; height: 32px; border-radius: 8px; }
+.camps-petits .pion-icone svg { width: 18px; height: 22px; }
+.camps-petits .camp[data-orientation="hasard"] .pion-icone svg { width: 28px; }
+.ligne-reglage > svg.illus { width: 24px; height: 24px; }
+@media (hover: none) {
+  #reg-survol { display: none; }
+}
+
+/* ---------- Résultats ---------- */
+.res-liste .res-case { font-size: 14px; font-weight: 700; color: var(--encre); display: inline-flex; align-items: center; gap: 2px; }
+.res-liste .res-case .animal { width: 18px; height: 18px; }
+.res-record { margin: 2px 0 0; padding: 6px 14px; border-radius: 999px; background: var(--accent-doux); color: var(--accent); font-weight: 600; }
+.res-record.nouveau { background: var(--or); color: #2A2E38; }
+
+@media (max-width: 560px) {
+  .consigne { min-height: 58px; padding: 5px 18px; }
+  .consigne .texte { font-size: 38px; }
+  .consigne .animal { width: 48px; height: 48px; }
+  .consigne .mains { height: 50px; }
+  .scene-cases { gap: 10px; }
+
+  /* tout-petits sur téléphone : repères seulement à gauche et en bas, mais deux fois plus grands */
+  .tout-petits .cadre { --bord-debut: 2.3fr; --bord-fin: .35fr; }
+  .tout-petits .etiquette.haut > *, .tout-petits .etiquette.droite > * { display: none; }
+  .tout-petits .etiquette.rangee { flex-direction: row; gap: 1cqi; }
+  .tout-petits .etiquette .chiffre, .tout-petits .etiquette .lettre { font-size: 4.2cqi; }
+  .tout-petits .etiquette .mains { height: 8.4cqi; }
+  .tout-petits .etiquette .animal { width: 9cqi; height: 9cqi; }
+}

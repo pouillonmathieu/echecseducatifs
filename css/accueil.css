@@ -1,0 +1,146 @@
+/* Page d'accueil du site.
+   Mise en page : en-tête, introduction avec la rangée des pièces et leur valeur,
+   puis une grande carte illustrée par jeu. */
+.accueil { gap: 28px; max-width: 1040px; }
+
+.logo { flex: none; display: grid; place-items: center; width: 40px; height: 40px; }
+.logo svg { width: 36px; height: 36px; }
+.logo rect:first-child { fill: var(--accent); }
+.logo path { fill: var(--sur-accent); }
+
+/* ---------- Introduction ---------- */
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px 40px;
+  padding: 28px 32px;
+  border: 1px solid var(--ligne);
+  border-radius: 24px;
+  background: var(--surface);
+}
+.intro-texte { min-width: 0; }
+.intro h2 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4.4vw, 44px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.intro p { margin: 0; max-width: 46ch; color: var(--encre-douce); font-size: 17px; line-height: 1.55; }
+
+.rangee-pieces {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin: 0;
+  padding: 14px 16px 12px;
+  list-style: none;
+  border-radius: 18px;
+  background: var(--surface-2);
+}
+.rangee-pieces li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: monte .5s cubic-bezier(.2, 1.3, .4, 1) both;
+}
+@keyframes monte { from { opacity: 0; transform: translateY(12px); } }
+.rangee-pieces .piece { width: 64px; height: 64px; }
+.valeur-piece {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 600;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.valeur-piece svg { width: 13px; height: 13px; fill: var(--encre-douce); }
+
+/* ---------- Cartes des jeux ---------- */
+.titre-section { margin: 0 0 14px; font-size: 20px; font-weight: 600; }
+.grille-jeux {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 18px;
+}
+.carte-jeu {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--ligne);
+  border-radius: 22px;
+  background: var(--surface);
+  color: var(--encre);
+  text-decoration: none;
+  transition: border-color .15s, transform .15s, box-shadow .2s;
+}
+.carte-jeu:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0, 0, 0, .08); }
+.carte-jeu:active { transform: scale(.99); }
+.vignette {
+  display: grid;
+  place-items: center;
+  padding: 18px 18px 10px;
+  background: var(--surface-2);
+}
+.vignette svg { width: 100%; max-width: 360px; height: auto; }
+.carte-corps { display: flex; flex-direction: column; gap: 8px; padding: 18px 22px 22px; padding-right: 76px; }
+.carte-corps h3 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.carte-corps p { margin: 0; color: var(--encre-douce); line-height: 1.5; }
+.etiquettes-jeu { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; padding: 0; list-style: none; }
+.etiquettes-jeu li {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--ligne);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--encre-douce);
+}
+.etiquettes-jeu li.matiere { border-color: transparent; background: var(--accent-doux); color: var(--accent); font-weight: 600; }
+.jouer {
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--sur-accent);
+  transition: transform .15s;
+}
+.jouer svg { width: 22px; height: 22px; fill: currentColor; margin-left: 2px; }
+.carte-jeu:hover .jouer { transform: scale(1.08); }
+
+/* détails des vignettes */
+.vignette .ombre { fill: var(--ombre-sol); opacity: .14; }
+.vignette .chaine { fill: none; stroke: var(--laiton-fonce); stroke-width: 1.8; stroke-linecap: round; stroke-dasharray: .1 3.6; }
+.vignette .trait-laiton { stroke: var(--laiton-trait); stroke-width: .8; stroke-opacity: .7; }
+.vignette .grave { fill: var(--grave); }
+.vignette .grave-trait { fill: none; stroke: var(--grave); stroke-width: 1.5; }
+.vignette .signe { font-family: var(--police); font-weight: 600; font-size: 22px; text-anchor: middle; fill: var(--encre); }
+.vignette .cadre-mini { stroke: #2A2E38; stroke-opacity: .25; stroke-width: 1; }
+.vignette .lettres-mini text { font-family: var(--police); font-size: 7.5px; font-weight: 600; fill: #2A2E38; text-anchor: middle; }
+.vignette .consigne-mini { font-family: var(--police); font-size: 24px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; }
+.vignette .fleche { fill: none; stroke: var(--encre); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0; }
+
+.pied { padding: 8px 0 4px; color: var(--encre-douce); font-size: 14px; text-align: center; }
+.pied p { margin: 0; }
+
+@media (max-width: 760px) {
+  .intro { grid-template-columns: 1fr; padding: 22px 20px; }
+  .rangee-pieces { justify-content: space-between; }
+  .rangee-pieces .piece { width: clamp(40px, 13vw, 64px); height: clamp(40px, 13vw, 64px); }
+}
+@media (max-width: 420px) {
+  .rangee-pieces { gap: 2px; padding: 10px 8px; }
+  .valeur-piece { padding: 2px 6px; font-size: 13px; }
+  .valeur-piece svg { display: none; }
+}

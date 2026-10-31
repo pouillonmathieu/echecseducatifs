@@ -1,0 +1,192 @@
+/* Composants partagés par les jeux : modes libre / défi, bouton Défis,
+   fenêtre de choix, bandeau de progression, écran de résultats, confettis. */
+
+/* ---------- Affichage selon le mode (libre ou défi) ---------- */
+body[data-mode="defi"] .seulement-libre,
+body:not([data-mode="defi"]) .seulement-defi { display: none !important; }
+
+/* ---------- Illustrations et boutons du haut ---------- */
+svg.illus { display: block; fill: none; stroke: none; }
+.bouton-icone.bouton-illus svg.illus { width: 34px; height: 34px; }
+.bouton-defis {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 46px;
+  padding: 0 16px 0 8px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  background: var(--accent-doux);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .1s, background .15s;
+}
+.bouton-defis svg.illus { width: 36px; height: 36px; }
+.bouton-defis:active { transform: scale(.96); }
+@media (max-width: 560px) {
+  .bouton-defis { height: 42px; padding: 0 4px; }
+  .bouton-defis span { display: none; }
+  .bouton-icone.bouton-illus svg.illus { width: 30px; height: 30px; }
+}
+
+/* ---------- Choix du défi ---------- */
+.carte-choix {
+  box-sizing: border-box;
+  width: min(520px, 100%);
+  padding: 18px 20px 22px;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--ombre-carte);
+  animation: arrivee .35s cubic-bezier(.2, 1.2, .4, 1) both;
+}
+.carte-choix-tete { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.carte-choix-tete h2 { margin: 0; font-size: 24px; font-weight: 700; }
+.carte-choix-intro { margin: 2px 0 16px; color: var(--encre-douce); }
+.tuiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tuile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px 18px;
+  border: 1px solid var(--ligne);
+  border-radius: var(--rayon);
+  background: var(--fond);
+  color: var(--encre);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, background .15s;
+}
+.tuile:hover { border-color: var(--accent); background: var(--surface); }
+.tuile:active { transform: scale(.97); }
+.tuile svg.illus { width: 104px; height: 104px; margin-bottom: 4px; }
+.tuile-titre { font-weight: 600; font-size: 19px; }
+.tuile-sous { font-size: 14px; color: var(--encre-douce); }
+
+/* ---------- Bandeau des défis ---------- */
+.bandeau-defi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+}
+.points { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.points li {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 2px solid var(--ligne);
+  box-sizing: border-box;
+  transition: background .25s, border-color .25s, transform .25s;
+}
+.points li.actuel { border-color: var(--encre); transform: scale(1.25); }
+.points li.ok { background: var(--accent); border-color: var(--accent); }
+.points li.rate { background: var(--alerte); border-color: var(--alerte); opacity: .6; }
+.bouton-passer { min-height: 42px; padding: 0 14px; font-size: 15px; font-weight: 500; }
+.bouton-passer svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.secoue { animation: secoue .35s; }
+@keyframes secoue {
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+/* ---------- Résultats ---------- */
+.carte-resultats {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: min(440px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 22px 22px;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--ombre-carte);
+  text-align: center;
+  animation: arrivee .45s cubic-bezier(.2, 1.2, .4, 1) both;
+}
+@keyframes arrivee { from { opacity: 0; transform: translateY(24px) scale(.96); } }
+
+.etoiles { display: flex; align-items: flex-end; gap: 6px; height: 64px; }
+.etoiles svg { width: 48px; height: 48px; fill: var(--surface-2); stroke: var(--ligne); stroke-width: 1; stroke-linejoin: round; }
+.etoiles svg:nth-child(2) { width: 62px; height: 62px; }
+.etoiles svg.pleine { fill: var(--or); stroke: var(--or); animation: etoile .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+@keyframes etoile { from { transform: scale(0) rotate(-40deg); opacity: 0; } }
+
+.res-titre { margin: 4px 0 0; font-size: 28px; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
+.res-score { margin: 0; display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+#res-score { font-size: 54px; font-weight: 700; line-height: 1; color: var(--accent); }
+.res-sur { font-size: 22px; font-weight: 500; color: var(--encre-douce); }
+
+.res-liste {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px 8px;
+  width: 100%;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.res-liste li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  animation: apparait .35s ease-out both;
+}
+@keyframes apparait { from { opacity: 0; transform: translateY(8px); } }
+.res-rond {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--encre-douce);
+}
+.res-liste li.ok .res-rond { background: var(--accent-doux); color: var(--accent); }
+.res-rond svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.res-t { font-size: 13px; color: var(--encre-douce); font-variant-numeric: tabular-nums; }
+.res-temps { margin: 4px 0 6px; font-size: 15px; color: var(--encre-douce); }
+.res-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
+.res-actions > * { flex: 1 1 160px; }
+.res-actions svg.illus { width: 30px; height: 30px; margin-left: -6px; }
+.res-actions svg:not(.illus) { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* pluie de confettis derrière la carte */
+.pluie { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.pluie i {
+  position: absolute;
+  top: -20px;
+  left: var(--x);
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--c);
+  animation: pluie var(--d) linear var(--delai) forwards;
+}
+@keyframes pluie {
+  to { transform: translate(var(--dx), 110vh) rotate(var(--r)); }
+}
+
+/* ---------- Téléphone ---------- */
+@media (max-width: 420px) {
+  .tuile svg.illus { width: 80px; height: 80px; }
+}
+@media (max-width: 560px) {
+  .points { gap: 6px; }
+  .points li { width: 12px; height: 12px; }
+  .res-rond { width: 32px; height: 32px; }
+}
