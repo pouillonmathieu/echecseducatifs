@@ -110,79 +110,126 @@
   }
 
   // ---------- Dessin des obstacles ----------
-  // Chaque obstacle tient compte de ses voisins : les côtés touchant un autre obstacle vont jusqu'au bord
-  // de la case, les coins arrondis seulement à l'extérieur, et les coins rentrants ont leur bordure.
-  // Les obstacles qui se touchent forment ainsi un seul mur, une seule mare, une seule haie…
-  const STYLES = {
-    pierre: { bord: '#4A4D55', fond: '#878B93' },
-    eau: { bord: '#2B6EAD', fond: '#4C9ADB' },
-    lave: { bord: '#5E1508', fond: '#DB4A1F' },
-    buisson: { bord: '#1F5E33', fond: '#3C9450' },
+  // Tous les obstacles sont dessinés dans une seule image posée sur les 64 cases (800 × 800 unités,
+  // 100 par case) : pas de raccord entre les cases, et un décor continu. Chaque case d'obstacle donne
+  // un rectangle dont les côtés touchant un autre obstacle vont jusqu'au bord : coins arrondis à
+  // l'extérieur, coins rentrants creusés en arc. Les obstacles voisins forment un seul mur, une seule
+  // mare, une seule coulée, une seule haie.
+  const MARGE = 5, BORD = 6, RAYON = 24;
+  const MATIERES = {
+    pierre: { bord: '#3F434B', fond: '#7F838B', relief: true },
+    eau: { bord: '#E2D3A8', fond: '#2E84CB', creux: '#4FA3E3' },
+    lave: { bord: '#3A302C', fond: '#C9381A', creux: '#F0662A' },
+    buisson: { bord: '#1D5530', fond: '#2E7D40', relief: true },
   };
-  const MARGE = 5, BORD = 5, RAYON = 24;
-  // nombres pseudo-aléatoires fixés par la case (le dessin ne change pas à chaque affichage)
-  function graines(c) {
-    let x = c.charCodeAt(0) * 131 + c.charCodeAt(1) * 977;
-    return () => { x = (x * 1103515245 + 12345) & 0x7fffffff; return x / 0x7fffffff; };
+  // hasard fixé par la position (le décor ne bouge pas d'un affichage à l'autre)
+  const bruit = (i, j, k = 0) => { const x = Math.sin(i * 127.1 + j * 311.7 + k * 74.7) * 43758.5453; return x - Math.floor(x); };
+  const n1 = (v) => Math.round(v * 10) / 10;
+
+  // rectangle (x0, y0, x1, y1) ; chaque coin : ['arrondi', r] | ['rentrant', r] | ['droit']
+  function contour(x0, y0, x1, y1, [hg, hd, bd, bg]) {
+    let d = hg[0] === 'droit' ? `M${x0} ${y0}` : `M${x0 + hg[1]} ${y0}`;
+    const coin = (c, px, py, ax, ay, bx, by) => { // (px,py) coin ; on arrive par (ax,ay), on repart vers (bx,by)
+      if (c[0] === 'droit') return `L${px} ${py}`;
+      const r = c[1];
+      return `L${px + ax * r} ${py + ay * r}A${r} ${r} 0 0 ${c[0] === 'arrondi' ? 1 : 0} ${px + bx * r} ${py + by * r}`;
+    };
+    d += coin(hd, x1, y0, -1, 0, 0, 1);
+    d += coin(bd, x1, y1, 0, -1, -1, 0);
+    d += coin(bg, x0, y1, 1, 0, 0, -1);
+    d += coin(hg, x0, y0, 0, 1, 1, 0);
+    return d + 'Z';
   }
-  // rectangle avec un rayon par coin (haut-gauche, haut-droit, bas-droit, bas-gauche)
-  function rectangle(x0, y0, x1, y1, [a, b, c, d]) {
-    return `M${x0 + a} ${y0}H${x1 - b}${b ? `A${b} ${b} 0 0 1 ${x1} ${y0 + b}` : ''}V${y1 - c}${c ? `A${c} ${c} 0 0 1 ${x1 - c} ${y1}` : ''}` +
-      `H${x0 + d}${d ? `A${d} ${d} 0 0 1 ${x0} ${y1 - d}` : ''}V${y0 + a}${a ? `A${a} ${a} 0 0 1 ${x0 + a} ${y0}` : ''}Z`;
-  }
-  const auHasardH = (t, h) => t[Math.floor(h() * t.length)];
-  function dessinObstacle(c, theme, obstacles) {
-    const [f, r] = coord(c);
-    const occ = (df, dr) => dedans(f + df, r + dr) && obstacles.has(nom(f + df, r + dr));
-    const n = occ(0, 1), s = occ(0, -1), e = occ(1, 0), o = occ(-1, 0);
-    const st = STYLES[theme];
-    // côtés voisins : on déborde d'un cheveu pour éviter un fin trait entre deux cases
-    const forme = (m, rayon) => rectangle(o ? -1 : m, n ? -1 : m, e ? 101 : 100 - m, s ? 101 : 100 - m,
-      [!n && !o ? rayon : 0, !n && !e ? rayon : 0, !s && !e ? rayon : 0, !s && !o ? rayon : 0]);
-    const exterieur = forme(MARGE, RAYON);
-    const interieur = forme(MARGE + BORD, RAYON - BORD);
-    // coins rentrants : deux voisins droits mais pas le voisin en diagonale
-    const fondCase = (f + r) % 2 === 1 ? 'var(--e-claire)' : 'var(--e-foncee)';
-    let coins = '';
-    for (const [dx, dy, cx, cy] of [[-1, 1, 0, 0], [1, 1, 100, 0], [1, -1, 100, 100], [-1, -1, 0, 100]]) {
-      if (occ(dx, 0) && occ(0, dy) && !occ(dx, dy)) {
-        coins += `<circle cx="${cx}" cy="${cy}" r="${MARGE + BORD}" fill="${st.bord}"/><circle cx="${cx}" cy="${cy}" r="${MARGE}" style="fill:${fondCase}"/>`;
+
+  function dessinCalque(theme, obstacles) {
+    const M = MATIERES[theme];
+    const occ = (f, r) => dedans(f, r) && obstacles.has(nom(f, r));
+    const cases = [...obstacles].map(c => { const [f, r] = coord(c); return { f, r, X: f * 100, Y: (7 - r) * 100 }; });
+    // m : retrait depuis le bord de la case (côtés libres)
+    const forme = (m) => cases.map(({ f, r, X, Y }) => {
+      const n = occ(f, r + 1), s = occ(f, r - 1), e = occ(f + 1, r), o = occ(f - 1, r);
+      const D = 0.8; // léger chevauchement entre cases voisines
+      const coin = (a, b, diag) => (!a && !b ? ['arrondi', RAYON - (m - MARGE)] : a && b && !diag ? ['rentrant', m] : ['droit']);
+      return contour(X + (o ? -D : m), Y + (n ? -D : m), X + 100 + (e ? D : -m), Y + 100 + (s ? D : -m),
+        [coin(n, o, occ(f - 1, r + 1)), coin(n, e, occ(f + 1, r + 1)), coin(s, e, occ(f + 1, r - 1)), coin(s, o, occ(f - 1, r - 1))]);
+    }).join('');
+    const exterieur = forme(MARGE);
+    const interieur = forme(MARGE + BORD);
+    // un point du décor est utile s'il touche une case d'obstacle
+    const utile = (X, Y, rayon) => {
+      for (let f = Math.floor((X - rayon) / 100); f <= Math.floor((X + rayon) / 100); f++)
+        for (let l = Math.floor((Y - rayon) / 100); l <= Math.floor((Y + rayon) / 100); l++) if (occ(f, 7 - l)) return true;
+      return false;
+    };
+    // un point est « dedans » s'il est dans la partie pleine d'une case d'obstacle
+    const dedansObstacle = (X, Y, retrait) => {
+      const f = Math.floor(X / 100), l = Math.floor(Y / 100), r = 7 - l;
+      if (!occ(f, r)) return false;
+      const x = X - f * 100, y = Y - l * 100;
+      return (occ(f - 1, r) || x > retrait) && (occ(f + 1, r) || x < 100 - retrait) && (occ(f, r + 1) || y > retrait) && (occ(f, r - 1) || y < 100 - retrait);
+    };
+    // grille décalée (comme des briques), avec un peu de désordre
+    const grille = (pasX, pasY, fn) => {
+      let t = '';
+      for (let j = -1; j * pasY < 820; j++) for (let i = -1; i * pasX < 820; i++) {
+        const X = i * pasX + (j % 2 ? pasX / 2 : 0) + (bruit(i, j, 1) - 0.5) * pasX * 0.25;
+        const Y = j * pasY + (bruit(i, j, 2) - 0.5) * pasY * 0.25;
+        t += fn(X, Y, i, j);
       }
-    }
-    const id = `clip-${c}`;
-    return `<svg class="obstacle" viewBox="0 0 100 100" aria-hidden="true">` +
-      `<defs><clipPath id="${id}"><path d="${interieur}"/></clipPath><clipPath id="${id}-case"><rect width="100" height="100"/></clipPath></defs>` +
-      `<path d="${exterieur}" fill="${st.bord}"/><path d="${interieur}" fill="${st.fond}"/>` +
-      `<g clip-path="url(#${id})">${texture(theme, graines(c))}</g><g clip-path="url(#${id}-case)">${coins}</g></svg>`;
-  }
-  // décor de chaque matière (coupé par la forme, donc continu d'une case à l'autre)
-  function texture(theme, h) {
-    const v = (a, b) => (a + h() * (b - a)).toFixed(1);
-    let t = '';
+      return t;
+    };
+
+    let ombre = '', dessous = '', decor = '', dessus = '';
+    if (M.relief) ombre = `<g filter="url(#flou-obstacles)" transform="translate(3 9)" opacity=".4"><path d="${exterieur}" fill="#141820"/></g>`;
     if (theme === 'pierre') {
-      const teintes = ['#BFC2C8', '#A6AAB1', '#CACDD2', '#9A9EA5'];
-      for (const [x, y] of [[20, 22], [58, 16], [88, 40], [42, 50], [12, 64], [66, 76], [28, 92], [94, 92], [80, 10]]) {
-        t += `<ellipse cx="${v(x - 4, x + 4)}" cy="${v(y - 4, y + 4)}" rx="${v(12, 17)}" ry="${v(9, 13)}" fill="${auHasardH(teintes, h)}" stroke="#5B5F67" stroke-width="2.4"/>`;
-      }
-      t += `<path d="M${v(12, 18)} 18q6-5 12-2M${v(50, 56)} 12q7-3 13 0M${v(34, 40)} 46q6-4 12-1" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.6" stroke-linecap="round"/>`;
+      const teintes = ['#C6C9CE', '#B3B7BD', '#A4A8AF', '#D2D4D8', '#BBBEC4'];
+      decor = grille(38, 27, (X, Y, i, j) => {
+        if (!utile(X, Y, 22)) return '';
+        const w = 31 + bruit(i, j, 3) * 6, h = 20 + bruit(i, j, 4) * 4;
+        const x = n1(X - w / 2), y = n1(Y - h / 2);
+        return `<rect x="${x}" y="${y}" width="${n1(w)}" height="${n1(h)}" rx="8" fill="${teintes[Math.floor(bruit(i, j, 5) * teintes.length)]}" stroke="#555A62" stroke-width="2"/>` +
+          `<path d="M${n1(x + 7)} ${n1(y + 5)}h${n1(w * 0.45)}" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="2.6" stroke-linecap="round"/>` +
+          `<path d="M${n1(x + 6)} ${n1(y + h - 3)}h${n1(w - 12)}" stroke="#2E3138" stroke-opacity=".25" stroke-width="2.2" stroke-linecap="round"/>`;
+      });
+      dessus = '';
     } else if (theme === 'eau') {
-      for (const [x, y] of [[8, 24], [50, 46], [14, 70], [58, 90], [62, 10]]) {
-        t += `<path d="M${v(x - 6, x + 6)} ${v(y - 3, y + 3)}q8-8 16 0t16 0" fill="none" stroke="#DDF1FF" stroke-width="4.5" stroke-linecap="round" stroke-opacity=".9"/>`;
-      }
-      t += `<circle cx="${v(70, 86)}" cy="${v(20, 30)}" r="3.5" fill="#DDF1FF" opacity=".8"/>`;
+      // profondeur : le bord de la mare fait de l'ombre
+      dessous = `<path d="${interieur}" transform="translate(0 8)" fill="${M.creux}"/>`;
+      decor = grille(52, 36, (X, Y, i, j) => {
+        if (!utile(X, Y, 20) || bruit(i, j, 6) < 0.25) return '';
+        return `<path d="M${n1(X - 14)} ${n1(Y)}q7-6 14 0t14 0" fill="none" stroke="#DDF2FF" stroke-opacity=".8" stroke-width="3.2" stroke-linecap="round"/>` +
+          (bruit(i, j, 7) > 0.8 ? `<circle cx="${n1(X + 14)}" cy="${n1(Y - 10)}" r="2.6" fill="#FFFFFF" opacity=".75"/>` : '');
+      });
+      dessus = `<path d="${interieur}" fill="none" stroke="#1D5E96" stroke-opacity=".55" stroke-width="5" mask="url(#hors-interieur)"/>`;
     } else if (theme === 'lave') {
-      for (let i = 0; i < 4; i++) t += `<ellipse cx="${v(-5, 95)}" cy="${v(-5, 95)}" rx="${v(18, 34)}" ry="${v(10, 18)}" fill="#7E1A0C" opacity=".55"/>`;
-      for (let i = 0; i < 3; i++) t += `<circle cx="${v(15, 85)}" cy="${v(15, 85)}" r="${v(3, 7)}" fill="#FFD25A"/>`;
-      t += `<path d="M${v(10, 30)} ${v(40, 60)}q10-10 20-3t20-3" fill="none" stroke="#FFB13B" stroke-width="3.5" stroke-linecap="round"/>`;
-    } else {
-      const teintes = ['#4FAE5F', '#5DB86A', '#348A47'];
-      for (const [x, y] of [[18, 18], [50, 12], [84, 20], [30, 46], [68, 46], [14, 78], [50, 80], [86, 78], [50, 48]]) {
-        t += `<circle cx="${v(x - 5, x + 5)}" cy="${v(y - 5, y + 5)}" r="${v(12, 17)}" fill="${auHasardH(teintes, h)}" stroke="#2A7040" stroke-width="2.2"/>`;
-      }
-      for (let i = 0; i < 3; i++) t += `<circle cx="${v(15, 85)}" cy="${v(15, 85)}" r="3.4" fill="#D8433A"/>`;
-      t += `<circle cx="${v(25, 45)}" cy="${v(20, 35)}" r="5" fill="#8BD68C" opacity=".8"/>`;
+      dessous = `<path d="${interieur}" transform="translate(0 7)" fill="${M.creux}"/>`;
+      decor = grille(46, 40, (X, Y, i, j) => {
+        if (!utile(X, Y, 26)) return '';
+        // plaques de croûte sombre, fissures brillantes, bulles
+        const a = bruit(i, j, 8) * 6.28, w = 14 + bruit(i, j, 9) * 9, h = 9 + bruit(i, j, 10) * 6;
+        let t = `<ellipse cx="${n1(X)}" cy="${n1(Y)}" rx="${n1(w)}" ry="${n1(h)}" transform="rotate(${n1(a * 57.3)} ${n1(X)} ${n1(Y)})" fill="#5E1608" opacity=".55"/>`;
+        if (bruit(i, j, 11) > 0.45) t += `<path d="M${n1(X - 18)} ${n1(Y + 14)}q9-8 18-2t18-4" fill="none" stroke="#FFC23D" stroke-width="2.6" stroke-linecap="round"/>`;
+        if (bruit(i, j, 12) > 0.7) t += `<circle cx="${n1(X + 16)}" cy="${n1(Y - 12)}" r="${n1(3 + bruit(i, j, 13) * 3)}" fill="#FFE07A"/><circle cx="${n1(X + 15)}" cy="${n1(Y - 13)}" r="1.4" fill="#FFFFFF" opacity=".8"/>`;
+        return t;
+      });
+      dessus = `<path d="${interieur}" fill="none" stroke="#FF9A2E" stroke-opacity=".8" stroke-width="5" mask="url(#hors-interieur)"/>`;
+    } else { // buisson : feuillage en boules qui débordent un peu (contour bosselé), reflets, baies
+      const teintes = ['#3F9A52', '#4CAB5D', '#58B868', '#378C49'];
+      const boules = grille(30, 26, (X, Y, i, j) => {
+        if (!dedansObstacle(X, Y, 13)) return '';
+        const r = 16 + bruit(i, j, 14) * 5;
+        return `<circle cx="${n1(X)}" cy="${n1(Y)}" r="${n1(r)}" fill="${teintes[Math.floor(bruit(i, j, 15) * teintes.length)]}" stroke="#215C32" stroke-width="1.8"/>` +
+          `<circle cx="${n1(X - r * 0.35)}" cy="${n1(Y - r * 0.38)}" r="${n1(r * 0.3)}" fill="#9BDA97" opacity=".55"/>` +
+          (bruit(i, j, 16) > 0.86 ? `<circle cx="${n1(X + r * 0.3)}" cy="${n1(Y + r * 0.25)}" r="3.4" fill="#D8433A"/><circle cx="${n1(X + r * 0.3 - 1)}" cy="${n1(Y + r * 0.25 - 1)}" r="1.1" fill="#FFFFFF" opacity=".8"/>` : '');
+      });
+      return `<defs><filter id="flou-obstacles" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"/></filter></defs>` +
+        ombre + `<path d="${exterieur}" fill="${M.bord}"/><path d="${interieur}" fill="${M.fond}"/>` + boules;
     }
-    return t;
+    return `<defs><filter id="flou-obstacles" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"/></filter>` +
+      `<clipPath id="clip-obstacles"><path d="${interieur}"/></clipPath>` +
+      `<mask id="hors-interieur" maskUnits="userSpaceOnUse" x="-20" y="-20" width="840" height="840"><rect x="-20" y="-20" width="840" height="840" fill="#fff"/><path d="${interieur}" fill="#000"/></mask></defs>` +
+      ombre + `<path d="${exterieur}" fill="${M.bord}"/><path d="${interieur}" fill="${M.fond}"/>` +
+      `<g clip-path="url(#clip-obstacles)">${dessous}${decor}</g>${dessus}`;
   }
 
   // ---------- État ----------
@@ -221,8 +268,17 @@
   }
   // on ne redessine que les obstacles (changer de matière ne change pas la partie)
   function dessinerObstacles() {
-    plateau.querySelectorAll('.obstacle').forEach(e => e.remove());
-    for (const c of jeu.laby.obstacles) cellule(c).insertAdjacentHTML('afterbegin', dessinObstacle(c, jeu.theme, jeu.laby.obstacles));
+    const ancien = plateau.querySelector('.calque-obstacles');
+    if (ancien) ancien.remove();
+    plateau.insertAdjacentHTML('beforeend',
+      `<svg class="calque-obstacles" viewBox="0 0 800 800" aria-hidden="true">${dessinCalque(jeu.theme, jeu.laby.obstacles)}</svg>`);
+    majBulle();
+  }
+  // bulle d'explication pour le cavalier (avec la matière en cours)
+  function majBulle() {
+    const cavalier = jeu.laby.piece === 'cavalier';
+    $('bulle-cavalier').hidden = !cavalier;
+    if (cavalier) $('bulle-obstacle').setAttribute('href', `#obstacle-${jeu.theme}`);
   }
   function poserPiece(c) {
     const ancienne = plateau.querySelector('.piece-laby');
@@ -291,6 +347,13 @@
     Sons.refus();
     const el = cellule(c);
     if (el) { el.classList.remove('refus'); void el.offsetWidth; el.classList.add('refus'); }
+    // sur un obstacle, la case clignote dans l'image des obstacles
+    const calque = plateau.querySelector('.calque-obstacles');
+    if (calque && jeu.laby.obstacles.has(c)) {
+      const [f, r] = coord(c);
+      calque.insertAdjacentHTML('beforeend', `<rect class="flash" x="${f * 100}" y="${(7 - r) * 100}" width="100" height="100" rx="18"/>`);
+      setTimeout(() => { const fl = calque.querySelector('.flash'); if (fl) fl.remove(); }, 500);
+    }
     jeu.voir = true; // on montre les cases possibles
     majMarques();
   }

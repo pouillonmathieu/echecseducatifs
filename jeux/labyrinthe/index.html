@@ -36,7 +36,8 @@
     <path d="M18 19q6-5 13-2M56 14q8-3 15 0M37 46q7-4 14-1M54 74q8-4 16-1" fill="none" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
   </symbol>
   <symbol id="obstacle-eau" viewBox="0 0 100 100">
-    <rect x="0" y="0" width="100" height="100" fill="url(#g-eau)"/>
+    <rect x="2" y="2" width="96" height="96" rx="20" fill="#E2D3A8"/>
+    <rect x="10" y="10" width="80" height="80" rx="14" fill="url(#g-eau)"/>
     <g fill="none" stroke="#DDF1FF" stroke-width="5" stroke-linecap="round" stroke-opacity=".9">
       <path d="M8 26q10-9 20 0t20 0"/>
       <path d="M52 48q10-9 20 0t20 0"/>
@@ -45,7 +46,8 @@
     <circle cx="80" cy="22" r="4" fill="#DDF1FF" opacity=".8"/><circle cx="70" cy="84" r="3" fill="#DDF1FF" opacity=".7"/>
   </symbol>
   <symbol id="obstacle-lave" viewBox="0 0 100 100">
-    <rect x="0" y="0" width="100" height="100" fill="url(#g-lave)"/>
+    <rect x="2" y="2" width="96" height="96" rx="20" fill="#3A302C"/>
+    <rect x="10" y="10" width="80" height="80" rx="14" fill="url(#g-lave)"/>
     <g fill="#3A0E07" opacity=".55">
       <path d="M0 18l22 6 14-8 18 10L72 14 100 22V0H0Z"/>
       <path d="M0 64l18-6 10 10 20-4L40 86 0 92Z"/>
@@ -181,6 +183,20 @@
         <svg class="maison-question" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-maison"/></svg>
         <span id="consigne">Ramène la pièce à sa maison</span>
       </p>
+      <!-- pour le cavalier : il saute par-dessus les obstacles -->
+      <div class="bulle-cavalier" id="bulle-cavalier" hidden>
+        <svg class="bulle-dessin" viewBox="0 0 136 60" aria-hidden="true">
+          <rect x="2" y="18" width="40" height="40" rx="6" fill="#ECECD7"/>
+          <rect x="48" y="18" width="40" height="40" rx="6" fill="#739A62"/>
+          <rect x="94" y="18" width="40" height="40" rx="6" fill="#ECECD7"/>
+          <use href="#piece-cavalier-noir" x="5" y="21" width="34" height="34"/>
+          <use id="bulle-obstacle" href="#obstacle-pierre" x="50" y="20" width="36" height="36"/>
+          <circle cx="114" cy="38" r="9" fill="none" stroke="#2E7D5B" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <path d="M24 17C40 -3 92 -3 110 17" fill="none" stroke="#2E7D5B" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 5"/>
+          <path d="M103 13l8 5 1-9" fill="none" stroke="#2E7D5B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>Le cavalier <b>saute par‑dessus</b> les obstacles, mais ne peut pas s'arrêter dessus.</p>
+      </div>
       <div class="compteurs">
         <div class="compteur">
           <span class="c-val" id="nb-coups">0</span>

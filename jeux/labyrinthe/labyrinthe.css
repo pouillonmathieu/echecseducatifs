@@ -49,7 +49,10 @@
 /* ---------- Échiquier ---------- */
 .plateau-laby .case-e { cursor: pointer; }
 .plateau-laby .case-e.bloquee { cursor: not-allowed; }
-.obstacle { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; overflow: visible; pointer-events: none; }
+/* tous les obstacles dans une seule image, posée sur les 64 cases */
+.calque-obstacles { grid-row: 2 / 10; grid-column: 2 / 10; position: relative; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.calque-obstacles .flash { fill: rgba(214, 69, 50, .55); animation: flash .5s ease-out forwards; }
+@keyframes flash { to { opacity: 0; } }
 .piece-laby { z-index: 2; cursor: pointer; }
 
 /* la maison : un contour de maison doré et le fantôme de la pièce */
@@ -106,6 +109,34 @@
   line-height: 1.25;
 }
 .maison-question { flex: none; width: 42px; height: 42px; padding: 7px; box-sizing: border-box; border-radius: 12px; background: rgba(242, 184, 39, .25); color: #C88A12; }
+/* bulle du cavalier */
+.bulle-cavalier {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: -4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--accent-doux);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  animation: nouvelle .4s cubic-bezier(.2, 1.4, .4, 1);
+}
+.bulle-cavalier::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 30px;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-doux);
+  border-left: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  transform: rotate(45deg);
+}
+.bulle-dessin { flex: none; width: 104px; height: auto; }
+.bulle-cavalier p { margin: 0; font-size: 14px; line-height: 1.35; }
+.bulle-cavalier b { color: var(--accent); }
 .compteurs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .compteur {
   display: flex;
