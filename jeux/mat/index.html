@@ -71,6 +71,10 @@
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
           <span>Montrer le roi en échec<small>Aide : le roi attaqué est entouré de rouge</small></span><span class="interrupteur" aria-hidden="true"></span>
         </button>
+        <button id="reg-pat" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8 10h8M8 14h8"/></svg>
+          <span>Bouton « pat »<small>Ajoute les positions de pat : pas d'échec, mais aucun coup possible</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
         <button id="reg-son" class="ligne-reglage" type="button">
           <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
           <span>Son</span><span class="interrupteur" aria-hidden="true"></span>
@@ -95,7 +99,7 @@
       </p>
 
       <div class="reponses" id="reponses">
-        <!-- mat : le roi renversé (#) ; pas mat : le roi debout (# barré) -->
+        <!-- mat : le roi renversé (#) ; pat : le roi debout (=, partie nulle) ; pas mat : le roi debout (# barré) -->
         <button id="rep-mat" class="reponse mat" type="button">
           <span class="reponse-icone" aria-hidden="true">
             <svg class="roi-icone" viewBox="0 0 100 100"><g transform="translate(50 54) rotate(-90) scale(.86) translate(-50 -50)"><use class="roi-rep" href="#piece-roi-noir"/></g></svg>
@@ -108,7 +112,14 @@
             <svg class="roi-icone" viewBox="0 0 100 100"><use class="roi-rep" href="#piece-roi-noir"/></svg>
             <span class="badge-diese barre">#</span>
           </span>
-          Pas mat
+          <span id="rep-pas-mat-texte">Pas mat</span>
+        </button>
+        <button id="rep-pat" class="reponse pat" type="button" hidden>
+          <span class="reponse-icone" aria-hidden="true">
+            <svg class="roi-icone" viewBox="0 0 100 100"><use class="roi-rep" href="#piece-roi-noir"/></svg>
+            <span class="badge-diese">=</span>
+          </span>
+          Pat
         </button>
       </div>
 
@@ -130,7 +141,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
         <span id="score-libre">0 / 0</span>
       </p>
-      <p class="astuce">Raccourcis : <kbd>M</kbd> mat, <kbd>P</kbd> pas mat, <kbd>Entrée</kbd> suivant.</p>
+      <p class="astuce">Raccourcis : <kbd>M</kbd> mat, <kbd>P</kbd> pas mat, <span class="avec-pat"><kbd>T</kbd> pat, </span><kbd>Entrée</kbd> suivant.</p>
     </div>
   </section>
 </main>

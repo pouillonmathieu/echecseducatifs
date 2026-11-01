@@ -20,11 +20,11 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
   et la partie en cours est gardée dans le navigateur.
 - **Mat ou pas mat ?** (`jeux/mat/`) : une position s'affiche, il faut dire si le camp qui a le trait est échec et mat.
-  108 positions : mats classiques pour débutants (couloir, berger, lion, étouffée, Légal, Anastasie, Arabie,
+  112 positions : mats classiques pour débutants (couloir, berger, lion, étouffée, Légal, Anastasie, Arabie,
   Boden, Damiano, épaulette…), fins de parties célèbres du domaine public (Morphy, Anderssen, Réti…),
   mats tirés de vraies parties jouées sur Lichess, et « presque mats » (fuite, prise, parade, pat).
   Chaque réponse est expliquée et montrée sur l'échiquier. Mode libre, défi (10 positions) et défi chrono
-  (20 s par position).
+  (20 s par position). Réglage « pat » : ajoute un troisième bouton et les positions de pat (sinon absentes).
 
 ## Sources
 

@@ -1,5 +1,6 @@
 /* Mat ou pas mat ?
    Une position s'affiche : le camp qui a le trait est-il échec et mat ?
+   Avec le réglage « pat », les positions de pat s'ajoutent et ont leur propre bouton.
    Modes : libre (positions à la suite), défi (10 positions), défi chrono (20 s par position).
    Les positions et leurs explications viennent de positions.js (vérifiées avec chess.js). */
 (function () {
@@ -16,7 +17,12 @@
   const reglages = {
     coordonnees: Prefs.lire('echecs.mat.coordonnees', true),
     echec: Prefs.lire('echecs.mat.echec', false),
+    pat: Prefs.lire('echecs.mat.pat', false),
   };
+  // sans le réglage « pat », les positions de pat ne sortent jamais
+  const disponibles = () => POSITIONS.filter(p => reglages.pat || !p.pat);
+  // 'mat', 'pat' ou 'rien'
+  const bonneReponse = (p) => (p.mat ? 'mat' : p.pat && reglages.pat ? 'pat' : 'rien');
 
   const jeu = { mode: 'libre', position: null, repondu: false, pioche: [], justes: 0, total: 0, partie: 0 };
   const defi = { chrono: false, liste: [], numero: 0, resultats: [], debut: 0, fin: 0, raf: 0, dernierTic: 0 };
@@ -30,16 +36,19 @@
   }
   // mode libre : on passe toutes les positions avant de les revoir
   function piocher() {
-    if (!jeu.pioche.length) jeu.pioche = melanger(POSITIONS.map((_, i) => i)).filter(i => i !== jeu.dernier);
+    if (!jeu.pioche.length) jeu.pioche = melanger(POSITIONS.map((_, i) => i).filter(i => reglages.pat || !POSITIONS[i].pat)).filter(i => i !== jeu.dernier);
     jeu.dernier = jeu.pioche.pop();
     return POSITIONS[jeu.dernier];
   }
-  // défi : 10 positions, entre 4 et 6 mats pour ne pas pouvoir deviner
+  // défi : 10 positions, entre 4 et 6 mats pour ne pas pouvoir deviner (et 1 ou 2 pats avec le réglage)
   function tirerDefi() {
-    const mats = melanger(POSITIONS.filter(p => p.mat));
-    const autres = melanger(POSITIONS.filter(p => !p.mat));
+    const liste = disponibles();
+    const mats = melanger(liste.filter(p => p.mat));
+    const pats = melanger(liste.filter(p => p.pat));
+    const autres = melanger(liste.filter(p => !p.mat && !p.pat));
     const nbMats = 4 + Math.floor(Math.random() * 3);
-    return melanger([...mats.slice(0, nbMats), ...autres.slice(0, NB_DEFIS - nbMats)]);
+    const nbPats = reglages.pat ? 1 + Math.floor(Math.random() * 2) : 0;
+    return melanger([...mats.slice(0, nbMats), ...pats.slice(0, nbPats), ...autres.slice(0, NB_DEFIS - nbMats - nbPats)]);
   }
 
   // ---------- Affichage d'une position ----------
@@ -51,7 +60,8 @@
     const blancs = position.trait === 'blanc';
     // le roi de la question et des boutons est celui du camp concerné
     document.querySelectorAll('#roi-question, .roi-rep').forEach(u => u.setAttribute('href', `#piece-roi-${position.trait}`));
-    $('question-texte').textContent = blancs ? 'Les Blancs sont‑ils échec et mat ?' : 'Les Noirs sont‑ils échec et mat ?';
+    const camp = blancs ? 'Les Blancs' : 'Les Noirs';
+    $('question-texte').textContent = reglages.pat ? `${camp} sont‑ils mat ou pat ?` : `${camp} sont‑ils échec et mat ?`;
     const q = $('question');
     q.classList.remove('nouvelle'); void q.offsetWidth; q.classList.add('nouvelle');
     $('reponses').hidden = false;
@@ -62,12 +72,14 @@
   const ICONE_JUSTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const ICONE_FAUX = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>';
 
-  function repondre(ditMat) {
+  // choix : 'mat', 'pat', 'rien', ou null quand le temps est écoulé
+  function repondre(choix) {
     if (jeu.repondu || !jeu.position) return;
+    if (choix === 'pat' && !reglages.pat) return;
     jeu.repondu = true;
     const p = jeu.position;
-    const juste = ditMat === p.mat;
-    const tempsEcoule = ditMat === null;
+    const juste = choix === bonneReponse(p);
+    const tempsEcoule = choix === null;
     montrerExplication(p, juste, tempsEcoule);
     if (juste) Sons.juste(); else Sons.echec();
 
@@ -78,13 +90,13 @@
       return;
     }
     arreterChrono();
-    defi.resultats.push({ ok: juste, mat: p.mat, motif: p.motif, temps: (performance.now() - defi.debut) / 1000 });
+    defi.resultats.push({ ok: juste, reponse: bonneReponse(p), motif: p.motif, temps: (performance.now() - defi.debut) / 1000 });
     majPoints();
     if (defi.numero === NB_DEFIS - 1) $('btn-suivant').firstChild.textContent = 'Voir le résultat ';
   }
 
   function montrerExplication(p, juste, tempsEcoule) {
-    const verdict = p.mat ? 'C\'est échec et mat.' : 'Ce n\'est pas mat.';
+    const verdict = { mat: 'C\'est échec et mat.', pat: 'C\'est pat.', rien: reglages.pat ? 'Ni mat, ni pat.' : 'Ce n\'est pas mat.' }[bonneReponse(p)];
     $('verdict').innerHTML = (juste ? ICONE_JUSTE : ICONE_FAUX) +
       `<span>${tempsEcoule ? 'Temps écoulé ! ' : juste ? 'Bravo ! ' : 'Raté ! '}${verdict}</span>`;
     $('motif').textContent = p.motif;
@@ -164,7 +176,7 @@
     allumerEtoiles($('etoiles'), etoiles);
     $('res-liste').innerHTML = defi.resultats.map((r, i) =>
       `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="Position ${i + 1} (${r.motif}) : ${r.ok ? 'réussie' : 'ratée'}">` +
-      `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t">${r.mat ? 'Mat' : 'Pas mat'}</span></li>`).join('');
+      `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t">${{ mat: 'Mat', pat: 'Pat', rien: 'Pas mat' }[r.reponse]}</span></li>`).join('');
     const total = defi.resultats.reduce((s, r) => s + r.temps, 0);
     $('res-temps').textContent = `Temps total : ${formaterDuree(total)}`;
     $('resultats').hidden = false;
@@ -205,8 +217,9 @@
   }
 
   // ---------- Branchements ----------
-  $('rep-mat').addEventListener('click', () => repondre(true));
-  $('rep-pas-mat').addEventListener('click', () => repondre(false));
+  $('rep-mat').addEventListener('click', () => repondre('mat'));
+  $('rep-pas-mat').addEventListener('click', () => repondre('rien'));
+  $('rep-pat').addEventListener('click', () => repondre('pat'));
   $('btn-suivant').addEventListener('click', suivant);
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -215,8 +228,9 @@
       return;
     }
     const k = e.key.toLowerCase();
-    if (k === 'm') repondre(true);
-    else if (k === 'p') repondre(false);
+    if (k === 'm') repondre('mat');
+    else if (k === 'p') repondre('rien');
+    else if (k === 't') repondre('pat');
     else if (e.key === 'Enter' && jeu.repondu && document.activeElement === document.body) suivant();
   });
 
@@ -239,10 +253,26 @@
     reglages.echec = v; Prefs.ecrire('echecs.mat.echec', v);
     if (!jeu.repondu && jeu.position) afficher(jeu.position);
   });
+  // réglage « pat » : troisième bouton, positions de pat dans la pioche
+  function appliquerPat() {
+    document.body.classList.toggle('avec-pat', reglages.pat);
+    $('rep-pat').hidden = !reglages.pat;
+    $('rep-pas-mat-texte').textContent = reglages.pat ? 'Ni l\'un ni l\'autre' : 'Pas mat';
+  }
+  brancherInterrupteur($('reg-pat'), reglages.pat, (v) => {
+    reglages.pat = v; Prefs.ecrire('echecs.mat.pat', v);
+    appliquerPat();
+    jeu.pioche = [];
+    if (jeu.repondu || !jeu.position) return;
+    // une position de pat disparaît si on coupe le réglage (en libre) ; sinon on met juste la question à jour
+    if (jeu.mode === 'libre' && jeu.position.pat && !v) afficher(piocher());
+    else afficher(jeu.position);
+  });
   brancherInterrupteur($('reg-son'), Sons.actif, (v) => { Sons.actif = v; });
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
   appliquer();
+  appliquerPat();
   lancerLibre();
 })();

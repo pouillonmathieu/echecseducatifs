@@ -46,6 +46,11 @@ body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
 }
 
 .reponses { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+/* avec le bouton « pat » : mat, pat, puis ni l'un ni l'autre */
+body.avec-pat .reponses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.reponse.pat { order: 1; }
+.reponse.pas-mat { order: 2; }
+body:not(.avec-pat) .avec-pat { display: none; }
 .reponse {
   display: flex;
   flex-direction: column;
@@ -68,6 +73,7 @@ body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
 .reponse-icone .roi-icone { width: 50px; height: 50px; }
 .reponse.mat .reponse-icone { background: color-mix(in srgb, var(--alerte) 16%, transparent); }
 .reponse.pas-mat .reponse-icone { background: var(--accent-doux); }
+.reponse.pat .reponse-icone { background: color-mix(in srgb, var(--or) 22%, transparent); }
 .badge-diese {
   position: absolute;
   right: -7px;
@@ -85,6 +91,7 @@ body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
 }
 .reponse.mat .badge-diese { background: var(--alerte); }
 .reponse.pas-mat .badge-diese { background: var(--accent); color: var(--sur-accent); }
+.reponse.pat .badge-diese { background: var(--or); color: #2A2E38; font-size: 19px; }
 .badge-diese.barre::after { content: ""; position: absolute; width: 18px; height: 2.5px; border-radius: 2px; background: currentColor; transform: rotate(-45deg); }
 
 .retour {
@@ -147,4 +154,5 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .reponse-icone .roi-icone { width: 36px; height: 36px; }
   .badge-diese { width: 22px; height: 22px; font-size: 14px; right: -6px; bottom: -6px; }
   .badge-diese.barre::after { width: 15px; }
+  body.avec-pat .reponse { flex-direction: column; gap: 6px; padding: 10px 6px; font-size: 15px; text-align: center; }
 }
