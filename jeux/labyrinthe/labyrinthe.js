@@ -200,19 +200,58 @@
     const masqueBord = `<mask id="m-bord" maskUnits="userSpaceOnUse" x="-30" y="-30" width="860" height="860"><rect x="-30" y="-30" width="860" height="860" fill="#fff"/><path d="${exterieur}" fill="#000"/></mask>`;
     const bordExterieur = (couleur, opacite) => `<path d="${exterieur}" fill="none" stroke="${couleur}" stroke-opacity="${opacite}" stroke-width="4" mask="url(#m-bord)"/>`;
     let defs = ombrePortee + masqueBord, corps = '';
+    // déformation irrégulière d'une forme (rives, bords de trou…) ; même graine = même déformation
+    const filtreDeforme = (id, frequence, ampleur, graineD) =>
+      `<filter id="${id}" ${zone}><feTurbulence type="fractalNoise" baseFrequency="${frequence}" numOctaves="2" seed="${graineD}" result="t"/>` +
+      `<feDisplacementMap in="SourceGraphic" in2="t" scale="${ampleur}" xChannelSelector="R" yChannelSelector="G"/></filter>`;
+    // ombre portée qui suit la silhouette d'un groupe
+    const filtreOmbreGroupe = (id, flou, dx, dy, force) =>
+      `<filter id="${id}" ${zone}><feGaussianBlur in="SourceAlpha" stdDeviation="${flou}"/><feOffset dx="${dx}" dy="${dy}" result="o"/>` +
+      `<feFlood flood-color="#141820" flood-opacity="${force}"/><feComposite in2="o" operator="in" result="ombre"/>` +
+      `<feMerge><feMergeNode in="ombre"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+
     if (theme === 'pierre') {
-      // mur : mortier sombre et pierres taillées irrégulières, bombées, au grain rugueux
+      // mur de pierres sèches : la silhouette suit les pierres (elles dépassent plus ou moins),
+      // le mortier reste en retrait entre elles
       const teintes = ['#BDB2A0', '#C8BEAB', '#AFA492', '#D2C8B6', '#B6AB98', '#A49A89', '#C2B5A0'];
-      const pierres = grille(48, 33, (X, Y, i, j) => {
-        if (!utile(X, Y, 28)) return '';
-        const w = 40 + bruit(i, j, 3) * 7, h = 25 + bruit(i, j, 4) * 5;
-        return `<rect x="${n1(X - w / 2)}" y="${n1(Y - h / 2)}" width="${n1(w)}" height="${n1(h)}" rx="${n1(6 + bruit(i, j, 6) * 4)}" fill="${teintes[Math.floor(bruit(i, j, 5) * teintes.length)]}"/>`;
-      });
-      defs += filtreGrain('f-mortier', '.35', 1.4, 0.9) +
+      // maçonnerie : 4 assises par case, alignées d'une case à l'autre ; sur chaque assise, des pierres de
+      // largeurs variées posées bout à bout sur toute la longueur de la rangée d'obstacles ; sur les côtés
+      // libres, chaque pierre s'arrête un peu plus tôt ou plus tard : le bord du mur suit les pierres.
+      const ASSISE = 25, JOINT = 3;
+      let pierres = '';
+      for (let l = 0; l < 8; l++) {
+        const r = 7 - l;
+        for (let k = 0; k < 4; k++) {
+          // rangées continues d'obstacles sur cette ligne
+          for (let f = 0; f < 8; f++) {
+            if (!occ(f, r) || occ(f - 1, r)) continue;
+            let fin = f;
+            while (occ(fin + 1, r)) fin++;
+            const y0 = l * 100 + k * ASSISE;
+            let x = f * 100 + 2 + bruit(f, l * 4 + k, 30) * 6;
+            const xFin = (fin + 1) * 100 - 2 - bruit(fin, l * 4 + k, 31) * 6;
+            let n = 0;
+            while (x < xFin - 4) {
+              let w = 30 + bruit(f * 13 + n, l * 4 + k, 32) * 22;
+              if (xFin - (x + w) < 20) w = xFin - x; // pas de petit bout à la fin
+              // haut et bas de la pierre : en retrait si le côté est libre (bord irrégulier)
+              const fx = Math.floor((x + w / 2) / 100);
+              const hautLibre = k === 0 && !occ(fx, r + 1), basLibre = k === 3 && !occ(fx, r - 1);
+              const yh = y0 + JOINT / 2 + (hautLibre ? 2 + bruit(n, l * 4 + k, 33) * 7 : 0);
+              const yb = y0 + ASSISE - JOINT / 2 - (basLibre ? 2 + bruit(n, l * 4 + k, 34) * 7 : 0);
+              pierres += `<rect x="${n1(x)}" y="${n1(yh)}" width="${n1(w - JOINT)}" height="${n1(yb - yh)}" rx="${n1(5 + bruit(n, k, 35) * 5)}" fill="${teintes[Math.floor(bruit(f * 7 + n, l * 4 + k, 36) * teintes.length)]}"/>`;
+              x += w;
+              n++;
+            }
+          }
+        }
+      }
+      defs += filtreGrain('f-mortier', '.35', 1.4, 0.9) + filtreDeforme('f-mortier-bord', '.06', 10, G + 6) +
+        filtreOmbreGroupe('f-ombre-mur', 5, 3, 9, 0.45) +
         `<filter id="f-pierres" ${zone}>` +
         `<feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="4" seed="${G}" result="grain"/>` +
-        `<feDisplacementMap in="SourceGraphic" in2="grain" scale="6" xChannelSelector="R" yChannelSelector="G" result="forme"/>` +
-        alphaDe('forme', 'a') + `<feGaussianBlur in="a" stdDeviation="3.2" result="bosse"/>` +
+        `<feDisplacementMap in="SourceGraphic" in2="grain" scale="5" xChannelSelector="R" yChannelSelector="G" result="forme"/>` +
+        alphaDe('forme', 'a') + `<feGaussianBlur in="a" stdDeviation="3" result="bosse"/>` +
         `<feDiffuseLighting in="bosse" surfaceScale="4.5" diffuseConstant="1" lighting-color="#fff" result="ombrage">${lumiere(235, 55)}</feDiffuseLighting>` +
         `<feSpecularLighting in="bosse" surfaceScale="4.5" specularConstant=".22" specularExponent="22" lighting-color="#FFF6E8" result="brillant">${lumiere(235, 50)}</feSpecularLighting>` +
         `<feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="3" seed="${G + 1}" result="fin"/>` +
@@ -224,53 +263,87 @@
         `<feComposite in="x2" in2="nuances" operator="arithmetic" k1="1.12" result="x2b"/>` +
         `<feComposite in="x2b" in2="brillant" operator="arithmetic" k2="1" k3=".25" result="x3"/>` +
         `<feComposite in="x3" in2="forme" operator="in" result="pierres"/>` +
-        // ombre douce de chaque pierre sur le mortier
         `<feGaussianBlur in="a" stdDeviation="2.4" result="af"/><feOffset in="af" dx="2" dy="3" result="ad"/>` +
         `<feFlood flood-color="#1E1A15" flood-opacity=".65"/><feComposite in2="ad" operator="in" result="ombreP"/>` +
-        `<feMerge><feMergeNode in="ombreP"/><feMergeNode in="pierres"/></feMerge></filter>` +
-        `<clipPath id="c-mur"><path d="${exterieur}"/></clipPath>`;
-      corps = `<path d="${exterieur}" transform="translate(4 10)" fill="#141820" opacity=".45" filter="url(#f-ombre)"/>` +
-        `<path d="${exterieur}" fill="#655D52" filter="url(#f-mortier)"/>` +
-        `<g clip-path="url(#c-mur)"><g filter="url(#f-pierres)">${pierres}</g></g>` +
-        bordExterieur('#3A342D', 0.5);
+        `<feMerge><feMergeNode in="ombreP"/><feMergeNode in="pierres"/></feMerge></filter>`;
+      corps = `<g filter="url(#f-ombre-mur)">` +
+        `<g filter="url(#f-mortier-bord)"><path d="${forme(MARGE + 6)}" fill="#5F574C" filter="url(#f-mortier)"/></g>` +
+        `<g filter="url(#f-pierres)">${pierres}</g></g>`;
     } else if (theme === 'eau') {
-      // mare : berge de sable, eau profonde au centre, ondulations éclairées, reflets, bord ombré
-      defs += filtreGrain('f-sable', '.6', 1.2, 0.85) +
-        `<linearGradient id="g-profond" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="800" y2="800"><stop offset="0" stop-color="#3B9BE0"/><stop offset="1" stop-color="#1F6CB0"/></linearGradient>` +
+      // étang : rive irrégulière (herbe puis sable), eau profonde, roseaux et nénuphars
+      const bordsLibres = [];
+      cases.forEach(({ f, r, X, Y }) => {
+        const cotes = [[!occ(f, r + 1), 'n'], [!occ(f, r - 1), 's'], [!occ(f - 1, r), 'o'], [!occ(f + 1, r), 'e']];
+        for (const [libre, cote] of cotes) if (libre) bordsLibres.push({ f, r, X, Y, cote });
+      });
+      const roseaux = bordsLibres.filter(b => bruit(b.f, b.r, b.cote.charCodeAt(0)) > 0.5).map(b => {
+        const t = 22 + bruit(b.f, b.r, b.cote.charCodeAt(0) + 1) * 56;
+        const [x, y] = { n: [b.X + t, b.Y + 13], s: [b.X + t, b.Y + 92], o: [b.X + 11, b.Y + t + 10], e: [b.X + 89, b.Y + t + 10] }[b.cote];
+        let g = '';
+        for (let k = 0; k < 5; k++) {
+          const dx = (k - 2) * 3.2 + (bruit(b.f, k, 3) - 0.5) * 3, h = 20 + bruit(b.r, k, 4) * 16, pench = (k - 2) * 2.5;
+          g += `<path d="M${n1(x + dx)} ${n1(y)}q${n1(pench * 0.4)} ${n1(-h * 0.5)} ${n1(pench)} ${n1(-h)}" fill="none" stroke="${k % 2 ? '#5C7E35' : '#6E9442'}" stroke-width="1.8" stroke-linecap="round"/>`;
+          if (k === 1 || k === 3) g += `<rect x="${n1(x + dx + pench - 2.6)}" y="${n1(y - h - 5)}" width="5.2" height="12" rx="2.6" fill="#6B3F22"/><path d="M${n1(x + dx + pench)} ${n1(y - h - 5)}v-5" stroke="#5C7E35" stroke-width="1.2"/>`;
+        }
+        g += `<path d="M${n1(x - 3)} ${n1(y)}q-9-10-13-24" fill="none" stroke="#7FA44E" stroke-width="2.6" stroke-linecap="round"/>` +
+          `<path d="M${n1(x + 4)} ${n1(y)}q8-9 10-21" fill="none" stroke="#6E9442" stroke-width="2.4" stroke-linecap="round"/>`;
+        return `<g>${g}</g>`;
+      }).join('');
+      const nenuphars = grille(70, 62, (X, Y, i, j) => {
+        if (!dedansObstacle(X, Y, 30) || bruit(i, j, 20) < 0.8) return '';
+        const a = bruit(i, j, 21) * 360;
+        return `<g transform="rotate(${n1(a)} ${n1(X)} ${n1(Y)})"><path d="M${n1(X)} ${n1(Y)}L${n1(X + 10)} ${n1(Y - 3)}A10.5 10.5 0 1 1 ${n1(X + 10)} ${n1(Y + 3)}Z" fill="#4E8F3A" stroke="#36692A" stroke-width="1.2"/>` +
+          (bruit(i, j, 22) > 0.5 ? `<circle cx="${n1(X - 3)}" cy="${n1(Y)}" r="4.2" fill="#F4B8CF"/><circle cx="${n1(X - 3)}" cy="${n1(Y)}" r="1.8" fill="#FFE07A"/>` : '') + `</g>`;
+      });
+      defs += filtreGrain('f-herbe', '.5', 1.6, 0.85).replace('<feTurbulence', `<feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="${G + 8}" result="d0"/><feDisplacementMap in="SourceGraphic" in2="d0" scale="26" xChannelSelector="R" yChannelSelector="G" result="src"/><feTurbulence`).replace('in="SourceGraphic" in2="l"', 'in="src" in2="l"').replace('in="c" in2="SourceAlpha"', 'in="c" in2="src"') +
+        filtreGrain('f-sable', '.6', 1.2, 0.85).replace('<feTurbulence', `<feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="2" seed="${G + 9}" result="d0"/><feDisplacementMap in="SourceGraphic" in2="d0" scale="22" xChannelSelector="R" yChannelSelector="G" result="src"/><feTurbulence`).replace('in="SourceGraphic" in2="l"', 'in="src" in2="l"').replace('in="c" in2="SourceAlpha"', 'in="c" in2="src"') +
+        filtreDeforme('f-rive-eau', '.028', 18, G + 10) +
+        `<linearGradient id="g-profond" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="800" y2="800"><stop offset="0" stop-color="#3496D8"/><stop offset="1" stop-color="#1C64A6"/></linearGradient>` +
         `<filter id="f-eau" ${zone}>` +
         `<feTurbulence type="fractalNoise" baseFrequency=".011 .032" numOctaves="3" seed="${G}" result="vagues"/>` +
         `<feDiffuseLighting in="vagues" surfaceScale="5" diffuseConstant="1" lighting-color="#fff" result="relief">${lumiere(250, 60)}</feDiffuseLighting>` +
-        `<feSpecularLighting in="vagues" surfaceScale="6" specularConstant="1.2" specularExponent="30" lighting-color="#fff" result="reflets">${lumiere(250, 38)}</feSpecularLighting>` +
+        `<feSpecularLighting in="vagues" surfaceScale="6" specularConstant="1.1" specularExponent="30" lighting-color="#fff" result="reflets">${lumiere(250, 38)}</feSpecularLighting>` +
         `<feComposite in="SourceGraphic" in2="relief" operator="arithmetic" k1=".75" k2=".42" result="x1"/>` +
-        `<feComposite in="x1" in2="reflets" operator="arithmetic" k2="1" k3=".7" result="x2"/>` +
-        ombreInterieure('x2', 6, 7, '#0A3157', 0.75, 'x3') +
-        `<feComposite in="x3" in2="SourceAlpha" operator="in"/></filter>` +
-        `<filter id="f-berge" ${zone}>` + ombreInterieure('SourceGraphic', 2.5, 2, '#7A6440', 0.5, 'b') + `</filter>`;
-      corps = `<path d="${exterieur}" fill="#D9C79B" filter="url(#f-sable)"/>` +
-        bordExterieur('#9C8458', 0.6) +
-        `<path d="${interieur}" fill="url(#g-profond)" filter="url(#f-eau)"/>`;
+        `<feComposite in="x1" in2="reflets" operator="arithmetic" k2="1" k3=".65" result="x2"/>` +
+        ombreInterieure('x2', 7, 6, '#0A3157', 0.8, 'x3') +
+        `<feComposite in="x3" in2="SourceAlpha" operator="in"/></filter>`;
+      corps = `<path d="${forme(MARGE - 5)}" fill="#6F9A45" filter="url(#f-herbe)"/>` +
+        `<path d="${forme(MARGE + 3)}" fill="#D3C08E" filter="url(#f-sable)"/>` +
+        `<g filter="url(#f-rive-eau)"><path d="${forme(MARGE + 12)}" fill="url(#g-profond)" filter="url(#f-eau)"/></g>` +
+        nenuphars + roseaux;
     } else if (theme === 'lave') {
-      // coulée : croûte de basalte, lave en fusion (bruit coloré du rouge sombre au jaune),
-      // plaques refroidies qui flottent, lueur sur la croûte, bord ombré
-      defs += filtreGrain('f-basalte', '.28', 2, 0.95) +
-        `<filter id="f-lueur" ${zone}><feGaussianBlur stdDeviation="9"/></filter>` +
+      // trou de lave dans un sol craquelé : bord irrégulier, fissures, parois sombres, lueur
+      defs += `<filter id="f-sol" ${zone}>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="${G + 9}" result="t"/>` +
+        `<feDisplacementMap in="SourceGraphic" in2="t" scale="26" xChannelSelector="R" yChannelSelector="G" result="d"/>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".3" numOctaves="3" seed="${G + 3}" result="g"/>` +
+        `<feDiffuseLighting in="g" surfaceScale="2.2" diffuseConstant="1" lighting-color="#fff" result="l">${lumiere(235, 55)}</feDiffuseLighting>` +
+        `<feComposite in="d" in2="l" operator="arithmetic" k1=".95" k2=".3" result="sol"/>` +
+        `<feTurbulence type="turbulence" baseFrequency=".05" numOctaves="2" seed="${G + 10}" result="fis"/>` +
+        `<feColorMatrix in="fis" type="matrix" values="0 0 0 0 .08  0 0 0 0 .04  0 0 0 0 .03  -9 0 0 0 1.5" result="fissures"/>` +
+        `<feMerge result="m"><feMergeNode in="sol"/><feMergeNode in="fissures"/></feMerge>` +
+        `<feComposite in="m" in2="d" operator="in"/></filter>` +
+        filtreDeforme('f-trou', '.035', 20, G + 11) +
+        `<filter id="f-lueur" ${zone}><feGaussianBlur stdDeviation="10"/></filter>` +
         `<filter id="f-lave" ${zone}>` +
         `<feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="4" seed="${G}" result="b1"/>` +
         `<feColorMatrix in="b1" type="matrix" values="2.8 0 0 0 -.9  2.8 0 0 0 -.9  2.8 0 0 0 -.9  0 0 0 0 1" result="gris"/>` +
         `<feComponentTransfer in="gris" result="fusion">` +
         `<feFuncR type="table" tableValues=".42 .72 .93 1 1"/><feFuncG type="table" tableValues=".05 .14 .33 .62 .9"/><feFuncB type="table" tableValues=".02 .03 .05 .12 .45"/></feComponentTransfer>` +
         `<feTurbulence type="fractalNoise" baseFrequency=".032" numOctaves="3" seed="${G + 5}" result="b2"/>` +
-        `<feColorMatrix in="b2" type="matrix" values="0 0 0 0 .2  0 0 0 0 .08  0 0 0 0 .06  -11 0 0 0 5" result="plaques"/>` +
+        `<feColorMatrix in="b2" type="matrix" values="0 0 0 0 .2  0 0 0 0 .08  0 0 0 0 .06  -11 0 0 0 4.8" result="plaques"/>` +
         `<feTurbulence type="fractalNoise" baseFrequency=".3" numOctaves="3" seed="${G + 7}" result="rugo"/>` +
         `<feDiffuseLighting in="rugo" surfaceScale="2" diffuseConstant="1.1" lighting-color="#fff" result="lrugo">${lumiere()}</feDiffuseLighting>` +
         `<feComposite in="plaques" in2="lrugo" operator="arithmetic" k1="1" k2=".2" result="plaquesR"/>` +
         `<feComposite in="plaquesR" in2="plaques" operator="in" result="plaquesF"/>` +
         `<feMerge result="x1"><feMergeNode in="fusion"/><feMergeNode in="plaquesF"/></feMerge>` +
-        ombreInterieure('x1', 5, 5, '#1A0703', 0.8, 'x2') +
+        ombreInterieure('x1', 9, 7, '#140502', 0.92, 'x2') +
         `<feComposite in="x2" in2="SourceAlpha" operator="in"/></filter>`;
-      corps = `<path d="${exterieur}" fill="#2E2622" filter="url(#f-basalte)"/>` +
-        `<path d="${interieur}" fill="#FF6A1A" opacity=".85" filter="url(#f-lueur)"/>` +
-        `<path d="${interieur}" fill="#000" filter="url(#f-lave)"/>`;
+      corps = `<path d="${forme(MARGE - 5)}" fill="#53443A" filter="url(#f-sol)"/>` +
+        `<g filter="url(#f-trou)">` +
+        `<path d="${forme(MARGE + 12)}" fill="#FF6A1A" opacity=".9" filter="url(#f-lueur)"/>` +
+        `<path d="${forme(MARGE + 15)}" fill="#1E0E08"/>` +
+        `<path d="${forme(MARGE + 20)}" fill="#000" filter="url(#f-lave)"/></g>`;
     } else { // buisson : haie de touffes bombées (chacune éclairée en haut à gauche), contour feuillu, baies
       const teintes = [['#7DCB6F', '#3E9A4A', '#1D5A2A'], ['#8AD27A', '#47A453', '#22652F'], ['#6FBF64', '#358E43', '#184F24'], ['#94D884', '#4FAD59', '#286E34']];
       let gradients = '';
