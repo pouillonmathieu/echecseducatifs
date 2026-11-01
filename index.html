@@ -56,6 +56,45 @@
     <h2 id="titre-jeux" class="titre-section">Choisis un jeu</h2>
     <div class="grille-jeux">
 
+      <a class="carte-jeu" href="jeux/labyrinthe/index.html">
+        <div class="vignette">
+          <svg viewBox="0 0 240 150" aria-hidden="true">
+            <defs><clipPath id="clip-mini-laby"><rect x="58" y="23" width="104" height="104"/></clipPath></defs>
+            <rect x="49" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
+            <rect x="58" y="23" width="104" height="104" fill="#ECECD7"/>
+            <g fill="#739A62">
+              <rect x="84" y="23" width="26" height="26"/><rect x="136" y="23" width="26" height="26"/>
+              <rect x="58" y="49" width="26" height="26"/><rect x="110" y="49" width="26" height="26"/>
+              <rect x="84" y="75" width="26" height="26"/><rect x="136" y="75" width="26" height="26"/>
+              <rect x="58" y="101" width="26" height="26"/><rect x="110" y="101" width="26" height="26"/>
+            </g>
+            <!-- buissons dessinés par le jeu (jeux/labyrinthe : dessinCalque) -->
+            <g clip-path="url(#clip-mini-laby)"><g transform="translate(58 23) scale(.26)"><defs><filter id="f-ombre-acc" filterUnits="userSpaceOnUse" x="-30" y="-30" width="860" height="860" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="7"/></filter><mask id="m-bord-acc" maskUnits="userSpaceOnUse" x="-30" y="-30" width="860" height="860"><rect x="-30" y="-30" width="860" height="860" fill="#fff"/><path d="M129 5L200.8 5L200.8 95.8A5 5 0 0 0 195.8 100.8L105 100.8L105 29A24 24 0 0 1 129 5ZM105 99.2L195 99.2L195 200.8L105 200.8L105 99.2ZM105 199.2L195 199.2L195 271A24 24 0 0 1 171 295L129 295A24 24 0 0 1 105 271L105 199.2ZM199.2 5L271 5A24 24 0 0 1 295 29L295 71A24 24 0 0 1 271 95L199.2 95L199.2 5ZM329 105L371 105A24 24 0 0 1 395 129L395 171A24 24 0 0 1 371 195L329 195A24 24 0 0 1 305 171L305 129A24 24 0 0 1 329 105Z" fill="#000"/></mask><radialGradient id="g-touffe-0-acc" cx=".5" cy=".5" r=".55" fx=".34" fy=".3"><stop offset="0" stop-color="#7DCB6F"/><stop offset=".55" stop-color="#3E9A4A"/><stop offset="1" stop-color="#1D5A2A"/></radialGradient><radialGradient id="g-touffe-1-acc" cx=".5" cy=".5" r=".55" fx=".34" fy=".3"><stop offset="0" stop-color="#8AD27A"/><stop offset=".55" stop-color="#47A453"/><stop offset="1" stop-color="#22652F"/></radialGradient><radialGradient id="g-touffe-2-acc" cx=".5" cy=".5" r=".55" fx=".34" fy=".3"><stop offset="0" stop-color="#6FBF64"/><stop offset=".55" stop-color="#358E43"/><stop offset="1" stop-color="#184F24"/></radialGradient><radialGradient id="g-touffe-3-acc" cx=".5" cy=".5" r=".55" fx=".34" fy=".3"><stop offset="0" stop-color="#94D884"/><stop offset=".55" stop-color="#4FAD59"/><stop offset="1" stop-color="#286E34"/></radialGradient><filter id="f-haie-acc" filterUnits="userSpaceOnUse" x="-30" y="-30" width="860" height="860" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".11" numOctaves="3" seed="42" result="contour"/><feDisplacementMap in="SourceGraphic" in2="contour" scale="13" xChannelSelector="R" yChannelSelector="G" result="forme"/><feTurbulence type="fractalNoise" baseFrequency=".2" numOctaves="2" seed="44" result="feuilles"/><feDiffuseLighting in="feuilles" surfaceScale="2.6" diffuseConstant="1" lighting-color="#fff" result="lfeuilles"><feDistantLight azimuth="235" elevation="58"/></feDiffuseLighting><feComposite in="forme" in2="lfeuilles" operator="arithmetic" k1=".75" k2=".4" result="x1"/><feComposite in="x1" in2="forme" operator="in"/></filter></defs><path d="M129 5L200.8 5L200.8 95.8A5 5 0 0 0 195.8 100.8L105 100.8L105 29A24 24 0 0 1 129 5ZM105 99.2L195 99.2L195 200.8L105 200.8L105 99.2ZM105 199.2L195 199.2L195 271A24 24 0 0 1 171 295L129 295A24 24 0 0 1 105 271L105 199.2ZM199.2 5L271 5A24 24 0 0 1 295 29L295 71A24 24 0 0 1 271 95L199.2 95L199.2 5ZM329 105L371 105A24 24 0 0 1 395 129L395 171A24 24 0 0 1 371 195L329 195A24 24 0 0 1 305 171L305 129A24 24 0 0 1 329 105Z" transform="translate(4 11)" fill="#0E2414" opacity=".5" filter="url(#f-ombre-acc)"/><g filter="url(#f-haie-acc)"><path d="M129 11L200.8 11L200.8 89.8A11 11 0 0 0 189.8 100.8L111 100.8L111 29A18 18 0 0 1 129 11ZM111 99.2L189 99.2L189 200.8L111 200.8L111 99.2ZM111 199.2L189 199.2L189 271A18 18 0 0 1 171 289L129 289A18 18 0 0 1 111 271L111 199.2ZM199.2 11L271 11A18 18 0 0 1 289 29L289 71A18 18 0 0 1 271 89L199.2 89L199.2 11ZM329 111L371 111A18 18 0 0 1 389 129L389 171A18 18 0 0 1 371 189L329 189A18 18 0 0 1 311 171L311 129A18 18 0 0 1 329 111Z" fill="#1B4F26"/><circle cx="252.8" cy="23.5" r="22.5" fill="url(#g-touffe-1-acc)"/><circle cx="193.9" cy="25.4" r="18.5" fill="url(#g-touffe-0-acc)"/><circle cx="135.6" cy="25.9" r="23.7" fill="url(#g-touffe-0-acc)"/><circle cx="286" cy="27.2" r="23.1" fill="url(#g-touffe-2-acc)"/><circle cx="162.1" cy="27.5" r="22.9" fill="url(#g-touffe-0-acc)"/><circle cx="221.5" cy="28.8" r="24.7" fill="url(#g-touffe-1-acc)"/><circle cx="243.3" cy="50" r="18.1" fill="url(#g-touffe-1-acc)"/><circle cx="180" cy="53" r="23.1" fill="url(#g-touffe-3-acc)"/><circle cx="151.8" cy="53.4" r="22.2" fill="url(#g-touffe-3-acc)"/><circle cx="116.9" cy="53.7" r="20.2" fill="url(#g-touffe-3-acc)"/><circle cx="271.7" cy="53.7" r="19.2" fill="url(#g-touffe-1-acc)"/><circle cx="211.5" cy="54.8" r="22.8" fill="url(#g-touffe-1-acc)"/><circle cx="164.9" cy="74.9" r="18.5" fill="url(#g-touffe-1-acc)"/><circle cx="227.6" cy="75" r="19.6" fill="url(#g-touffe-0-acc)"/><circle cx="136.3" cy="77.8" r="23.5" fill="url(#g-touffe-3-acc)"/><circle cx="193.1" cy="78.4" r="18.8" fill="url(#g-touffe-0-acc)"/><circle cx="257.1" cy="80.6" r="24.4" fill="url(#g-touffe-0-acc)"/><circle cx="119.6" cy="101.4" r="21.7" fill="url(#g-touffe-3-acc)"/><circle cx="146.4" cy="104.2" r="21.7" fill="url(#g-touffe-2-acc)"/><circle cx="180" cy="104.5" r="21.6" fill="url(#g-touffe-2-acc)"/><circle cx="136.6" cy="127.2" r="20.6" fill="url(#g-touffe-3-acc)"/><circle cx="166.5" cy="127.9" r="22.7" fill="url(#g-touffe-1-acc)"/><circle cx="344.2" cy="128.9" r="21.9" fill="url(#g-touffe-1-acc)"/><circle cx="373.6" cy="132.6" r="18.2" fill="url(#g-touffe-1-acc)"/><circle cx="118.2" cy="153.6" r="24.8" fill="url(#g-touffe-0-acc)"/><circle cx="176.9" cy="157.8" r="22.8" fill="url(#g-touffe-2-acc)"/><circle cx="362.7" cy="158.4" r="18.8" fill="url(#g-touffe-0-acc)"/><circle cx="149.5" cy="158.7" r="24" fill="url(#g-touffe-2-acc)"/><circle cx="327.4" cy="159" r="20" fill="url(#g-touffe-0-acc)"/><circle cx="347" cy="180.1" r="22.7" fill="url(#g-touffe-0-acc)"/><circle cx="313.9" cy="181.9" r="20.5" fill="url(#g-touffe-2-acc)"/><circle cx="134.9" cy="182.3" r="18.2" fill="url(#g-touffe-2-acc)"/><circle cx="168.1" cy="184.8" r="20.7" fill="url(#g-touffe-2-acc)"/><circle cx="372.8" cy="184.8" r="22.2" fill="url(#g-touffe-3-acc)"/><circle cx="180.9" cy="209.3" r="18.2" fill="url(#g-touffe-1-acc)"/><circle cx="119.9" cy="209.6" r="20" fill="url(#g-touffe-2-acc)"/><circle cx="150" cy="210.9" r="20.9" fill="url(#g-touffe-2-acc)"/><circle cx="137" cy="232.6" r="19.8" fill="url(#g-touffe-2-acc)"/><circle cx="163.2" cy="234.3" r="21.2" fill="url(#g-touffe-3-acc)"/><circle cx="151" cy="256.8" r="22.8" fill="url(#g-touffe-3-acc)"/><circle cx="179.4" cy="257.8" r="22.8" fill="url(#g-touffe-2-acc)"/><circle cx="117.5" cy="261.4" r="23.7" fill="url(#g-touffe-2-acc)"/><circle cx="136.2" cy="282.8" r="19.8" fill="url(#g-touffe-1-acc)"/></g><circle cx="194.5" cy="77.1" r="3.8" fill="#C42F2A"/><circle cx="200" cy="79.6" r="3.4" fill="#A9231E"/><circle cx="193.3" cy="75.8" r="1.2" fill="#FFFFFF" opacity=".85"/><circle cx="184.5" cy="103.1" r="3.8" fill="#C42F2A"/><circle cx="190" cy="105.6" r="3.4" fill="#A9231E"/><circle cx="183.3" cy="101.8" r="1.2" fill="#FFFFFF" opacity=".85"/><circle cx="181.4" cy="160.9" r="3.8" fill="#C42F2A"/><circle cx="186.9" cy="163.4" r="3.4" fill="#A9231E"/><circle cx="180.2" cy="159.6" r="1.2" fill="#FFFFFF" opacity=".85"/><circle cx="314.1" cy="182.7" r="3.8" fill="#C42F2A"/><circle cx="319.6" cy="185.2" r="3.4" fill="#A9231E"/><circle cx="312.9" cy="181.4" r="1.2" fill="#FFFFFF" opacity=".85"/><circle cx="135.2" cy="189" r="3.8" fill="#C42F2A"/><circle cx="140.7" cy="191.5" r="3.4" fill="#A9231E"/><circle cx="134" cy="187.7" r="1.2" fill="#FFFFFF" opacity=".85"/><circle cx="138.9" cy="285.7" r="3.8" fill="#C42F2A"/><circle cx="144.4" cy="288.2" r="3.4" fill="#A9231E"/><circle cx="137.7" cy="284.4" r="1.2" fill="#FFFFFF" opacity=".85"/></g></g>
+            <rect x="136.5" y="23.5" width="25" height="25" fill="rgba(242,184,39,.28)" stroke="#E0A526" stroke-width="1.2"/>
+            <path d="M149 26.5 159.5 36H157v11h-16V36h-2.5Z" fill="rgba(242,184,39,.35)" stroke="#E0A526" stroke-width="1.6" stroke-linejoin="round"/>
+            <use href="#piece-cavalier-noir" x="143" y="35" width="12" height="12" opacity=".6"/>
+            <use href="#piece-cavalier-noir" x="59" y="102" width="24" height="24"/>
+            <g class="saut-laby">
+              <path d="M74 104Q94 70 120 86"/><path d="M125 82Q145 60 148 50"/>
+            </g>
+            <g class="saut-laby clair">
+              <path d="M74 104Q94 70 120 86"/><path d="M125 82Q145 60 148 50"/>
+            </g>
+            <circle cx="123" cy="88" r="3" fill="#FFFFFF" stroke="#1F2A22" stroke-opacity=".55" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="carte-corps">
+          <h3>Le labyrinthe</h3>
+          <p>Ramène la pièce à sa maison par le chemin le plus court, en contournant les obstacles.</p>
+          <ul class="etiquettes-jeu">
+            <li class="matiere">Itinéraires</li>
+            <li>Déplacements</li>
+            <li>Chemin le plus court</li>
+          </ul>
+        </div>
+        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
+      </a>
+
       <a class="carte-jeu" href="jeux/mat/index.html">
         <div class="vignette">
           <svg viewBox="0 0 240 150" aria-hidden="true">
@@ -159,49 +198,6 @@
         <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
       </a>
 
-      <a class="carte-jeu" href="jeux/labyrinthe/index.html">
-        <div class="vignette">
-          <svg viewBox="0 0 240 150" aria-hidden="true">
-            <defs>
-              <symbol id="v-pierre" viewBox="0 0 100 100">
-                <rect x="4" y="4" width="92" height="92" rx="16" fill="#7D8189" stroke="#454850" stroke-width="4"/>
-                <g stroke="#4F535B" stroke-width="3">
-                  <ellipse cx="28" cy="28" rx="18" ry="15" fill="#C3C6CC"/><ellipse cx="70" cy="30" rx="18" ry="14" fill="#A9ADB4"/>
-                  <ellipse cx="32" cy="72" rx="19" ry="15" fill="#B1B5BB"/><ellipse cx="72" cy="72" rx="17" ry="16" fill="#C7CACF"/>
-                </g>
-              </symbol>
-            </defs>
-            <rect x="49" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="58" y="23" width="104" height="104" fill="#ECECD7"/>
-            <g fill="#739A62">
-              <rect x="84" y="23" width="26" height="26"/><rect x="136" y="23" width="26" height="26"/>
-              <rect x="58" y="49" width="26" height="26"/><rect x="110" y="49" width="26" height="26"/>
-              <rect x="84" y="75" width="26" height="26"/><rect x="136" y="75" width="26" height="26"/>
-              <rect x="58" y="101" width="26" height="26"/><rect x="110" y="101" width="26" height="26"/>
-            </g>
-            <use href="#v-pierre" x="84" y="23" width="26" height="26"/>
-            <use href="#v-pierre" x="84" y="49" width="26" height="26"/>
-            <use href="#v-pierre" x="84" y="75" width="26" height="26"/>
-            <use href="#v-pierre" x="110" y="23" width="26" height="26"/>
-            <use href="#v-pierre" x="136" y="49" width="26" height="26"/>
-            <path d="M149 26.5 159.5 36H157v11h-16V36h-2.5Z" fill="rgba(242,184,39,.35)" stroke="#E0A526" stroke-width="1.6" stroke-linejoin="round"/>
-            <use href="#piece-cavalier-noir" x="143" y="35" width="12" height="12" opacity=".6"/>
-            <use href="#piece-cavalier-noir" x="59" y="102" width="24" height="24"/>
-            <path d="M74 106Q98 78 118 86" fill="none" class="fleche-laby"/>
-            <path d="M128 80Q146 64 148 52" fill="none" class="fleche-laby"/>
-          </svg>
-        </div>
-        <div class="carte-corps">
-          <h3>Le labyrinthe</h3>
-          <p>Ramène la pièce à sa maison par le chemin le plus court, en contournant les obstacles.</p>
-          <ul class="etiquettes-jeu">
-            <li class="matiere">Itinéraires</li>
-            <li>Déplacements</li>
-            <li>Chemin le plus court</li>
-          </ul>
-        </div>
-        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
-      </a>
 
       <a class="carte-jeu" href="jeux/balance/index.html">
         <div class="vignette">
