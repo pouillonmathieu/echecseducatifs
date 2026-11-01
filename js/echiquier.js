@@ -25,7 +25,9 @@
   }
 
   // Construit l'échiquier dans `conteneur` (classe .echiquier ajoutée).
-  function dessiner(conteneur, fen, { orientation = 'blanc' } = {}) {
+  // dessins : mode tout-petits, un animal par colonne et des doigts par rangée dans les marges (js/tout-petits.js).
+  function dessiner(conteneur, fen, { orientation = 'blanc', dessins = false } = {}) {
+    const TP = dessins && window.ToutPetits;
     const pieces = lireFen(fen);
     const cols = orientation === 'blanc' ? [...COLONNES] : [...COLONNES].reverse();
     const rangs = orientation === 'blanc' ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8];
@@ -34,7 +36,8 @@
     rangs.forEach((r, i) => {
       const e = document.createElement('span');
       e.className = 'coord rangee';
-      e.textContent = r;
+      if (TP) e.innerHTML = `<span class="chiffre">${r}</span>${TP.mains(r)}`;
+      else e.textContent = r;
       ajouter(e, i + 2, 1);
       cols.forEach((l, j) => {
         const nom = l + r;
@@ -51,10 +54,12 @@
     cols.forEach((l, j) => {
       const e = document.createElement('span');
       e.className = 'coord colonne';
-      e.textContent = l;
+      if (TP) e.innerHTML = `${TP.animal(l)}<span class="lettre">${l}</span>`;
+      else e.textContent = l;
       ajouter(e, 10, j + 2);
     });
     conteneur.classList.add('echiquier');
+    conteneur.classList.toggle('avec-dessins', !!TP);
     conteneur.setAttribute('role', 'grid');
     conteneur.replaceChildren(f);
   }

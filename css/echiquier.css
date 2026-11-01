@@ -32,6 +32,18 @@
 .echiquier .coord { display: grid; place-items: center; font-size: 2.9cqi; font-weight: 600; opacity: .8; }
 .sans-coordonnees .echiquier .coord { visibility: hidden; }
 
+/* mode tout-petits : marges plus larges, doigts à gauche, animaux en bas */
+.echiquier.avec-dessins {
+  grid-template-columns: minmax(0, 2.3fr) repeat(8, minmax(0, 1fr)) minmax(0, .2fr);
+  grid-template-rows: minmax(0, .2fr) repeat(8, minmax(0, 1fr)) minmax(0, 1.6fr);
+}
+.avec-dessins .coord { opacity: 1; }
+.avec-dessins .coord.rangee { display: flex; align-items: center; justify-content: flex-end; gap: 1cqi; padding-right: 1cqi; }
+.avec-dessins .coord.colonne { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3cqi; }
+.avec-dessins .chiffre, .avec-dessins .lettre { font-size: 3.6cqi; font-weight: 700; line-height: 1; }
+.avec-dessins .mains { height: 6.6cqi; width: auto; flex: none; }
+.avec-dessins .animal { width: 8cqi; height: 8cqi; flex: none; }
+
 .case-e { position: relative; display: grid; place-items: center; }
 .case-e.claire { background: var(--e-claire); }
 .case-e.foncee { background: var(--e-foncee); }

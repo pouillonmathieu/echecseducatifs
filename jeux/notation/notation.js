@@ -89,10 +89,7 @@
     jeu.coup = coup;
     jeu.repondu = false;
     jeu.jetons = [];
-    // l'échiquier est vu du côté de celui qui vient de jouer
-    Echiquier.dessiner(plateau, coup.fen, { orientation: coup.trait });
-    Echiquier.marquer(plateau, [coup.de], 'depart');
-    Echiquier.marquer(plateau, [coup.a], 'arrivee');
+    dessinerPlateau();
     $('roi-question').setAttribute('href', `#piece-roi-${coup.trait}`);
     $('question-texte').textContent = coup.trait === 'blanc' ? 'Écris le coup des Blancs' : 'Écris le coup des Noirs';
     const q = $('question');
@@ -104,6 +101,15 @@
     majClavier();
     const saisie = $('saisie');
     if (saisie && matchMedia('(hover: hover)').matches) saisie.focus({ preventScroll: true });
+  }
+
+  // L'échiquier est vu du côté de celui qui vient de jouer ; en mode tout-petits, les marges sont dessinées.
+  function dessinerPlateau() {
+    const c = jeu.coup;
+    Echiquier.dessiner(plateau, c.fen, { orientation: c.trait, dessins: reglages.toutPetits });
+    Echiquier.marquer(plateau, [c.de], 'depart');
+    Echiquier.marquer(plateau, [c.a], 'arrivee');
+    if (jeu.repondu && c.autres) Echiquier.marquer(plateau, c.autres, 'attaquant');
   }
 
   // Feuille de partie : numéro, coup des Blancs, coup des Noirs.
@@ -456,6 +462,7 @@
   // redessine la question en cours sans perdre ce qui a été tapé
   function redessiner() {
     if (!jeu.coup) return;
+    dessinerPlateau();
     if (jeu.repondu) {
       // la feuille et l'explication suivent la nouvelle langue
       dessinerFeuille();
