@@ -20,7 +20,7 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
   et la partie en cours est gardée dans le navigateur.
 - **Mat ou pas mat ?** (`jeux/mat/`) : une position s'affiche, il faut dire si le camp qui a le trait est échec et mat.
-  102 positions : mats classiques pour débutants (couloir, berger, lion, étouffée, Légal, Anastasie, Arabie,
+  108 positions : mats classiques pour débutants (couloir, berger, lion, étouffée, Légal, Anastasie, Arabie,
   Boden, Damiano, épaulette…), fins de parties célèbres du domaine public (Morphy, Anderssen, Réti…),
   mats tirés de vraies parties jouées sur Lichess, et « presque mats » (fuite, prise, parade, pat).
   Chaque réponse est expliquée et montrée sur l'échiquier. Mode libre, défi (10 positions) et défi chrono
@@ -32,6 +32,7 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   dans le dépôt [lichess-org/lila-db-seed](https://github.com/lichess-org/lila-db-seed) (licence MIT).
   L'extrait utilisé est dans `outils/lichess-mats.json`.
 - Parties célèbres : parties historiques du domaine public.
+- Six positions d'une fiche d'exercices [Logiqboard](https://logiqboard.com) (positions seules ; explications rédigées pour ce site).
 - Toutes les positions sont vérifiées avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
   par `outils/positions-mat.js` ; chess.js n'est pas utilisé par le site lui-même.
 

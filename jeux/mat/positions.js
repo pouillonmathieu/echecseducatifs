@@ -744,6 +744,84 @@ window.POSITIONS_MAT = [
   "coup": null
  },
  {
+  "fen": "6k1/1bp4p/1p4pB/8/R7/8/1P3PPP/2r3K1",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque un mat du couloir",
+  "explication": "Le fou blanc peut prendre la tour noire en c1. C'est le seul coup qui sauve le roi : regarde bien les pièces loin du roi !",
+  "roi": "g1",
+  "attaquants": [
+   "c1"
+  ],
+  "coup": [
+   "h6",
+   "c1"
+  ]
+ },
+ {
+  "fen": "6k1/1R3p1p/Bp4pb/8/8/8/1P3PPP/2r3K1",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque un mat du couloir",
+  "explication": "Le fou blanc peut se placer en f1 pour bloquer l'échec. C'est le seul coup qui sauve le roi.",
+  "roi": "g1",
+  "attaquants": [
+   "c1"
+  ],
+  "coup": [
+   "a6",
+   "f1"
+  ]
+ },
+ {
+  "fen": "6k1/1p3p1p/1Qb3p1/8/8/2B3P1/1P3P1P/6Kq",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Dame et fou",
+  "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi ne peut pas prendre la dame : le fou en c6 la protège de loin.",
+  "roi": "g1",
+  "attaquants": [
+   "h1"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "8/3p4/3P4/8/8/5k2/6r1/7K",
+  "trait": "blanc",
+  "mat": false,
+  "echec": false,
+  "motif": "Pat",
+  "explication": "C'est pat ! Le roi blanc n'est pas en échec, mais les Blancs n'ont aucun coup possible. La partie est nulle. Le pion en d6 est bloqué, et le roi ne peut aller sur aucune case.",
+  "roi": "h1",
+  "attaquants": [],
+  "coup": null
+ },
+ {
+  "fen": "8/3p4/8/3P4/8/5k2/6r1/7K",
+  "trait": "blanc",
+  "mat": false,
+  "echec": false,
+  "motif": "Pas d'échec",
+  "explication": "Le roi blanc n'est même pas en échec : les Blancs peuvent jouer normalement. Le roi ne peut pas bouger, mais le pion peut avancer en d6 : ce n'est donc pas pat.",
+  "roi": "h1",
+  "attaquants": [],
+  "coup": null
+ },
+ {
+  "fen": "1k6/bp6/2b5/8/8/7p/5N1P/3r1BKR",
+  "trait": "blanc",
+  "mat": false,
+  "echec": false,
+  "motif": "Pat",
+  "explication": "C'est pat ! Le roi blanc n'est pas en échec, mais les Blancs n'ont aucun coup possible. La partie est nulle. Le cavalier et le fou sont cloués : s'ils bougeaient, le roi serait en échec.",
+  "roi": "g1",
+  "attaquants": [],
+  "coup": null
+ },
+ {
   "fen": "r5rk/pp3Npp/1q6/4p3/2B2p2/8/P5KP/3b3R",
   "trait": "noir",
   "mat": true,

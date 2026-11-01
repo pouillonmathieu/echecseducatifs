@@ -140,6 +140,20 @@ const SOURCES = [
   { motif: 'Pat', fen: '7k/7P/6K1/8/8/8/8/8 b - - 0 1', attendu: false },
   { motif: 'Pas d\'échec', coups: 'e4 e5 Bc4 Nc6 Qf3', attendu: false,
     idee: 'La dame et le fou visent f7, mais ce n\'est encore qu\'une menace.' },
+
+  // Fiche d'exercices transmise par l'auteur (logiqboard.com) : positions par paires qui se ressemblent.
+  { motif: 'Presque un mat du couloir', fen: '6k1/1bp4p/1p4pB/8/R7/8/1P3PPP/2r3K1 w - - 0 1', attendu: false, raison: 'prise',
+    idee: 'C\'est le seul coup qui sauve le roi : regarde bien les pièces loin du roi !' },
+  { motif: 'Presque un mat du couloir', fen: '6k1/1R3p1p/Bp4pb/8/8/8/1P3PPP/2r3K1 w - - 0 1', attendu: false, raison: 'parade',
+    idee: 'C\'est le seul coup qui sauve le roi.' },
+  { motif: 'Dame et fou', fen: '6k1/1p3p1p/1Qb3p1/8/8/2B3P1/1P3P1P/6Kq w - - 0 1', attendu: true,
+    idee: 'Le roi ne peut pas prendre la dame : le fou en c6 la protège de loin.' },
+  { motif: 'Pat', fen: '8/3p4/3P4/8/8/5k2/6r1/7K w - - 0 1', attendu: false,
+    idee: 'Le pion en d6 est bloqué, et le roi ne peut aller sur aucune case.' },
+  { motif: 'Pas d\'échec', fen: '8/3p4/8/3P4/8/5k2/6r1/7K w - - 0 1', attendu: false,
+    idee: 'Le roi ne peut pas bouger, mais le pion peut avancer en d6 : ce n\'est donc pas pat.' },
+  { motif: 'Pat', fen: '1k6/bp6/2b5/8/8/7p/5N1P/3r1BKR w - - 0 1', attendu: false,
+    idee: 'Le cavalier et le fou sont cloués : s\'ils bougeaient, le roi serait en échec.' },
 ];
 
 // ---------- Mots ----------
