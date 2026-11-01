@@ -130,31 +130,39 @@
       trajets.push(c.a[0] === 'g' ? ['h' + r, 'f' + r] : ['a' + r, 'd' + r]);
     }
     const prise = c.tags.includes('passant') ? c.a[0] + c.de[1] : c.tags.includes('prise') ? c.a : null;
-    const lent = !UI.reduireMouvement();
-    const DUREE_ANIM = 480;
-    const fin = () => { if (jeton === jeu.anim) { dessinerPlateau(); Sons.pose(3); } };
+    // Toujours animé, même si l'appareil demande moins d'animations : ici, le mouvement est l'information.
+    const PAUSE = 700;      // on montre d'abord la position d'avant
+    const TRAJET = 900;     // la pièce glisse
+    const DISPARITION = 350; // puis la pièce prise disparaît
+    const fin = () => { if (jeton === jeu.anim) dessinerPlateau(); };
     setTimeout(() => {
       if (jeton !== jeu.anim) return;
-      if (!lent) { fin(); return; }
       for (const [de, a] of trajets) {
         const caseDe = plateau.querySelector(`[data-case="${de}"]`);
         const caseA = plateau.querySelector(`[data-case="${a}"]`);
         const piece = caseDe && caseDe.querySelector('.piece-e');
-        if (!piece || !caseA) continue;
+        if (!piece || !caseA || !piece.animate) continue;
         const r1 = caseDe.getBoundingClientRect();
         const r2 = caseA.getBoundingClientRect();
+        const dx = r2.left - r1.left, dy = r2.top - r1.top;
         caseDe.style.zIndex = 3;
-        piece.style.transition = `transform ${DUREE_ANIM}ms cubic-bezier(.35, .1, .25, 1)`;
-        piece.style.transform = `translate(${r2.left - r1.left}px, ${r2.top - r1.top}px)`;
+        piece.style.filter = 'drop-shadow(0 6px 6px rgba(0, 0, 0, .35))';
+        piece.animate([
+          { transform: 'translate(0, 0) scale(1)' },
+          { transform: `translate(${dx / 2}px, ${dy / 2}px) scale(1.18)`, offset: 0.5 },
+          { transform: `translate(${dx}px, ${dy}px) scale(1)` },
+        ], { duration: TRAJET, easing: 'ease-in-out', fill: 'forwards' });
       }
       const prisePiece = prise && plateau.querySelector(`[data-case="${prise}"] .piece-e`);
-      if (prisePiece) {
-        prisePiece.style.transition = `opacity ${DUREE_ANIM * 0.45}ms ease-in ${DUREE_ANIM * 0.5}ms, transform ${DUREE_ANIM * 0.45}ms ease-in ${DUREE_ANIM * 0.5}ms`;
-        prisePiece.style.opacity = '0';
-        prisePiece.style.transform = 'scale(.6)';
+      if (prisePiece && prisePiece.animate) {
+        prisePiece.animate([
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: 'scale(.4) rotate(-20deg)' },
+        ], { duration: DISPARITION, delay: TRAJET * 0.8, easing: 'ease-in', fill: 'forwards' });
       }
-      setTimeout(fin, DUREE_ANIM + 60);
-    }, lent ? 550 : 700);
+      setTimeout(() => Sons.pose(prise ? 5 : 3), TRAJET * 0.9);
+      setTimeout(fin, TRAJET * 0.8 + DISPARITION + 150);
+    }, PAUSE);
   }
 
   // Feuille de partie : numéro, coup des Blancs, coup des Noirs.
