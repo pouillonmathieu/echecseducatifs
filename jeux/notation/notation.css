@@ -1,0 +1,223 @@
+/* Jeu : note le coup
+   L'échiquier à gauche ; la question, la feuille de partie, le clavier (tout-petits)
+   et l'explication à droite (l'un sous l'autre sur téléphone). */
+.ecran-note { max-width: 1060px; }
+
+body[data-chrono="oui"] .seulement-sans-chrono,
+body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
+body:not(.difficile) .seulement-difficile { display: none !important; }
+
+.visuellement-cache {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.jeu-note {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  align-items: center;
+  gap: 28px;
+}
+.plateau-note {
+  width: min(100%, 560px, calc(100vh - 150px));
+  width: min(100%, 560px, calc(100dvh - 150px));
+  justify-self: center;
+}
+.panneau-note { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+/* question */
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.question.nouvelle { animation: nouvelle .4s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes nouvelle { from { transform: scale(.94); opacity: .3; } }
+.roi-question { flex: none; width: 44px; height: 44px; padding: 4px; border-radius: 12px; background: var(--surface-2); }
+
+/* feuille de partie */
+.feuille {
+  padding: 6px 14px 10px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  box-shadow: var(--ombre-carte);
+}
+.feuille table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.feuille th, .feuille td { padding: 6px 4px; text-align: left; }
+.feuille thead th { padding: 4px 4px 6px; border-bottom: 2px solid var(--ligne); }
+.feuille thead svg { display: block; width: 26px; height: 26px; }
+.feuille .num { width: 3.2em; color: var(--encre-douce); font-weight: 600; font-variant-numeric: tabular-nums; }
+.feuille tbody tr + tr th, .feuille tbody tr + tr td { border-top: 1px solid var(--ligne); }
+.feuille td { font-size: 21px; font-weight: 600; white-space: nowrap; letter-spacing: .01em; }
+.feuille td.vide { color: var(--encre-douce); }
+.fig { width: 1.15em; height: 1.15em; margin: 0 1px -.2em 0; vertical-align: baseline; }
+
+/* la case à remplir */
+.a-remplir { position: relative; }
+.champ {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 5px 10px;
+  border: 2px dashed var(--accent);
+  border-radius: 10px;
+  background: var(--accent-doux);
+  color: var(--encre);
+  font: inherit;
+  font-size: 21px;
+  font-weight: 600;
+  outline: none;
+}
+.champ::placeholder { color: var(--accent); opacity: .7; }
+.champ:focus { border-style: solid; box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
+.saisie-tp {
+  display: flex;
+  align-items: center;
+  min-height: 1.6em;
+  padding: 3px 10px;
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-doux);
+  overflow: hidden;
+}
+.curseur { display: inline-block; width: 2px; height: 1.05em; margin-left: 2px; background: var(--accent); animation: curseur 1s steps(1) infinite; }
+@keyframes curseur { 50% { opacity: 0; } }
+.a-remplir.juste { color: var(--accent); }
+.a-remplir.faux { color: var(--accent); }
+.a-remplir.juste, .a-remplir.faux { animation: nouvelle .35s cubic-bezier(.2, 1.3, .4, 1); }
+
+.saisie { display: flex; }
+.saisie .bouton-principal { flex: 1; }
+.saisie .bouton-principal svg, #btn-suivant svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* clavier des tout-petits */
+.clavier { display: flex; flex-direction: column; gap: 6px; }
+.rangee-touches { display: grid; gap: 6px; }
+.rangee-touches.pieces { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.rangee-touches.huit { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.rangee-touches.symboles { display: flex; justify-content: center; }
+.rangee-touches.symboles .touche { flex: 1 1 0; max-width: 96px; }
+.rangee-touches.symboles .touche[data-val="O-O-O"] { flex-grow: 1.3; }
+.touche {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 4px 2px;
+  border: 2px solid var(--ligne);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--encre);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color .15s, transform .08s;
+}
+.touche:hover { border-color: var(--accent); }
+.touche:active { transform: scale(.94); }
+.touche b { font-size: 16px; font-weight: 700; line-height: 1.1; }
+.touche small { font-size: 9.5px; color: var(--encre-douce); line-height: 1.1; text-align: center; }
+.touche .fig-touche { width: 34px; height: 34px; }
+.touche .animal { width: 30px; height: 30px; }
+.touche .mains { width: auto; height: 26px; max-width: 100%; }
+.touche.symbole b { font-size: 18px; white-space: nowrap; }
+.touche[data-val^="O-O"] b { font-size: 14px; letter-spacing: -.02em; }
+.touche.effacer svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.touche.effacer { background: var(--surface-2); }
+
+/* explication */
+.retour {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px 18px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--ligne);
+  animation: nouvelle .35s cubic-bezier(.2, 1.3, .4, 1);
+}
+.retour.juste { border-color: var(--accent); }
+.retour.faux { border-color: var(--alerte); }
+.verdict { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 20px; font-weight: 700; }
+.verdict svg { flex: none; width: 30px; height: 30px; padding: 5px; border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; box-sizing: border-box; }
+.retour.juste .verdict { color: var(--accent); }
+.retour.juste .verdict svg { background: var(--accent-doux); }
+.retour.faux .verdict { color: var(--alerte); }
+.retour.faux .verdict svg { background: color-mix(in srgb, var(--alerte) 16%, transparent); }
+.ta-reponse, .conseil, .explication { margin: 0; line-height: 1.45; }
+.ta-reponse s { color: var(--alerte); text-decoration-thickness: 2px; }
+.ta-reponse b { color: var(--accent); }
+.conseil { padding: 8px 12px; border-radius: 12px; background: color-mix(in srgb, var(--or) 20%, transparent); font-weight: 500; }
+.explication { color: var(--encre-douce); font-size: 15px; }
+
+.morceaux { display: flex; flex-wrap: wrap; gap: 8px; }
+.morceau { display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: 92px; }
+.morceau b {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  min-width: 46px;
+  height: 46px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 2px solid var(--ligne);
+  font-size: 22px;
+  font-weight: 700;
+}
+.morceau b .fig { width: 32px; height: 32px; margin: 0; }
+.morceau.fantome b { border-style: dashed; background: transparent; opacity: .7; }
+.morceau.facultatif b { border-style: dashed; font-size: 15px; }
+.morceau small { font-size: 12px; line-height: 1.2; color: var(--encre-douce); text-align: center; }
+
+.score-libre { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--accent); font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
+.score-libre svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.astuce { margin: 0; font-size: 13px; color: var(--encre-douce); }
+.astuce kbd { padding: 1px 6px; border: 1px solid var(--ligne); border-radius: 6px; background: var(--surface); font: inherit; font-weight: 600; }
+.tout-petits .astuce { display: none; }
+@media (hover: none) { .astuce { display: none; } }
+
+/* minuteur (défi chrono) */
+.minuteur { flex: 1; height: 14px; border: 1px solid var(--ligne); border-radius: 7px; background: var(--surface-2); overflow: hidden; }
+#minuteur-barre { height: 100%; border-radius: 7px; background: var(--accent); transform-origin: left center; transition: background .3s; }
+body.presse #minuteur-barre { background: var(--alerte); }
+.bandeau-defi .points { flex: none; }
+
+/* résultats : la notation de chaque coup */
+.res-coup { font-size: 14px; font-weight: 700; color: var(--encre); white-space: nowrap; }
+.res-coup .fig { width: 1.1em; height: 1.1em; }
+
+/* en mode tout-petits, l'échiquier laisse de la place au clavier */
+.tout-petits .plateau-note {
+  width: min(100%, 520px, calc(100vh - 160px));
+  width: min(100%, 520px, calc(100dvh - 160px));
+}
+
+@media (max-width: 900px) {
+  .jeu-note { grid-template-columns: 1fr; gap: 14px; align-content: start; }
+  .plateau-note { width: min(100%, 500px, calc(100dvh - 400px)); min-width: min(100%, 260px); }
+  .tout-petits .plateau-note { width: min(100%, 440px, calc(100dvh - 470px)); min-width: min(100%, 220px); }
+  .panneau-note { gap: 12px; width: min(100%, 520px); justify-self: center; }
+  .question { font-size: 18px; padding: 10px 12px; }
+  .roi-question { width: 36px; height: 36px; }
+  .feuille td { font-size: 19px; }
+  .champ { font-size: 19px; }
+}
+@media (max-width: 560px) {
+  .rangee-touches.huit { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .touche { min-height: 46px; }
+}

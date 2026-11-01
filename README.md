@@ -25,6 +25,11 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   mats tirés de vraies parties jouées sur Lichess, et « presque mats » (fuite, prise, parade, pat).
   Chaque réponse est expliquée et montrée sur l'échiquier. Mode libre, défi (10 positions) et défi chrono
   (20 s par position). Réglage « pat » : ajoute un troisième bouton et les positions de pat (sinon absentes).
+- **Note le coup** (`jeux/notation/`) : l'échiquier montre le dernier coup joué, la feuille de partie reprend les
+  3 coups d'avant et il faut écrire le dernier. Niveau facile (coups simples et prises, 400 coups) ou difficile
+  (échec, mat, pièce à préciser, roque, promotion, prise en passant ; 373 coups). Notation française ou anglaise,
+  conseil ciblé en cas d'erreur et notation découpée en morceaux expliqués. Mode libre, défi (10 coups) et défi
+  chrono (20 s par coup). Mode tout-petits : clavier avec les pièces dessinées, les animaux et les doigts.
 
 ## Sources
 
@@ -33,8 +38,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   L'extrait utilisé est dans `outils/lichess-mats.json`.
 - Parties célèbres : parties historiques du domaine public.
 - Six positions d'une fiche d'exercices [Logiqboard](https://logiqboard.com) (positions seules ; explications rédigées pour ce site).
-- Toutes les positions sont vérifiées avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
-  par `outils/positions-mat.js` ; chess.js n'est pas utilisé par le site lui-même.
+- Ouvertures Lichess : [lichess-org/chess-openings](https://github.com/lichess-org/chess-openings) (domaine public, CC0),
+  pour les coups de début de partie de « Note le coup ».
+- Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
+  par `outils/positions-mat.js` et `outils/coups-notation.js` ; chess.js n'est pas utilisé par le site lui-même.
 
 ## Organisation
 
@@ -51,6 +58,7 @@ js/tout-petits.js     dessins des animaux (a à h) et des mains (1 à 8)
 js/echiquier.js       échiquier partagé : affichage d'une position (FEN) et surlignage de cases
 css/echiquier.css     style de cet échiquier
 outils/positions-mat.js  génère jeux/mat/positions.js en vérifiant chaque position avec chess.js
+outils/coups-notation.js génère jeux/notation/coups.js (ouvertures et problèmes Lichess rejoués avec chess.js)
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js)
 ```
 

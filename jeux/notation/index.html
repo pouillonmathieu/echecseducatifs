@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Note le coup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../css/commun.css">
+<link rel="stylesheet" href="../../css/jeux.css">
+<link rel="stylesheet" href="../../css/echiquier.css">
+<link rel="stylesheet" href="notation.css">
+<script src="../../js/commun.js"></script>
+</head>
+<body data-mode="libre" data-chrono="non">
+<!-- illustrations pour les non-lecteurs : un coup sur l'échiquier et la feuille de partie -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mini-note" viewBox="0 0 48 48">
+    <rect x="4" y="4" width="40" height="40" rx="7" style="fill:#FBFBF8;stroke:#2A2E38" stroke-width="1.4"/>
+    <rect x="9" y="9" width="30" height="30" style="fill:#ECECD7"/>
+    <rect x="24" y="9" width="15" height="15" style="fill:#739A62"/><rect x="9" y="24" width="15" height="15" style="fill:#739A62"/>
+    <rect x="9" y="24" width="15" height="15" style="fill:rgba(47,163,107,.45)"/>
+    <rect x="24" y="9" width="15" height="15" style="fill:rgba(47,163,107,.7)"/>
+    <use href="#piece-cavalier-blanc" x="24" y="9" width="15" height="15"/>
+    <rect x="21" y="27" width="21" height="16" rx="3" style="fill:#FFFFFF;stroke:#2A2E38" stroke-width="1.3"/>
+    <path d="M24.5 32h14M24.5 36.5h8" style="stroke:#2A2E38" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M34 36.5h5" style="stroke:#2E7D5B" stroke-width="2" stroke-linecap="round" stroke-dasharray="1.5 1.4"/>
+  </symbol>
+  <symbol id="ico-libre" viewBox="0 0 48 48"><use href="#mini-note" width="48" height="48"/></symbol>
+  <symbol id="ico-defi" viewBox="0 0 48 48">
+    <use href="#mini-note" width="48" height="48"/>
+    <circle cx="37" cy="11" r="10" style="fill:var(--or);stroke:var(--surface)" stroke-width="2"/>
+    <path d="M37 5.2l1.8 3.7 4 .5-3 2.8.8 4L37 14.2l-3.6 2 .8-4-3-2.8 4-.5Z" style="fill:var(--surface)"/>
+  </symbol>
+  <symbol id="ico-chrono" viewBox="0 0 48 48">
+    <use href="#mini-note" width="48" height="48"/>
+    <circle cx="37" cy="11" r="10" style="fill:var(--accent);stroke:var(--surface)" stroke-width="2"/>
+    <circle cx="37" cy="12.6" r="5" style="fill:none;stroke:var(--sur-accent)" stroke-width="1.7"/>
+    <path d="M37 12.6l2.3-2.1M37 5.6v1.4M35.4 5.4h3.2M41.2 7.6l1-1" style="fill:none;stroke:var(--sur-accent)" stroke-width="1.6" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<main class="ecran ecran-note">
+  <header class="barre">
+    <a class="bouton-icone seulement-libre" href="../../index.html" aria-label="Retour à l'accueil" title="Accueil" data-hors-artifact>
+      <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>
+    </a>
+    <button id="btn-retour" class="bouton-icone bouton-illus seulement-defi" type="button" aria-label="Quitter le défi et revenir au mode libre" title="Mode libre">
+      <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-libre"/></svg>
+    </button>
+    <h1 class="titre" id="titre">Note le coup</h1>
+    <button id="btn-defis" class="bouton-defis seulement-libre" type="button" aria-haspopup="dialog" title="Défis">
+      <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-defi"/></svg>
+      <span>Défis</span>
+    </button>
+    <button id="btn-theme" class="bouton-icone bouton-theme" type="button">
+      <svg class="icone-lune" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
+      <svg class="icone-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+    </button>
+    <div class="reglages">
+      <button id="btn-reglages" class="bouton-icone" type="button" aria-label="Réglages" title="Réglages" aria-controls="panneau-reglages" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+      </button>
+      <div id="panneau-reglages" class="panneau" hidden>
+        <div class="ligne-reglage-bloc">
+          <span class="ligne-titre">
+            <svg viewBox="0 0 24 24"><path d="M4 6h10M9 4v2M6 6c0 4 3 7 7 8M12 6c0 3-3 7-7 9"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>
+            Notation
+          </span>
+          <div class="segments" id="reg-langue" role="group" aria-label="Langue de la notation">
+            <button type="button" data-langue="fr">Français<small>R D T F C</small></button>
+            <button type="button" data-langue="en">Anglais<small>K Q R B N</small></button>
+          </div>
+        </div>
+        <div class="ligne-reglage-bloc seulement-libre">
+          <span class="ligne-titre">
+            <svg viewBox="0 0 24 24"><path d="M5 19V14M12 19V9M19 19V4"/></svg>
+            Niveau
+          </span>
+          <div class="segments" id="reg-niveau" role="group" aria-label="Niveau">
+            <button type="button" data-niveau="facile">Facile<small>coups simples</small></button>
+            <button type="button" data-niveau="difficile">Difficile<small>échec, mat, roque…</small></button>
+          </div>
+        </div>
+        <button id="reg-tout-petits" class="ligne-reglage" type="button">
+          <svg class="illus" viewBox="0 0 48 48"><use href="#animal-a"/></svg>
+          <span>Tout-petits<small>Clavier avec les pièces, les animaux et les doigts</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-coordonnees" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3.5 6v2M3.5 11v2M10 21h2M15 21h2"/></svg>
+          <span>Lettres et chiffres</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-son" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+          <span>Son</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- progression des défis -->
+  <div class="bandeau-defi seulement-defi">
+    <ol id="points" class="points" aria-label="Progression des défis"></ol>
+    <div class="minuteur seulement-chrono" aria-hidden="true"><div id="minuteur-barre"></div></div>
+  </div>
+
+  <section class="jeu-note">
+    <div id="echiquier" class="plateau-note"></div>
+
+    <div class="panneau-note">
+      <p class="question" id="question" aria-live="polite">
+        <svg class="roi-question" viewBox="0 0 100 100" aria-hidden="true"><use id="roi-question" href="#piece-roi-blanc"/></svg>
+        <span id="question-texte">Écris le coup des Blancs</span>
+      </p>
+
+      <!-- feuille de partie : les 3 coups d'avant et une case vide pour le dernier -->
+      <div class="feuille">
+        <table>
+          <thead>
+            <tr>
+              <th class="num" scope="col"><span class="visuellement-cache">Coup</span></th>
+              <th scope="col"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-blanc"/></svg><span class="visuellement-cache">Blancs</span></th>
+              <th scope="col"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-noir"/></svg><span class="visuellement-cache">Noirs</span></th>
+            </tr>
+          </thead>
+          <tbody id="feuille"></tbody>
+        </table>
+      </div>
+
+      <form id="form-saisie" class="saisie" autocomplete="off">
+        <button id="btn-valider" class="bouton-principal" type="submit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          Valider
+        </button>
+      </form>
+
+      <!-- clavier du mode tout-petits (rempli par notation.js) -->
+      <div id="clavier" class="clavier" hidden aria-label="Clavier"></div>
+
+      <div class="retour" id="retour" hidden aria-live="polite">
+        <p class="verdict" id="verdict"></p>
+        <p class="ta-reponse" id="ta-reponse" hidden></p>
+        <p class="conseil" id="conseil" hidden></p>
+        <div class="morceaux" id="morceaux"></div>
+        <p class="explication" id="explication" hidden></p>
+        <button id="btn-suivant" class="bouton-principal" type="button">
+          Suivant
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <p class="score-libre seulement-libre" aria-live="polite">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span id="score-libre">0 / 0</span>
+      </p>
+      <p class="astuce">Écris le coup puis <kbd>Entrée</kbd> ; <kbd>Entrée</kbd> encore pour le suivant.</p>
+    </div>
+  </section>
+</main>
+
+<!-- choix du défi -->
+<div id="choix-defi" class="voile" hidden>
+  <div class="carte-choix" role="dialog" aria-modal="true" aria-labelledby="choix-titre">
+    <div class="carte-choix-tete">
+      <h2 id="choix-titre">Défis</h2>
+      <button id="btn-fermer-choix" class="bouton-icone" type="button" aria-label="Fermer" title="Fermer">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <p class="carte-choix-intro">10 coups à écrire — <span id="choix-niveau">niveau facile</span></p>
+    <div class="tuiles">
+      <button id="mode-defi" class="tuile" type="button">
+        <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-defi"/></svg>
+        <span class="tuile-titre">Sans chrono</span>
+        <span class="tuile-sous">Prends ton temps</span>
+      </button>
+      <button id="mode-chrono" class="tuile" type="button">
+        <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-chrono"/></svg>
+        <span class="tuile-titre">Chrono</span>
+        <span class="tuile-sous">20 secondes par coup</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- résultats des défis -->
+<div id="resultats" class="voile" hidden>
+  <div class="pluie" id="pluie" aria-hidden="true"></div>
+  <div class="carte-resultats" role="dialog" aria-modal="true" aria-labelledby="res-titre">
+    <div class="etoiles" id="etoiles" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+    </div>
+    <h2 id="res-titre" class="res-titre">Bravo !</h2>
+    <p class="res-score"><span id="res-score">0</span><span class="res-sur">/ 10</span></p>
+    <ol id="res-liste" class="res-liste" aria-label="Détail des coups"></ol>
+    <p id="res-temps" class="res-temps"></p>
+    <div class="res-actions">
+      <button id="btn-rejouer" class="bouton-principal" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
+        Rejouer
+      </button>
+      <button id="btn-menu" class="bouton-secondaire" type="button">
+        <svg class="illus" viewBox="0 0 48 48" aria-hidden="true"><use href="#ico-libre"/></svg>
+        Mode libre
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/pieces.js"></script>
+<script src="../../js/sons.js"></script>
+<script src="../../js/ui.js"></script>
+<script src="../../js/echiquier.js"></script>
+<script src="../../js/tout-petits.js"></script>
+<script src="coups.js"></script>
+<script src="notation.js"></script>
+</body>
+</html>

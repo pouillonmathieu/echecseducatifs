@@ -141,6 +141,13 @@
 .vignette .texte-mat, .vignette .texte-pas-mat { font-family: var(--police); font-size: 13px; font-weight: 700; text-anchor: middle; }
 .vignette .texte-mat { fill: var(--alerte); }
 .vignette .texte-pas-mat { fill: var(--accent); }
+.vignette .feuille-mini { fill: var(--surface); stroke: var(--ligne); stroke-width: 1.5; }
+.vignette .texte-feuille { font-family: var(--police); font-size: 13px; font-weight: 600; fill: var(--encre); }
+.vignette .num-feuille { fill: var(--encre-douce); }
+.vignette .ligne-feuille { stroke: var(--ligne); stroke-width: 1.2; }
+.vignette .case-vide-mini { fill: var(--accent-doux); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 2; }
+.vignette .texte-reponse { fill: var(--accent); text-anchor: middle; }
+.vignette .crayon { fill: var(--or); stroke: var(--encre); stroke-width: 1.2; stroke-linejoin: round; }
 
 .pied { padding: 8px 0 4px; color: var(--encre-douce); font-size: 14px; text-align: center; }
 .pied p { margin: 0; }
