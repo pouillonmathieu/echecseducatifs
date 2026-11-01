@@ -1,0 +1,46 @@
+/* Échiquier partagé (js/echiquier.js) : cases vert et crème, coordonnées à gauche et en bas,
+   surlignages pour expliquer une position. */
+:root {
+  --e-claire: #ECECD7;
+  --e-foncee: #739A62;
+  --e-cadre: #FBFBF8;
+  --e-texte: #2A2E38;
+  --e-danger: rgba(214, 69, 50, .85);
+  --e-attaque: #E8913A;
+  --e-solution: #2FA36B;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #23262E; --e-texte: #E6E8EC; }
+}
+:root[data-theme="dark"] { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #23262E; --e-texte: #E6E8EC; }
+
+.echiquier {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, .45fr) repeat(8, minmax(0, 1fr)) minmax(0, .2fr);
+  grid-template-rows: minmax(0, .2fr) repeat(8, minmax(0, 1fr)) minmax(0, .45fr);
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: var(--e-cadre);
+  color: var(--e-texte);
+  box-shadow: 0 0 0 1px var(--ligne), 0 12px 30px rgba(0, 0, 0, .10);
+  user-select: none;
+  overflow: hidden;
+}
+.echiquier .coord { display: grid; place-items: center; font-size: 2.9cqi; font-weight: 600; opacity: .8; }
+.sans-coordonnees .echiquier .coord { visibility: hidden; }
+
+.case-e { position: relative; display: grid; place-items: center; }
+.case-e.claire { background: var(--e-claire); }
+.case-e.foncee { background: var(--e-foncee); }
+.piece-e { position: relative; z-index: 1; width: 92%; height: 92%; }
+
+/* surlignages */
+.case-e::after { content: ""; position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.case-e.roi-attaque::after { opacity: 1; background: radial-gradient(circle, var(--e-danger) 0%, rgba(214, 69, 50, .35) 45%, transparent 72%); }
+.case-e.attaquant::after { opacity: 1; box-shadow: inset 0 0 0 4px var(--e-attaque); }
+.case-e.depart::after { opacity: 1; box-shadow: inset 0 0 0 4px var(--e-solution); background: rgba(47, 163, 107, .18); }
+.case-e.arrivee::after { opacity: 1; background: rgba(47, 163, 107, .55); box-shadow: inset 0 0 0 4px var(--e-solution); }
+.case-e.arrivee { animation: clignote 1s ease-in-out 2; }
+@keyframes clignote { 50% { filter: brightness(1.15); } }

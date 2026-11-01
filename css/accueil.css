@@ -136,6 +136,12 @@
 .vignette .sur-de-blanc { --piece-blanc: #FFFFFF; --piece-blanc-trait: #2A2E38; }
 .vignette .sur-de-noir { --piece-noir: #2B303B; --piece-noir-trait: #14171E; --piece-noir-detail: #F1F2F4; }
 
+.vignette .bulle-mat { fill: color-mix(in srgb, var(--alerte) 16%, var(--surface)); }
+.vignette .bulle-pas-mat { fill: var(--accent-doux); }
+.vignette .texte-mat, .vignette .texte-pas-mat { font-family: var(--police); font-size: 13px; font-weight: 700; text-anchor: middle; }
+.vignette .texte-mat { fill: var(--alerte); }
+.vignette .texte-pas-mat { fill: var(--accent); }
+
 .pied { padding: 8px 0 4px; color: var(--encre-douce); font-size: 14px; text-align: center; }
 .pied p { margin: 0; }
 

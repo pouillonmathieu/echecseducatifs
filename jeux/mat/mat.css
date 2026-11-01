@@ -1,0 +1,127 @@
+/* Jeu : mat ou pas mat ?
+   Mise en page : l'échiquier à gauche, la question et les réponses à droite
+   (l'un sous l'autre sur téléphone). */
+.ecran-mat { max-width: 1040px; }
+
+body[data-chrono="oui"] .seulement-sans-chrono,
+body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
+
+.jeu-mat {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  align-items: center;
+  gap: 28px;
+}
+.plateau-mat {
+  width: min(100%, 580px, calc(100vh - 150px));
+  width: min(100%, 580px, calc(100dvh - 150px));
+  justify-self: center;
+}
+.panneau-mat { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.question.nouvelle { animation: nouvelle .4s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes nouvelle { from { transform: scale(.94); opacity: .3; } }
+.roi-question {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.reponses { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.reponse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 10px;
+  border: 2px solid var(--ligne);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--encre);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, background .15s;
+}
+.reponse:hover { border-color: var(--accent); }
+.reponse:active { transform: scale(.97); }
+.reponse-icone { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; }
+.reponse-icone svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.reponse.mat .reponse-icone { background: color-mix(in srgb, var(--alerte) 16%, transparent); color: var(--alerte); }
+.reponse.pas-mat .reponse-icone { background: var(--accent-doux); color: var(--accent); }
+
+.retour {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px 18px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--ligne);
+  animation: nouvelle .35s cubic-bezier(.2, 1.3, .4, 1);
+}
+.retour.juste { border-color: var(--accent); }
+.retour.faux { border-color: var(--alerte); }
+.verdict { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 20px; font-weight: 700; }
+.verdict svg { flex: none; width: 30px; height: 30px; padding: 5px; border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; box-sizing: border-box; }
+.retour.juste .verdict { color: var(--accent); }
+.retour.juste .verdict svg { background: var(--accent-doux); }
+.retour.faux .verdict { color: var(--alerte); }
+.retour.faux .verdict svg { background: color-mix(in srgb, var(--alerte) 16%, transparent); }
+.motif {
+  align-self: flex-start;
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--encre-douce);
+}
+.explication { margin: 0 0 4px; line-height: 1.5; }
+#btn-suivant svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.score-libre { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--accent); font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
+.score-libre svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.astuce { margin: 0; font-size: 13px; color: var(--encre-douce); }
+.astuce kbd { padding: 1px 6px; border: 1px solid var(--ligne); border-radius: 6px; background: var(--surface); font: inherit; font-weight: 600; }
+@media (hover: none) { .astuce { display: none; } }
+
+/* minuteur (défi chrono) */
+.minuteur { flex: 1; height: 14px; border: 1px solid var(--ligne); border-radius: 7px; background: var(--surface-2); overflow: hidden; }
+#minuteur-barre { height: 100%; border-radius: 7px; background: var(--accent); transform-origin: left center; transition: background .3s; }
+body.presse #minuteur-barre { background: var(--alerte); }
+.bandeau-defi .points { flex: none; }
+
+/* résultats */
+.res-liste .res-t { font-weight: 600; }
+
+@media (max-width: 860px) {
+  .jeu-mat { grid-template-columns: 1fr; gap: 14px; align-content: start; }
+  .plateau-mat { width: min(100%, 520px, calc(100dvh - 380px)); min-width: min(100%, 280px); }
+  .panneau-mat { gap: 12px; width: min(100%, 520px); justify-self: center; }
+  .question { font-size: 18px; padding: 10px 12px; }
+  .roi-question { width: 36px; height: 36px; }
+  .reponse { flex-direction: row; justify-content: center; padding: 10px; font-size: 16px; }
+  .reponse-icone { width: 36px; height: 36px; border-radius: 10px; }
+  .reponse-icone svg { width: 22px; height: 22px; }
+}

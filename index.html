@@ -153,6 +153,41 @@
         </div>
         <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
       </a>
+
+      <a class="carte-jeu" href="jeux/mat/index.html">
+        <div class="vignette">
+          <svg viewBox="0 0 240 150" aria-hidden="true">
+            <defs><radialGradient id="v-danger"><stop offset="0" stop-color="#D64532" stop-opacity=".85"/><stop offset="1" stop-color="#D64532" stop-opacity="0"/></radialGradient></defs>
+            <rect x="20" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
+            <rect x="29" y="23" width="104" height="104" fill="#ECECD7"/>
+            <g fill="#739A62">
+              <rect x="55" y="23" width="26" height="26"/><rect x="107" y="23" width="26" height="26"/>
+              <rect x="29" y="49" width="26" height="26"/><rect x="81" y="49" width="26" height="26"/>
+              <rect x="55" y="75" width="26" height="26"/><rect x="107" y="75" width="26" height="26"/>
+              <rect x="29" y="101" width="26" height="26"/><rect x="81" y="101" width="26" height="26"/>
+            </g>
+            <circle cx="120" cy="36" r="20" fill="url(#v-danger)"/>
+            <use href="#piece-roi-noir" x="108" y="24" width="24" height="24"/>
+            <use href="#piece-pion-noir" x="83" y="51" width="22" height="22"/>
+            <use href="#piece-pion-noir" x="109" y="51" width="22" height="22"/>
+            <use href="#piece-dame-blanc" x="56" y="24" width="24" height="24"/>
+            <rect x="156" y="34" width="66" height="32" rx="10" class="bulle-mat"/>
+            <text x="189" y="56" class="texte-mat">Mat ?</text>
+            <rect x="156" y="78" width="66" height="32" rx="10" class="bulle-pas-mat"/>
+            <text x="189" y="100" class="texte-pas-mat">Pas mat ?</text>
+          </svg>
+        </div>
+        <div class="carte-corps">
+          <h3>Mat ou pas mat ?</h3>
+          <p>Regarde la position : le roi est-il échec et mat, ou peut-il s'en sortir ?</p>
+          <ul class="etiquettes-jeu">
+            <li class="matiere">Logique</li>
+            <li>Mats classiques</li>
+            <li>Explications</li>
+          </ul>
+        </div>
+        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
+      </a>
     </div>
   </section>
 

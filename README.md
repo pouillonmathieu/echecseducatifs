@@ -19,6 +19,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Les Blancs puis les Noirs lancent 3 dés (ou 1 en version classique) ; chaque face montre une pièce
   (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
   et la partie en cours est gardée dans le navigateur.
+- **Mat ou pas mat ?** (`jeux/mat/`) : une position s'affiche, il faut dire si le camp qui a le trait est échec et mat.
+  40 positions inspirées des mats classiques pour débutants (couloir, berger, lion, étouffée, Légal, Anastasie,
+  Arabie, Boden, Damiano, épaulette…) et de « presque mats » (fuite, prise, parade, pat). Chaque réponse est
+  expliquée et montrée sur l'échiquier. Mode libre, défi (10 positions) et défi chrono (20 s par position).
 
 ## Organisation
 
@@ -32,6 +36,9 @@ js/pieces.js          pièces d'échecs : valeurs, noms, dessins SVG
 js/sons.js            petits sons synthétisés (aucun fichier audio)
 js/ui.js              confettis, compteur animé, durées, étoiles
 js/tout-petits.js     dessins des animaux (a à h) et des mains (1 à 8)
+js/echiquier.js       échiquier partagé : affichage d'une position (FEN) et surlignage de cases
+css/echiquier.css     style de cet échiquier
+outils/positions-mat.js  génère jeux/mat/positions.js en vérifiant chaque position avec chess.js
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js)
 ```
 
