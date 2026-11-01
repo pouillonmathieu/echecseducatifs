@@ -82,7 +82,7 @@
       const nom = l + r;
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'case ' + ((COLONNES.indexOf(l) + r) % 2 ? 'claire' : 'foncee');
+      b.className = 'case ' + ((COLONNES.indexOf(l) + r) % 2 ? 'foncee' : 'claire'); // a1 est une case foncée
       b.dataset.case = nom;
       b.style.gridRow = i + 2;
       b.style.gridColumn = j + 2;

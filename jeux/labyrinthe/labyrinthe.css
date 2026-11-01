@@ -49,7 +49,7 @@
 /* ---------- Échiquier ---------- */
 .plateau-laby .case-e { cursor: pointer; }
 .plateau-laby .case-e.bloquee { cursor: not-allowed; }
-.obstacle { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.obstacle { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; overflow: visible; pointer-events: none; }
 .piece-laby { z-index: 2; cursor: pointer; }
 
 /* la maison : un contour de maison doré et le fantôme de la pièce */
@@ -166,3 +166,50 @@
   .choix-laby { gap: 8px; }
   .choix-ligne button { width: 40px; height: 40px; padding: 4px; }
 }
+
+/* ---------- Défis ---------- */
+body[data-chrono="oui"] .seulement-sans-chrono,
+body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
+.minuteur { flex: 1; height: 14px; border: 1px solid var(--ligne); border-radius: 7px; background: var(--surface-2); overflow: hidden; }
+#minuteur-barre { height: 100%; border-radius: 7px; background: var(--accent); transform-origin: left center; transition: background .3s; }
+body.presse #minuteur-barre { background: var(--alerte); }
+.bandeau-defi .points { flex: none; }
+#actions-defi { grid-template-columns: 1fr; }
+.retour {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--ligne);
+  animation: nouvelle .35s cubic-bezier(.2, 1.3, .4, 1);
+}
+@keyframes nouvelle { from { transform: scale(.94); opacity: .3; } }
+.retour.juste { border-color: var(--accent); }
+.retour.faux { border-color: var(--alerte); }
+.verdict { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 20px; font-weight: 700; }
+.verdict svg { flex: none; width: 30px; height: 30px; padding: 5px; border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; box-sizing: border-box; }
+.retour.juste .verdict { color: var(--accent); }
+.retour.juste .verdict svg { background: var(--accent-doux); }
+.retour.faux .verdict { color: var(--alerte); }
+.retour.faux .verdict svg { background: color-mix(in srgb, var(--alerte) 16%, transparent); }
+.retour-detail { margin: 0 0 4px; line-height: 1.45; }
+#btn-suivant svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+body[data-mode="defi"] .retour:not([hidden]) ~ #actions-defi { display: none; }
+
+/* ---------- Glisser-déposer ---------- */
+.piece-laby { touch-action: none; cursor: grab; }
+.piece-laby.en-main { opacity: .3; }
+.piece-glissee {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  pointer-events: none;
+  cursor: grabbing;
+  filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .35));
+}
+.case-e.visee::after { opacity: 1; box-shadow: inset 0 0 0 .7cqi var(--accent); background: rgba(47, 163, 107, .15); }
+.case-e.visee.bloquee::after { box-shadow: inset 0 0 0 .7cqi var(--alerte); background: rgba(214, 69, 50, .15); }
+.case-e.possible.visee::after { background: radial-gradient(circle, rgba(24, 30, 40, .32) 0 16%, transparent 18%), rgba(47, 163, 107, .2); }

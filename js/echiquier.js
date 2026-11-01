@@ -42,7 +42,7 @@
       cols.forEach((l, j) => {
         const nom = l + r;
         const c = document.createElement('div');
-        c.className = 'case-e ' + ((COLONNES.indexOf(l) + r) % 2 ? 'claire' : 'foncee');
+        c.className = 'case-e ' + ((COLONNES.indexOf(l) + r) % 2 ? 'foncee' : 'claire'); // a1 est une case foncée
         c.dataset.case = nom;
         const p = pieces[nom];
         c.setAttribute('aria-label', p ? `${nom} : ${nomPiece(p)}` : nom);

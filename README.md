@@ -31,7 +31,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
 - **Le labyrinthe** (`jeux/labyrinthe/`) : une seule pièce (cavalier, fou, tour ou dame) doit rentrer à sa maison en
   contournant des obstacles (pierres, eau, lave ou buissons), par le chemin le plus court. Seuls les coups réguliers
   sont acceptés (le cavalier saute par-dessus les obstacles sans s'y poser). Obstacles posés au hasard ; un parcours
-  en largeur garantit un chemin de 3 à 5 coups qui oblige à un détour. Annuler, recommencer, voir la solution.
+  en largeur garantit le chemin le plus court voulu (facile 2–3 coups, moyen 3–5, difficile 5–7) et un détour
+  obligatoire. Les obstacles voisins se rejoignent (murs, mares, coulées, haies) et leur matière se change en cours
+  de partie. On joue en touchant une case ou en faisant glisser la pièce. Mode libre (annuler, recommencer,
+  solution), défi (10 labyrinthes à faire par le chemin le plus court) et défi chrono (30 s par labyrinthe).
 - **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
   (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
 - **Dice chess** (`jeux/des/`) : compagnon pour jouer aux échecs avec des dés sur un vrai échiquier.

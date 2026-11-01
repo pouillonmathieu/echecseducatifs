@@ -3,13 +3,18 @@
    (pierres, eau, lave ou buissons). Seuls les coups réguliers sont acceptés : les pièces qui glissent
    s'arrêtent devant un obstacle ; le cavalier saute par-dessus mais ne peut pas s'y poser.
    Les obstacles sont posés au hasard ; un parcours en largeur garantit qu'un chemin existe, donne
-   sa longueur (le plus court) et vérifie que les obstacles obligent à faire un détour. */
+   sa longueur (le plus court) et vérifie que les obstacles obligent à faire un détour.
+   Niveaux facile / moyen / difficile, mode libre, défi (10 labyrinthes) et défi chrono (30 s chacun).
+   La pièce se déplace en touchant une case ou en la faisant glisser (glisser-déposer). */
 (function () {
   const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
-  const { lancerPluie, allumerEtoiles } = window.UI;
+  const { lancerPluie, allumerEtoiles, compterJusqua, formaterDuree, ICONES } = window.UI;
   const Sons = window.Sons;
   const $ = (id) => document.getElementById(id);
   const plateau = $('echiquier');
+
+  const NB_DEFIS = 10;
+  const DUREE = 30;
 
   // ---------- Échiquier et déplacements ----------
   const COL = 'abcdefgh';
@@ -20,9 +25,10 @@
   DIRECTIONS.dame = [...DIRECTIONS.tour, ...DIRECTIONS.fou];
   const SAUTS = [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]];
   const PIECES = ['cavalier', 'fou', 'tour', 'dame'];
-  const OBSTACLES = ['pierre', 'eau', 'lave', 'buisson'];
+  const THEMES = ['pierre', 'eau', 'lave', 'buisson'];
   const NOMS = { cavalier: 'le cavalier', fou: 'le fou', tour: 'la tour', dame: 'la dame' };
   const DE = { cavalier: 'du cavalier', fou: 'du fou', tour: 'de la tour', dame: 'de la dame' };
+  const majuscule = (s) => s[0].toUpperCase() + s.slice(1);
 
   // cases où la pièce peut aller depuis `c`
   function coups(piece, c, obstacles) {
@@ -68,19 +74,19 @@
   // ---------- Génération ----------
   const entre = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
   const auHasard = (t) => t[Math.floor(Math.random() * t.length)];
-  // nombre d'obstacles et longueur du plus court chemin voulue, selon la pièce
-  const REGLES = {
-    cavalier: { obstacles: [12, 18], coups: [3, 5] },
-    fou: { obstacles: [16, 22], coups: [3, 5] },
-    tour: { obstacles: [16, 24], coups: [3, 5] },
-    dame: { obstacles: [20, 28], coups: [3, 4] },
+  // nombre d'obstacles et longueur du plus court chemin, selon le niveau et la pièce
+  const NIVEAUX = {
+    facile: { detour: false, cavalier: [[6, 10], [2, 3]], fou: [[8, 12], [2, 3]], tour: [[8, 12], [2, 3]], dame: [[10, 16], [2, 3]] },
+    moyen: { detour: true, cavalier: [[12, 18], [3, 5]], fou: [[16, 22], [3, 5]], tour: [[16, 24], [3, 5]], dame: [[20, 28], [3, 4]] },
+    difficile: { detour: true, cavalier: [[16, 24], [5, 7]], fou: [[20, 28], [5, 7]], tour: [[22, 30], [5, 7]], dame: [[24, 32], [4, 6]] },
   };
-  function generer(piece) {
-    const R = REGLES[piece];
-    for (let essai = 0; essai < 3000; essai++) {
+  function generer(piece, niveau = 'moyen') {
+    const N = NIVEAUX[niveau];
+    const [nbObstacles, longueur] = N[piece];
+    for (let essai = 0; essai < 4000; essai++) {
       // des petits murs (1 à 4 cases, en ligne ou en colonne), comme sur une fiche d'exercices
       const obstacles = new Set();
-      const voulu = entre(...R.obstacles);
+      const voulu = entre(...nbObstacles);
       while (obstacles.size < voulu) {
         let f = entre(0, 7), r = entre(0, 7);
         const horizontal = Math.random() < 0.5;
@@ -91,10 +97,10 @@
       const depart = auHasard(libres);
       const avec = parcourir(piece, depart, obstacles).dist;
       const sans = parcourir(piece, depart, new Set()).dist;
-      // la maison : assez loin, et (sauf pour le cavalier) les obstacles obligent à un détour
-      const relache = essai > 2500;
-      const maisons = Object.keys(avec).filter(c => avec[c] >= (relache ? 2 : R.coups[0]) && avec[c] <= R.coups[1] &&
-        (piece === 'cavalier' || relache || avec[c] > sans[c]));
+      // la maison : à la bonne distance et (sauf cavalier et niveau facile) les obstacles obligent à un détour
+      const relache = essai > 3500;
+      const maisons = Object.keys(avec).filter(c => avec[c] >= (relache ? 2 : longueur[0]) && avec[c] <= longueur[1] &&
+        (!N.detour || piece === 'cavalier' || relache || avec[c] > sans[c]));
       if (maisons.length) {
         const maison = auHasard(maisons);
         return { piece, obstacles, depart, maison, optimal: avec[maison] };
@@ -103,13 +109,94 @@
     return null;
   }
 
+  // ---------- Dessin des obstacles ----------
+  // Chaque obstacle tient compte de ses voisins : les côtés touchant un autre obstacle vont jusqu'au bord
+  // de la case, les coins arrondis seulement à l'extérieur, et les coins rentrants ont leur bordure.
+  // Les obstacles qui se touchent forment ainsi un seul mur, une seule mare, une seule haie…
+  const STYLES = {
+    pierre: { bord: '#4A4D55', fond: '#878B93' },
+    eau: { bord: '#2B6EAD', fond: '#4C9ADB' },
+    lave: { bord: '#5E1508', fond: '#DB4A1F' },
+    buisson: { bord: '#1F5E33', fond: '#3C9450' },
+  };
+  const MARGE = 5, BORD = 5, RAYON = 24;
+  // nombres pseudo-aléatoires fixés par la case (le dessin ne change pas à chaque affichage)
+  function graines(c) {
+    let x = c.charCodeAt(0) * 131 + c.charCodeAt(1) * 977;
+    return () => { x = (x * 1103515245 + 12345) & 0x7fffffff; return x / 0x7fffffff; };
+  }
+  // rectangle avec un rayon par coin (haut-gauche, haut-droit, bas-droit, bas-gauche)
+  function rectangle(x0, y0, x1, y1, [a, b, c, d]) {
+    return `M${x0 + a} ${y0}H${x1 - b}${b ? `A${b} ${b} 0 0 1 ${x1} ${y0 + b}` : ''}V${y1 - c}${c ? `A${c} ${c} 0 0 1 ${x1 - c} ${y1}` : ''}` +
+      `H${x0 + d}${d ? `A${d} ${d} 0 0 1 ${x0} ${y1 - d}` : ''}V${y0 + a}${a ? `A${a} ${a} 0 0 1 ${x0 + a} ${y0}` : ''}Z`;
+  }
+  const auHasardH = (t, h) => t[Math.floor(h() * t.length)];
+  function dessinObstacle(c, theme, obstacles) {
+    const [f, r] = coord(c);
+    const occ = (df, dr) => dedans(f + df, r + dr) && obstacles.has(nom(f + df, r + dr));
+    const n = occ(0, 1), s = occ(0, -1), e = occ(1, 0), o = occ(-1, 0);
+    const st = STYLES[theme];
+    // côtés voisins : on déborde d'un cheveu pour éviter un fin trait entre deux cases
+    const forme = (m, rayon) => rectangle(o ? -1 : m, n ? -1 : m, e ? 101 : 100 - m, s ? 101 : 100 - m,
+      [!n && !o ? rayon : 0, !n && !e ? rayon : 0, !s && !e ? rayon : 0, !s && !o ? rayon : 0]);
+    const exterieur = forme(MARGE, RAYON);
+    const interieur = forme(MARGE + BORD, RAYON - BORD);
+    // coins rentrants : deux voisins droits mais pas le voisin en diagonale
+    const fondCase = (f + r) % 2 === 1 ? 'var(--e-claire)' : 'var(--e-foncee)';
+    let coins = '';
+    for (const [dx, dy, cx, cy] of [[-1, 1, 0, 0], [1, 1, 100, 0], [1, -1, 100, 100], [-1, -1, 0, 100]]) {
+      if (occ(dx, 0) && occ(0, dy) && !occ(dx, dy)) {
+        coins += `<circle cx="${cx}" cy="${cy}" r="${MARGE + BORD}" fill="${st.bord}"/><circle cx="${cx}" cy="${cy}" r="${MARGE}" style="fill:${fondCase}"/>`;
+      }
+    }
+    const id = `clip-${c}`;
+    return `<svg class="obstacle" viewBox="0 0 100 100" aria-hidden="true">` +
+      `<defs><clipPath id="${id}"><path d="${interieur}"/></clipPath><clipPath id="${id}-case"><rect width="100" height="100"/></clipPath></defs>` +
+      `<path d="${exterieur}" fill="${st.bord}"/><path d="${interieur}" fill="${st.fond}"/>` +
+      `<g clip-path="url(#${id})">${texture(theme, graines(c))}</g><g clip-path="url(#${id}-case)">${coins}</g></svg>`;
+  }
+  // décor de chaque matière (coupé par la forme, donc continu d'une case à l'autre)
+  function texture(theme, h) {
+    const v = (a, b) => (a + h() * (b - a)).toFixed(1);
+    let t = '';
+    if (theme === 'pierre') {
+      const teintes = ['#BFC2C8', '#A6AAB1', '#CACDD2', '#9A9EA5'];
+      for (const [x, y] of [[20, 22], [58, 16], [88, 40], [42, 50], [12, 64], [66, 76], [28, 92], [94, 92], [80, 10]]) {
+        t += `<ellipse cx="${v(x - 4, x + 4)}" cy="${v(y - 4, y + 4)}" rx="${v(12, 17)}" ry="${v(9, 13)}" fill="${auHasardH(teintes, h)}" stroke="#5B5F67" stroke-width="2.4"/>`;
+      }
+      t += `<path d="M${v(12, 18)} 18q6-5 12-2M${v(50, 56)} 12q7-3 13 0M${v(34, 40)} 46q6-4 12-1" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.6" stroke-linecap="round"/>`;
+    } else if (theme === 'eau') {
+      for (const [x, y] of [[8, 24], [50, 46], [14, 70], [58, 90], [62, 10]]) {
+        t += `<path d="M${v(x - 6, x + 6)} ${v(y - 3, y + 3)}q8-8 16 0t16 0" fill="none" stroke="#DDF1FF" stroke-width="4.5" stroke-linecap="round" stroke-opacity=".9"/>`;
+      }
+      t += `<circle cx="${v(70, 86)}" cy="${v(20, 30)}" r="3.5" fill="#DDF1FF" opacity=".8"/>`;
+    } else if (theme === 'lave') {
+      for (let i = 0; i < 4; i++) t += `<ellipse cx="${v(-5, 95)}" cy="${v(-5, 95)}" rx="${v(18, 34)}" ry="${v(10, 18)}" fill="#7E1A0C" opacity=".55"/>`;
+      for (let i = 0; i < 3; i++) t += `<circle cx="${v(15, 85)}" cy="${v(15, 85)}" r="${v(3, 7)}" fill="#FFD25A"/>`;
+      t += `<path d="M${v(10, 30)} ${v(40, 60)}q10-10 20-3t20-3" fill="none" stroke="#FFB13B" stroke-width="3.5" stroke-linecap="round"/>`;
+    } else {
+      const teintes = ['#4FAE5F', '#5DB86A', '#348A47'];
+      for (const [x, y] of [[18, 18], [50, 12], [84, 20], [30, 46], [68, 46], [14, 78], [50, 80], [86, 78], [50, 48]]) {
+        t += `<circle cx="${v(x - 5, x + 5)}" cy="${v(y - 5, y + 5)}" r="${v(12, 17)}" fill="${auHasardH(teintes, h)}" stroke="#2A7040" stroke-width="2.2"/>`;
+      }
+      for (let i = 0; i < 3; i++) t += `<circle cx="${v(15, 85)}" cy="${v(15, 85)}" r="3.4" fill="#D8433A"/>`;
+      t += `<circle cx="${v(25, 45)}" cy="${v(20, 35)}" r="5" fill="#8BD68C" opacity=".8"/>`;
+    }
+    return t;
+  }
+
   // ---------- État ----------
+  const lireTexte = (cle, defaut) => { try { return localStorage.getItem(cle) || defaut; } catch (e) { return defaut; } };
+  const ecrireTexte = (cle, v) => { try { localStorage.setItem(cle, v); } catch (e) { /* stockage indisponible */ } };
   const choix = { piece: 'hasard', obstacle: 'hasard' }; // au hasard par défaut, à chaque visite
   const reglages = {
+    niveau: lireTexte('echecs.laby.niveau', 'moyen'),
     possibles: Prefs.lire('echecs.laby.possibles', false),
     coordonnees: Prefs.lire('echecs.laby.coordonnees', true),
   };
-  const jeu = { laby: null, theme: 'pierre', parcours: [], fini: false, aide: false, voir: false, anim: false };
+  if (!NIVEAUX[reglages.niveau]) reglages.niveau = 'moyen';
+  const jeu = { mode: 'libre', laby: null, theme: 'pierre', parcours: [], fini: false, aide: false, voir: false, anim: false, solution: null, partie: 0 };
+  const defi = { chrono: false, numero: 0, resultats: [], debut: 0, fin: 0, raf: 0, dernierTic: 0, niveau: 'moyen' };
   const ici = () => jeu.parcours[jeu.parcours.length - 1];
 
   // ---------- Affichage ----------
@@ -118,13 +205,10 @@
     const L = jeu.laby;
     Echiquier.dessiner(plateau, '8/8/8/8/8/8/8/8');
     for (const c of L.obstacles) {
-      const el = cellule(c);
-      el.classList.add('bloquee');
-      // chaque obstacle un peu différent : tourné ou retourné
-      const t = jeu.theme === 'eau' ? `scale(${auHasard([1, -1])}, 1)` : `rotate(${auHasard([0, 90, 180, 270])}deg)`;
-      el.insertAdjacentHTML('beforeend', `<svg class="obstacle" viewBox="0 0 100 100" style="transform:${t}" aria-hidden="true"><use href="#obstacle-${jeu.theme}"/></svg>`);
-      el.setAttribute('aria-label', `${c} : obstacle`);
+      cellule(c).classList.add('bloquee');
+      cellule(c).setAttribute('aria-label', `${c} : obstacle`);
     }
+    dessinerObstacles();
     const maison = cellule(L.maison);
     maison.classList.add('maison');
     maison.insertAdjacentHTML('beforeend',
@@ -135,13 +219,18 @@
     poserPiece(ici());
     majMarques();
   }
+  // on ne redessine que les obstacles (changer de matière ne change pas la partie)
+  function dessinerObstacles() {
+    plateau.querySelectorAll('.obstacle').forEach(e => e.remove());
+    for (const c of jeu.laby.obstacles) cellule(c).insertAdjacentHTML('afterbegin', dessinObstacle(c, jeu.theme, jeu.laby.obstacles));
+  }
   function poserPiece(c) {
     const ancienne = plateau.querySelector('.piece-laby');
     if (ancienne) ancienne.remove();
     cellule(c).insertAdjacentHTML('beforeend',
       `<svg class="piece-e piece-laby" viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-${jeu.laby.piece}-noir"/></svg>`);
   }
-  // numéros du chemin parcouru, cases possibles, solution
+  // numéros du chemin parcouru, cases possibles, solution, compteurs
   function majMarques() {
     plateau.querySelectorAll('.etape').forEach(e => e.remove());
     Echiquier.effacer(plateau, 'possible', 'chemin');
@@ -150,34 +239,39 @@
       cellule(c).classList.add('chemin');
     });
     if (jeu.solution) {
-      jeu.solution.slice(1).forEach((c, i) => {
-        if (c === ici()) return;
+      jeu.solution.slice(jeu.parcours.length).forEach((c, i) => {
         cellule(c).insertAdjacentHTML('beforeend', `<span class="etape solution" aria-hidden="true">${jeu.parcours.length + i}</span>`);
       });
     }
-    if (!jeu.fini && (reglages.possibles || jeu.voir)) Echiquier.marquer(plateau, coups(jeu.laby.piece, ici(), jeu.laby.obstacles), 'possible');
-    $('nb-coups').textContent = jeu.parcours.length - 1;
-    $('btn-annuler').disabled = jeu.parcours.length < 2 || jeu.fini;
-    $('btn-recommencer').disabled = jeu.parcours.length < 2 && !jeu.solution;
-    const deplace = jeu.parcours.length - 1;
-    $('nb-coups').parentElement.classList.toggle('depasse', deplace > jeu.laby.optimal);
+    if (!jeu.fini && (reglages.possibles || jeu.voir)) montrerPossibles();
+    const joues = jeu.parcours.length - 1;
+    $('nb-coups').textContent = joues;
+    $('nb-coups').parentElement.classList.toggle('depasse', joues > jeu.laby.optimal);
+    $('btn-annuler').disabled = joues < 1 || jeu.fini;
+    $('btn-recommencer').disabled = joues < 1 && !jeu.solution;
+    $('btn-solution').disabled = jeu.fini;
+    $('btn-passer').disabled = jeu.fini;
   }
+  const montrerPossibles = () => Echiquier.marquer(plateau, coups(jeu.laby.piece, ici(), jeu.laby.obstacles), 'possible');
 
   // ---------- Partie ----------
   function nouveau() {
     const piece = choix.piece === 'hasard' ? auHasard(PIECES) : choix.piece;
-    jeu.theme = choix.obstacle === 'hasard' ? auHasard(OBSTACLES) : choix.obstacle;
-    jeu.laby = generer(piece);
+    if (choix.obstacle === 'hasard') jeu.theme = auHasard(THEMES);
+    jeu.laby = generer(piece, jeu.mode === 'defi' ? defi.niveau : reglages.niveau);
     demarrer();
   }
   function demarrer() {
+    jeu.partie++;
     jeu.parcours = [jeu.laby.depart];
     jeu.fini = false;
     jeu.aide = false;
     jeu.voir = false;
+    jeu.anim = false;
     jeu.solution = null;
     $('resultats').hidden = true;
     $('pluie').innerHTML = '';
+    $('retour').hidden = true;
     $('consigne').textContent = `Ramène ${NOMS[jeu.laby.piece]} à sa maison`;
     $('nb-optimal').textContent = jeu.laby.optimal;
     dessiner();
@@ -190,24 +284,19 @@
       majMarques();
       return;
     }
-    const possibles = coups(jeu.laby.piece, ici(), jeu.laby.obstacles);
-    if (!possibles.includes(c)) { refuser(c); return; }
-    jouer(c);
+    if (!coups(jeu.laby.piece, ici(), jeu.laby.obstacles).includes(c)) { refuser(c); return; }
+    jouer(c, true);
   }
   function refuser(c) {
     Sons.refus();
     const el = cellule(c);
-    el.classList.remove('refus'); void el.offsetWidth; el.classList.add('refus');
-    // on montre un instant les cases possibles
-    jeu.voir = true;
+    if (el) { el.classList.remove('refus'); void el.offsetWidth; el.classList.add('refus'); }
+    jeu.voir = true; // on montre les cases possibles
     majMarques();
   }
-  function jouer(c) {
+  function jouer(c, animer) {
     const de = ici();
-    jeu.anim = true;
-    jeu.voir = false;
-    Echiquier.effacer(plateau, 'possible');
-    glisser(de, c, () => {
+    const fin = () => {
       jeu.anim = false;
       jeu.parcours.push(c);
       if (jeu.solution && jeu.solution[jeu.parcours.length - 1] !== c) jeu.solution = null; // on a quitté la solution
@@ -215,7 +304,12 @@
       poserPiece(c);
       if (c === jeu.laby.maison) arriver();
       majMarques();
-    });
+    };
+    jeu.voir = false;
+    Echiquier.effacer(plateau, 'possible');
+    if (!animer) { fin(); return; }
+    jeu.anim = true;
+    glisser(de, c, fin);
   }
   // la pièce glisse jusqu'à sa nouvelle case
   function glisser(de, a, fin) {
@@ -226,25 +320,88 @@
     if (!piece || !piece.animate) { fin(); return; }
     const cases = Math.max(Math.abs(dx), Math.abs(dy)) / r1.width;
     cellule(de).style.zIndex = 3;
+    const p = jeu.partie;
     const anim = piece.animate([
       { transform: 'translate(0, 0) scale(1)' },
       { transform: `translate(${dx / 2}px, ${dy / 2}px) scale(1.12)`, offset: 0.5 },
       { transform: `translate(${dx}px, ${dy}px) scale(1)` },
     ], { duration: Math.min(650, 260 + cases * 70), easing: 'ease-in-out', fill: 'forwards' });
-    anim.onfinish = () => { cellule(de).style.zIndex = ''; fin(); };
+    anim.onfinish = () => {
+      const el = cellule(de);
+      if (el) el.style.zIndex = '';
+      if (p === jeu.partie) fin();
+    };
   }
 
+  // ---------- Glisser-déposer ----------
+  // Un appui sur la pièce suivi d'un déplacement : une copie suit le doigt, les cases possibles s'affichent,
+  // et la pièce est posée là où on lâche (si le coup est permis). Un simple toucher reste un clic.
+  const glisse = { actif: false, parti: false, x: 0, y: 0, id: null, fantome: null, ignorerClic: false };
+  const caseSous = (x, y) => {
+    const el = document.elementFromPoint(x, y);
+    const c = el && el.closest ? el.closest('#echiquier .case-e') : null;
+    return c ? c.dataset.case : null;
+  };
+  plateau.addEventListener('pointerdown', (e) => {
+    if (jeu.fini || jeu.anim || !e.target.closest('.piece-laby')) return;
+    e.preventDefault();
+    Object.assign(glisse, { actif: true, parti: false, x: e.clientX, y: e.clientY, id: e.pointerId });
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!glisse.actif || e.pointerId !== glisse.id) return;
+    if (!glisse.parti) {
+      if (Math.hypot(e.clientX - glisse.x, e.clientY - glisse.y) < 6) return;
+      glisse.parti = true;
+      const piece = plateau.querySelector('.piece-laby');
+      const taille = cellule(ici()).getBoundingClientRect().width * 1.15;
+      glisse.fantome = piece.cloneNode(true);
+      glisse.fantome.classList.add('piece-glissee');
+      glisse.fantome.style.width = glisse.fantome.style.height = `${taille}px`;
+      document.body.appendChild(glisse.fantome);
+      piece.classList.add('en-main');
+      jeu.voir = true;
+      majMarques();
+    }
+    const t = glisse.fantome.getBoundingClientRect().width;
+    glisse.fantome.style.transform = `translate(${e.clientX - t / 2}px, ${e.clientY - t * 0.62}px)`;
+    Echiquier.effacer(plateau, 'visee');
+    const sous = caseSous(e.clientX, e.clientY);
+    if (sous && sous !== ici()) cellule(sous).classList.add('visee');
+  });
+  function lacher(e) {
+    if (!glisse.actif || e.pointerId !== glisse.id) return;
+    glisse.actif = false;
+    if (!glisse.parti) return; // simple toucher : géré par le clic
+    glisse.ignorerClic = true;
+    setTimeout(() => { glisse.ignorerClic = false; }, 0);
+    glisse.fantome.remove();
+    Echiquier.effacer(plateau, 'visee');
+    const piece = plateau.querySelector('.piece-laby');
+    if (piece) piece.classList.remove('en-main');
+    if (jeu.fini) return;
+    const c = e.type === 'pointercancel' ? null : caseSous(e.clientX, e.clientY);
+    if (!c || c === ici()) { jeu.voir = false; majMarques(); return; }
+    if (!coups(jeu.laby.piece, ici(), jeu.laby.obstacles).includes(c)) { refuser(c); return; }
+    jouer(c, false);
+  }
+  window.addEventListener('pointerup', lacher);
+  window.addEventListener('pointercancel', lacher);
+
+  // ---------- Arrivée ----------
+  const etoilesPour = (n, opt) => (n === opt ? 3 : n <= opt + 2 ? 2 : 1);
   function arriver() {
     jeu.fini = true;
     const n = jeu.parcours.length - 1;
     const opt = jeu.laby.optimal;
-    let etoiles = n === opt ? 3 : n <= opt + 2 ? 2 : 1;
+    if (jeu.mode === 'defi') { finLabyrintheDefi(n, false); return; }
+    let etoiles = etoilesPour(n, opt);
     if (jeu.aide) etoiles = Math.min(etoiles, 1);
+    const p = jeu.partie;
     setTimeout(() => {
-      if (!jeu.fini) return;
+      if (p !== jeu.partie) return;
       $('res-titre').textContent = n === opt && !jeu.aide ? 'Parfait !' : 'Bravo !';
       $('res-detail').innerHTML =
-        `${NOMS[jeu.laby.piece][0].toUpperCase() + NOMS[jeu.laby.piece].slice(1)} est rentré${jeu.laby.piece === 'tour' || jeu.laby.piece === 'dame' ? 'e' : ''} en <b>${n} coup${n > 1 ? 's' : ''}</b>.<br>` +
+        `${majuscule(NOMS[jeu.laby.piece])} est rentré${jeu.laby.piece === 'tour' || jeu.laby.piece === 'dame' ? 'e' : ''} en <b>${n} coup${n > 1 ? 's' : ''}</b>.<br>` +
         (n === opt ? 'C\'est le chemin le plus court !' : `Le chemin le plus court se fait en <b>${opt} coups</b>.`) +
         (jeu.aide ? '<br><small>Avec l\'aide de la solution.</small>' : '');
       allumerEtoiles($('etoiles'), etoiles);
@@ -256,31 +413,160 @@
   }
 
   function annuler() {
-    if (jeu.parcours.length < 2 || jeu.fini || jeu.anim) return;
+    if (jeu.mode !== 'libre' || jeu.parcours.length < 2 || jeu.fini || jeu.anim) return;
     jeu.parcours.pop();
     poserPiece(ici());
     Sons.retire();
     majMarques();
   }
   function montrerSolution() {
-    if (jeu.fini || jeu.anim) return;
+    if (jeu.mode !== 'libre' || jeu.fini || jeu.anim) return;
     jeu.solution = [...jeu.parcours.slice(0, -1), ...chemin(jeu.laby.piece, ici(), jeu.laby.maison, jeu.laby.obstacles)];
     jeu.aide = true;
     majMarques();
   }
 
-  // ---------- Choix ----------
-  function brancherChoix(id, cle) {
+  // ---------- Défis ----------
+  const ICONE_JUSTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const ICONE_FAUX = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>';
+  function construirePoints() {
+    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="Labyrinthe ${i + 1}"></li>`).join('');
+  }
+  function majPoints() {
+    $('points').querySelectorAll('li').forEach((li, i) => {
+      const r = defi.resultats[i];
+      li.className = r ? (r.ok ? 'ok' : 'rate') : (i === defi.numero ? 'actuel' : '');
+    });
+  }
+  function lancerDefi(chrono) {
+    fermerChoix();
+    preparer('defi');
+    defi.chrono = chrono;
+    defi.niveau = reglages.niveau;
+    document.body.dataset.chrono = chrono ? 'oui' : 'non';
+    defi.numero = 0;
+    defi.resultats = [];
+    $('minuteur-barre').style.transform = 'scaleX(1)';
+    construirePoints();
+    lancerLabyrintheDefi();
+  }
+  function lancerLabyrintheDefi() {
+    $('titre').textContent = `Labyrinthe ${defi.numero + 1} sur ${NB_DEFIS}`;
+    nouveau();
+    majPoints();
+    defi.debut = performance.now();
+    if (defi.chrono) demarrerChrono();
+  }
+  // n : coups joués (null si passé ou temps écoulé). Réussi = arrivé par le chemin le plus court.
+  function finLabyrintheDefi(n, tempsEcoule) {
+    arreterChrono();
+    jeu.fini = true;
+    const opt = jeu.laby.optimal;
+    const ok = n === opt;
+    defi.resultats.push({ ok, n, opt, temps: (performance.now() - defi.debut) / 1000 });
+    majPoints();
+    if (ok) Sons.juste(); else Sons.echec();
+    $('verdict').innerHTML = (ok ? ICONE_JUSTE : ICONE_FAUX) +
+      `<span>${tempsEcoule ? 'Temps écoulé !' : n === null ? 'Passé' : ok ? 'Le plus court !' : 'Arrivé !'}</span>`;
+    $('retour-detail').innerHTML = n === null
+      ? `Le chemin le plus court se faisait en <b>${opt} coups</b> (en pointillé).`
+      : ok ? `${opt} coup${opt > 1 ? 's' : ''} : impossible de faire mieux.` : `${n} coups, mais on pouvait le faire en <b>${opt}</b>.`;
+    $('retour').className = `retour ${ok ? 'juste' : 'faux'}`;
+    $('retour').hidden = false;
+    // pas arrivé : on montre le chemin le plus court
+    if (n === null) jeu.solution = [...jeu.parcours.slice(0, -1), ...chemin(jeu.laby.piece, ici(), jeu.laby.maison, jeu.laby.obstacles)];
+    majMarques();
+    $('btn-suivant').firstChild.textContent = defi.numero === NB_DEFIS - 1 ? 'Voir le résultat ' : 'Suivant ';
+    $('btn-suivant').focus({ preventScroll: true });
+  }
+  function suivant() {
+    if (jeu.mode !== 'defi' || !jeu.fini) return;
+    defi.numero++;
+    if (defi.numero >= NB_DEFIS) { montrerResultats(); return; }
+    lancerLabyrintheDefi();
+  }
+  function demarrerChrono() {
+    arreterChrono();
+    const barre = $('minuteur-barre');
+    defi.fin = performance.now() + DUREE * 1000;
+    defi.dernierTic = 0;
+    const p = jeu.partie;
+    const boucle = (t) => {
+      if (p !== jeu.partie || jeu.fini) return;
+      const reste = Math.max(0, defi.fin - t) / 1000;
+      barre.style.transform = `scaleX(${(reste / DUREE).toFixed(4)})`;
+      document.body.classList.toggle('presse', reste <= 5);
+      const s = Math.ceil(reste);
+      if (reste <= 5 && s > 0 && s !== defi.dernierTic) { defi.dernierTic = s; Sons.tic(); }
+      if (reste <= 0) { finLabyrintheDefi(null, true); return; }
+      defi.raf = requestAnimationFrame(boucle);
+    };
+    defi.raf = requestAnimationFrame(boucle);
+  }
+  function arreterChrono() {
+    cancelAnimationFrame(defi.raf);
+    document.body.classList.remove('presse');
+  }
+  function montrerResultats() {
+    arreterChrono();
+    const score = defi.resultats.filter(r => r.ok).length;
+    const etoiles = score === NB_DEFIS ? 3 : score >= 7 ? 2 : score >= 4 ? 1 : 0;
+    $('resd-titre').textContent = score === NB_DEFIS ? 'Parfait !' : score >= 7 ? 'Bravo !' : score >= 4 ? 'Bien joué !' : 'Continue, tu progresses !';
+    allumerEtoiles($('etoiles-defi'), etoiles);
+    $('res-liste').innerHTML = defi.resultats.map((r, i) =>
+      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="Labyrinthe ${i + 1} : ${r.n === null ? 'pas fini' : `${r.n} coups, le plus court ${r.opt}`}">` +
+      `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t">${r.n === null ? '–' : r.n} / ${r.opt}</span></li>`).join('');
+    const total = defi.resultats.reduce((s, r) => s + r.temps, 0);
+    $('res-temps').textContent = `Temps total : ${formaterDuree(total)}`;
+    $('resultats-defi').hidden = false;
+    $('btn-rejouer-defi').focus({ preventScroll: true });
+    compterJusqua($('res-score'), score);
+    lancerPluie($('pluie-defi'), etoiles >= 1 ? 70 : 30);
+    Sons.victoire();
+  }
+
+  // ---------- Modes ----------
+  function preparer(mode) {
+    jeu.partie++;
+    arreterChrono();
+    $('resultats').hidden = true;
+    $('resultats-defi').hidden = true;
+    $('pluie').innerHTML = '';
+    $('pluie-defi').innerHTML = '';
+    jeu.mode = mode;
+    document.body.dataset.mode = mode;
+  }
+  function lancerLibre() {
+    preparer('libre');
+    document.body.dataset.chrono = 'non';
+    $('titre').textContent = 'Le labyrinthe';
+    nouveau();
+  }
+  function ouvrirChoix() {
+    $('choix-niveau').textContent = `niveau ${reglages.niveau}`;
+    $('choix-defi').hidden = false;
+    $('mode-defi').focus({ preventScroll: true });
+  }
+  function fermerChoix() { $('choix-defi').hidden = true; }
+
+  // ---------- Choix de la pièce et des obstacles ----------
+  function brancherChoix(id, cle, quandChange) {
     const boutons = [...$(id).querySelectorAll('button')];
     const maj = () => boutons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.valeur === choix[cle])));
-    boutons.forEach(b => b.addEventListener('click', () => { choix[cle] = b.dataset.valeur; maj(); nouveau(); }));
+    boutons.forEach(b => b.addEventListener('click', () => { choix[cle] = b.dataset.valeur; maj(); quandChange(); }));
     maj();
   }
-  brancherChoix('choix-piece', 'piece');
-  brancherChoix('choix-obstacle', 'obstacle');
+  // autre pièce : nouveau labyrinthe (il dépend de la pièce)
+  brancherChoix('choix-piece', 'piece', () => { if (jeu.mode === 'libre') nouveau(); });
+  // autre matière : on redessine seulement les obstacles, la partie continue
+  brancherChoix('choix-obstacle', 'obstacle', () => {
+    jeu.theme = choix.obstacle === 'hasard' ? auHasard(THEMES.filter(t => t !== jeu.theme)) : choix.obstacle;
+    dessinerObstacles();
+  });
 
   // ---------- Branchements ----------
   plateau.addEventListener('click', (e) => {
+    if (glisse.ignorerClic) return;
     const c = e.target.closest('.case-e');
     if (c) toucher(c.dataset.case);
   });
@@ -290,14 +576,36 @@
   $('btn-nouveau').addEventListener('click', nouveau);
   $('btn-res-nouveau').addEventListener('click', nouveau);
   $('btn-res-rejouer').addEventListener('click', demarrer);
+  $('btn-passer').addEventListener('click', () => { if (jeu.mode === 'defi' && !jeu.fini && !jeu.anim) finLabyrintheDefi(null, false); });
+  $('btn-suivant').addEventListener('click', suivant);
+  $('btn-defis').addEventListener('click', ouvrirChoix);
+  $('btn-fermer-choix').addEventListener('click', () => { fermerChoix(); $('btn-defis').focus(); });
+  $('choix-defi').addEventListener('click', (e) => { if (e.target === e.currentTarget) fermerChoix(); });
+  $('mode-defi').addEventListener('click', () => lancerDefi(false));
+  $('mode-chrono').addEventListener('click', () => lancerDefi(true));
+  $('btn-retour').addEventListener('click', lancerLibre);
+  $('btn-menu').addEventListener('click', lancerLibre);
+  $('btn-rejouer-defi').addEventListener('click', () => lancerDefi(defi.chrono));
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea')) return;
-    if (!$('resultats').hidden) return;
-    if (e.key === 'Backspace' || (e.key.toLowerCase() === 'z')) { e.preventDefault(); annuler(); }
+    if (!$('choix-defi').hidden) { if (e.key === 'Escape') fermerChoix(); return; }
+    if (!$('resultats').hidden || !$('resultats-defi').hidden) return;
+    if (e.key === 'Backspace' || e.key.toLowerCase() === 'z') { e.preventDefault(); annuler(); }
+    if (e.key === 'Enter' && jeu.mode === 'defi' && jeu.fini && !e.target.closest('button')) { e.preventDefault(); suivant(); }
   });
 
+  // ---------- Réglages ----------
   brancherBoutonTheme($('btn-theme'));
   brancherReglages($('btn-reglages'), $('panneau-reglages'));
+  const segNiveau = [...$('reg-niveau').querySelectorAll('button')];
+  const majNiveau = () => segNiveau.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.niveau === reglages.niveau)));
+  segNiveau.forEach(b => b.addEventListener('click', () => {
+    if (reglages.niveau === b.dataset.niveau) return;
+    reglages.niveau = b.dataset.niveau;
+    ecrireTexte('echecs.laby.niveau', reglages.niveau);
+    majNiveau();
+    if (jeu.mode === 'libre') nouveau();
+  }));
   brancherInterrupteur($('reg-possibles'), reglages.possibles, (v) => { reglages.possibles = v; Prefs.ecrire('echecs.laby.possibles', v); majMarques(); });
   const appliquerCoord = () => document.body.classList.toggle('sans-coordonnees', !reglages.coordonnees);
   brancherInterrupteur($('reg-coordonnees'), reglages.coordonnees, (v) => { reglages.coordonnees = v; Prefs.ecrire('echecs.laby.coordonnees', v); appliquerCoord(); });
@@ -305,8 +613,9 @@
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
+  majNiveau();
   appliquerCoord();
-  nouveau();
-  // pour les tests : vérifier qu'un labyrinthe a bien une solution
-  window.Labyrinthe = { generer, parcourir, coups, chemin, etat: () => jeu };
+  lancerLibre();
+  // pour les tests
+  window.Labyrinthe = { generer, parcourir, coups, chemin, etat: () => jeu, defi: () => defi };
 })();
