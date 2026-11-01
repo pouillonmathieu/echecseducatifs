@@ -49,7 +49,8 @@
     Echiquier.dessiner(plateau, position.fen);
     if (reglages.echec && position.echec) Echiquier.marquer(plateau, [position.roi], 'roi-attaque');
     const blancs = position.trait === 'blanc';
-    $('roi-question').setAttribute('href', `#piece-roi-${position.trait}`);
+    // le roi de la question et des boutons est celui du camp concerné
+    document.querySelectorAll('#roi-question, .roi-rep').forEach(u => u.setAttribute('href', `#piece-roi-${position.trait}`));
     $('question-texte').textContent = blancs ? 'Les Blancs sont‑ils échec et mat ?' : 'Les Noirs sont‑ils échec et mat ?';
     const q = $('question');
     q.classList.remove('nouvelle'); void q.offsetWidth; q.classList.add('nouvelle');

@@ -95,12 +95,19 @@
       </p>
 
       <div class="reponses" id="reponses">
+        <!-- mat : le roi renversé (#) ; pas mat : le roi debout (# barré) -->
         <button id="rep-mat" class="reponse mat" type="button">
-          <span class="reponse-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8l4 4 4-7 4 7 4-4-2 11H6Z"/></svg></span>
+          <span class="reponse-icone" aria-hidden="true">
+            <svg class="roi-icone" viewBox="0 0 100 100"><g transform="translate(50 54) rotate(-90) scale(.86) translate(-50 -50)"><use class="roi-rep" href="#piece-roi-noir"/></g></svg>
+            <span class="badge-diese">#</span>
+          </span>
           Échec et mat
         </button>
         <button id="rep-pas-mat" class="reponse pas-mat" type="button">
-          <span class="reponse-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19 19 5"/><path d="M4 8l4 4 4-7 4 7 4-4-2 11H6Z"/></svg></span>
+          <span class="reponse-icone" aria-hidden="true">
+            <svg class="roi-icone" viewBox="0 0 100 100"><use class="roi-rep" href="#piece-roi-noir"/></svg>
+            <span class="badge-diese barre">#</span>
+          </span>
           Pas mat
         </button>
       </div>

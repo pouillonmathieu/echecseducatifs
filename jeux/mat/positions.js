@@ -261,6 +261,188 @@ window.POSITIONS_MAT = [
   "coup": null
  },
  {
+  "fen": "7k/7p/8/8/8/8/1B6/K5R1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat de Morphy",
+  "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le fou attaque sur la grande diagonale, la tour ferme la colonne g.",
+  "roi": "h8",
+  "attaquants": [
+   "b2"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "7k/6p1/8/8/2B5/8/8/K6R",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat de Greco",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La tour attaque sur la colonne h, le fou garde la case g8.",
+  "roi": "h8",
+  "attaquants": [
+   "h1"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "5rk1/5p1p/8/8/8/8/1B6/K5R1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat de Pillsbury",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La tour donne échec sur la colonne g, le fou garde h8.",
+  "roi": "g8",
+  "attaquants": [
+   "g1"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "7k/7p/8/8/2B5/8/1B6/K7",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat des deux fous",
+  "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Un fou attaque le roi, l'autre garde la case g8.",
+  "roi": "h8",
+  "attaquants": [
+   "b2"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "4r3/4kp2/3Q4/2P5/8/8/8/K7",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat de la queue d'aronde",
+  "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame, protégée par le pion, garde toutes les cases ; la tour et le pion noirs bouchent les autres.",
+  "roi": "e7",
+  "attaquants": [
+   "d6"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie de l'Opéra (Morphy, 1858)",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Morphy a sacrifié sa dame : la tour, protégée par le fou g5, met mat.",
+  "roi": "e8",
+  "attaquants": [
+   "d8"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "rnbB1b1r/ppk2ppp/2p5/4q3/4n3/8/PPP2PPP/2KR1BNR",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Réti contre Tartakower (Vienne, 1910)",
+  "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Après le sacrifice de la dame, le fou en d8 est protégé par la tour d1.",
+  "roi": "c7",
+  "attaquants": [
+   "d8"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "r1bk3r/p2pBpNp/n4n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "L'Immortelle (Anderssen, 1851)",
+  "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Anderssen a donné ses deux tours et sa dame : il mate avec trois petites pièces.",
+  "roi": "d8",
+  "attaquants": [
+   "e7"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "1r3kr1/pbpBBp1p/1b3P2/8/8/2P2q2/P4PPP/3R2K1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "La Toujours-verte (Anderssen, 1852)",
+  "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Les deux fous blancs chassent le roi jusqu'au mat.",
+  "roi": "f8",
+  "attaquants": [
+   "e7"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "rn3r2/pbppq1p1/1p2pN2/8/3P2NP/6P1/PPPKBP1R/R5k1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Edward Lasker contre Thomas (Londres, 1912)",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi noir a traversé tout l'échiquier : un simple coup du roi blanc le met mat.",
+  "roi": "g1",
+  "attaquants": [
+   "a1"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "rn3bnr/pbp2Q2/7k/6qR/3PP3/8/PPP2PP1/RNB1K3",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Piège de Greco (1620)",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La tour, protégée par la dame, met mat sur la colonne h.",
+  "roi": "h6",
+  "attaquants": [
+   "h5"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "r1b1kbnr/pppp1Npp/8/8/4q3/5n2/PPPPBP1P/RNBQKR2",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Piège de Blackburne",
+  "explication": "Le roi blanc est attaqué par le cavalier noir. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi blanc est étouffé par son fou et sa tour.",
+  "roi": "e1",
+  "attaquants": [
+   "f3"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "r1b1k1nr/pppp1ppp/2n5/4P3/8/2Q2N2/P1P1PPPP/RNq1KB1R",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Piège de l'Englund",
+  "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame noire entre en c1 : le roi blanc est coincé par ses propres pièces.",
+  "roi": "e1",
+  "attaquants": [
+   "c1"
+  ],
+  "coup": null
+ },
+ {
+  "fen": "r1b1kb1r/pp1p1ppp/4p3/8/2BNP1n1/2N4P/PP2QPPq/R1B2RK1",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Piège sibérien",
+  "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame, protégée par le cavalier g4, met mat en h2.",
+  "roi": "g1",
+  "attaquants": [
+   "h2"
+  ],
+  "coup": null
+ },
+ {
   "fen": "3R2k1/5pp1/7p/8/8/8/5PPP/6K1",
   "trait": "noir",
   "mat": false,
@@ -560,5 +742,117 @@ window.POSITIONS_MAT = [
   "roi": "e8",
   "attaquants": [],
   "coup": null
+ },
+ {
+  "fen": "rnb2b1r/ppkR1ppp/2p5/4q1B1/4n3/8/PPP2PPP/2K2BNR",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Réti contre Tartakower (Vienne, 1910)",
+  "explication": "Le roi noir peut s'enfuir en b6. Dans la partie, c'est le fou blanc en d8 qui a donné mat.",
+  "roi": "c7",
+  "attaquants": [
+   "d7"
+  ],
+  "coup": [
+   "c7",
+   "b6"
+  ]
+ },
+ {
+  "fen": "r1bk3r/p1Bp1pNp/n4n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : L'Immortelle (Anderssen, 1851)",
+  "explication": "Le cavalier noir peut prendre le fou blanc en c7. Dans la partie, c'est le fou blanc en e7 qui a donné mat.",
+  "roi": "d8",
+  "attaquants": [
+   "c7"
+  ],
+  "coup": [
+   "a6",
+   "c7"
+  ]
+ },
+ {
+  "fen": "1r3kr1/pbpBPp1p/1b6/8/8/B1P2q2/P4PPP/3R2K1",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : La Toujours-verte (Anderssen, 1852)",
+  "explication": "Le roi noir peut s'enfuir en g7. Dans la partie, c'est le fou blanc en e7 qui a donné mat.",
+  "roi": "f8",
+  "attaquants": [
+   "e7"
+  ],
+  "coup": [
+   "f8",
+   "g7"
+  ]
+ },
+ {
+  "fen": "rn3r2/pbppq1p1/1p2pN2/8/3P2NP/6P1/PPP1BP2/R3K1kR",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Edward Lasker contre Thomas (Londres, 1912)",
+  "explication": "Le roi noir peut s'enfuir en g2. Dans la partie, c'est le roi blanc en d2 qui a donné mat.",
+  "roi": "g1",
+  "attaquants": [
+   "h1"
+  ],
+  "coup": [
+   "g1",
+   "g2"
+  ]
+ },
+ {
+  "fen": "rn3Qnr/pbp5/7k/6qp/3PP3/8/PPP2PP1/RNB1K2R",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Piège de Greco (1620)",
+  "explication": "Le roi noir peut s'enfuir en h7. Dans la partie, c'est la tour blanche en h5 qui a donné mat.",
+  "roi": "h6",
+  "attaquants": [
+   "f8"
+  ],
+  "coup": [
+   "h6",
+   "h7"
+  ]
+ },
+ {
+  "fen": "r1b1kbnr/pppp1Npp/8/8/4q3/8/PPnPBP1P/RNBQKR2",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Piège de Blackburne",
+  "explication": "La dame blanche peut prendre le cavalier noir en c2. Dans la partie, c'est le cavalier noir en f3 qui a donné mat.",
+  "roi": "e1",
+  "attaquants": [
+   "c2"
+  ],
+  "coup": [
+   "d1",
+   "c2"
+  ]
+ },
+ {
+  "fen": "r1b1k1nr/pppp1ppp/2n5/4P3/8/2q2N2/P1P1PPPP/RN2KB1R",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Piège de l'Englund",
+  "explication": "Le roi blanc peut s'enfuir en d1. Dans la partie, c'est la dame noire en c1 qui a donné mat.",
+  "roi": "e1",
+  "attaquants": [
+   "c3"
+  ],
+  "coup": [
+   "e1",
+   "d1"
+  ]
  }
 ];
