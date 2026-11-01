@@ -73,6 +73,25 @@ body.face-a-face .zone-noir { transform: rotate(180deg); }
 }
 .lancer svg { width: 24px; height: 24px; }
 .lancer:active { transform: scale(.97); }
+.terminer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  border: 2px solid currentColor;
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform .1s, background .2s;
+}
+.terminer svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.terminer:active { transform: scale(.97); }
+.terminer.pret { border-color: var(--accent); background: var(--accent); color: var(--sur-accent); }
 .lancer:disabled { cursor: default; background: transparent; color: inherit; opacity: .35; box-shadow: inset 0 0 0 1.5px currentColor; }
 .zone.a-lancer .lancer { animation: appel 1.8s ease-in-out infinite; }
 @keyframes appel {
@@ -136,6 +155,22 @@ body.avec-chiffres .de .chiffre { display: block; }
   box-shadow: 0 0 0 3px var(--surface);
 }
 .de .coche svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.de .croix {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--alerte);
+  color: #FFFFFF;
+  box-shadow: 0 0 0 3px var(--surface);
+}
+.de .croix svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
+.de.perdu { opacity: .35; transform: scale(.88); }
+.de.perdu .croix { display: grid; }
 .de.joue { opacity: .4; transform: scale(.92); }
 .de.joue .coche { display: grid; }
 .de.ancien { opacity: .45; cursor: default; }
@@ -268,7 +303,7 @@ body.avec-chiffres .de .chiffre { display: block; }
 
 @media (max-width: 560px) {
   .zone { padding: 12px 12px 14px; gap: 10px; border-radius: 18px; }
-  .lancer { min-height: 48px; }
+  .lancer, .terminer { min-height: 48px; }
   .numero-tour { font-size: 18px; }
   .bouton-secondaire.petit { padding: 0 10px; }
   .carte-entree, .carte-regles { padding: 20px 16px 16px; }

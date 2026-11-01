@@ -1,6 +1,7 @@
 /* Dice chess — compagnon de partie sur un vrai échiquier.
    Les Blancs puis les Noirs lancent leurs dés à tour de rôle ; chaque face montre une pièce :
    1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi.
+   En mode équilibré, chaque pièce sort selon son nombre sur l'échiquier (pion 8/16, roi 1/16…).
    La partie en cours est gardée dans le navigateur pour pouvoir la reprendre. */
 (function () {
   const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
@@ -20,10 +21,22 @@
   const reglages = {
     face: Prefs.lire('echecs.des.face', false),
     chiffres: Prefs.lire('echecs.des.chiffres', false),
+    equilibre: Prefs.lire('echecs.des.equilibre', false),
   };
 
-  // ---------- Hasard équitable (1 à 6) ----------
+  // ---------- Hasard (1 à 6) ----------
+  // Mode équilibré : sur 16 tirages possibles, autant que de pièces sur l'échiquier
+  // (8 pions, 2 cavaliers, 2 fous, 2 tours, 1 dame, 1 roi).
+  const SEIZE = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 6];
   function lancerUnDe() {
+    if (reglages.equilibre) {
+      if (window.crypto && crypto.getRandomValues) {
+        const t = new Uint8Array(1);
+        crypto.getRandomValues(t);
+        return SEIZE[t[0] % 16]; // 256 = 16 × 16 : pas de biais
+      }
+      return SEIZE[Math.floor(Math.random() * 16)];
+    }
     if (window.crypto && crypto.getRandomValues) {
       const t = new Uint8Array(1);
       do { crypto.getRandomValues(t); } while (t[0] >= 252); // 252 = 6 × 42 : pas de biais
@@ -50,15 +63,15 @@
   }
 
   // ---------- Affichage d'un dé ----------
-  function htmlDe(valeur, cote, { balise = 'span', index = null, joue = false, classes = '' } = {}) {
+  function htmlDe(valeur, cote, { balise = 'span', index = null, joue = false, perdu = false, classes = '' } = {}) {
     const piece = FACES[valeur - 1];
     const attrs = balise === 'button'
-      ? ` type="button" data-index="${index}" aria-pressed="${joue}" aria-label="Dé ${index + 1} : ${NOMS[piece]}${joue ? ', joué' : ''}"`
+      ? ` type="button" data-index="${index}" aria-pressed="${joue}" aria-label="Dé ${index + 1} : ${NOMS[piece]}${joue ? ', joué' : perdu ? ', perdu' : ''}"`
       : ' aria-hidden="true"';
-    return `<${balise} class="de ${cote}${joue ? ' joue' : ''} ${classes}"${attrs}>` +
+    return `<${balise} class="de ${cote}${joue ? ' joue' : ''}${perdu ? ' perdu' : ''} ${classes}"${attrs}>` +
       `<span class="chiffre">${valeur}</span>` +
       `<svg class="piece" viewBox="0 0 100 100"><use href="#piece-${piece}-noir"/></svg>` +
-      `<span class="coche">${ICONES.ok}</span></${balise}>`;
+      `<span class="coche">${ICONES.ok}</span><span class="croix">${ICONES.rate}</span></${balise}>`;
   }
   const miniDe = (v, cote) => `<span class="mini-de ${cote}" title="${NOMS[FACES[v - 1]]}"><svg viewBox="0 0 100 100"><use href="#piece-${FACES[v - 1]}-noir"/></svg></span>`;
 
@@ -72,6 +85,11 @@
       zone.classList.toggle('en-jeu', enJeu);
       $(`etat-${cote}`).textContent = enJeu ? 'À toi de jouer' : (aLancer && partie.enJeu === null ? 'À toi de lancer' : '');
       $(`lancer-${cote}`).disabled = !aLancer;
+      // le camp qui joue peut terminer son tour (dés restants perdus)
+      $(`lancer-${cote}`).hidden = enJeu;
+      const terminer = $(`terminer-${cote}`);
+      terminer.hidden = !enJeu;
+      terminer.classList.toggle('pret', enJeu && partie.des[cote].every(d => d.joue));
 
       const des = partie.des[cote];
       const conteneur = $(`des-${cote}`);
@@ -79,7 +97,7 @@
         conteneur.innerHTML = `<span class="des-vide">${cote === 'blanc' ? 'Les Blancs commencent' : 'Pas encore lancé'}</span>`;
       } else {
         conteneur.innerHTML = des.map((d, i) =>
-          htmlDe(d.v, cote, { balise: 'button', index: i, joue: d.joue, classes: enJeu ? '' : 'ancien' })).join('');
+          htmlDe(d.v, cote, { balise: 'button', index: i, joue: d.joue, perdu: d.perdu, classes: enJeu ? '' : 'ancien' })).join('');
       }
     }
     $('numero-tour').textContent = `Tour ${partie.tour}`;
@@ -146,6 +164,17 @@
     const d = partie.des[cote][i];
     d.joue = !d.joue;
     if (d.joue) Sons.juste(); else Sons.retire();
+    sauver();
+    rendre();
+  }
+
+  function terminerTour(cote) {
+    if (verrou || partie.fini || cote !== partie.enJeu) return;
+    pile.push(JSON.parse(JSON.stringify(partie)));
+    let perdus = 0;
+    for (const d of partie.des[cote]) if (!d.joue) { d.perdu = true; perdus++; }
+    partie.enJeu = null;
+    if (perdus) Sons.refus(); else Sons.juste();
     sauver();
     rendre();
   }
@@ -223,9 +252,9 @@
     },
     {
       titre: 'Avec ce site',
-      illus: () => de(3) + de(5, 'blanc', 'joue') + de(2),
-      texte: `<p>Appuie sur <strong>« Lancer les dés »</strong> quand c'est ton tour. <strong>Touche un dé</strong> quand tu l'as joué : il se grise. Ensuite, l'adversaire lance à son tour.</p>
-              <p>Dans les réglages : le <strong>face à face</strong> retourne les dés des Noirs pour jouer avec la tablette entre vous deux, et la <strong>version classique</strong> se joue avec un seul dé par tour.</p>`,
+      illus: () => de(3) + de(5, 'blanc', 'joue') + de(2, 'blanc', 'perdu'),
+      texte: `<p>Appuie sur <strong>« Lancer les dés »</strong> quand c'est ton tour. <strong>Touche un dé</strong> quand tu l'as joué : il se grise. Si les dés restants ne peuvent plus servir, appuie sur <strong>« Terminer mon tour »</strong>. Ensuite, l'adversaire lance.</p>
+              <p>Dans les réglages : le <strong>face à face</strong> retourne les dés des Noirs, la <strong>version classique</strong> se joue avec un seul dé, et les <strong>dés équilibrés</strong> font sortir chaque pièce aussi souvent qu'elle est présente sur l'échiquier (beaucoup de pions, peu de dames et de rois).</p>`,
     },
   ];
   let etape = 0;
@@ -275,6 +304,7 @@
   // ---------- Branchements ----------
   for (const cote of ['blanc', 'noir']) {
     $(`lancer-${cote}`).addEventListener('click', () => lancer(cote));
+    $(`terminer-${cote}`).addEventListener('click', () => terminerTour(cote));
     $(`des-${cote}`).addEventListener('click', (e) => {
       const b = e.target.closest('button.de');
       if (b) basculerDe(cote, +b.dataset.index);
@@ -317,6 +347,7 @@
     document.body.classList.toggle('avec-chiffres', reglages.chiffres);
   };
   brancherInterrupteur($('reg-face'), reglages.face, (v) => { reglages.face = v; Prefs.ecrire('echecs.des.face', v); appliquer(); });
+  brancherInterrupteur($('reg-equilibre'), reglages.equilibre, (v) => { reglages.equilibre = v; Prefs.ecrire('echecs.des.equilibre', v); });
   brancherInterrupteur($('reg-chiffres'), reglages.chiffres, (v) => { reglages.chiffres = v; Prefs.ecrire('echecs.des.chiffres', v); appliquer(); });
   brancherInterrupteur($('reg-son'), Sons.actif, (v) => { Sons.actif = v; });
 
