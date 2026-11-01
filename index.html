@@ -55,6 +55,109 @@
     <h2 id="titre-jeux" class="titre-section">Choisis un jeu</h2>
     <div class="grille-jeux">
 
+      <a class="carte-jeu" href="jeux/mat/index.html">
+        <div class="vignette">
+          <svg viewBox="0 0 240 150" aria-hidden="true">
+            <defs><radialGradient id="v-danger"><stop offset="0" stop-color="#D64532" stop-opacity=".85"/><stop offset="1" stop-color="#D64532" stop-opacity="0"/></radialGradient></defs>
+            <rect x="20" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
+            <rect x="29" y="23" width="104" height="104" fill="#ECECD7"/>
+            <g fill="#739A62">
+              <rect x="55" y="23" width="26" height="26"/><rect x="107" y="23" width="26" height="26"/>
+              <rect x="29" y="49" width="26" height="26"/><rect x="81" y="49" width="26" height="26"/>
+              <rect x="55" y="75" width="26" height="26"/><rect x="107" y="75" width="26" height="26"/>
+              <rect x="29" y="101" width="26" height="26"/><rect x="81" y="101" width="26" height="26"/>
+            </g>
+            <circle cx="120" cy="36" r="20" fill="url(#v-danger)"/>
+            <use href="#piece-roi-noir" x="108" y="24" width="24" height="24"/>
+            <use href="#piece-pion-noir" x="83" y="51" width="22" height="22"/>
+            <use href="#piece-pion-noir" x="109" y="51" width="22" height="22"/>
+            <use href="#piece-dame-blanc" x="56" y="24" width="24" height="24"/>
+            <rect x="156" y="34" width="66" height="32" rx="10" class="bulle-mat"/>
+            <text x="189" y="56" class="texte-mat">Mat ?</text>
+            <rect x="156" y="78" width="66" height="32" rx="10" class="bulle-pas-mat"/>
+            <text x="189" y="100" class="texte-pas-mat">Pas mat ?</text>
+          </svg>
+        </div>
+        <div class="carte-corps">
+          <h3>Mat ou pas mat ?</h3>
+          <p>Regarde la position : le roi est-il échec et mat, ou peut-il s'en sortir ?</p>
+          <ul class="etiquettes-jeu">
+            <li class="matiere">Logique</li>
+            <li>Mats classiques</li>
+            <li>Explications</li>
+          </ul>
+        </div>
+        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
+      </a>
+
+      <a class="carte-jeu" href="jeux/cases/index.html">
+        <div class="vignette">
+          <svg viewBox="0 0 240 150" aria-hidden="true">
+            <rect x="96" y="12" width="128" height="128" rx="12" fill="#FBFBF8" class="cadre-mini"/>
+            <rect x="108" y="24" width="104" height="104" fill="#ECECD7"/>
+            <g fill="#739A62" id="cases-foncees"></g>
+            <rect x="134" y="50" width="13" height="13" fill="#F5C542" stroke="#2A2E38" stroke-width="1.6"/>
+            <g class="lettres-mini">
+              <text x="114.5" y="137">a</text><text x="127.5" y="137">b</text><text x="140.5" y="137">c</text><text x="153.5" y="137">d</text>
+              <text x="166.5" y="137">e</text><text x="179.5" y="137">f</text><text x="192.5" y="137">g</text><text x="205.5" y="137">h</text>
+              <text x="102" y="34">8</text><text x="102" y="47">7</text><text x="102" y="60">6</text><text x="102" y="73">5</text>
+              <text x="102" y="86">4</text><text x="102" y="99">3</text><text x="102" y="112">2</text><text x="102" y="125">1</text>
+            </g>
+            <rect x="16" y="52" width="66" height="40" rx="12" fill="#3A8A64"/>
+            <text x="49" y="80" class="consigne-mini">c6</text>
+            <path d="M84 66 C100 60 116 57 130 56.5" class="fleche"/>
+            <path d="M125 52.5 131 56.5 125.5 61" class="fleche"/>
+          </svg>
+        </div>
+        <div class="carte-corps">
+          <h3>Trouve la case</h3>
+          <p>Une coordonnée s'affiche : touche la bonne case de l'échiquier.</p>
+          <ul class="etiquettes-jeu">
+            <li class="matiere">Repérage</li>
+            <li>Coordonnées</li>
+            <li>Mode tout-petits</li>
+          </ul>
+        </div>
+        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
+      </a>
+
+      <a class="carte-jeu" href="jeux/notation/index.html">
+        <div class="vignette">
+          <svg viewBox="0 0 240 150" aria-hidden="true">
+            <rect x="20" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
+            <rect x="29" y="23" width="104" height="104" fill="#ECECD7"/>
+            <g fill="#739A62">
+              <rect x="55" y="23" width="26" height="26"/><rect x="107" y="23" width="26" height="26"/>
+              <rect x="29" y="49" width="26" height="26"/><rect x="81" y="49" width="26" height="26"/>
+              <rect x="55" y="75" width="26" height="26"/><rect x="107" y="75" width="26" height="26"/>
+              <rect x="29" y="101" width="26" height="26"/><rect x="81" y="101" width="26" height="26"/>
+            </g>
+            <rect x="81" y="101" width="26" height="26" fill="rgba(242,184,39,.3)" stroke="#F2B827" stroke-width="2.5"/>
+            <rect x="55" y="49" width="26" height="26" fill="rgba(242,184,39,.62)" stroke="#F2B827" stroke-width="2.5"/>
+            <use href="#piece-cavalier-blanc" x="56" y="50" width="24" height="24"/>
+            <use href="#piece-pion-noir" x="83" y="25" width="22" height="22"/>
+            <use href="#piece-pion-blanc" x="31" y="77" width="22" height="22"/>
+            <rect x="154" y="22" width="72" height="106" rx="10" class="feuille-mini"/>
+            <text x="162" y="46" class="texte-feuille"><tspan class="num-feuille">1.</tspan> e4 e5</text>
+            <path d="M162 56h56" class="ligne-feuille"/>
+            <text x="162" y="74" class="texte-feuille"><tspan class="num-feuille">2.</tspan></text>
+            <rect x="178" y="61" width="42" height="20" rx="5" class="case-vide-mini"/>
+            <text x="199" y="75.5" class="texte-feuille texte-reponse">Cf3</text>
+            <path d="M188 92l20 -8 4 4-20 8-6 2Z" class="crayon"/>
+          </svg>
+        </div>
+        <div class="carte-corps">
+          <h3>Note le coup</h3>
+          <p>Regarde le dernier coup joué et écris-le sur la feuille de partie, comme un vrai joueur.</p>
+          <ul class="etiquettes-jeu">
+            <li class="matiere">Écriture</li>
+            <li>Notation</li>
+            <li>Français ou anglais</li>
+          </ul>
+        </div>
+        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
+      </a>
+
       <a class="carte-jeu" href="jeux/balance/index.html">
         <div class="vignette">
           <svg viewBox="0 0 240 150" aria-hidden="true">
@@ -92,38 +195,6 @@
         <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
       </a>
 
-      <a class="carte-jeu" href="jeux/cases/index.html">
-        <div class="vignette">
-          <svg viewBox="0 0 240 150" aria-hidden="true">
-            <rect x="96" y="12" width="128" height="128" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="108" y="24" width="104" height="104" fill="#ECECD7"/>
-            <g fill="#739A62" id="cases-foncees"></g>
-            <rect x="134" y="50" width="13" height="13" fill="#F5C542" stroke="#2A2E38" stroke-width="1.6"/>
-            <g class="lettres-mini">
-              <text x="114.5" y="137">a</text><text x="127.5" y="137">b</text><text x="140.5" y="137">c</text><text x="153.5" y="137">d</text>
-              <text x="166.5" y="137">e</text><text x="179.5" y="137">f</text><text x="192.5" y="137">g</text><text x="205.5" y="137">h</text>
-              <text x="102" y="34">8</text><text x="102" y="47">7</text><text x="102" y="60">6</text><text x="102" y="73">5</text>
-              <text x="102" y="86">4</text><text x="102" y="99">3</text><text x="102" y="112">2</text><text x="102" y="125">1</text>
-            </g>
-            <rect x="16" y="52" width="66" height="40" rx="12" fill="#3A8A64"/>
-            <text x="49" y="80" class="consigne-mini">c6</text>
-            <path d="M84 66 C100 60 116 57 130 56.5" class="fleche"/>
-            <path d="M125 52.5 131 56.5 125.5 61" class="fleche"/>
-          </svg>
-        </div>
-        <div class="carte-corps">
-          <h3>Trouve la case</h3>
-          <p>Une coordonnée s'affiche : touche la bonne case de l'échiquier.</p>
-          <ul class="etiquettes-jeu">
-            <li class="matiere">Repérage</li>
-            <li>Coordonnées</li>
-            <li>Mode tout-petits</li>
-          </ul>
-        </div>
-        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
-      </a>
-
-
       <a class="carte-jeu" href="jeux/des/index.html">
         <div class="vignette">
           <svg viewBox="0 0 240 150" aria-hidden="true">
@@ -149,77 +220,6 @@
             <li class="matiere">Hasard</li>
             <li>À deux</li>
             <li>Règles expliquées</li>
-          </ul>
-        </div>
-        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
-      </a>
-
-      <a class="carte-jeu" href="jeux/mat/index.html">
-        <div class="vignette">
-          <svg viewBox="0 0 240 150" aria-hidden="true">
-            <defs><radialGradient id="v-danger"><stop offset="0" stop-color="#D64532" stop-opacity=".85"/><stop offset="1" stop-color="#D64532" stop-opacity="0"/></radialGradient></defs>
-            <rect x="20" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="29" y="23" width="104" height="104" fill="#ECECD7"/>
-            <g fill="#739A62">
-              <rect x="55" y="23" width="26" height="26"/><rect x="107" y="23" width="26" height="26"/>
-              <rect x="29" y="49" width="26" height="26"/><rect x="81" y="49" width="26" height="26"/>
-              <rect x="55" y="75" width="26" height="26"/><rect x="107" y="75" width="26" height="26"/>
-              <rect x="29" y="101" width="26" height="26"/><rect x="81" y="101" width="26" height="26"/>
-            </g>
-            <circle cx="120" cy="36" r="20" fill="url(#v-danger)"/>
-            <use href="#piece-roi-noir" x="108" y="24" width="24" height="24"/>
-            <use href="#piece-pion-noir" x="83" y="51" width="22" height="22"/>
-            <use href="#piece-pion-noir" x="109" y="51" width="22" height="22"/>
-            <use href="#piece-dame-blanc" x="56" y="24" width="24" height="24"/>
-            <rect x="156" y="34" width="66" height="32" rx="10" class="bulle-mat"/>
-            <text x="189" y="56" class="texte-mat">Mat ?</text>
-            <rect x="156" y="78" width="66" height="32" rx="10" class="bulle-pas-mat"/>
-            <text x="189" y="100" class="texte-pas-mat">Pas mat ?</text>
-          </svg>
-        </div>
-        <div class="carte-corps">
-          <h3>Mat ou pas mat ?</h3>
-          <p>Regarde la position : le roi est-il échec et mat, ou peut-il s'en sortir ?</p>
-          <ul class="etiquettes-jeu">
-            <li class="matiere">Logique</li>
-            <li>Mats classiques</li>
-            <li>Explications</li>
-          </ul>
-        </div>
-        <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>
-      </a>
-      <a class="carte-jeu" href="jeux/notation/index.html">
-        <div class="vignette">
-          <svg viewBox="0 0 240 150" aria-hidden="true">
-            <rect x="20" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="29" y="23" width="104" height="104" fill="#ECECD7"/>
-            <g fill="#739A62">
-              <rect x="55" y="23" width="26" height="26"/><rect x="107" y="23" width="26" height="26"/>
-              <rect x="29" y="49" width="26" height="26"/><rect x="81" y="49" width="26" height="26"/>
-              <rect x="55" y="75" width="26" height="26"/><rect x="107" y="75" width="26" height="26"/>
-              <rect x="29" y="101" width="26" height="26"/><rect x="81" y="101" width="26" height="26"/>
-            </g>
-            <rect x="81" y="101" width="26" height="26" fill="rgba(242,184,39,.3)" stroke="#F2B827" stroke-width="2.5"/>
-            <rect x="55" y="49" width="26" height="26" fill="rgba(242,184,39,.62)" stroke="#F2B827" stroke-width="2.5"/>
-            <use href="#piece-cavalier-blanc" x="56" y="50" width="24" height="24"/>
-            <use href="#piece-pion-noir" x="83" y="25" width="22" height="22"/>
-            <use href="#piece-pion-blanc" x="31" y="77" width="22" height="22"/>
-            <rect x="154" y="22" width="72" height="106" rx="10" class="feuille-mini"/>
-            <text x="162" y="46" class="texte-feuille"><tspan class="num-feuille">1.</tspan> e4 e5</text>
-            <path d="M162 56h56" class="ligne-feuille"/>
-            <text x="162" y="74" class="texte-feuille"><tspan class="num-feuille">2.</tspan></text>
-            <rect x="178" y="61" width="42" height="20" rx="5" class="case-vide-mini"/>
-            <text x="199" y="75.5" class="texte-feuille texte-reponse">Cf3</text>
-            <path d="M188 92l20 -8 4 4-20 8-6 2Z" class="crayon"/>
-          </svg>
-        </div>
-        <div class="carte-corps">
-          <h3>Note le coup</h3>
-          <p>Regarde le dernier coup joué et écris-le sur la feuille de partie, comme un vrai joueur.</p>
-          <ul class="etiquettes-jeu">
-            <li class="matiere">Écriture</li>
-            <li>Notation</li>
-            <li>Français ou anglais</li>
           </ul>
         </div>
         <span class="jouer" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7Z"/></svg></span>

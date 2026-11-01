@@ -10,21 +10,15 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
 
 ## Jeux
 
-- **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
-  (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
-- **Trouve la case** (`jeux/cases/`) : une coordonnée s'affiche, il faut toucher la bonne case de l'échiquier.
-  Mode libre, défi (10 cases) et défi chrono (le plus de cases en 20 s), orientation blancs / noirs / au hasard,
-  et un mode tout-petits (animaux pour les colonnes, doigts pour les rangées).
-- **Dice chess** (`jeux/des/`) : compagnon pour jouer aux échecs avec des dés sur un vrai échiquier.
-  Les Blancs puis les Noirs lancent 3 dés (ou 1 en version classique) ; chaque face montre une pièce
-  (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
-  et la partie en cours est gardée dans le navigateur.
 - **Mat ou pas mat ?** (`jeux/mat/`) : une position s'affiche, il faut dire si le camp qui a le trait est échec et mat.
   112 positions : mats classiques pour débutants (couloir, berger, lion, étouffée, Légal, Anastasie, Arabie,
   Boden, Damiano, épaulette…), fins de parties célèbres du domaine public (Morphy, Anderssen, Réti…),
   mats tirés de vraies parties jouées sur Lichess, et « presque mats » (fuite, prise, parade, pat).
   Chaque réponse est expliquée et montrée sur l'échiquier. Mode libre, défi (10 positions) et défi chrono
   (20 s par position). Réglage « pat » : ajoute un troisième bouton et les positions de pat (sinon absentes).
+- **Trouve la case** (`jeux/cases/`) : une coordonnée s'affiche, il faut toucher la bonne case de l'échiquier.
+  Mode libre, défi (10 cases) et défi chrono (le plus de cases en 20 s), orientation blancs / noirs / au hasard,
+  et un mode tout-petits (animaux pour les colonnes, doigts pour les rangées).
 - **Note le coup** (`jeux/notation/`) : le dernier coup est rejoué en animation sur l'échiquier (on voit la pièce
   prise disparaître ; bouton pour le revoir), la feuille de partie reprend les 3 coups d'avant et il faut écrire le
   dernier avec le clavier à l'écran (qu'on peut masquer pour utiliser celui de l'appareil) ou celui de l'ordinateur
@@ -32,6 +26,12 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (échec, mat, pièce à préciser, roque, promotion, prise en passant ; 373 coups). Notation française ou anglaise,
   conseil ciblé en cas d'erreur et notation découpée en morceaux expliqués. Mode libre, défi (10 coups) et défi
   chrono (20 s par coup). Mode tout-petits : clavier et marges de l'échiquier avec les pièces dessinées, les animaux et les doigts.
+- **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
+  (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
+- **Dice chess** (`jeux/des/`) : compagnon pour jouer aux échecs avec des dés sur un vrai échiquier.
+  Les Blancs puis les Noirs lancent 3 dés (ou 1 en version classique) ; chaque face montre une pièce
+  (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
+  et la partie en cours est gardée dans le navigateur.
 
 ## Sources
 

@@ -42,57 +42,58 @@
   --rayon: 18px;
 }
 
+/* Mode sombre : des gris (pas du noir), contrastes vérifiés (texte ≥ 4,5:1 sur les fonds) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --fond: #121419;
-    --surface: #1C1F26;
-    --surface-2: #262A33;
-    --ligne: #343945;
-    --encre: #ECEEF2;
-    --encre-douce: #A0A7B4;
-    --accent: #4DB387;
-    --accent-doux: #1C3A2D;
+    --fond: #2B2E35;
+    --surface: #363A42;
+    --surface-2: #41464F;
+    --ligne: #545A65;
+    --encre: #F2F4F7;
+    --encre-douce: #BCC2CD;
+    --accent: #62C99A;
+    --accent-doux: #284638;
     --sur-accent: #0D1A13;
-    --or: #E2B65C;
-    --alerte: #E8735D;
-    --voile: rgba(0, 0, 0, .6);
-    --ombre-carte: 0 18px 48px rgba(0, 0, 0, .5);
+    --or: #E8BE68;
+    --alerte: #F6957F;
+    --voile: rgba(10, 12, 16, .55);
+    --ombre-carte: 0 18px 48px rgba(0, 0, 0, .35);
     --laiton-clair: #EBD08C;
     --laiton: #C79A42;
     --laiton-fonce: #8A6526;
-    --cadran: #23272F;
-    --ombre-sol: #000000;
+    --cadran: #3D414A;
+    --ombre-sol: #0E1015;
     --piece-blanc: #F4F5F7;
     --piece-blanc-trait: #0E1015;
-    --piece-noir: #3A404D;
-    --piece-noir-trait: #C9CED8;
+    --piece-noir: #262A31;
+    --piece-noir-trait: #D2D7E0;
     --piece-noir-detail: #F4F5F7;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --fond: #121419;
-  --surface: #1C1F26;
-  --surface-2: #262A33;
-  --ligne: #343945;
-  --encre: #ECEEF2;
-  --encre-douce: #A0A7B4;
-  --accent: #4DB387;
-  --accent-doux: #1C3A2D;
+  --fond: #2B2E35;
+  --surface: #363A42;
+  --surface-2: #41464F;
+  --ligne: #545A65;
+  --encre: #F2F4F7;
+  --encre-douce: #BCC2CD;
+  --accent: #62C99A;
+  --accent-doux: #284638;
   --sur-accent: #0D1A13;
-  --or: #E2B65C;
-  --alerte: #E8735D;
-  --voile: rgba(0, 0, 0, .6);
-  --ombre-carte: 0 18px 48px rgba(0, 0, 0, .5);
+  --or: #E8BE68;
+  --alerte: #F6957F;
+  --voile: rgba(10, 12, 16, .55);
+  --ombre-carte: 0 18px 48px rgba(0, 0, 0, .35);
   --laiton-clair: #EBD08C;
   --laiton: #C79A42;
   --laiton-fonce: #8A6526;
-  --cadran: #23272F;
-  --ombre-sol: #000000;
+  --cadran: #3D414A;
+  --ombre-sol: #0E1015;
   --piece-blanc: #F4F5F7;
   --piece-blanc-trait: #0E1015;
-  --piece-noir: #3A404D;
-  --piece-noir-trait: #C9CED8;
+  --piece-noir: #262A31;
+  --piece-noir-trait: #D2D7E0;
   --piece-noir-detail: #F4F5F7;
   color-scheme: dark;
 }

@@ -229,3 +229,22 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .clavier.dessins .rangee-touches.huit { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .touche { min-height: 46px; }
 }
+
+/* Mode sombre : les petites pièces (en-tête de la feuille, notation dessinée) sur une pastille claire,
+   avec les couleurs du mode clair, pour que la blanche reste blanche et la noire noire. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .feuille thead svg,
+  :root:not([data-theme="light"]) .fig {
+    --piece-blanc: #FFFFFF; --piece-blanc-trait: #1A1E27;
+    --piece-noir: #2B303B; --piece-noir-trait: #1A1E27; --piece-noir-detail: #FFFFFF;
+    background: #DCDCC8; border-radius: 6px;
+  }
+}
+:root[data-theme="dark"] .feuille thead svg,
+:root[data-theme="dark"] .fig {
+  --piece-blanc: #FFFFFF; --piece-blanc-trait: #1A1E27;
+  --piece-noir: #2B303B; --piece-noir-trait: #1A1E27; --piece-noir-detail: #FFFFFF;
+  background: #DCDCC8; border-radius: 6px;
+}
+:root[data-theme="dark"] .feuille thead svg { padding: 2px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .feuille thead svg { padding: 2px; } }

@@ -11,9 +11,9 @@
   --e-coup: #F2B827;        /* coup joué : jaune, bien visible sur le vert comme sur le crème */
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #23262E; --e-texte: #E6E8EC; }
+  :root:not([data-theme="light"]) { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
 }
-:root[data-theme="dark"] { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #23262E; --e-texte: #E6E8EC; }
+:root[data-theme="dark"] { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
 
 .echiquier {
   container-type: inline-size;
