@@ -263,3 +263,12 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Signature en bas de chaque jeu, discrète */
+.signature {
+  margin-top: -6px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--encre-douce);
+  text-align: center;
+}

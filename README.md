@@ -1,5 +1,7 @@
 # Échecs éducatifs
 
+Créé par **Mathieu Pouillon**.
+
 Petits jeux pour faire découvrir les échecs aux enfants, en lien avec d'autres disciplines (calcul, repérage…).
 Le site est statique (HTML, CSS, JavaScript), sans framework, sans compte utilisateur et sans publicité.
 Les réglages (thème, son, options des jeux) sont enregistrés dans le navigateur.
@@ -66,4 +68,4 @@ jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js)
 
 ## Licence
 
-Tous droits réservés. Aucune licence n'est accordée pour réutiliser ce code ou ces dessins.
+© 2026 Mathieu Pouillon. Tous droits réservés. Aucune licence n'est accordée pour réutiliser ce code ou ces dessins.
