@@ -5,7 +5,7 @@
    - les problèmes de Lichess, extraits de github.com/lichess-org/lila-db-seed
      (dump/lichess/puzzle2_puzzle.bson converti en JSON : [{ id, fen, line }]).
 
-   Chaque coup est rejoué et vérifié avec chess.js. On garde la position après le coup, les 3 coups
+   Chaque coup est rejoué et vérifié avec chess.js. On garde la position avant et après le coup, les 3 coups
    précédents, la notation (en anglais : la traduction en français est faite par le jeu) et ce qu'elle
    a de particulier : prise, échec, mat, pièce à préciser, roque, promotion, prise en passant.
 
@@ -76,6 +76,7 @@ function parcourir(depart, liste, source) {
       if (!coups.has(cle)) {
         const entree = {
           fen,
+          fenAvant: avant.fen().split(' ')[0], // pour animer le coup
           de: coup.from,
           a: coup.to,
           san: coup.san,

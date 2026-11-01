@@ -3,7 +3,8 @@
    reprend les 3 coups d'avant et laisse une case vide : il faut y écrire le dernier coup.
    Niveaux : facile (coups simples, prises) ou difficile (échec, mat, pièce à préciser, roque,
    promotion, prise en passant). Notation en français ou en anglais.
-   Mode tout-petits : clavier avec les pièces (dessinées), les animaux (lettres) et les doigts (chiffres).
+   On écrit avec un clavier à l'écran (ou celui de l'ordinateur). En mode tout-petits, ce clavier montre
+   les pièces dessinées, les animaux (lettres) et les doigts (chiffres).
    Les coups viennent de coups.js (généré et vérifié par outils/coups-notation.js), en anglais. */
 (function () {
   const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
@@ -26,7 +27,7 @@
   const langue = () => (reglages.anglais ? 'en' : 'fr');
   const niveau = () => (reglages.difficile ? 'difficile' : 'facile');
 
-  const jeu = { mode: 'libre', coup: null, repondu: false, pioche: [], dernier: null, justes: 0, total: 0, partie: 0, jetons: [] };
+  const jeu = { mode: 'libre', coup: null, repondu: false, pioche: [], dernier: null, justes: 0, total: 0, partie: 0, jetons: [], anim: 0 };
   const defi = { chrono: false, niveau: 'facile', liste: [], numero: 0, resultats: [], debut: 0, fin: 0, raf: 0, dernierTic: 0 };
 
   // ---------- Notation ----------
@@ -49,10 +50,12 @@
     `<svg class="fig" viewBox="0 0 100 100" aria-label="${piece}"><use href="#piece-${piece}-${couleur}"/></svg>`;
   const echapper = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // Ce qu'on accepte en plus de la notation exacte : espaces, 0-0 pour O-O, « e.p. », e8D pour e8=D, !?.
+  // Ce qu'on accepte en plus de la notation exacte : espaces, 0-0 pour O-O, « e.p. », e8D pour e8=D, !?,
+  // et ++ pour le mat (ancienne notation française, équivalente à #).
   function normaliser(s) {
     let r = s.trim().replace(/\s+/g, '').replace(/[!?]/g, '').replace(/[–—−]/g, '-').replace(/×/g, 'x');
     r = r.replace(/^[0oO]-[0oO]-[0oO]/, 'O-O-O').replace(/^[0oO]-[0oO](?!-)/, 'O-O');
+    r = r.replace(/\+\+$/, '#');
     r = r.replace(/e\.?p\.?(?=[+#]?$)/, '');
     r = r.replace(/([a-h][18])\(?([A-Z])\)?/, '$1=$2');
     return r;
@@ -89,7 +92,7 @@
     jeu.coup = coup;
     jeu.repondu = false;
     jeu.jetons = [];
-    dessinerPlateau();
+    animerCoup();
     $('roi-question').setAttribute('href', `#piece-roi-${coup.trait}`);
     $('question-texte').textContent = coup.trait === 'blanc' ? 'Écris le coup des Blancs' : 'Écris le coup des Noirs';
     const q = $('question');
@@ -97,19 +100,61 @@
     dessinerFeuille();
     $('retour').hidden = true;
     $('form-saisie').hidden = false;
-    $('clavier').hidden = !reglages.toutPetits;
+    $('clavier').hidden = false;
     majClavier();
-    const saisie = $('saisie');
-    if (saisie && matchMedia('(hover: hover)').matches) saisie.focus({ preventScroll: true });
+    // le bouton « Suivant » disparaît : on rend le clavier de l'ordinateur à la page
+    if ($('retour').contains(document.activeElement)) document.activeElement.blur();
   }
 
   // L'échiquier est vu du côté de celui qui vient de jouer ; en mode tout-petits, les marges sont dessinées.
+  const optionsPlateau = () => ({ orientation: jeu.coup.trait, dessins: reglages.toutPetits });
   function dessinerPlateau() {
+    jeu.anim++; // arrête une animation en cours
     const c = jeu.coup;
-    Echiquier.dessiner(plateau, c.fen, { orientation: c.trait, dessins: reglages.toutPetits });
+    Echiquier.dessiner(plateau, c.fen, optionsPlateau());
     Echiquier.marquer(plateau, [c.de], 'depart');
     Echiquier.marquer(plateau, [c.a], 'arrivee');
     if (jeu.repondu && c.autres) Echiquier.marquer(plateau, c.autres, 'attaquant');
+  }
+
+  // Le dernier coup est rejoué : position d'avant, la pièce glisse jusqu'à sa case et la pièce prise
+  // disparaît (la tour bouge aussi pour un roque). On peut le revoir avec le bouton à côté de la question.
+  function animerCoup() {
+    const c = jeu.coup;
+    const jeton = ++jeu.anim;
+    Echiquier.dessiner(plateau, c.fenAvant, optionsPlateau());
+    Echiquier.marquer(plateau, [c.de], 'depart');
+    const trajets = [[c.de, c.a]];
+    if (c.tags.includes('roque')) {
+      const r = c.de[1];
+      trajets.push(c.a[0] === 'g' ? ['h' + r, 'f' + r] : ['a' + r, 'd' + r]);
+    }
+    const prise = c.tags.includes('passant') ? c.a[0] + c.de[1] : c.tags.includes('prise') ? c.a : null;
+    const lent = !UI.reduireMouvement();
+    const DUREE_ANIM = 480;
+    const fin = () => { if (jeton === jeu.anim) { dessinerPlateau(); Sons.pose(3); } };
+    setTimeout(() => {
+      if (jeton !== jeu.anim) return;
+      if (!lent) { fin(); return; }
+      for (const [de, a] of trajets) {
+        const caseDe = plateau.querySelector(`[data-case="${de}"]`);
+        const caseA = plateau.querySelector(`[data-case="${a}"]`);
+        const piece = caseDe && caseDe.querySelector('.piece-e');
+        if (!piece || !caseA) continue;
+        const r1 = caseDe.getBoundingClientRect();
+        const r2 = caseA.getBoundingClientRect();
+        caseDe.style.zIndex = 3;
+        piece.style.transition = `transform ${DUREE_ANIM}ms cubic-bezier(.35, .1, .25, 1)`;
+        piece.style.transform = `translate(${r2.left - r1.left}px, ${r2.top - r1.top}px)`;
+      }
+      const prisePiece = prise && plateau.querySelector(`[data-case="${prise}"] .piece-e`);
+      if (prisePiece) {
+        prisePiece.style.transition = `opacity ${DUREE_ANIM * 0.45}ms ease-in ${DUREE_ANIM * 0.5}ms, transform ${DUREE_ANIM * 0.45}ms ease-in ${DUREE_ANIM * 0.5}ms`;
+        prisePiece.style.opacity = '0';
+        prisePiece.style.transform = 'scale(.6)';
+      }
+      setTimeout(fin, DUREE_ANIM + 60);
+    }, lent ? 550 : 700);
   }
 
   // Feuille de partie : numéro, coup des Blancs, coup des Noirs.
@@ -135,25 +180,26 @@
     $('feuille').innerHTML = rangees.map((r, i) =>
       `<tr><th class="num" scope="row">${r.num}.</th>${cellule(r.blanc, i === 0)}${cellule(r.noir)}</tr>`).join('');
   }
-  // la case vide : un champ texte, ou l'affichage du clavier des tout-petits
-  function champ() {
-    if (reglages.toutPetits) return `<span class="saisie-tp" id="saisie-tp" aria-live="polite">${dessinerJetons()}</span>`;
-    return `<input id="saisie" class="champ" type="text" form="form-saisie" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="12" aria-label="Ta notation du dernier coup" placeholder="?">`;
-  }
+  // la case vide : ce qui a été tapé au clavier
+  const champ = () => `<span class="saisie-tp" id="saisie-tp" aria-live="polite" aria-label="Ta notation du dernier coup">${dessinerJetons()}</span>`;
   function dessinerJetons() {
     if (!jeu.jetons.length) return '<span class="curseur" aria-hidden="true"></span>';
     return formater(jeu.jetons.join(''), jeu.coup.trait) + '<span class="curseur" aria-hidden="true"></span>';
   }
   function majAffichageTp() { const el = $('saisie-tp'); if (el) el.innerHTML = dessinerJetons(); }
 
-  // ---------- Clavier tout-petits ----------
-  // Les touches ajoutent la notation anglaise ; la pièce est dessinée, donc la langue ne compte pas.
+  // ---------- Clavier à l'écran ----------
+  // Les touches ajoutent la notation anglaise (traduite à l'affichage). En mode tout-petits,
+  // les pièces sont dessinées et les lettres et chiffres accompagnés des animaux et des doigts.
   function construireClavier() {
+    const tp = reglages.toutPetits;
     const touche = (val, contenu, label, classe = '') =>
       `<button type="button" class="touche ${classe}" data-val="${val}" aria-label="${label}">${contenu}</button>`;
-    const pieces = ['K', 'Q', 'R', 'B', 'N'].map(l => touche(l, `<svg class="fig-touche" viewBox="0 0 100 100" aria-hidden="true"><use class="fig-camp" href="#piece-${PIECES[l]}-blanc"/></svg>`, PIECES[l], 'piece')).join('');
-    const colonnes = Object.keys(ANIMAUX).map(l => touche(l, `${animal(l)}<b>${l}</b>`, `${l} comme ${ANIMAUX[l].nom}`, 'lettre')).join('');
-    const chiffres = [1, 2, 3, 4, 5, 6, 7, 8].map(n => touche(String(n), `${mains(n)}<b>${n}</b>`, String(n), 'chiffre')).join('');
+    const pieces = ['K', 'Q', 'R', 'B', 'N'].map(l => touche(l, tp
+      ? `<svg class="fig-touche" viewBox="0 0 100 100" aria-hidden="true"><use class="fig-camp" href="#piece-${PIECES[l]}-blanc"/></svg>`
+      : `<b>${LETTRES[langue()][l]}</b><small>${PIECES[l]}</small>`, PIECES[l], 'piece')).join('');
+    const colonnes = Object.keys(ANIMAUX).map(l => touche(l, tp ? `${animal(l)}<b>${l}</b>` : `<b>${l}</b>`, tp ? `${l} comme ${ANIMAUX[l].nom}` : l, 'lettre')).join('');
+    const chiffres = [1, 2, 3, 4, 5, 6, 7, 8].map(n => touche(String(n), tp ? `${mains(n)}<b>${n}</b>` : `<b>${n}</b>`, String(n), 'chiffre')).join('');
     const symboles =
       touche('x', '<b>x</b><small>prend</small>', 'x : prend', 'symbole') +
       touche('+', '<b>+</b><small>échec</small>', '+ : échec', 'symbole seulement-difficile') +
@@ -162,6 +208,7 @@
       touche('O-O-O', '<b>O-O-O</b><small>grand roque</small>', 'grand roque', 'symbole seulement-difficile') +
       touche('=', '<b>=</b><small>promotion</small>', '= : promotion', 'symbole seulement-difficile');
     const effacer = `<button type="button" class="touche effacer" data-val="effacer" aria-label="Effacer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11v14H9l-6-7Z"/><path d="M12 9.5l5 5M17 9.5l-5 5"/></svg></button>`;
+    $('clavier').classList.toggle('dessins', tp);
     $('clavier').innerHTML =
       `<div class="rangee-touches pieces">${pieces}${effacer}</div>` +
       `<div class="rangee-touches huit">${colonnes}</div>` +
@@ -173,7 +220,7 @@
     $('clavier').querySelectorAll('.fig-camp').forEach(u => u.setAttribute('href', u.getAttribute('href').replace(/-(blanc|noir)$/, `-${jeu.coup.trait}`)));
   }
   function taper(val) {
-    if (jeu.repondu || !reglages.toutPetits) return;
+    if (jeu.repondu) return;
     if (val === 'effacer') jeu.jetons.pop();
     else if (jeu.jetons.join('').length < 10) jeu.jetons.push(val);
     Sons.tic();
@@ -181,22 +228,17 @@
   }
 
   // ---------- Réponse ----------
-  function lireReponse() {
-    if (reglages.toutPetits) return jeu.jetons.join('');
-    const s = $('saisie');
-    return s ? s.value : '';
-  }
+  const lireReponse = () => jeu.jetons.join('');
   // reponse : texte tapé, ou null quand le temps est écoulé
   function valider(reponse) {
     if (jeu.repondu || !jeu.coup) return;
     const c = jeu.coup;
-    const l = reglages.toutPetits ? 'en' : langue(); // le clavier des tout-petits écrit en anglais
-    const brute = reponse === null ? '' : reponse;
-    if (reponse !== null && !normaliser(brute)) { secouer(); return; }
+    // le clavier écrit en anglais : on compare à la notation anglaise
+    const ecrit = normaliser(reponse === null ? '' : reponse);
+    if (reponse !== null && !ecrit) { secouer(); return; }
     jeu.repondu = true;
-    const ecrit = normaliser(brute);
-    const juste = ecrit === traduire(c.san, l);
-    jeu.reponse = [c, juste, reponse === null, ecrit, l];
+    const juste = ecrit === c.san;
+    jeu.reponse = [c, juste, reponse === null, ecrit];
     montrerExplication(...jeu.reponse);
     if (juste) Sons.juste(); else Sons.echec();
 
@@ -221,7 +263,8 @@
   const ICONE_JUSTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const ICONE_FAUX = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>';
 
-  function montrerExplication(c, juste, tempsEcoule, ecrit, l) {
+  // ecrit : la réponse en notation anglaise ; tout s'affiche dans la langue choisie
+  function montrerExplication(c, juste, tempsEcoule, ecrit) {
     const bonne = formater(c.san, c.trait);
     // la case de la feuille montre la bonne notation
     const cible = $('cible');
@@ -231,8 +274,8 @@
       `<span>${tempsEcoule ? 'Temps écoulé !' : juste ? 'Bravo !' : 'Pas tout à fait…'}</span>`;
     const ta = $('ta-reponse');
     ta.hidden = juste || !ecrit;
-    if (!ta.hidden) ta.innerHTML = `Tu as écrit <s>${reglages.toutPetits ? formater(ecrit, c.trait) : echapper(ecrit)}</s>, il fallait <b>${bonne}</b>.`;
-    const conseil = juste ? '' : trouverConseil(c, ecrit, l);
+    if (!ta.hidden) ta.innerHTML = `Tu as écrit <s>${formater(ecrit, c.trait)}</s>, il fallait <b>${bonne}</b>.`;
+    const conseil = juste ? '' : trouverConseil(c, traduire(ecrit), langue());
     $('conseil').hidden = !conseil;
     $('conseil').textContent = conseil;
     $('morceaux').innerHTML = decomposer(c).map(m =>
@@ -297,11 +340,6 @@
     if (!ecrit) return '';
     const bonne = traduire(c.san, l);
     const sans = (s, re) => s.replace(re, '');
-    const autreL = l === 'fr' ? 'en' : 'fr';
-    if (!reglages.toutPetits && ecrit === traduire(c.san, autreL)) {
-      const L = (c.san.match(/[KQRBN]/) || [])[0];
-      return L ? `En ${l === 'fr' ? 'français' : 'anglais'}, ${le(PIECES[L])} ${PIECES[L]} s'écrit ${LETTRES[l][L]}, pas ${LETTRES[autreL][L]}.` : '';
-    }
     if (sans(ecrit, /[+#]/g) === sans(bonne, /[+#]/g)) {
       if (bonne.endsWith('#')) return ecrit.endsWith('+') ? 'C\'est même échec et mat : on écrit # (et pas +).' : 'Le roi est échec et mat : on ajoute # à la fin.';
       if (bonne.endsWith('+')) return ecrit.endsWith('#') ? 'Le roi est en échec, mais il peut s\'en sortir : on écrit +, pas #.' : 'Le roi est en échec : on ajoute + à la fin.';
@@ -418,7 +456,11 @@
   // ---------- Branchements ----------
   $('form-saisie').addEventListener('submit', (e) => { e.preventDefault(); valider(lireReponse()); });
   $('btn-suivant').addEventListener('click', suivant);
+  $('btn-revoir').addEventListener('click', () => { if (jeu.coup) animerCoup(); });
+  $('btn-revoir').addEventListener('mousedown', (e) => e.preventDefault()); // Entrée doit toujours valider
   $('clavier').addEventListener('click', (e) => { const t = e.target.closest('.touche'); if (t) taper(t.dataset.val); });
+  // les touches de l'écran ne prennent pas le focus : Entrée valide toujours
+  $('clavier').addEventListener('mousedown', (e) => e.preventDefault());
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (!$('choix-defi').hidden || !$('resultats').hidden) {
@@ -427,17 +469,17 @@
     }
     if (e.target.closest('input, textarea, .panneau')) return;
     if (e.key === 'Enter') {
-      if (e.target.closest('button')) return; // le bouton fait son travail
+      if (e.target.closest('button:not(.touche)')) return; // le bouton fait son travail
       if (jeu.repondu) { e.preventDefault(); suivant(); }
-      else if (!jeu.repondu && reglages.toutPetits) { e.preventDefault(); valider(lireReponse()); }
+      else { e.preventDefault(); valider(lireReponse()); }
       return;
     }
-    // le clavier de l'ordinateur marche aussi en mode tout-petits
-    if (!reglages.toutPetits || jeu.repondu) return;
+    // le clavier de l'ordinateur marche aussi (lettres des pièces dans la langue choisie)
+    if (jeu.repondu) return;
     if (e.key === 'Backspace') { e.preventDefault(); taper('effacer'); return; }
     const L = DEPUIS[langue()][e.key];
     if (L) taper(L);
-    else if (/^[a-h1-8x+#=]$/.test(e.key)) taper(e.key);
+    else if (/^[a-h1-8x+#=O0o-]$/.test(e.key)) taper(e.key === 'o' || e.key === '0' ? 'O' : e.key);
   });
 
   function ouvrirChoix() {
@@ -469,10 +511,7 @@
       montrerExplication(...jeu.reponse);
       return;
     }
-    const tape = reglages.toutPetits ? null : ($('saisie') ? $('saisie').value : '');
     dessinerFeuille();
-    if (tape && $('saisie')) $('saisie').value = tape;
-    $('clavier').hidden = !reglages.toutPetits;
   }
 
   const segLangue = [...$('reg-langue').querySelectorAll('button')];
@@ -481,6 +520,8 @@
     reglages.anglais = b.dataset.langue === 'en';
     Prefs.ecrire('echecs.note.anglais', reglages.anglais);
     majLangue();
+    construireClavier();
+    majClavier();
     redessiner();
   }));
 
@@ -501,7 +542,8 @@
   brancherInterrupteur($('reg-tout-petits'), reglages.toutPetits, (v) => {
     reglages.toutPetits = v; Prefs.ecrire('echecs.note.tout-petits', v);
     appliquerToutPetits();
-    jeu.jetons = [];
+    construireClavier();
+    majClavier();
     redessiner();
   });
   const appliquerCoord = () => document.body.classList.toggle('sans-coordonnees', !reglages.coordonnees);

@@ -43,6 +43,8 @@ body:not(.difficile) .seulement-difficile { display: none !important; }
 .question.nouvelle { animation: nouvelle .4s cubic-bezier(.2, 1.4, .4, 1); }
 @keyframes nouvelle { from { transform: scale(.94); opacity: .3; } }
 .roi-question { flex: none; width: 44px; height: 44px; padding: 4px; border-radius: 12px; background: var(--surface-2); }
+.question .revoir { flex: none; margin-left: auto; }
+.revoir .plein { fill: currentColor; stroke-linejoin: round; }
 
 /* feuille de partie */
 .feuille {
@@ -64,22 +66,6 @@ body:not(.difficile) .seulement-difficile { display: none !important; }
 
 /* la case à remplir */
 .a-remplir { position: relative; }
-.champ {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  padding: 5px 10px;
-  border: 2px dashed var(--accent);
-  border-radius: 10px;
-  background: var(--accent-doux);
-  color: var(--encre);
-  font: inherit;
-  font-size: 21px;
-  font-weight: 600;
-  outline: none;
-}
-.champ::placeholder { color: var(--accent); opacity: .7; }
-.champ:focus { border-style: solid; box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
 .saisie-tp {
   display: flex;
   align-items: center;
@@ -215,9 +201,12 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .question { font-size: 18px; padding: 10px 12px; }
   .roi-question { width: 36px; height: 36px; }
   .feuille td { font-size: 19px; }
-  .champ { font-size: 19px; }
 }
+/* clavier sans dessins : touches plus basses, lettres plus grandes */
+.clavier:not(.dessins) .touche { min-height: 44px; }
+.clavier:not(.dessins) .touche b { font-size: 19px; }
+.clavier:not(.dessins) .touche.piece small { font-size: 10px; }
 @media (max-width: 560px) {
-  .rangee-touches.huit { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .clavier.dessins .rangee-touches.huit { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .touche { min-height: 46px; }
 }
