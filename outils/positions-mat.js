@@ -9,6 +9,11 @@
    Pour une partie célèbre (presque: true), le script crée aussi un « presque mat » :
    un autre échec possible au coup juste avant le mat, qui ne mate pas.
 
+   S'y ajoutent des mats tirés de vraies parties jouées sur Lichess (outils/lichess-mats.json) :
+   des problèmes de la base Lichess (domaine public, CC0), pris dans l'échantillon publié
+   avec le dépôt lichess-org/lila-db-seed (licence MIT). Le script rejoue la solution
+   jusqu'au mat, puis fabrique aussi le « presque mat » correspondant.
+
    Utilisation (Node.js) :
      npm install --no-save chess.js@1.0.0
      node outils/positions-mat.js
@@ -153,10 +158,23 @@ function caseDuRoi(jeu, couleur) {
   return null;
 }
 
-function analyser(src) {
+function rejouer(src, saufDernier = false) {
   const jeu = new Chess();
-  if (src.fen) jeu.load(src.fen);
-  else for (const c of src.coups.split(' ')) jeu.move(c);
+  let coups;
+  if (src.uci) {
+    jeu.load(src.depart);
+    coups = src.uci.split(' ').map(u => ({ from: u.slice(0, 2), to: u.slice(2, 4), promotion: u[4] }));
+  } else {
+    coups = src.coups.split(' ');
+  }
+  for (const c of (saufDernier ? coups.slice(0, -1) : coups)) jeu.move(c);
+  return { jeu, dernier: coups[coups.length - 1] };
+}
+
+function analyser(src) {
+  let jeu;
+  if (src.fen) jeu = new Chess(src.fen);
+  else jeu = rejouer(src).jeu;
   const trait = jeu.turn();
   const adversaire = trait === 'w' ? 'b' : 'w';
   const roi = caseDuRoi(jeu, trait);
@@ -200,16 +218,15 @@ function analyser(src) {
     roi,
     attaquants,
     coup,
+    ...(src.lien ? { lien: src.lien } : {}),
   };
 }
 
 // Au coup juste avant le mat, un autre échec qui ne mate pas (de préférence avec la même pièce).
 const LETTRES = { p: 'pion', n: 'cavalier', b: 'fou', r: 'tour', q: 'dame', k: 'roi' };
 function presqueMat(src) {
-  const coups = src.coups.split(' ');
-  const jeu = new Chess();
-  for (const c of coups.slice(0, -1)) jeu.move(c);
-  const mat = jeu.move(coups[coups.length - 1]);
+  const { jeu, dernier } = rejouer(src, true);
+  const mat = jeu.move(dernier);
   jeu.undo();
   const echecs = jeu.moves({ verbose: true }).filter(m => m.san.endsWith('+'));
   if (!echecs.length) return null;
@@ -222,8 +239,23 @@ function presqueMat(src) {
     attendu: false,
     raison: 'fuite',
     idee: `Dans la partie, c'est ${nomMat} en ${mat.to} qui a donné mat.`,
+    lien: src.lien,
   };
 }
+const MOTIFS_LICHESS = {
+  backRankMate: 'Mat du couloir', smotheredMate: 'Mat à l\'étouffée', anastasiaMate: 'Mat d\'Anastasie',
+  hookMate: 'Mat du crochet', doubleBishopMate: 'Mat des deux fous', arabianMate: 'Mat d\'Arabie',
+  bodenMate: 'Mat de Boden', dovetailMate: 'Mat de la queue d\'aronde',
+};
+for (const l of JSON.parse(fs.readFileSync(path.join(__dirname, 'lichess-mats.json'), 'utf8'))) {
+  const nom = l.themes.map(t => MOTIFS_LICHESS[t]).find(Boolean);
+  SOURCES.push({
+    motif: nom ? `${nom} (partie Lichess)` : 'Partie jouée sur Lichess',
+    depart: l.fen, uci: l.line, attendu: true, presque: true,
+    lien: `https://lichess.org/training/${l.id}`,
+  });
+}
+
 for (const src of SOURCES.filter(s => s.presque)) {
   const p = presqueMat(src);
   if (p) SOURCES.push(p);

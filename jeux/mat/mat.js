@@ -89,6 +89,9 @@
       `<span>${tempsEcoule ? 'Temps écoulé ! ' : juste ? 'Bravo ! ' : 'Raté ! '}${verdict}</span>`;
     $('motif').textContent = p.motif;
     $('explication').textContent = p.explication;
+    const lien = $('lien-partie');
+    lien.hidden = !p.lien;
+    if (p.lien) lien.href = p.lien;
     const retour = $('retour');
     retour.classList.toggle('juste', juste);
     retour.classList.toggle('faux', !juste);

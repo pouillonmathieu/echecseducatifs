@@ -744,6 +744,370 @@ window.POSITIONS_MAT = [
   "coup": null
  },
  {
+  "fen": "r5rk/pp3Npp/1q6/4p3/2B2p2/8/P5KP/3b3R",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat à l'étouffée (partie Lichess)",
+  "explication": "Le roi noir est attaqué par le cavalier blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "f7"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/48sM8"
+ },
+ {
+  "fen": "5k2/6p1/3p1p1p/p1p5/2RnPPP1/1rK4P/3R2B1/8",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat du crochet (partie Lichess)",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "c3",
+  "attaquants": [
+   "b3"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/4YUZ8"
+ },
+ {
+  "fen": "r6k/7p/p5p1/4B3/PpB5/7P/6P1/6K1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat des deux fous (partie Lichess)",
+  "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "e5"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/CcFU5"
+ },
+ {
+  "fen": "8/kp5r/p3P3/3P4/8/1BP1n1PK/PP6/8",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat d'Anastasie (partie Lichess)",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h3",
+  "attaquants": [
+   "h7"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/DXxPG"
+ },
+ {
+  "fen": "r5rk/2p1pNbp/p2q2p1/5p2/3pn3/2P5/PP3PPP/R1B1R1K1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat à l'étouffée (partie Lichess)",
+  "explication": "Le roi noir est attaqué par le cavalier blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "f7"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/Dot3c"
+ },
+ {
+  "fen": "8/1r4pk/7p/4N3/3p1n2/1P6/3Q1Pq1/1R4K1",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "g1",
+  "attaquants": [
+   "g2"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/AVgvb"
+ },
+ {
+  "fen": "6k1/3B2p1/3b3p/1p1p4/1PpPp1Q1/2P1P2P/3B2P1/5r1K",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h1",
+  "attaquants": [
+   "f1"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/5u2uS"
+ },
+ {
+  "fen": "6k1/5ppp/p1R5/8/1P4n1/P5Pb/7P/3Br1K1",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "g1",
+  "attaquants": [
+   "e1"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/CuCdN"
+ },
+ {
+  "fen": "6k1/pp6/5pp1/2P1P3/1P4np/P7/R5P1/4r1K1",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "g1",
+  "attaquants": [
+   "e1"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/1ysCq"
+ },
+ {
+  "fen": "r4r1k/1p3B2/p1p4Q/2bp4/3qP3/3P3P/P1P3P1/5R1K",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "h6"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/90EuZ"
+ },
+ {
+  "fen": "8/5R1p/p5pk/1p2p3/6P1/Q1Pq4/PP2KR2/3r4",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "e2",
+  "attaquants": [
+   "d3"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/BZCaG"
+ },
+ {
+  "fen": "6k1/1pp3p1/p1n5/4b1NQ/1P6/P2P2PP/R1P2r1K/4r3",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h2",
+  "attaquants": [
+   "f2"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/0j3nL"
+ },
+ {
+  "fen": "7k/6r1/1p3B1p/7P/3Q1p1K/5P2/7q/4R3",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h4",
+  "attaquants": [
+   "h2"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/4tYSR"
+ },
+ {
+  "fen": "5R1k/6pp/8/2p1p3/3q4/1P6/6PP/7K",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat du couloir (partie Lichess)",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "f8"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/EZyxY"
+ },
+ {
+  "fen": "4r1k1/5pQ1/p1bbrPp1/2p5/2Pp4/6NP/PP1B1KP1/8",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "g8",
+  "attaquants": [
+   "g7"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/2bft7"
+ },
+ {
+  "fen": "3Qrk2/4P1p1/7p/5p2/5q2/1B6/P1P3PP/7K",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi noir est attaqué par le pion blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "f8",
+  "attaquants": [
+   "e7"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/BHg0i"
+ },
+ {
+  "fen": "k2Q4/pp6/4B3/2n5/3p4/P7/1P6/1K6",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat du couloir (partie Lichess)",
+  "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "a8",
+  "attaquants": [
+   "d8"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/2dECZ"
+ },
+ {
+  "fen": "1Q6/2R5/3pk3/3b2p1/8/P2p1n2/5P2/3Kr3",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "d1",
+  "attaquants": [
+   "e1"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/8qzHP"
+ },
+ {
+  "fen": "1q2r2k/R5Qp/2p3p1/1p1p4/1P6/2P1P3/3B2P1/7K",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "g7"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/1HDGN"
+ },
+ {
+  "fen": "4r1k1/pR3pp1/7p/3P4/P7/1Q3B2/5KP1/4q3",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "f2",
+  "attaquants": [
+   "e1"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/8G4By"
+ },
+ {
+  "fen": "5R1k/1b2N1pp/8/1r6/p4p2/P1P1b2P/2K3P1/7R",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat du couloir (partie Lichess)",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "f8"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/7v80N"
+ },
+ {
+  "fen": "5Q1k/pp1q3p/4p1p1/3pP1b1/3Pb1P1/P6P/1P6/6K1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h8",
+  "attaquants": [
+   "f8"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/EL08H"
+ },
+ {
+  "fen": "5R2/p1p2pkp/2B3p1/4p3/5P2/B1P1P1Pb/P3NK1P/5r2",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "f2",
+  "attaquants": [
+   "f1"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/6QBVA"
+ },
+ {
+  "fen": "8/kQ3Rp1/p1p5/3pq3/8/2P1r3/PP6/2K5",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "a7",
+  "attaquants": [
+   "b7"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/A1cta"
+ },
+ {
+  "fen": "5Rk1/pp4p1/2p1N2p/8/4Q3/2n1PP1P/1q4P1/6K1",
+  "trait": "noir",
+  "mat": true,
+  "echec": true,
+  "motif": "Partie jouée sur Lichess",
+  "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "g8",
+  "attaquants": [
+   "f8"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/909qG"
+ },
+ {
+  "fen": "r5k1/4Q1p1/2pBp2p/8/1p6/8/1PP3PP/5r1K",
+  "trait": "blanc",
+  "mat": true,
+  "echec": true,
+  "motif": "Mat du couloir (partie Lichess)",
+  "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "roi": "h1",
+  "attaquants": [
+   "f1"
+  ],
+  "coup": null,
+  "lien": "https://lichess.org/training/CzWEi"
+ },
+ {
   "fen": "rnb2b1r/ppkR1ppp/2p5/4q1B1/4n3/8/PPP2PPP/2K2BNR",
   "trait": "noir",
   "mat": false,
@@ -854,5 +1218,260 @@ window.POSITIONS_MAT = [
    "e1",
    "d1"
   ]
+ },
+ {
+  "fen": "1r3k2/6p1/3p1p1p/pnp5/2R1PPP1/1PK4P/3R2B1/8",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Mat du crochet (partie Lichess)",
+  "explication": "Le roi blanc peut s'enfuir en d3. Dans la partie, c'est la tour noire en b3 qui a donné mat.",
+  "roi": "c3",
+  "attaquants": [
+   "b5"
+  ],
+  "coup": [
+   "c3",
+   "d3"
+  ],
+  "lien": "https://lichess.org/training/4YUZ8"
+ },
+ {
+  "fen": "8/1r4pk/7p/4N3/3p1n2/1P6/3Q1PRq/1R4K1",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi blanc peut s'enfuir en f1. Dans la partie, c'est la dame noire en g2 qui a donné mat.",
+  "roi": "g1",
+  "attaquants": [
+   "h2"
+  ],
+  "coup": [
+   "g1",
+   "f1"
+  ],
+  "lien": "https://lichess.org/training/AVgvb"
+ },
+ {
+  "fen": "r4r1k/1p3BQ1/p1p4p/2bp4/3qP3/3P3P/P1P3P1/5R1K",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi noir peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en h6 qui a donné mat.",
+  "roi": "h8",
+  "attaquants": [
+   "g7"
+  ],
+  "coup": [
+   "h8",
+   "g7"
+  ],
+  "lien": "https://lichess.org/training/90EuZ"
+ },
+ {
+  "fen": "8/5R1p/p5pk/1p2p3/6q1/Q1P5/PP2KR2/3r4",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi blanc peut s'enfuir en e3. Dans la partie, c'est la dame noire en d3 qui a donné mat.",
+  "roi": "e2",
+  "attaquants": [
+   "g4"
+  ],
+  "coup": [
+   "e2",
+   "e3"
+  ],
+  "lien": "https://lichess.org/training/BZCaG"
+ },
+ {
+  "fen": "5rk1/1pp3p1/p1n5/4b1NQ/1P6/P2P2PP/R1P1r2K/8",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi blanc peut s'enfuir en h1. Dans la partie, c'est la tour noire en f2 qui a donné mat.",
+  "roi": "h2",
+  "attaquants": [
+   "e2"
+  ],
+  "coup": [
+   "h2",
+   "h1"
+  ],
+  "lien": "https://lichess.org/training/0j3nL"
+ },
+ {
+  "fen": "7k/6r1/1p3B1p/7P/3Q1pqK/5P2/8/4R3",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le pion blanc peut prendre la dame noire en g4. Dans la partie, c'est la dame noire en h2 qui a donné mat.",
+  "roi": "h4",
+  "attaquants": [
+   "g4"
+  ],
+  "coup": [
+   "f3",
+   "g4"
+  ],
+  "lien": "https://lichess.org/training/4tYSR"
+ },
+ {
+  "fen": "4rQk1/5p2/p1bbrPp1/2p5/2Pp4/6NP/PP1B1KP1/8",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi noir peut s'enfuir en h7. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
+  "roi": "g8",
+  "attaquants": [
+   "f8"
+  ],
+  "coup": [
+   "g8",
+   "h7"
+  ],
+  "lien": "https://lichess.org/training/2bft7"
+ },
+ {
+  "fen": "4Qk2/6p1/4P2p/5p2/5q2/1B6/P1P3PP/7K",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi noir peut prendre la dame blanche en e8. Dans la partie, c'est le pion blanc en e7 qui a donné mat.",
+  "roi": "f8",
+  "attaquants": [
+   "e8"
+  ],
+  "coup": [
+   "f8",
+   "e8"
+  ],
+  "lien": "https://lichess.org/training/BHg0i"
+ },
+ {
+  "fen": "1Q6/2R5/3pk3/6p1/8/Pb1p1n2/5P2/3KBr2",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi blanc peut s'enfuir en c1. Dans la partie, c'est la tour noire en e1 qui a donné mat.",
+  "roi": "d1",
+  "attaquants": [
+   "b3"
+  ],
+  "coup": [
+   "d1",
+   "c1"
+  ],
+  "lien": "https://lichess.org/training/8qzHP"
+ },
+ {
+  "fen": "1q2Q2k/R5bp/2p3p1/1p1p4/1P6/2P1P3/3B2P1/7K",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "La dame noire peut prendre la dame blanche en e8. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
+  "roi": "h8",
+  "attaquants": [
+   "e8"
+  ],
+  "coup": [
+   "b8",
+   "e8"
+  ],
+  "lien": "https://lichess.org/training/1HDGN"
+ },
+ {
+  "fen": "4r1k1/pR3pp1/7p/3P4/P7/1Q3B2/5Kq1/8",
+  "trait": "blanc",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi blanc peut prendre la dame noire en g2. Dans la partie, c'est la dame noire en e1 qui a donné mat.",
+  "roi": "f2",
+  "attaquants": [
+   "g2"
+  ],
+  "coup": [
+   "f2",
+   "g2"
+  ],
+  "lien": "https://lichess.org/training/8G4By"
+ },
+ {
+  "fen": "3R1r1k/1b4pp/6N1/1r6/p4p2/P1P1b2P/2K3P1/7R",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Mat du couloir (partie Lichess)",
+  "explication": "Le roi noir peut s'enfuir en g8. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
+  "roi": "h8",
+  "attaquants": [
+   "g6"
+  ],
+  "coup": [
+   "h8",
+   "g8"
+  ],
+  "lien": "https://lichess.org/training/7v80N"
+ },
+ {
+  "fen": "5r1k/pp1q2Qp/4p1p1/3pP1b1/3Pb1P1/P6P/1P6/6K1",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi noir peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en f8 qui a donné mat.",
+  "roi": "h8",
+  "attaquants": [
+   "g7"
+  ],
+  "coup": [
+   "h8",
+   "g7"
+  ],
+  "lien": "https://lichess.org/training/EL08H"
+ },
+ {
+  "fen": "8/kp3Rp1/pQp5/3pq3/8/2P1r3/PP6/2K5",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi noir peut s'enfuir en a8. Dans la partie, c'est la dame blanche en b7 qui a donné mat.",
+  "roi": "a7",
+  "attaquants": [
+   "b6"
+  ],
+  "coup": [
+   "a7",
+   "a8"
+  ],
+  "lien": "https://lichess.org/training/A1cta"
+ },
+ {
+  "fen": "3R1rk1/pp4pQ/2p1N2p/8/8/2n1PP1P/1q4P1/6K1",
+  "trait": "noir",
+  "mat": false,
+  "echec": true,
+  "motif": "Presque : Partie jouée sur Lichess",
+  "explication": "Le roi noir peut s'enfuir en f7. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
+  "roi": "g8",
+  "attaquants": [
+   "h7"
+  ],
+  "coup": [
+   "g8",
+   "f7"
+  ],
+  "lien": "https://lichess.org/training/909qG"
  }
 ];

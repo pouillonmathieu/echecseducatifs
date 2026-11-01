@@ -116,6 +116,9 @@ body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
   color: var(--encre-douce);
 }
 .explication { margin: 0 0 4px; line-height: 1.5; }
+.lien-partie { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin: -2px 0 4px; color: var(--accent); font-size: 14px; font-weight: 600; text-decoration: none; }
+.lien-partie:hover { text-decoration: underline; }
+.lien-partie svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 #btn-suivant svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
 .score-libre { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--accent); font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
