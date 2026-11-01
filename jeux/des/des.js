@@ -79,11 +79,12 @@
   function rendre() {
     for (const cote of ['blanc', 'noir']) {
       const zone = document.querySelector(`.zone-${cote}`);
-      const aLancer = !partie.fini && partie.aLancer === cote;
+      // on ne peut lancer que lorsque l'adversaire a terminé son tour
+      const aLancer = !partie.fini && partie.aLancer === cote && partie.enJeu === null;
       const enJeu = !partie.fini && partie.enJeu === cote;
       zone.classList.toggle('a-lancer', aLancer);
       zone.classList.toggle('en-jeu', enJeu);
-      $(`etat-${cote}`).textContent = enJeu ? 'À toi de jouer' : (aLancer && partie.enJeu === null ? 'À toi de lancer' : '');
+      $(`etat-${cote}`).textContent = enJeu ? 'À toi de jouer' : (aLancer ? 'À toi de lancer' : '');
       $(`lancer-${cote}`).disabled = !aLancer;
       // le camp qui joue peut terminer son tour (dés restants perdus)
       $(`lancer-${cote}`).hidden = enJeu;
@@ -115,7 +116,7 @@
 
   // ---------- Actions ----------
   function lancer(cote) {
-    if (verrou || partie.fini || cote !== partie.aLancer) return;
+    if (verrou || partie.fini || cote !== partie.aLancer || partie.enJeu !== null) return;
     pile.push(JSON.parse(JSON.stringify(partie)));
     const valeurs = Array.from({ length: nombre }, lancerUnDe);
     if (cote === 'blanc' && partie.historique.length) partie.tour++;
