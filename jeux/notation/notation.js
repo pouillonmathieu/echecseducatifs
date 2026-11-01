@@ -23,6 +23,7 @@
     difficile: Prefs.lire('echecs.note.difficile', false),
     toutPetits: Prefs.lire('echecs.note.tout-petits', false),
     coordonnees: Prefs.lire('echecs.note.coordonnees', true),
+    clavier: Prefs.lire('echecs.note.clavier', true),
   };
   const langue = () => (reglages.anglais ? 'en' : 'fr');
   const niveau = () => (reglages.difficile ? 'difficile' : 'facile');
@@ -100,10 +101,11 @@
     dessinerFeuille();
     $('retour').hidden = true;
     $('form-saisie').hidden = false;
-    $('clavier').hidden = false;
+    $('clavier').hidden = !reglages.clavier;
     majClavier();
     // le bouton « Suivant » disparaît : on rend le clavier de l'ordinateur à la page
     if ($('retour').contains(document.activeElement)) document.activeElement.blur();
+    if (!reglages.clavier && matchMedia('(hover: hover)').matches) $('saisie').focus({ preventScroll: true });
   }
 
   // L'échiquier est vu du côté de celui qui vient de jouer ; en mode tout-petits, les marges sont dessinées.
@@ -167,6 +169,7 @@
 
   // Feuille de partie : numéro, coup des Blancs, coup des Noirs.
   function dessinerFeuille() {
+    jeu.jetons = jeu.jetons || [];
     const c = jeu.coup;
     const demis = [...c.avant.map(san => ({ san })), { san: c.san, cible: true }];
     let num = c.num;
@@ -187,9 +190,16 @@
     };
     $('feuille').innerHTML = rangees.map((r, i) =>
       `<tr><th class="num" scope="row">${r.num}.</th>${cellule(r.blanc, i === 0)}${cellule(r.noir)}</tr>`).join('');
+    const saisie = $('saisie');
+    if (saisie) saisie.addEventListener('input', () => { jeu.jetons = lireChamp(saisie.value); });
   }
-  // la case vide : ce qui a été tapé au clavier
-  const champ = () => `<span class="saisie-tp" id="saisie-tp" aria-live="polite" aria-label="Ta notation du dernier coup">${dessinerJetons()}</span>`;
+  // la case vide : ce qui a été tapé avec le clavier à l'écran, ou un champ texte (clavier de l'appareil)
+  function champ() {
+    if (reglages.clavier) return `<span class="saisie-tp" id="saisie-tp" aria-live="polite" aria-label="Ta notation du dernier coup">${dessinerJetons()}</span>`;
+    return `<input id="saisie" class="champ" type="text" form="form-saisie" value="${echapper(traduire(jeu.jetons.join('')))}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="14" aria-label="Ta notation du dernier coup" placeholder="?">`;
+  }
+  // texte du champ -> jetons en notation anglaise (seules les lettres des pièces changent)
+  const lireChamp = (texte) => [...texte].map(ch => DEPUIS[langue()][ch] || ch);
   function dessinerJetons() {
     if (!jeu.jetons.length) return '<span class="curseur" aria-hidden="true"></span>';
     return formater(jeu.jetons.join(''), jeu.coup.trait) + '<span class="curseur" aria-hidden="true"></span>';
@@ -296,6 +306,7 @@
     if (c.autres) Echiquier.marquer(plateau, c.autres, 'attaquant');
     $('form-saisie').hidden = true;
     $('clavier').hidden = true;
+    if (document.activeElement && document.activeElement.id === 'saisie') document.activeElement.blur();
     $('retour').hidden = false;
     $('btn-suivant').firstChild.textContent = 'Suivant ';
     $('btn-suivant').focus({ preventScroll: true });
@@ -554,6 +565,23 @@
     majClavier();
     redessiner();
   });
+  // clavier à l'écran : réglage et bouton à côté de « Valider »
+  function appliquerClavier() {
+    document.body.classList.toggle('sans-clavier', !reglages.clavier);
+    $('btn-clavier').setAttribute('aria-pressed', String(reglages.clavier));
+  }
+  function changerClavier(v) {
+    reglages.clavier = v; Prefs.ecrire('echecs.note.clavier', v);
+    interrupteurClavier.definir(v);
+    appliquerClavier();
+    if (!jeu.coup || jeu.repondu) return;
+    $('clavier').hidden = !v;
+    dessinerFeuille();
+    const saisie = $('saisie');
+    if (saisie) { saisie.focus(); saisie.setSelectionRange(saisie.value.length, saisie.value.length); }
+  }
+  const interrupteurClavier = brancherInterrupteur($('reg-clavier'), reglages.clavier, changerClavier);
+  $('btn-clavier').addEventListener('click', () => changerClavier(!reglages.clavier));
   const appliquerCoord = () => document.body.classList.toggle('sans-coordonnees', !reglages.coordonnees);
   brancherInterrupteur($('reg-coordonnees'), reglages.coordonnees, (v) => { reglages.coordonnees = v; Prefs.ecrire('echecs.note.coordonnees', v); appliquerCoord(); });
   brancherInterrupteur($('reg-son'), Sons.actif, (v) => { Sons.actif = v; });
@@ -566,5 +594,6 @@
   majNiveau();
   appliquerToutPetits();
   appliquerCoord();
+  appliquerClavier();
   lancerLibre();
 })();

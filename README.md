@@ -27,7 +27,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (20 s par position). Réglage « pat » : ajoute un troisième bouton et les positions de pat (sinon absentes).
 - **Note le coup** (`jeux/notation/`) : le dernier coup est rejoué en animation sur l'échiquier (on voit la pièce
   prise disparaître ; bouton pour le revoir), la feuille de partie reprend les 3 coups d'avant et il faut écrire le
-  dernier avec le clavier à l'écran ou celui de l'ordinateur (++ accepté pour le mat). Niveau facile (coups simples et prises, 400 coups) ou difficile
+  dernier avec le clavier à l'écran (qu'on peut masquer pour utiliser celui de l'appareil) ou celui de l'ordinateur
+  (++ accepté pour le mat). Niveau facile (coups simples et prises, 400 coups) ou difficile
   (échec, mat, pièce à préciser, roque, promotion, prise en passant ; 373 coups). Notation française ou anglaise,
   conseil ciblé en cas d'erreur et notation découpée en morceaux expliqués. Mode libre, défi (10 coups) et défi
   chrono (20 s par coup). Mode tout-petits : clavier et marges de l'échiquier avec les pièces dessinées, les animaux et les doigts.

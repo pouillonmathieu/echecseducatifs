@@ -82,7 +82,26 @@ body:not(.difficile) .seulement-difficile { display: none !important; }
 .a-remplir.faux { color: var(--accent); }
 .a-remplir.juste, .a-remplir.faux { animation: nouvelle .35s cubic-bezier(.2, 1.3, .4, 1); }
 
-.saisie { display: flex; }
+.saisie { display: flex; gap: 8px; }
+#btn-clavier { flex: none; width: 52px; height: auto; align-self: stretch; border-radius: 14px; }
+#btn-clavier svg { width: 24px; height: 24px; }
+#btn-clavier[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-doux); color: var(--accent); }
+.champ {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 3px 10px;
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-doux);
+  color: var(--encre);
+  font: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  outline: none;
+}
+.champ::placeholder { color: var(--accent); opacity: .7; }
+.champ:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
 .saisie .bouton-principal { flex: 1; }
 .saisie .bouton-principal svg, #btn-suivant svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
