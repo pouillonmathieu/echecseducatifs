@@ -166,6 +166,14 @@
     if (d.joue) Sons.juste(); else Sons.retire();
     sauver();
     rendre();
+    // tous les dés sont joués : le tour se termine tout seul (après avoir vu la coche)
+    if (partie.des[cote].every(x => x.joue)) {
+      verrou = true;
+      setTimeout(() => {
+        verrou = false;
+        if (partie.enJeu === cote && partie.des[cote].every(x => x.joue)) terminerTour(cote);
+      }, 450);
+    }
   }
 
   function terminerTour(cote) {
@@ -253,7 +261,7 @@
     {
       titre: 'Avec ce site',
       illus: () => de(3) + de(5, 'blanc', 'joue') + de(2, 'blanc', 'perdu'),
-      texte: `<p>Appuie sur <strong>« Lancer les dés »</strong> quand c'est ton tour. <strong>Touche un dé</strong> quand tu l'as joué : il se grise. Si les dés restants ne peuvent plus servir, appuie sur <strong>« Terminer mon tour »</strong>. Ensuite, l'adversaire lance.</p>
+      texte: `<p>Appuie sur <strong>« Lancer les dés »</strong> quand c'est ton tour. <strong>Touche un dé</strong> quand tu l'as joué : il se grise. Quand tous tes dés sont joués, ton tour se termine tout seul. Si les dés restants ne peuvent plus servir, appuie sur <strong>« Terminer mon tour »</strong>. Ensuite, l'adversaire lance.</p>
               <p>Dans les réglages : le <strong>face à face</strong> retourne les dés des Noirs, la <strong>version classique</strong> se joue avec un seul dé, et les <strong>dés équilibrés</strong> font sortir chaque pièce aussi souvent qu'elle est présente sur l'échiquier (beaucoup de pions, peu de dames et de rois).</p>`,
     },
   ];
