@@ -50,7 +50,7 @@
 .plateau-laby .case-e { cursor: pointer; }
 .plateau-laby .case-e.bloquee { cursor: not-allowed; }
 /* tous les obstacles dans une seule image, posée sur les 64 cases */
-.calque-obstacles { grid-row: 2 / 10; grid-column: 2 / 10; position: relative; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.calque-obstacles { grid-row: 2 / 10; grid-column: 2 / 10; position: relative; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; will-change: transform; /* rendu des filtres gardé en mémoire */ }
 .calque-obstacles .flash { fill: rgba(214, 69, 50, .55); animation: flash .5s ease-out forwards; }
 @keyframes flash { to { opacity: 0; } }
 .piece-laby { z-index: 2; cursor: pointer; }

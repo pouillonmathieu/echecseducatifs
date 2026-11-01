@@ -103,7 +103,7 @@
         (!N.detour || piece === 'cavalier' || relache || avec[c] > sans[c]));
       if (maisons.length) {
         const maison = auHasard(maisons);
-        return { piece, obstacles, depart, maison, optimal: avec[maison] };
+        return { piece, obstacles, depart, maison, optimal: avec[maison], graine: entre(1, 999) };
       }
     }
     return null;
@@ -116,12 +116,6 @@
   // l'extérieur, coins rentrants creusés en arc. Les obstacles voisins forment un seul mur, une seule
   // mare, une seule coulée, une seule haie.
   const MARGE = 5, BORD = 6, RAYON = 24;
-  const MATIERES = {
-    pierre: { bord: '#3F434B', fond: '#7F838B', relief: true },
-    eau: { bord: '#E2D3A8', fond: '#2E84CB', creux: '#4FA3E3' },
-    lave: { bord: '#3A302C', fond: '#C9381A', creux: '#F0662A' },
-    buisson: { bord: '#1D5530', fond: '#2E7D40', relief: true },
-  };
   // hasard fixé par la position (le décor ne bouge pas d'un affichage à l'autre)
   const bruit = (i, j, k = 0) => { const x = Math.sin(i * 127.1 + j * 311.7 + k * 74.7) * 43758.5453; return x - Math.floor(x); };
   const n1 = (v) => Math.round(v * 10) / 10;
@@ -141,8 +135,7 @@
     return d + 'Z';
   }
 
-  function dessinCalque(theme, obstacles) {
-    const M = MATIERES[theme];
+  function dessinCalque(theme, obstacles, graine = 7) {
     const occ = (f, r) => dedans(f, r) && obstacles.has(nom(f, r));
     const cases = [...obstacles].map(c => { const [f, r] = coord(c); return { f, r, X: f * 100, Y: (7 - r) * 100 }; });
     // m : retrait depuis le bord de la case (côtés libres)
@@ -179,57 +172,135 @@
       return t;
     };
 
-    let ombre = '', dessous = '', decor = '', dessus = '';
-    if (M.relief) ombre = `<g filter="url(#flou-obstacles)" transform="translate(3 9)" opacity=".4"><path d="${exterieur}" fill="#141820"/></g>`;
+    // Rendu réaliste avec les filtres SVG : bruit (feTurbulence) pour le grain, les vagues et la lave,
+    // éclairage (feDiffuseLighting / feSpecularLighting) pour le relief, ombres intérieures pour la profondeur.
+    const G = graine;
+    const zone = 'filterUnits="userSpaceOnUse" x="-30" y="-30" width="860" height="860" color-interpolation-filters="sRGB"';
+    const lumiere = (az = 235, el = 50) => `<feDistantLight azimuth="${az}" elevation="${el}"/>`;
+    // alpha d'un résultat -> image en niveaux d'alpha seulement (pour s'en servir comme relief)
+    const alphaDe = (entree, sortie) => `<feColorMatrix in="${entree}" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="${sortie}"/>`;
+    // ombre à l'intérieur de la forme (bord qui fait de l'ombre), ajoutée par-dessus `entree`
+    const ombreInterieure = (entree, flou, dy, couleur, force, sortie) =>
+      `<feComponentTransfer in="SourceAlpha" result="${sortie}-inv"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>` +
+      `<feGaussianBlur in="${sortie}-inv" stdDeviation="${flou}" result="${sortie}-flou"/>` +
+      `<feOffset in="${sortie}-flou" dy="${dy}" result="${sortie}-dec"/>` +
+      `<feFlood flood-color="${couleur}" flood-opacity="${force}"/>` +
+      `<feComposite in2="${sortie}-dec" operator="in" result="${sortie}-ombre"/>` +
+      `<feComposite in="${sortie}-ombre" in2="SourceAlpha" operator="in" result="${sortie}-dedans"/>` +
+      `<feMerge result="${sortie}"><feMergeNode in="${entree}"/><feMergeNode in="${sortie}-dedans"/></feMerge>`;
+    // grain d'une matière minérale (sable, roche, mortier)
+    const filtreGrain = (id, frequence, relief, clair) =>
+      `<filter id="${id}" ${zone}><feTurbulence type="fractalNoise" baseFrequency="${frequence}" numOctaves="4" seed="${G + 3}" result="g"/>` +
+      `<feDiffuseLighting in="g" surfaceScale="${relief}" diffuseConstant="1" lighting-color="#fff" result="l">${lumiere(235, 55)}</feDiffuseLighting>` +
+      `<feComposite in="SourceGraphic" in2="l" operator="arithmetic" k1="${clair}" k2="${1 - clair * 0.75}" result="c"/>` +
+      `<feComposite in="c" in2="SourceAlpha" operator="in"/></filter>`;
+    const ombrePortee = `<filter id="f-ombre" ${zone}><feGaussianBlur stdDeviation="7"/></filter>`;
+
+    // contour : seulement le bord extérieur (sinon chaque case aurait son trait)
+    const masqueBord = `<mask id="m-bord" maskUnits="userSpaceOnUse" x="-30" y="-30" width="860" height="860"><rect x="-30" y="-30" width="860" height="860" fill="#fff"/><path d="${exterieur}" fill="#000"/></mask>`;
+    const bordExterieur = (couleur, opacite) => `<path d="${exterieur}" fill="none" stroke="${couleur}" stroke-opacity="${opacite}" stroke-width="4" mask="url(#m-bord)"/>`;
+    let defs = ombrePortee + masqueBord, corps = '';
     if (theme === 'pierre') {
-      const teintes = ['#C6C9CE', '#B3B7BD', '#A4A8AF', '#D2D4D8', '#BBBEC4'];
-      decor = grille(38, 27, (X, Y, i, j) => {
-        if (!utile(X, Y, 22)) return '';
-        const w = 31 + bruit(i, j, 3) * 6, h = 20 + bruit(i, j, 4) * 4;
-        const x = n1(X - w / 2), y = n1(Y - h / 2);
-        return `<rect x="${x}" y="${y}" width="${n1(w)}" height="${n1(h)}" rx="8" fill="${teintes[Math.floor(bruit(i, j, 5) * teintes.length)]}" stroke="#555A62" stroke-width="2"/>` +
-          `<path d="M${n1(x + 7)} ${n1(y + 5)}h${n1(w * 0.45)}" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="2.6" stroke-linecap="round"/>` +
-          `<path d="M${n1(x + 6)} ${n1(y + h - 3)}h${n1(w - 12)}" stroke="#2E3138" stroke-opacity=".25" stroke-width="2.2" stroke-linecap="round"/>`;
+      // mur : mortier sombre et pierres taillées irrégulières, bombées, au grain rugueux
+      const teintes = ['#BDB2A0', '#C8BEAB', '#AFA492', '#D2C8B6', '#B6AB98', '#A49A89', '#C2B5A0'];
+      const pierres = grille(48, 33, (X, Y, i, j) => {
+        if (!utile(X, Y, 28)) return '';
+        const w = 40 + bruit(i, j, 3) * 7, h = 25 + bruit(i, j, 4) * 5;
+        return `<rect x="${n1(X - w / 2)}" y="${n1(Y - h / 2)}" width="${n1(w)}" height="${n1(h)}" rx="${n1(6 + bruit(i, j, 6) * 4)}" fill="${teintes[Math.floor(bruit(i, j, 5) * teintes.length)]}"/>`;
       });
-      dessus = '';
+      defs += filtreGrain('f-mortier', '.35', 1.4, 0.9) +
+        `<filter id="f-pierres" ${zone}>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="4" seed="${G}" result="grain"/>` +
+        `<feDisplacementMap in="SourceGraphic" in2="grain" scale="6" xChannelSelector="R" yChannelSelector="G" result="forme"/>` +
+        alphaDe('forme', 'a') + `<feGaussianBlur in="a" stdDeviation="3.2" result="bosse"/>` +
+        `<feDiffuseLighting in="bosse" surfaceScale="4.5" diffuseConstant="1" lighting-color="#fff" result="ombrage">${lumiere(235, 55)}</feDiffuseLighting>` +
+        `<feSpecularLighting in="bosse" surfaceScale="4.5" specularConstant=".22" specularExponent="22" lighting-color="#FFF6E8" result="brillant">${lumiere(235, 50)}</feSpecularLighting>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="3" seed="${G + 1}" result="fin"/>` +
+        `<feDiffuseLighting in="fin" surfaceScale="1.3" diffuseConstant="1" lighting-color="#fff" result="rugueux">${lumiere(235, 62)}</feDiffuseLighting>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="${G + 4}" result="taches"/>` +
+        `<feColorMatrix in="taches" type="matrix" values="0 0 0 .35 .65  0 0 0 .35 .63  0 0 0 .35 .6  0 0 0 0 1" result="nuances"/>` +
+        `<feComposite in="forme" in2="ombrage" operator="arithmetic" k1="1.05" k2=".12" result="x1"/>` +
+        `<feComposite in="x1" in2="rugueux" operator="arithmetic" k1=".55" k2=".5" result="x2"/>` +
+        `<feComposite in="x2" in2="nuances" operator="arithmetic" k1="1.12" result="x2b"/>` +
+        `<feComposite in="x2b" in2="brillant" operator="arithmetic" k2="1" k3=".25" result="x3"/>` +
+        `<feComposite in="x3" in2="forme" operator="in" result="pierres"/>` +
+        // ombre douce de chaque pierre sur le mortier
+        `<feGaussianBlur in="a" stdDeviation="2.4" result="af"/><feOffset in="af" dx="2" dy="3" result="ad"/>` +
+        `<feFlood flood-color="#1E1A15" flood-opacity=".65"/><feComposite in2="ad" operator="in" result="ombreP"/>` +
+        `<feMerge><feMergeNode in="ombreP"/><feMergeNode in="pierres"/></feMerge></filter>` +
+        `<clipPath id="c-mur"><path d="${exterieur}"/></clipPath>`;
+      corps = `<path d="${exterieur}" transform="translate(4 10)" fill="#141820" opacity=".45" filter="url(#f-ombre)"/>` +
+        `<path d="${exterieur}" fill="#655D52" filter="url(#f-mortier)"/>` +
+        `<g clip-path="url(#c-mur)"><g filter="url(#f-pierres)">${pierres}</g></g>` +
+        bordExterieur('#3A342D', 0.5);
     } else if (theme === 'eau') {
-      // profondeur : le bord de la mare fait de l'ombre
-      dessous = `<path d="${interieur}" transform="translate(0 8)" fill="${M.creux}"/>`;
-      decor = grille(52, 36, (X, Y, i, j) => {
-        if (!utile(X, Y, 20) || bruit(i, j, 6) < 0.25) return '';
-        return `<path d="M${n1(X - 14)} ${n1(Y)}q7-6 14 0t14 0" fill="none" stroke="#DDF2FF" stroke-opacity=".8" stroke-width="3.2" stroke-linecap="round"/>` +
-          (bruit(i, j, 7) > 0.8 ? `<circle cx="${n1(X + 14)}" cy="${n1(Y - 10)}" r="2.6" fill="#FFFFFF" opacity=".75"/>` : '');
-      });
-      dessus = `<path d="${interieur}" fill="none" stroke="#1D5E96" stroke-opacity=".55" stroke-width="5" mask="url(#hors-interieur)"/>`;
+      // mare : berge de sable, eau profonde au centre, ondulations éclairées, reflets, bord ombré
+      defs += filtreGrain('f-sable', '.6', 1.2, 0.85) +
+        `<linearGradient id="g-profond" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="800" y2="800"><stop offset="0" stop-color="#3B9BE0"/><stop offset="1" stop-color="#1F6CB0"/></linearGradient>` +
+        `<filter id="f-eau" ${zone}>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".011 .032" numOctaves="3" seed="${G}" result="vagues"/>` +
+        `<feDiffuseLighting in="vagues" surfaceScale="5" diffuseConstant="1" lighting-color="#fff" result="relief">${lumiere(250, 60)}</feDiffuseLighting>` +
+        `<feSpecularLighting in="vagues" surfaceScale="6" specularConstant="1.2" specularExponent="30" lighting-color="#fff" result="reflets">${lumiere(250, 38)}</feSpecularLighting>` +
+        `<feComposite in="SourceGraphic" in2="relief" operator="arithmetic" k1=".75" k2=".42" result="x1"/>` +
+        `<feComposite in="x1" in2="reflets" operator="arithmetic" k2="1" k3=".7" result="x2"/>` +
+        ombreInterieure('x2', 6, 7, '#0A3157', 0.75, 'x3') +
+        `<feComposite in="x3" in2="SourceAlpha" operator="in"/></filter>` +
+        `<filter id="f-berge" ${zone}>` + ombreInterieure('SourceGraphic', 2.5, 2, '#7A6440', 0.5, 'b') + `</filter>`;
+      corps = `<path d="${exterieur}" fill="#D9C79B" filter="url(#f-sable)"/>` +
+        bordExterieur('#9C8458', 0.6) +
+        `<path d="${interieur}" fill="url(#g-profond)" filter="url(#f-eau)"/>`;
     } else if (theme === 'lave') {
-      dessous = `<path d="${interieur}" transform="translate(0 7)" fill="${M.creux}"/>`;
-      decor = grille(46, 40, (X, Y, i, j) => {
-        if (!utile(X, Y, 26)) return '';
-        // plaques de croûte sombre, fissures brillantes, bulles
-        const a = bruit(i, j, 8) * 6.28, w = 14 + bruit(i, j, 9) * 9, h = 9 + bruit(i, j, 10) * 6;
-        let t = `<ellipse cx="${n1(X)}" cy="${n1(Y)}" rx="${n1(w)}" ry="${n1(h)}" transform="rotate(${n1(a * 57.3)} ${n1(X)} ${n1(Y)})" fill="#5E1608" opacity=".55"/>`;
-        if (bruit(i, j, 11) > 0.45) t += `<path d="M${n1(X - 18)} ${n1(Y + 14)}q9-8 18-2t18-4" fill="none" stroke="#FFC23D" stroke-width="2.6" stroke-linecap="round"/>`;
-        if (bruit(i, j, 12) > 0.7) t += `<circle cx="${n1(X + 16)}" cy="${n1(Y - 12)}" r="${n1(3 + bruit(i, j, 13) * 3)}" fill="#FFE07A"/><circle cx="${n1(X + 15)}" cy="${n1(Y - 13)}" r="1.4" fill="#FFFFFF" opacity=".8"/>`;
-        return t;
+      // coulée : croûte de basalte, lave en fusion (bruit coloré du rouge sombre au jaune),
+      // plaques refroidies qui flottent, lueur sur la croûte, bord ombré
+      defs += filtreGrain('f-basalte', '.28', 2, 0.95) +
+        `<filter id="f-lueur" ${zone}><feGaussianBlur stdDeviation="9"/></filter>` +
+        `<filter id="f-lave" ${zone}>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="4" seed="${G}" result="b1"/>` +
+        `<feColorMatrix in="b1" type="matrix" values="2.8 0 0 0 -.9  2.8 0 0 0 -.9  2.8 0 0 0 -.9  0 0 0 0 1" result="gris"/>` +
+        `<feComponentTransfer in="gris" result="fusion">` +
+        `<feFuncR type="table" tableValues=".42 .72 .93 1 1"/><feFuncG type="table" tableValues=".05 .14 .33 .62 .9"/><feFuncB type="table" tableValues=".02 .03 .05 .12 .45"/></feComponentTransfer>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".032" numOctaves="3" seed="${G + 5}" result="b2"/>` +
+        `<feColorMatrix in="b2" type="matrix" values="0 0 0 0 .2  0 0 0 0 .08  0 0 0 0 .06  -11 0 0 0 5" result="plaques"/>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".3" numOctaves="3" seed="${G + 7}" result="rugo"/>` +
+        `<feDiffuseLighting in="rugo" surfaceScale="2" diffuseConstant="1.1" lighting-color="#fff" result="lrugo">${lumiere()}</feDiffuseLighting>` +
+        `<feComposite in="plaques" in2="lrugo" operator="arithmetic" k1="1" k2=".2" result="plaquesR"/>` +
+        `<feComposite in="plaquesR" in2="plaques" operator="in" result="plaquesF"/>` +
+        `<feMerge result="x1"><feMergeNode in="fusion"/><feMergeNode in="plaquesF"/></feMerge>` +
+        ombreInterieure('x1', 5, 5, '#1A0703', 0.8, 'x2') +
+        `<feComposite in="x2" in2="SourceAlpha" operator="in"/></filter>`;
+      corps = `<path d="${exterieur}" fill="#2E2622" filter="url(#f-basalte)"/>` +
+        `<path d="${interieur}" fill="#FF6A1A" opacity=".85" filter="url(#f-lueur)"/>` +
+        `<path d="${interieur}" fill="#000" filter="url(#f-lave)"/>`;
+    } else { // buisson : haie de touffes bombées (chacune éclairée en haut à gauche), contour feuillu, baies
+      const teintes = [['#7DCB6F', '#3E9A4A', '#1D5A2A'], ['#8AD27A', '#47A453', '#22652F'], ['#6FBF64', '#358E43', '#184F24'], ['#94D884', '#4FAD59', '#286E34']];
+      let gradients = '';
+      teintes.forEach(([a, b, c], k) => {
+        gradients += `<radialGradient id="g-touffe-${k}" cx=".5" cy=".5" r=".55" fx=".34" fy=".3">` +
+          `<stop offset="0" stop-color="${a}"/><stop offset=".55" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`;
       });
-      dessus = `<path d="${interieur}" fill="none" stroke="#FF9A2E" stroke-opacity=".8" stroke-width="5" mask="url(#hors-interieur)"/>`;
-    } else { // buisson : feuillage en boules qui débordent un peu (contour bosselé), reflets, baies
-      const teintes = ['#3F9A52', '#4CAB5D', '#58B868', '#378C49'];
-      const boules = grille(30, 26, (X, Y, i, j) => {
-        if (!dedansObstacle(X, Y, 13)) return '';
-        const r = 16 + bruit(i, j, 14) * 5;
-        return `<circle cx="${n1(X)}" cy="${n1(Y)}" r="${n1(r)}" fill="${teintes[Math.floor(bruit(i, j, 15) * teintes.length)]}" stroke="#215C32" stroke-width="1.8"/>` +
-          `<circle cx="${n1(X - r * 0.35)}" cy="${n1(Y - r * 0.38)}" r="${n1(r * 0.3)}" fill="#9BDA97" opacity=".55"/>` +
-          (bruit(i, j, 16) > 0.86 ? `<circle cx="${n1(X + r * 0.3)}" cy="${n1(Y + r * 0.25)}" r="3.4" fill="#D8433A"/><circle cx="${n1(X + r * 0.3 - 1)}" cy="${n1(Y + r * 0.25 - 1)}" r="1.1" fill="#FFFFFF" opacity=".8"/>` : '');
+      const liste = [];
+      grille(30, 26, (X, Y, i, j) => {
+        if (dedansObstacle(X, Y, 13)) liste.push({ X, Y, r: 18 + bruit(i, j, 14) * 7, k: Math.floor(bruit(i, j, 15) * teintes.length), i, j });
+        return '';
       });
-      return `<defs><filter id="flou-obstacles" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"/></filter></defs>` +
-        ombre + `<path d="${exterieur}" fill="${M.bord}"/><path d="${interieur}" fill="${M.fond}"/>` + boules;
+      liste.sort((a, b) => a.Y - b.Y); // celles du bas recouvrent celles du haut
+      const touffes = liste.map(t => `<circle cx="${n1(t.X)}" cy="${n1(t.Y)}" r="${n1(t.r)}" fill="url(#g-touffe-${t.k})"/>`).join('');
+      const baies = liste.filter(t => bruit(t.i, t.j, 16) > 0.84).map(t => {
+        const x = t.X + (bruit(t.i, t.j, 17) - 0.2) * 10, y = t.Y + (bruit(t.i, t.j, 18) - 0.2) * 10;
+        return `<circle cx="${n1(x)}" cy="${n1(y)}" r="3.8" fill="#C42F2A"/><circle cx="${n1(x + 5.5)}" cy="${n1(y + 2.5)}" r="3.4" fill="#A9231E"/>` +
+          `<circle cx="${n1(x - 1.2)}" cy="${n1(y - 1.3)}" r="1.2" fill="#FFFFFF" opacity=".85"/>`;
+      }).join('');
+      defs += gradients + `<filter id="f-haie" ${zone}>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".11" numOctaves="3" seed="${G}" result="contour"/>` +
+        `<feDisplacementMap in="SourceGraphic" in2="contour" scale="13" xChannelSelector="R" yChannelSelector="G" result="forme"/>` +
+        `<feTurbulence type="fractalNoise" baseFrequency=".2" numOctaves="2" seed="${G + 2}" result="feuilles"/>` +
+        `<feDiffuseLighting in="feuilles" surfaceScale="2.6" diffuseConstant="1" lighting-color="#fff" result="lfeuilles">${lumiere(235, 58)}</feDiffuseLighting>` +
+        `<feComposite in="forme" in2="lfeuilles" operator="arithmetic" k1=".75" k2=".4" result="x1"/>` +
+        `<feComposite in="x1" in2="forme" operator="in"/></filter>`;
+      corps = `<path d="${exterieur}" transform="translate(4 11)" fill="#0E2414" opacity=".5" filter="url(#f-ombre)"/>` +
+        `<g filter="url(#f-haie)"><path d="${interieur}" fill="#1B4F26"/>${touffes}</g>${baies}`;
     }
-    return `<defs><filter id="flou-obstacles" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"/></filter>` +
-      `<clipPath id="clip-obstacles"><path d="${interieur}"/></clipPath>` +
-      `<mask id="hors-interieur" maskUnits="userSpaceOnUse" x="-20" y="-20" width="840" height="840"><rect x="-20" y="-20" width="840" height="840" fill="#fff"/><path d="${interieur}" fill="#000"/></mask></defs>` +
-      ombre + `<path d="${exterieur}" fill="${M.bord}"/><path d="${interieur}" fill="${M.fond}"/>` +
-      `<g clip-path="url(#clip-obstacles)">${dessous}${decor}</g>${dessus}`;
+    return `<defs>${defs}</defs>${corps}`;
   }
 
   // ---------- État ----------
@@ -271,14 +342,23 @@
     const ancien = plateau.querySelector('.calque-obstacles');
     if (ancien) ancien.remove();
     plateau.insertAdjacentHTML('beforeend',
-      `<svg class="calque-obstacles" viewBox="0 0 800 800" aria-hidden="true">${dessinCalque(jeu.theme, jeu.laby.obstacles)}</svg>`);
+      `<svg class="calque-obstacles" viewBox="0 0 800 800" aria-hidden="true">${dessinCalque(jeu.theme, jeu.laby.obstacles, jeu.laby.graine)}</svg>`);
     majBulle();
+  }
+  // petite image d'un obstacle seul (boutons, bulle du cavalier), avec ses propres identifiants
+  function imageObstacle(theme, suffixe) {
+    const contenu = dessinCalque(theme, new Set(['d4']), 11)
+      .replace(/id="([^"]+)"/g, `id="$1-${suffixe}"`).replace(/url\(#([^)]+)\)/g, `url(#$1-${suffixe})`);
+    return contenu;
   }
   // bulle d'explication pour le cavalier (avec la matière en cours)
   function majBulle() {
     const cavalier = jeu.laby.piece === 'cavalier';
     $('bulle-cavalier').hidden = !cavalier;
-    if (cavalier) $('bulle-obstacle').setAttribute('href', `#obstacle-${jeu.theme}`);
+    if (cavalier && $('bulle-obstacle').dataset.theme !== jeu.theme) {
+      $('bulle-obstacle').innerHTML = imageObstacle(jeu.theme, 'bulle');
+      $('bulle-obstacle').dataset.theme = jeu.theme;
+    }
   }
   function poserPiece(c) {
     const ancienne = plateau.querySelector('.piece-laby');
@@ -676,9 +756,13 @@
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
+  // boutons des obstacles : même rendu que sur l'échiquier
+  $('choix-obstacle').querySelectorAll('button[data-valeur]:not([data-valeur="hasard"])').forEach(b => {
+    b.querySelector('svg').outerHTML = `<svg viewBox="298 398 104 104" aria-hidden="true">${imageObstacle(b.dataset.valeur, `bouton-${b.dataset.valeur}`)}</svg>`;
+  });
   majNiveau();
   appliquerCoord();
   lancerLibre();
   // pour les tests
-  window.Labyrinthe = { generer, parcourir, coups, chemin, etat: () => jeu, defi: () => defi };
+  window.Labyrinthe = { generer, parcourir, coups, chemin, etat: () => jeu, defi: () => defi, dessinCalque };
 })();
