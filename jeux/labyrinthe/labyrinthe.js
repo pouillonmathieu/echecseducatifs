@@ -78,11 +78,15 @@
   const NIVEAUX = {
     facile: { detour: false, cavalier: [[6, 10], [2, 3]], fou: [[8, 12], [2, 3]], tour: [[8, 12], [2, 3]], dame: [[10, 16], [2, 3]] },
     moyen: { detour: true, cavalier: [[12, 18], [3, 5]], fou: [[16, 22], [3, 5]], tour: [[16, 24], [3, 5]], dame: [[20, 28], [3, 4]] },
-    difficile: { detour: true, cavalier: [[16, 24], [5, 7]], fou: [[20, 28], [5, 7]], tour: [[22, 30], [5, 7]], dame: [[24, 32], [4, 6]] },
+    difficile: { detour: true, cavalier: [[18, 28], [6, 8]], fou: [[24, 34], [6, 10]], tour: [[26, 36], [6, 10]], dame: [[28, 40], [6, 10]] },
   };
   function generer(piece, niveau = 'moyen') {
     const N = NIVEAUX[niveau];
     const [nbObstacles, longueur] = N[piece];
+    // longueur visée tirée au hasard dans la fourchette (sinon on aurait presque toujours la plus courte) ;
+    // si elle tarde à venir, on accepte la plus proche
+    const visee = entre(...longueur);
+    let meilleur = null;
     for (let essai = 0; essai < 4000; essai++) {
       // des petits murs (1 à 4 cases, en ligne ou en colonne), comme sur une fiche d'exercices
       const obstacles = new Set();
@@ -102,11 +106,16 @@
       const maisons = Object.keys(avec).filter(c => avec[c] >= (relache ? 2 : longueur[0]) && avec[c] <= longueur[1] &&
         (!N.detour || piece === 'cavalier' || relache || avec[c] > sans[c]));
       if (maisons.length) {
-        const maison = auHasard(maisons);
-        return { piece, obstacles, depart, maison, optimal: avec[maison], graine: entre(1, 999) };
+        const ecart = (c) => Math.abs(avec[c] - visee);
+        const proches = maisons.filter(c => ecart(c) === Math.min(...maisons.map(ecart)));
+        const maison = auHasard(proches);
+        const L = { piece, obstacles, depart, maison, optimal: avec[maison], graine: entre(1, 999) };
+        if (ecart(maison) === 0) return L;
+        if (!meilleur || ecart(maison) < Math.abs(meilleur.optimal - visee)) meilleur = L;
+        if (essai > 1200 && meilleur) return meilleur;
       }
     }
-    return null;
+    return meilleur;
   }
 
   // ---------- Dessin des obstacles ----------
@@ -813,7 +822,8 @@
   // ---------- Réglages ----------
   brancherBoutonTheme($('btn-theme'));
   brancherReglages($('btn-reglages'), $('panneau-reglages'));
-  const segNiveau = [...$('reg-niveau').querySelectorAll('button')];
+  // niveau : choisi au-dessus de l'échiquier
+  const segNiveau = [...$('choix-difficulte').querySelectorAll('button')];
   const majNiveau = () => segNiveau.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.niveau === reglages.niveau)));
   segNiveau.forEach(b => b.addEventListener('click', () => {
     if (reglages.niveau === b.dataset.niveau) return;

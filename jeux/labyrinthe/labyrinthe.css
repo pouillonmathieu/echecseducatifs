@@ -45,6 +45,10 @@
 .choix-ligne svg { width: 100%; height: 100%; }
 .choix-ligne svg.de { width: 78%; height: 78%; }
 #choix-obstacle svg:not(.de) { border-radius: 8px; overflow: hidden; }
+/* niveau : 1, 2 ou 3 barres */
+.choix-niveau button { width: 40px; }
+.barres .pleine { fill: var(--accent); }
+.barres .vide { fill: var(--encre-douce); opacity: .25; }
 
 /* ---------- Échiquier ---------- */
 .plateau-laby .case-e { cursor: pointer; }
