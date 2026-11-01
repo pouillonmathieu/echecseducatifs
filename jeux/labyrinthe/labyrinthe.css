@@ -1,0 +1,168 @@
+/* Jeu : le labyrinthe
+   Le choix (pièce, obstacles) au-dessus de l'échiquier ; à droite la consigne, les compteurs et les outils
+   (l'un sous l'autre sur téléphone). */
+.ecran-laby { max-width: 1060px; }
+
+.jeu-laby {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  align-items: center;
+  gap: 28px;
+}
+.colonne-plateau { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
+.plateau-laby {
+  width: min(100%, 560px, calc(100vh - 230px));
+  width: min(100%, 560px, calc(100dvh - 230px));
+}
+
+/* ---------- Choix de la pièce et des obstacles ---------- */
+.choix-laby { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; }
+.choix-ligne {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+}
+.choix-ligne button {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 5px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--encre);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.choix-ligne button:hover { background: var(--surface-2); }
+.choix-ligne button:active { transform: scale(.94); }
+.choix-ligne button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-doux); }
+.choix-ligne svg { width: 100%; height: 100%; }
+.choix-ligne svg.de { width: 78%; height: 78%; }
+#choix-obstacle svg:not(.de) { border-radius: 8px; overflow: hidden; }
+
+/* ---------- Échiquier ---------- */
+.plateau-laby .case-e { cursor: pointer; }
+.plateau-laby .case-e.bloquee { cursor: not-allowed; }
+.obstacle { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.piece-laby { z-index: 2; cursor: pointer; }
+
+/* la maison : un contour de maison doré et le fantôme de la pièce */
+.maison-dessin { position: absolute; inset: 4%; width: 92%; height: 92%; pointer-events: none; }
+.maison-trace { fill: rgba(242, 184, 39, .28); stroke: #E0A526; stroke-width: 5; stroke-linejoin: round; }
+.maison-fantome { opacity: .55; }
+.case-e.maison::after { opacity: 1; box-shadow: inset 0 0 0 3px rgba(224, 165, 38, .9); }
+/* la pièce arrivée : la maison s'illumine */
+.case-e.maison:has(.piece-laby) .maison-fantome { opacity: 0; }
+.case-e.maison:has(.piece-laby) .maison-trace { fill: rgba(242, 184, 39, .65); }
+
+/* cases où la pièce peut aller */
+.case-e.possible::after { opacity: 1; background: radial-gradient(circle, rgba(24, 30, 40, .32) 0 16%, transparent 18%); }
+.case-e.possible.maison::after { background: radial-gradient(circle, rgba(24, 30, 40, .32) 0 16%, transparent 18%); box-shadow: inset 0 0 0 3px rgba(224, 165, 38, .9); }
+.case-e.chemin::after { opacity: 1; background: rgba(47, 163, 107, .18); }
+.case-e.refus { animation: refus .45s; }
+@keyframes refus { 20%, 60% { box-shadow: inset 0 0 0 4cqi rgba(214, 69, 50, .55); } }
+
+/* numéros du chemin (joué, ou solution en pointillé) */
+.etape {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  min-width: 3.4cqi;
+  height: 3.4cqi;
+  padding: 0 .6cqi;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-size: 2.3cqi;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+.etape.solution { background: #FFFFFF; color: var(--accent); box-shadow: inset 0 0 0 .35cqi var(--accent); }
+.case-e:has(.etape.solution)::after { opacity: 1; background: rgba(255, 255, 255, .28); box-shadow: inset 0 0 0 .5cqi rgba(47, 163, 107, .8); }
+
+/* ---------- Panneau ---------- */
+.panneau-laby { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.maison-question { flex: none; width: 42px; height: 42px; padding: 7px; box-sizing: border-box; border-radius: 12px; background: rgba(242, 184, 39, .25); color: #C88A12; }
+.compteurs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.compteur {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+}
+.c-val { font-size: 34px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.c-lab { font-size: 13px; color: var(--encre-douce); }
+.compteur.objectif .c-val { color: var(--accent); }
+.compteur.depasse .c-val { color: var(--alerte); }
+
+.actions-laby { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.outil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px 8px;
+  border: 2px solid var(--ligne);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--encre);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, opacity .15s;
+}
+.outil:hover:not(:disabled) { border-color: var(--accent); }
+.outil:active:not(:disabled) { transform: scale(.96); }
+.outil:disabled { opacity: .4; cursor: default; }
+.outil svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.outil.principal { background: var(--accent); border-color: var(--accent); color: var(--sur-accent); }
+.res-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.astuce { margin: 0; font-size: 13px; color: var(--encre-douce); line-height: 1.4; }
+
+/* résultat */
+.res-laby { margin: 0 0 18px; font-size: 17px; line-height: 1.5; text-align: center; }
+.res-laby small { color: var(--encre-douce); font-size: 14px; }
+
+@media (max-width: 860px) {
+  .jeu-laby { grid-template-columns: 1fr; gap: 14px; align-content: start; }
+  .plateau-laby { width: min(100%, 520px, calc(100dvh - 380px)); min-width: min(100%, 290px); }
+  .panneau-laby { width: min(100%, 520px); justify-self: center; gap: 10px; }
+  .question { font-size: 17px; padding: 10px 12px; }
+  .maison-question { width: 36px; height: 36px; }
+  .compteurs { grid-template-columns: 1fr 1fr; }
+  .compteur { flex-direction: row; justify-content: center; gap: 8px; padding: 8px; }
+  .c-val { font-size: 26px; }
+  .astuce { display: none; }
+}
+@media (max-width: 420px) {
+  .choix-laby { gap: 8px; }
+  .choix-ligne button { width: 40px; height: 40px; padding: 4px; }
+}

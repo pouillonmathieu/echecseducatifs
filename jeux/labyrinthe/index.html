@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Mathieu Pouillon">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le labyrinthe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../css/commun.css">
+<link rel="stylesheet" href="../../css/jeux.css">
+<link rel="stylesheet" href="../../css/echiquier.css">
+<link rel="stylesheet" href="labyrinthe.css">
+<script src="../../js/commun.js"></script>
+</head>
+<body>
+<!-- obstacles (une case chacun), maison et icônes -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-eau" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FB0EA"/><stop offset="1" stop-color="#2F7FC4"/></linearGradient>
+    <radialGradient id="g-lave" cx=".5" cy=".5" r=".7"><stop offset="0" stop-color="#FF9A3C"/><stop offset=".55" stop-color="#E0451F"/><stop offset="1" stop-color="#8E1F10"/></radialGradient>
+  </defs>
+  <symbol id="obstacle-pierre" viewBox="0 0 100 100">
+    <rect x="3" y="3" width="94" height="94" rx="16" fill="#7D8189" stroke="#454850" stroke-width="3"/>
+    <g stroke="#4F535B" stroke-width="2.5">
+      <ellipse cx="26" cy="24" rx="16" ry="13" fill="#C3C6CC"/>
+      <ellipse cx="64" cy="20" rx="20" ry="12" fill="#A9ADB4"/>
+      <ellipse cx="81" cy="47" rx="12" ry="15" fill="#B9BDC3"/>
+      <ellipse cx="45" cy="51" rx="19" ry="14" fill="#9DA1A8"/>
+      <ellipse cx="16" cy="60" rx="10" ry="14" fill="#B1B5BB"/>
+      <ellipse cx="62" cy="79" rx="20" ry="13" fill="#C7CACF"/>
+      <ellipse cx="25" cy="85" rx="14" ry="9" fill="#A3A7AE"/>
+      <ellipse cx="88" cy="81" rx="7" ry="11" fill="#9A9EA5"/>
+    </g>
+    <path d="M18 19q6-5 13-2M56 14q8-3 15 0M37 46q7-4 14-1M54 74q8-4 16-1" fill="none" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="obstacle-eau" viewBox="0 0 100 100">
+    <rect x="0" y="0" width="100" height="100" fill="url(#g-eau)"/>
+    <g fill="none" stroke="#DDF1FF" stroke-width="5" stroke-linecap="round" stroke-opacity=".9">
+      <path d="M8 26q10-9 20 0t20 0"/>
+      <path d="M52 48q10-9 20 0t20 0"/>
+      <path d="M14 72q10-9 20 0t20 0"/>
+    </g>
+    <circle cx="80" cy="22" r="4" fill="#DDF1FF" opacity=".8"/><circle cx="70" cy="84" r="3" fill="#DDF1FF" opacity=".7"/>
+  </symbol>
+  <symbol id="obstacle-lave" viewBox="0 0 100 100">
+    <rect x="0" y="0" width="100" height="100" fill="url(#g-lave)"/>
+    <g fill="#3A0E07" opacity=".55">
+      <path d="M0 18l22 6 14-8 18 10L72 14 100 22V0H0Z"/>
+      <path d="M0 64l18-6 10 10 20-4L40 86 0 92Z"/>
+      <path d="M100 58L78 66 70 84 88 100H100Z"/>
+    </g>
+    <g fill="#FFD25A">
+      <circle cx="46" cy="44" r="7"/><circle cx="62" cy="58" r="4.5"/><circle cx="28" cy="40" r="3.5"/>
+    </g>
+    <path d="M30 52q8-10 18-4t20-2" fill="none" stroke="#FFE59A" stroke-width="3.5" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="obstacle-buisson" viewBox="0 0 100 100">
+    <g stroke="#1F5E33" stroke-width="3">
+      <circle cx="30" cy="62" r="24" fill="#3C9450"/>
+      <circle cx="70" cy="62" r="24" fill="#3C9450"/>
+      <circle cx="50" cy="38" r="27" fill="#47A65B"/>
+      <circle cx="24" cy="36" r="16" fill="#47A65B"/>
+      <circle cx="77" cy="36" r="16" fill="#47A65B"/>
+      <circle cx="50" cy="74" r="20" fill="#3C9450"/>
+    </g>
+    <g fill="#7CCB7E"><circle cx="42" cy="28" r="7"/><circle cx="22" cy="31" r="4.5"/><circle cx="71" cy="30" r="5"/><circle cx="60" cy="56" r="5"/></g>
+    <g fill="#D8433A"><circle cx="34" cy="58" r="3.6"/><circle cx="66" cy="72" r="3.6"/><circle cx="74" cy="44" r="3.2"/></g>
+  </symbol>
+  <symbol id="ico-maison" viewBox="0 0 24 24">
+    <path d="M3.5 11.5 12 4l8.5 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M6 10v9.5h12V10" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ico-hasard" viewBox="0 0 24 24">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <g fill="currentColor"><circle cx="8.3" cy="8.3" r="1.5"/><circle cx="15.7" cy="8.3" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.3" cy="15.7" r="1.5"/><circle cx="15.7" cy="15.7" r="1.5"/></g>
+  </symbol>
+</svg>
+
+<main class="ecran ecran-laby">
+  <header class="barre">
+    <a class="bouton-icone" href="../../index.html" aria-label="Retour à l'accueil" title="Accueil" data-hors-artifact>
+      <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>
+    </a>
+    <h1 class="titre">Le labyrinthe</h1>
+    <button id="btn-theme" class="bouton-icone bouton-theme" type="button">
+      <svg class="icone-lune" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
+      <svg class="icone-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+    </button>
+    <div class="reglages">
+      <button id="btn-reglages" class="bouton-icone" type="button" aria-label="Réglages" title="Réglages" aria-controls="panneau-reglages" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+      </button>
+      <div id="panneau-reglages" class="panneau" hidden>
+        <button id="reg-possibles" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/></svg>
+          <span>Toujours montrer les cases possibles<small>Sinon, touche la pièce pour les voir</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-coordonnees" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3.5 6v2M3.5 11v2M10 21h2M15 21h2"/></svg>
+          <span>Lettres et chiffres</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-son" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+          <span>Son</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="jeu-laby">
+    <div class="colonne-plateau">
+      <!-- choix de la pièce et des obstacles (au hasard par défaut) -->
+      <div class="choix-laby">
+        <div class="choix-ligne" id="choix-piece" role="group" aria-label="Pièce">
+          <button type="button" data-valeur="cavalier" aria-label="Cavalier" title="Cavalier"><svg viewBox="0 0 100 100"><use href="#piece-cavalier-noir"/></svg></button>
+          <button type="button" data-valeur="fou" aria-label="Fou" title="Fou"><svg viewBox="0 0 100 100"><use href="#piece-fou-noir"/></svg></button>
+          <button type="button" data-valeur="tour" aria-label="Tour" title="Tour"><svg viewBox="0 0 100 100"><use href="#piece-tour-noir"/></svg></button>
+          <button type="button" data-valeur="dame" aria-label="Dame" title="Dame"><svg viewBox="0 0 100 100"><use href="#piece-dame-noir"/></svg></button>
+          <button type="button" data-valeur="hasard" aria-label="Pièce au hasard" title="Au hasard"><svg viewBox="0 0 24 24" class="de"><use href="#ico-hasard"/></svg></button>
+        </div>
+        <div class="choix-ligne" id="choix-obstacle" role="group" aria-label="Obstacles">
+          <button type="button" data-valeur="pierre" aria-label="Pierres" title="Pierres"><svg viewBox="0 0 100 100"><use href="#obstacle-pierre"/></svg></button>
+          <button type="button" data-valeur="eau" aria-label="Eau" title="Eau"><svg viewBox="0 0 100 100"><use href="#obstacle-eau"/></svg></button>
+          <button type="button" data-valeur="lave" aria-label="Lave" title="Lave"><svg viewBox="0 0 100 100"><use href="#obstacle-lave"/></svg></button>
+          <button type="button" data-valeur="buisson" aria-label="Buissons" title="Buissons"><svg viewBox="0 0 100 100"><use href="#obstacle-buisson"/></svg></button>
+          <button type="button" data-valeur="hasard" aria-label="Obstacles au hasard" title="Au hasard"><svg viewBox="0 0 24 24" class="de"><use href="#ico-hasard"/></svg></button>
+        </div>
+      </div>
+      <div id="echiquier" class="plateau-laby"></div>
+    </div>
+
+    <div class="panneau-laby">
+      <p class="question" aria-live="polite">
+        <svg class="maison-question" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-maison"/></svg>
+        <span id="consigne">Ramène la pièce à sa maison</span>
+      </p>
+      <div class="compteurs">
+        <div class="compteur">
+          <span class="c-val" id="nb-coups">0</span>
+          <span class="c-lab">coups joués</span>
+        </div>
+        <div class="compteur objectif">
+          <span class="c-val" id="nb-optimal">0</span>
+          <span class="c-lab">le plus court</span>
+        </div>
+      </div>
+      <div class="actions-laby">
+        <button id="btn-annuler" class="outil" type="button" aria-label="Annuler le dernier coup" title="Annuler">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+          <span>Annuler</span>
+        </button>
+        <button id="btn-recommencer" class="outil" type="button" aria-label="Recommencer ce labyrinthe" title="Recommencer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
+          <span>Recommencer</span>
+        </button>
+        <button id="btn-solution" class="outil" type="button" aria-label="Montrer le chemin le plus court" title="Solution">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z"/></svg>
+          <span>Solution</span>
+        </button>
+        <button id="btn-nouveau" class="outil principal" type="button" aria-label="Nouveau labyrinthe" title="Nouveau labyrinthe">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>
+          <span>Nouveau</span>
+        </button>
+      </div>
+      <p class="astuce">Touche une case pour y aller. Touche la pièce pour voir où elle peut aller.</p>
+    </div>
+  </section>
+
+  <footer class="signature">Créé par Mathieu Pouillon</footer>
+</main>
+
+<!-- arrivée à la maison -->
+<div id="resultats" class="voile" hidden>
+  <div class="pluie" id="pluie" aria-hidden="true"></div>
+  <div class="carte-resultats" role="dialog" aria-modal="true" aria-labelledby="res-titre">
+    <div class="etoiles" id="etoiles" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+    </div>
+    <h2 id="res-titre" class="res-titre">Bravo !</h2>
+    <p class="res-laby" id="res-detail"></p>
+    <div class="res-actions">
+      <button id="btn-res-nouveau" class="bouton-principal" type="button" aria-label="Nouveau labyrinthe">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>
+        Nouveau
+      </button>
+      <button id="btn-res-rejouer" class="bouton-secondaire" type="button" aria-label="Rejouer ce labyrinthe">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
+        Rejouer
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/pieces.js"></script>
+<script src="../../js/sons.js"></script>
+<script src="../../js/ui.js"></script>
+<script src="../../js/echiquier.js"></script>
+<script src="labyrinthe.js"></script>
+</body>
+</html>
