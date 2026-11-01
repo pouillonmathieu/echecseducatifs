@@ -1,5 +1,5 @@
 /* Note le coup
-   L'échiquier montre le dernier coup joué (case de départ et d'arrivée en vert). La feuille de partie
+   L'échiquier montre le dernier coup joué (case de départ et d'arrivée en jaune). La feuille de partie
    reprend les 3 coups d'avant et laisse une case vide : il faut y écrire le dernier coup.
    Niveaux : facile (coups simples, prises) ou difficile (échec, mat, pièce à préciser, roque,
    promotion, prise en passant). Notation en français ou en anglais.
@@ -89,7 +89,8 @@
     jeu.coup = coup;
     jeu.repondu = false;
     jeu.jetons = [];
-    Echiquier.dessiner(plateau, coup.fen);
+    // l'échiquier est vu du côté de celui qui vient de jouer
+    Echiquier.dessiner(plateau, coup.fen, { orientation: coup.trait });
     Echiquier.marquer(plateau, [coup.de], 'depart');
     Echiquier.marquer(plateau, [coup.a], 'arrivee');
     $('roi-question').setAttribute('href', `#piece-roi-${coup.trait}`);
@@ -309,7 +310,7 @@
     if (/^[a-h]/.test(bonne) && ecrit.replace(/^[A-Z]/, '') === bonne) return 'C\'est un pion qui a joué : pas de lettre devant.';
     if (/^[A-Z]/.test(bonne) && ecrit === bonne.slice(1)) return `C'est ${le(PIECES[c.san[0]])} ${PIECES[c.san[0]]} qui a joué : on écrit d'abord sa lettre, ${bonne[0]}.`;
     if (/^[A-Z]/.test(bonne) && ecrit.slice(1) === bonne.slice(1) && /^[A-Z]/.test(ecrit)) return `Ce n'est pas la bonne pièce : c'est ${le(PIECES[c.san[0]])} ${PIECES[c.san[0]]} (${bonne[0]}) qui a joué.`;
-    if (!ecrit.includes(c.a) && !c.tags.includes('roque')) return `Regarde bien la case d'arrivée, en vert foncé : c'est ${c.a}.`;
+    if (!ecrit.includes(c.a) && !c.tags.includes('roque')) return `Regarde bien la case d'arrivée, en jaune foncé : c'est ${c.a}.`;
     return '';
   }
 
