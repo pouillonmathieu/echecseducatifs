@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dice chess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../css/commun.css">
+<link rel="stylesheet" href="../../css/jeux.css">
+<link rel="stylesheet" href="des.css">
+<script src="../../js/commun.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ico-de" viewBox="0 0 24 24">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="8.5" cy="8.5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.6" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<main class="ecran ecran-des">
+  <header class="barre">
+    <a class="bouton-icone" href="../../index.html" aria-label="Retour à l'accueil" title="Accueil" data-hors-artifact>
+      <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>
+    </a>
+    <h1 class="titre">Dice chess</h1>
+    <button id="btn-regles" class="bouton-icone" type="button" aria-label="Règles du jeu" title="Règles du jeu">
+      <svg viewBox="0 0 24 24"><path d="M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5V19c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5Z"/><path d="M12 6v13.5"/></svg>
+    </button>
+    <button id="btn-theme" class="bouton-icone bouton-theme" type="button">
+      <svg class="icone-lune" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
+      <svg class="icone-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+    </button>
+    <div class="reglages">
+      <button id="btn-reglages" class="bouton-icone" type="button" aria-label="Réglages" title="Réglages" aria-controls="panneau-reglages" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+      </button>
+      <div id="panneau-reglages" class="panneau" hidden>
+        <div class="ligne-reglage-bloc">
+          <span class="ligne-titre"><svg viewBox="0 0 24 24"><use href="#ico-de"/></svg>Dés par tour</span>
+          <div class="segments" id="reg-nombre" role="group" aria-label="Nombre de dés par tour">
+            <button type="button" data-nombre="1">1 dé<small>classique</small></button>
+            <button type="button" data-nombre="3">3 dés<small>moderne</small></button>
+          </div>
+        </div>
+        <button id="reg-face" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M9.5 7.5h5M9.5 16.5h5"/></svg>
+          <span>Face à face<small>Dés des Noirs retournés</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-chiffres" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M10 9.5l2-1.5v8"/></svg>
+          <span>Chiffres sur les dés</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-son" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+          <span>Son</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="zone zone-noir" data-cote="noir" aria-label="Dés des Noirs">
+    <div class="zone-tete">
+      <span class="zone-nom"><span class="puce-camp noir" aria-hidden="true"></span>Noirs</span>
+      <span class="zone-etat" id="etat-noir"></span>
+    </div>
+    <div class="des" id="des-noir"></div>
+    <button class="lancer" id="lancer-noir" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-de"/></svg>Lancer les dés
+    </button>
+  </section>
+
+  <section class="milieu" aria-label="Partie">
+    <p class="numero-tour" id="numero-tour">Tour 1</p>
+    <div class="actions-milieu">
+      <button id="btn-annuler" class="bouton-secondaire petit" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Annuler
+      </button>
+      <button id="btn-roi-pris" class="bouton-secondaire petit" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l4 4 4-7 4 7 4-4-2 11H6Z"/></svg>Roi capturé
+      </button>
+    </div>
+    <details class="historique">
+      <summary>Historique des lancers</summary>
+      <ol id="historique"></ol>
+    </details>
+  </section>
+
+  <section class="zone zone-blanc" data-cote="blanc" aria-label="Dés des Blancs">
+    <div class="zone-tete">
+      <span class="zone-nom"><span class="puce-camp blanc" aria-hidden="true"></span>Blancs</span>
+      <span class="zone-etat" id="etat-blanc"></span>
+    </div>
+    <div class="des" id="des-blanc"></div>
+    <button class="lancer" id="lancer-blanc" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-de"/></svg>Lancer les dés
+    </button>
+  </section>
+</main>
+
+<!-- écran d'entrée : règles ou partie -->
+<div id="entree" class="voile">
+  <div class="carte-entree" role="dialog" aria-modal="true" aria-labelledby="entree-titre">
+    <div class="entree-des" id="entree-des" aria-hidden="true"></div>
+    <h2 id="entree-titre">Dice chess</h2>
+    <p>Les échecs avec des dés : à chaque tour, les dés choisissent les pièces que tu vas jouer. Installe un vrai échiquier, et lance les dés ici.</p>
+    <div class="entree-actions">
+      <button id="btn-apprendre" class="bouton-secondaire" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5V19c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5Z"/><path d="M12 6v13.5"/></svg>
+        Apprendre les règles
+      </button>
+      <button id="btn-reprendre" class="bouton-principal" type="button" hidden>Reprendre la partie</button>
+      <button id="btn-commencer" class="bouton-principal" type="button">Nouvelle partie</button>
+    </div>
+  </div>
+</div>
+
+<!-- règles, en plusieurs étapes -->
+<div id="regles" class="voile" hidden>
+  <div class="carte-regles" role="dialog" aria-modal="true" aria-labelledby="regle-titre">
+    <div class="carte-choix-tete">
+      <p class="regle-compteur" id="regle-compteur">1 / 6</p>
+      <button id="btn-fermer-regles" class="bouton-icone" type="button" aria-label="Fermer les règles" title="Fermer">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="regle-illus" id="regle-illus" aria-hidden="true"></div>
+    <h2 id="regle-titre"></h2>
+    <div class="regle-texte" id="regle-texte"></div>
+    <div class="regle-nav">
+      <button id="regle-prec" class="bouton-secondaire" type="button">Précédent</button>
+      <ol class="points regle-points" id="regle-points" aria-hidden="true"></ol>
+      <button id="regle-suiv" class="bouton-principal" type="button">Suivant</button>
+    </div>
+  </div>
+</div>
+
+<!-- fin de partie -->
+<div id="fin" class="voile" hidden>
+  <div class="pluie" id="pluie" aria-hidden="true"></div>
+  <div class="carte-resultats" role="dialog" aria-modal="true" aria-labelledby="fin-titre">
+    <div id="fin-choix">
+      <h2 id="fin-titre" class="res-titre">Qui a capturé le roi ?</h2>
+      <div class="fin-camps">
+        <button class="fin-camp blanc" type="button" data-gagnant="blanc"><span class="puce-camp blanc grande" aria-hidden="true"></span>Les Blancs</button>
+        <button class="fin-camp noir" type="button" data-gagnant="noir"><span class="puce-camp noir grande" aria-hidden="true"></span>Les Noirs</button>
+      </div>
+      <button id="fin-annuler" class="bouton-secondaire" type="button">La partie continue</button>
+    </div>
+    <div id="fin-victoire" hidden>
+      <div class="couronne" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><use id="fin-roi" href="#piece-roi-blanc"/></svg>
+      </div>
+      <h2 class="res-titre" id="fin-message">Victoire des Blancs !</h2>
+      <p class="res-temps" id="fin-detail"></p>
+      <div class="res-actions">
+        <button id="fin-rejouer" class="bouton-principal" type="button">Nouvelle partie</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/pieces.js"></script>
+<script src="../../js/sons.js"></script>
+<script src="../../js/ui.js"></script>
+<script src="des.js"></script>
+</body>
+</html>

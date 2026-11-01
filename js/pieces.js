@@ -41,6 +41,12 @@
       '<rect x="32" y="44" width="36" height="9" rx="4.5"/>' +
       '<path d="M31 45 L23 20 L38 32 L50 14 L62 32 L77 20 L69 45 Z"/>' +
       '<circle cx="23" cy="18" r="5"/><circle cx="50" cy="11" r="5"/><circle cx="77" cy="18" r="5"/>',
+    // le roi n'a pas de valeur (il n'est pas dans PIECES) mais il est dessiné pour les jeux qui en ont besoin
+    roi: () =>
+      '<path d="M30 78 L35 51 H65 L70 78 Z"/>' +
+      '<rect x="31" y="43" width="38" height="9" rx="4.5"/>' +
+      '<path d="M34 44 C26 35 32 23 43 27 L50 31 L57 27 C68 23 74 35 66 44 Z"/>' +
+      '<path d="M46.5 5 H53.5 V12 H60 V18.5 H53.5 V27 H46.5 V18.5 H40 V12 H46.5 Z"/>',
   };
 
   function dessin(id, couleur) {
@@ -53,9 +59,9 @@
   function injecterSprite() {
     if (document.getElementById('sprite-pieces')) return;
     let symboles = '';
-    for (const p of PIECES) {
+    for (const id of Object.keys(FORMES)) {
       for (const c of ['blanc', 'noir']) {
-        symboles += `<symbol id="piece-${p.id}-${c}" viewBox="0 0 100 100">${dessin(p.id, c)}</symbol>`;
+        symboles += `<symbol id="piece-${id}-${c}" viewBox="0 0 100 100">${dessin(id, c)}</symbol>`;
       }
     }
     const boite = document.createElement('div');

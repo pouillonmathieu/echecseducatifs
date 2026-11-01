@@ -131,6 +131,11 @@
 .vignette .consigne-mini { font-family: var(--police); font-size: 24px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; }
 .vignette .fleche { fill: none; stroke: var(--encre); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0; }
 
+.vignette .de-blanc { fill: #FBF8F1; stroke: rgba(0, 0, 0, .14); stroke-width: 1; }
+.vignette .de-noir { fill: #2B2F3A; }
+.vignette .sur-de-blanc { --piece-noir: #2A2E38; --piece-noir-trait: #2A2E38; --piece-noir-detail: #FBF8F1; }
+.vignette .sur-de-noir { --piece-noir: #F1F2F4; --piece-noir-trait: #F1F2F4; --piece-noir-detail: #2B2F3A; }
+
 .pied { padding: 8px 0 4px; color: var(--encre-douce); font-size: 14px; text-align: center; }
 .pied p { margin: 0; }
 

@@ -1,0 +1,276 @@
+/* Jeu : dice chess
+   Mise en page : la zone des Noirs en haut, la partie au milieu, la zone des Blancs en bas
+   (comme de part et d'autre d'un échiquier). En face à face, la zone des Noirs est retournée. */
+:root {
+  --zone-blanc: #FBFBF8;
+  --zone-noir: #22252C;
+  --texte-zone-blanc: #2A2E38;
+  --texte-zone-noir: #F1F2F4;
+  --de-blanc-haut: #FFFFFF;
+  --de-blanc-bas: #E9E3D5;
+  --de-noir-haut: #474D60;
+  --de-noir-bas: #1B1E26;
+}
+
+.ecran-des { max-width: 760px; gap: 12px; }
+
+/* ---------- Zones des joueurs ---------- */
+.zone {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px 16px;
+  border-radius: 22px;
+  transition: box-shadow .25s, transform .4s;
+}
+.zone-blanc { background: var(--zone-blanc); color: var(--texte-zone-blanc); box-shadow: 0 0 0 1px var(--ligne); }
+.zone-noir { background: var(--zone-noir); color: var(--texte-zone-noir); box-shadow: 0 0 0 1px #000; }
+.zone.en-jeu { box-shadow: 0 0 0 3px var(--accent), 0 10px 26px rgba(0, 0, 0, .12); }
+body.face-a-face .zone-noir { transform: rotate(180deg); }
+
+.zone-tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 26px; }
+.zone-nom { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 17px; }
+.zone-etat { font-size: 14px; font-weight: 600; }
+.zone.en-jeu .zone-etat { padding: 3px 10px; border-radius: 999px; background: var(--accent); color: var(--sur-accent); }
+
+.puce-camp {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px currentColor;
+}
+.puce-camp.blanc { background: #FFFFFF; }
+.puce-camp.noir { background: #1B1E26; }
+.zone-noir .puce-camp.noir { box-shadow: 0 0 0 1.5px #F1F2F4; }
+.puce-camp.grande { width: 34px; height: 34px; }
+
+.des { display: flex; justify-content: center; gap: clamp(10px, 3vw, 20px); min-height: clamp(66px, 20vw, 108px); }
+.des-vide {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  color: inherit;
+  opacity: .55;
+  font-size: 15px;
+}
+
+.lancer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--sur-accent);
+  font: inherit;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform .1s, opacity .2s, background .2s;
+}
+.lancer svg { width: 24px; height: 24px; }
+.lancer:active { transform: scale(.97); }
+.lancer:disabled { cursor: default; background: transparent; color: inherit; opacity: .35; box-shadow: inset 0 0 0 1.5px currentColor; }
+.zone.a-lancer .lancer { animation: appel 1.8s ease-in-out infinite; }
+@keyframes appel {
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 30%, transparent); }
+}
+
+/* ---------- Dés ---------- */
+.de {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: clamp(66px, 20vw, 108px);
+  aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  border-radius: 22%;
+  font: inherit;
+  cursor: pointer;
+  transition: opacity .2s, transform .2s;
+}
+.de svg.piece { width: 72%; height: 72%; }
+.de.blanc {
+  background: linear-gradient(150deg, var(--de-blanc-haut), var(--de-blanc-bas));
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .07), inset 0 0 0 1px rgba(0, 0, 0, .12), 0 6px 14px rgba(0, 0, 0, .14);
+  /* la pièce est une silhouette foncée gravée dans le dé */
+  --piece-noir: #2A2E38;
+  --piece-noir-trait: #2A2E38;
+  --piece-noir-detail: #F4F0E6;
+  color: #2A2E38;
+}
+.de.noir {
+  background: linear-gradient(150deg, var(--de-noir-haut), var(--de-noir-bas));
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 6px 14px rgba(0, 0, 0, .3);
+  --piece-noir: #F1F2F4;
+  --piece-noir-trait: #F1F2F4;
+  --piece-noir-detail: #2B2F3A;
+  color: #F1F2F4;
+}
+.de .chiffre {
+  position: absolute;
+  top: 7%;
+  left: 10%;
+  font-size: clamp(11px, 2.6vw, 15px);
+  font-weight: 700;
+  opacity: .7;
+  display: none;
+}
+body.avec-chiffres .de .chiffre { display: block; }
+.de .coche {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--sur-accent);
+  box-shadow: 0 0 0 3px var(--surface);
+}
+.de .coche svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.de.joue { opacity: .4; transform: scale(.92); }
+.de.joue .coche { display: grid; }
+.de.ancien { opacity: .45; cursor: default; }
+
+.de.roule { animation: roule .14s linear infinite; }
+@keyframes roule {
+  0% { transform: rotate(0) translateY(0); }
+  25% { transform: rotate(12deg) translateY(-6px); }
+  50% { transform: rotate(-8deg) translateY(2px); }
+  75% { transform: rotate(10deg) translateY(-4px); }
+}
+.de.pose { animation: pose .45s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes pose { from { transform: scale(.7) rotate(-14deg); } }
+
+/* ---------- Milieu ---------- */
+.milieu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 2px 4px;
+}
+.numero-tour { margin: 0; font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; }
+.actions-milieu { display: flex; gap: 8px; }
+.bouton-secondaire.petit { min-height: 40px; padding: 0 14px; font-size: 14px; font-weight: 500; }
+.bouton-secondaire.petit svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.historique { flex: 1 1 100%; font-size: 14px; color: var(--encre-douce); }
+.historique summary { cursor: pointer; width: max-content; padding: 4px 0; }
+.historique ol {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.historique li { display: flex; align-items: center; gap: 10px; color: var(--encre); }
+.historique .h-tour { width: 56px; flex: none; color: var(--encre-douce); font-variant-numeric: tabular-nums; }
+.historique .h-des { display: flex; gap: 3px; min-width: 84px; }
+.mini-de { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; }
+.mini-de svg { width: 80%; height: 80%; }
+.mini-de.blanc { background: var(--de-blanc-haut); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18); --piece-noir: #2A2E38; --piece-noir-trait: #2A2E38; --piece-noir-detail: #fff; }
+.mini-de.noir { background: var(--de-noir-bas); --piece-noir: #F1F2F4; --piece-noir-trait: #F1F2F4; --piece-noir-detail: #1B1E26; }
+
+/* ---------- Écran d'entrée ---------- */
+.carte-entree, .carte-regles {
+  box-sizing: border-box;
+  width: min(520px, 100%);
+  padding: 26px 24px 22px;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--ombre-carte);
+  animation: arrivee .4s cubic-bezier(.2, 1.2, .4, 1) both;
+}
+.carte-entree { text-align: center; }
+.carte-entree h2 { margin: 14px 0 6px; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; }
+.carte-entree p { margin: 0 auto 20px; max-width: 40ch; color: var(--encre-douce); line-height: 1.5; }
+.entree-des { display: flex; justify-content: center; gap: 12px; }
+.entree-des .de { width: 78px; cursor: default; }
+.entree-des .de:nth-child(1) { transform: rotate(-8deg); }
+.entree-des .de:nth-child(3) { transform: rotate(7deg); }
+.entree-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.entree-actions > * { flex: 1 1 210px; white-space: nowrap; }
+.entree-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Règles ---------- */
+.regle-compteur { margin: 0; color: var(--encre-douce); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.regle-illus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 150px;
+  margin: 10px 0 14px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--surface-2);
+}
+.regle-illus .de { width: 64px; cursor: default; }
+.regle-illus .face { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--encre-douce); }
+.regle-illus .face .de { width: 52px; }
+.regle-illus .barre-de { position: relative; }
+.regle-illus .barre-de::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 50%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--alerte);
+  transform: rotate(-35deg);
+}
+.regle-illus .grand-roi { width: 96px; height: 96px; }
+.carte-regles h2 { margin: 0 0 8px; font-size: 24px; font-weight: 700; text-wrap: balance; }
+.regle-texte { color: var(--encre); line-height: 1.55; min-height: 120px; }
+.regle-texte p { margin: 0 0 10px; }
+.regle-texte ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.regle-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.regle-nav button { min-height: 46px; padding: 0 18px; }
+.regle-nav button:disabled { visibility: hidden; }
+.regle-points { justify-content: center; }
+
+/* ---------- Fin de partie ---------- */
+#fin-choix, #fin-victoire { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+#fin-choix[hidden], #fin-victoire[hidden] { display: none; }
+.fin-camps { display: flex; gap: 10px; width: 100%; }
+.fin-camp {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 10px;
+  border: 2px solid var(--ligne);
+  border-radius: 18px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fin-camp.blanc { background: var(--zone-blanc); color: var(--texte-zone-blanc); }
+.fin-camp.noir { background: var(--zone-noir); color: var(--texte-zone-noir); border-color: #000; }
+.fin-camp:hover { border-color: var(--accent); }
+.couronne { display: grid; place-items: center; width: 120px; height: 120px; border-radius: 50%; background: var(--accent-doux); animation: etoile .6s cubic-bezier(.2, 1.6, .4, 1) both; }
+.couronne svg { width: 84px; height: 84px; }
+
+@media (max-width: 560px) {
+  .zone { padding: 12px 12px 14px; gap: 10px; border-radius: 18px; }
+  .lancer { min-height: 48px; }
+  .numero-tour { font-size: 18px; }
+  .bouton-secondaire.petit { padding: 0 10px; }
+  .carte-entree, .carte-regles { padding: 20px 16px 16px; }
+  .regle-nav button { padding: 0 12px; }
+}

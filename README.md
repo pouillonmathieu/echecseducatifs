@@ -15,6 +15,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
 - **Trouve la case** (`jeux/cases/`) : une coordonnée s'affiche, il faut toucher la bonne case de l'échiquier.
   Mode libre, défi (10 cases) et défi chrono (le plus de cases en 20 s), orientation blancs / noirs / au hasard,
   et un mode tout-petits (animaux pour les colonnes, doigts pour les rangées).
+- **Dice chess** (`jeux/des/`) : compagnon pour jouer aux échecs avec des dés sur un vrai échiquier.
+  Les Blancs puis les Noirs lancent 3 dés (ou 1 en version classique) ; chaque face montre une pièce
+  (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
+  et la partie en cours est gardée dans le navigateur.
 
 ## Organisation
 
