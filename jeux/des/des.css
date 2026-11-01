@@ -8,8 +8,8 @@
   --texte-zone-noir: #F1F2F4;
   --de-blanc-haut: #FFFFFF;
   --de-blanc-bas: #E9E3D5;
-  --de-noir-haut: #474D60;
-  --de-noir-bas: #1B1E26;
+  --de-noir-haut: #F1F2F5;
+  --de-noir-bas: #C7CBD3;
 }
 
 .ecran-des { max-width: 760px; gap: 12px; }
@@ -117,19 +117,19 @@ body.face-a-face .zone-noir { transform: rotate(180deg); }
 .de.blanc {
   background: linear-gradient(150deg, var(--de-blanc-haut), var(--de-blanc-bas));
   box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .07), inset 0 0 0 1px rgba(0, 0, 0, .12), 0 6px 14px rgba(0, 0, 0, .14);
-  /* la pièce est une silhouette foncée gravée dans le dé */
-  --piece-noir: #2A2E38;
-  --piece-noir-trait: #2A2E38;
-  --piece-noir-detail: #F4F0E6;
+  /* dés des Blancs : pièces blanches (mêmes couleurs en thème clair et sombre) */
+  --piece-blanc: #FFFFFF;
+  --piece-blanc-trait: #2A2E38;
   color: #2A2E38;
 }
 .de.noir {
   background: linear-gradient(150deg, var(--de-noir-haut), var(--de-noir-bas));
-  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 6px 14px rgba(0, 0, 0, .3);
-  --piece-noir: #F1F2F4;
-  --piece-noir-trait: #F1F2F4;
-  --piece-noir-detail: #2B2F3A;
-  color: #F1F2F4;
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .1), inset 0 0 0 1px rgba(0, 0, 0, .18), 0 6px 14px rgba(0, 0, 0, .3);
+  /* dés des Noirs : pièces noires sur un dé gris clair */
+  --piece-noir: #2B303B;
+  --piece-noir-trait: #14171E;
+  --piece-noir-detail: #F1F2F4;
+  color: #2A2E38;
 }
 .de .chiffre {
   position: absolute;
@@ -215,8 +215,8 @@ body.avec-chiffres .de .chiffre { display: block; }
 .historique .h-des { display: flex; gap: 3px; min-width: 84px; }
 .mini-de { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; }
 .mini-de svg { width: 80%; height: 80%; }
-.mini-de.blanc { background: var(--de-blanc-haut); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18); --piece-noir: #2A2E38; --piece-noir-trait: #2A2E38; --piece-noir-detail: #fff; }
-.mini-de.noir { background: var(--de-noir-bas); --piece-noir: #F1F2F4; --piece-noir-trait: #F1F2F4; --piece-noir-detail: #1B1E26; }
+.mini-de.blanc { background: var(--de-blanc-haut); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18); --piece-blanc: #FFFFFF; --piece-blanc-trait: #2A2E38; }
+.mini-de.noir { background: var(--de-noir-haut); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25); --piece-noir: #2B303B; --piece-noir-trait: #14171E; --piece-noir-detail: #F1F2F4; }
 
 /* ---------- Écran d'entrée ---------- */
 .carte-entree, .carte-regles {

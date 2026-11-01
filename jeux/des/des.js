@@ -70,10 +70,10 @@
       : ' aria-hidden="true"';
     return `<${balise} class="de ${cote}${joue ? ' joue' : ''}${perdu ? ' perdu' : ''} ${classes}"${attrs}>` +
       `<span class="chiffre">${valeur}</span>` +
-      `<svg class="piece" viewBox="0 0 100 100"><use href="#piece-${piece}-noir"/></svg>` +
+      `<svg class="piece" viewBox="0 0 100 100"><use href="#piece-${piece}-${cote}"/></svg>` +
       `<span class="coche">${ICONES.ok}</span><span class="croix">${ICONES.rate}</span></${balise}>`;
   }
-  const miniDe = (v, cote) => `<span class="mini-de ${cote}" title="${NOMS[FACES[v - 1]]}"><svg viewBox="0 0 100 100"><use href="#piece-${FACES[v - 1]}-noir"/></svg></span>`;
+  const miniDe = (v, cote) => `<span class="mini-de ${cote}" title="${NOMS[FACES[v - 1]]}"><svg viewBox="0 0 100 100"><use href="#piece-${FACES[v - 1]}-${cote}"/></svg></span>`;
 
   // ---------- Rendu ----------
   function rendre() {
@@ -140,14 +140,14 @@
       boutons.forEach((b) => {
         if (!b.classList.contains('roule')) return;
         const v = 1 + Math.floor(Math.random() * 6);
-        b.querySelector('use').setAttribute('href', `#piece-${FACES[v - 1]}-noir`);
+        b.querySelector('use').setAttribute('href', `#piece-${FACES[v - 1]}-${cote}`);
         b.querySelector('.chiffre').textContent = v;
       });
       const t = performance.now() - debut;
       boutons.forEach((b, i) => {
         if (b.classList.contains('roule') && t > 450 + i * 160) {
           b.classList.remove('roule');
-          b.querySelector('use').setAttribute('href', `#piece-${FACES[valeurs[i] - 1]}-noir`);
+          b.querySelector('use').setAttribute('href', `#piece-${FACES[valeurs[i] - 1]}-${cote}`);
           b.querySelector('.chiffre').textContent = valeurs[i];
           b.classList.add('pose');
         }
