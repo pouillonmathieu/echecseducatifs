@@ -40,8 +40,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   anciens, ou « au hasard »), une de ses parties se joue toute seule sur l'échiquier, vue de son côté (bouton pour
   retourner l'échiquier), et une dizaine de fois par partie c'est l'enfant qui joue à sa place (coups-clés choisis
   avec Stockfish, parfois plusieurs à la suite). Facile : le coup est écrit, il faut le jouer ; difficile : il faut le
-  trouver. Après chaque coup trouvé, une explication simple (ce que le coup menace ou gagne, pourquoi un autre coup
-  était moins bon), avec des flèches sur l'échiquier ; à la fin, pourquoi l'adversaire abandonne. Indice (la pièce
+  trouver. Après chaque coup trouvé, une explication simple : la menace adverse parée (pièce mise à l'abri,
+  protégée, mat empêché…), le motif (fourchette, clouage, enfilade, découverte, sacrifice, échange, roi actif,
+  opposition, pion passé, colonne ouverte, 7e rangée, avant-poste…), ce que le coup menace ou gagne, et pourquoi un
+  autre coup était moins bon, avec des flèches sur l'échiquier ; à la fin, pourquoi l'adversaire abandonne. Indice (la pièce
   qui doit bouger brille) et « Montre-moi ». On joue en touchant les cases ou en faisant
   glisser la pièce ; les cases possibles sont montrées. Parties classiques de Steinitz à Kasparov, et parties
   récentes des champions et championnes d'aujourd'hui ; vitesse réglable, notation française ou anglaise.
@@ -68,7 +70,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   [chessdatabase](https://github.com/Dragjon/chessdatabase) (licence MIT). Les moments où l'enfant joue sont choisis
   par `outils/parties-champions.js` à partir de l'analyse de [Stockfish](https://stockfishchess.org) 16.1
   (`outils/analyser-parties.js`, résultat dans `outils/analyse-parties.json`) ; les explications des coups et des
-  abandons (menace, suite, autre coup, avance en matériel) viennent de `outils/analyser-explications.js`
+  abandons (menace adverse en amont, menace, suite, autre coup, avance en matériel) viennent de
+  `outils/analyser-explications.js`
   (résultat dans `outils/explications.json`) et sont rédigées par le jeu. Les portraits sont dessinés par le
   site (`jeux/joue/portraits.js`), sans aucune photo.
 - Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)

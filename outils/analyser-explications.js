@@ -4,6 +4,7 @@
    - la suite : position après le coup du champion, meilleure suite de l'adversaire (profondeur 14) ;
    - la menace : on laisse le champion rejouer tout de suite (comme si l'adversaire passait son tour),
      son meilleur coup est ce que menace le coup joué (profondeur 12) ;
+   - en amont : ce que menaçait l'adversaire juste avant (on lui redonne le trait, profondeur 12) ;
    - l'autre coup : le 2e meilleur coup de la position, repris de l'analyse brute d'outils/analyser-parties.js
      (fichier { partie: { demi-coup: [meilleur, éval, 2e coup, éval] } }).
    Pour la fin de chaque partie : la position finale (profondeur 16), pour expliquer l'abandon.
@@ -64,6 +65,13 @@ PARTIES.forEach((p, n) => {
   for (const s of coups) { j.move(s); fens.push(j.fen()); }
   for (const [i] of p.m) {
     taches.push({ n, i, genre: 'suite', fen: fens[i + 1] });
+    // en amont : ce que menaçait l'adversaire avant le coup (on lui redonne le trait), sauf si le champion est en échec
+    const avant = new Chess(fens[i]);
+    if (!avant.inCheck()) {
+      const champs = fens[i].split(' ');
+      champs[1] = champs[1] === 'w' ? 'b' : 'w'; champs[3] = '-';
+      try { const k = new Chess(champs.join(' ')); if (!k.isGameOver()) taches.push({ n, i, genre: 'amont', fen: champs.join(' ') }); } catch (e) { /* position impossible */ }
+    }
     // la menace : le même camp rejoue (on change le trait), sauf si l'adversaire est en échec
     const apres = new Chess(fens[i + 1]);
     if (!apres.inCheck() && !apres.isGameOver()) {
@@ -76,8 +84,11 @@ PARTIES.forEach((p, n) => {
 });
 
 (async () => {
+  // reprise : on garde ce qui est déjà dans explications.json et on n'analyse que ce qui manque
+  const fichier = path.join(__dirname, 'explications.json');
+  const sortie = fs.existsSync(fichier) ? JSON.parse(fs.readFileSync(fichier, 'utf8')) : {};
+  for (let k = taches.length - 1; k >= 0; k--) { const t = taches[k]; if (sortie[t.n] && sortie[t.n][t.i] && sortie[t.n][t.i][t.genre]) taches.splice(k, 1); }
   console.log(taches.length, 'positions à analyser');
-  const sortie = {};
   let fait = 0;
   const t0 = Date.now();
   await Promise.all(Array.from({ length: 4 }, async () => {
@@ -85,7 +96,7 @@ PARTIES.forEach((p, n) => {
     await m.pret();
     while (taches.length) {
       const t = taches.shift();
-      const r = await m.analyser(t.fen, t.genre === 'fin' ? 16 : t.genre === 'menace' ? 12 : 14);
+      const r = await m.analyser(t.fen, t.genre === 'fin' ? 16 : t.genre === 'suite' ? 14 : 12);
       const e = ((sortie[t.n] = sortie[t.n] || {})[t.i] = sortie[t.n][t.i] || {});
       if (r) e[t.genre] = r;
       if (t.genre === 'suite' && brut[t.n] && brut[t.n][t.i]) e.autre = { coup: brut[t.n][t.i][2], cp: brut[t.n][t.i][3], cp1: brut[t.n][t.i][1] };
@@ -93,6 +104,6 @@ PARTIES.forEach((p, n) => {
     }
     m.quitter();
   }));
-  fs.writeFileSync(path.join(__dirname, 'explications.json'), JSON.stringify(sortie));
+  fs.writeFileSync(fichier, JSON.stringify(sortie));
   console.log('terminé :', fait, 'positions en', Math.round((Date.now() - t0) / 60000), 'min');
 })();

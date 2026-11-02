@@ -317,41 +317,127 @@
   };
   const SA_PIECE = { pion: 'un pion', cavalier: 'son cavalier', fou: 'son fou', tour: 'sa tour', dame: 'sa dame', roi: 'son roi' };
   const gras = (san) => `<b>${echapper(traduire(san))}</b>`;
-  // ce que permet le coup du champion : à partir de l'analyse de Stockfish (menace, suite, autre coup)
+  // Ce que permet le coup du champion. On choisit d'abord l'idée principale (par ordre d'importance) :
+  // mat, roi en échec, mat adverse empêché, motif tactique, sacrifice, menace adverse parée, gain de matériel,
+  // motif de finale, idée de stratégie ; puis une phrase d'appui (menace, suite) et la comparaison avec un autre coup.
+  const NOM_PIECE = { p: 'pion', n: 'cavalier', b: 'fou', r: 'tour', q: 'dame', k: 'roi' };
+  const LE = { p: 'le pion', n: 'le cavalier', b: 'le fou', r: 'la tour', q: 'la dame', k: 'le roi' };
+  const LA_PIECE = (t) => LE[t] || 'la pièce';
+  const LES = { p: 'les deux pions', n: 'les deux cavaliers', b: 'les deux fous', r: 'les deux tours', q: 'les deux dames', k: 'le roi' };
+  const FEMININ = (t) => t === 'q' || t === 'r';
+  function listePieces(types) {
+    const vus = {}; types.forEach(t => { vus[t] = (vus[t] || 0) + 1; });
+    const ordre = ['k', 'q', 'r', 'b', 'n', 'p'].filter(t => vus[t]);
+    const noms = ordre.map(t => (vus[t] > 1 ? LES[t] : LA_PIECE(t)));
+    return noms.length === 1 ? noms[0] : noms.slice(0, -1).join(', ') + ' et ' + noms[noms.length - 1];
+  }
+  const typeSurAvance = (x, sq) => { const p = jeu.positions[jeu.ply] && jeu.positions[jeu.ply][sq]; return p && p.piece === 'roi'; };
   function expliquer(ply) {
     const x = (jeu.partie.x || {})[ply] || {};
     const type = jeu.moments.get(ply);
     const N = echapper(nomCourt());
-    const piece = jeu.positions[ply][jeu.coups[ply].slice(0, 2)].piece;
-    const promo = jeu.coups[ply][4];
-    const phrases = [], fleches = [];
-    if (type === 'mat') phrases.push('Échec et mat ! Le roi est attaqué et n\'a plus aucune case pour s\'échapper.');
-    else if (type === 'promotion') phrases.push(`Le pion arrive au bout de l'échiquier et devient ${promo === 'q' ? 'une dame' : promo === 'n' ? 'un cavalier' : promo === 'r' ? 'une tour' : 'un fou'} !`);
-    else if (type === 'sacrifice') phrases.push(`${N} donne ${SA_PIECE[piece]} exprès : c'est un sacrifice.` +
-      (x.g >= 1 ? ` Au bout de la suite, ${N} a regagné plus : ${POINTS_TXT(x.g)} d'avance.` : x.g >= 0 ? ` Au bout de la suite, le matériel donné est récupéré.` : ' En échange, l\'attaque devient très dangereuse.'));
-    else if (x.g >= 1) phrases.push(`Ce coup gagne du matériel : ${POINTS_TXT(x.g)}.`);
-    else if (type === 'echec') phrases.push('Échec au roi : l\'adversaire doit d\'abord s\'occuper de son roi.');
-    else if (type === 'unique') phrases.push('Ici, c\'était le seul bon coup.');
+    const pos = jeu.positions[ply], apres = jeu.positions[ply + 1];
+    const u = jeu.coups[ply];
+    const piece = pos[u.slice(0, 2)].piece;
+    const lettre = { pion: 'p', cavalier: 'n', fou: 'b', tour: 'r', dame: 'q', roi: 'k' };
+    const typeSur = (sq) => (apres[sq] ? lettre[apres[sq].piece] : (pos[sq] ? lettre[pos[sq].piece] : ''));
+    const mo = Object.fromEntries((x.mo || []).map(m => [m[0], m.slice(1)]));
+    // un motif tactique n'est retenu que si l'analyse confirme qu'il rapporte (matériel gagné, menace ou mat)
+    const rapporte = (x.g >= 2) || !!x.me || !!x.mt;
+    for (const k of ['fourchette', 'decouverte', 'enfilade']) if (mo[k] && !rapporte) delete mo[k];
+    if (mo.clouage && !(rapporte || typeSurAvance(x, mo.clouage[2]))) delete mo.clouage;
+    const promo = u[4];
+    const fleches = [];
+    let principale = '', appui = '', dejaMenace = false;
+
+    // 1. l'idée principale
+    if (type === 'mat') principale = 'Échec et mat ! Le roi est attaqué et n\'a plus aucune case pour s\'échapper.';
+    else if (x.ec) principale = `Le roi de ${N} était en échec : il fallait d'abord s'en occuper. ${piece === 'roi' ? 'Le roi s\'écarte vers une case sûre.' : pos[u.slice(2, 4)] ? 'Ce coup prend la pièce qui donnait échec.' : 'Ce coup se met en travers de l\'échec.'}`;
+    if (!principale && x.am && x.am[2] === 'mat' && x.am[3] !== 'contre') {
+      principale = `Attention : l'adversaire menaçait ${gras(x.am[0])}, ${(x.am[5] || 1) === 1 ? 'échec et mat' : `avec un mat en ${x.am[5]} coups`} ! ` +
+        ({ prend: 'Ce coup prend la pièce dangereuse.', bloque: 'Ce coup se met en travers pour bloquer l\'attaque.', protege: 'Ce coup protège la case du mat.', roi: 'Le roi s\'écarte du danger.', abri: 'Ce coup met la pièce visée à l\'abri.' }[x.am[3]] || 'Ce coup empêche le mat.');
+      fleches.push([x.am[1], 'danger']);
+    }
+    if (!principale && type === 'sacrifice') principale = `${N} donne ${SA_PIECE[piece]} exprès : c'est un sacrifice.` +
+      (x.g >= 1 ? ` Au bout de la suite, ${N} a regagné plus : ${POINTS_TXT(x.g)} d'avance.` : x.g >= 0 ? ' Au bout de la suite, le matériel donné est récupéré.' : ' En échange, l\'attaque devient très dangereuse.');
+    if (!principale && mo['double-echec']) principale = 'Échec double : deux pièces donnent échec en même temps, le roi est obligé de bouger.';
+    if (!principale && mo.fourchette) {
+      const [de, ...cibles] = mo.fourchette;
+      principale = `C'est une fourchette : ${LE[lettre[piece]]} attaque ${listePieces(cibles.map(typeSur))} en même temps. L'adversaire ne pourra pas tout sauver.`;
+      cibles.forEach(q => fleches.push([de + q, 'menace']));
+    }
+    if (!principale && mo.decouverte) {
+      const [de, cible] = mo.decouverte;
+      principale = `C'est une attaque à la découverte : en bougeant, ${LE[lettre[piece]]} ouvre la ligne de ${LA_PIECE(typeSur(de))}, qui attaque maintenant ${typeSur(cible) === 'k' ? 'le roi' : LA_PIECE(typeSur(cible))}.`;
+      fleches.push([de + cible, 'menace']);
+    }
+    if (!principale && mo.clouage) {
+      const [de, cloue, derriere] = mo.clouage;
+      principale = `${LE[lettre[piece]].replace(/^./, c => c.toUpperCase())} cloue ${LA_PIECE(typeSur(cloue))} : ${FEMININ(typeSur(cloue)) ? 'elle' : 'il'} ne peut plus bouger sans laisser ${typeSur(derriere) === 'k' ? 'le roi en échec' : LA_PIECE(typeSur(derriere)) + ' se faire prendre'}.`;
+      fleches.push([de + derriere, 'menace']);
+    }
+    if (!principale && mo.enfilade) {
+      const [de, devant, derriere] = mo.enfilade;
+      principale = `C'est une enfilade : ${LA_PIECE(typeSur(devant))} est attaqué${FEMININ(typeSur(devant)) ? 'e' : ''} et, quand ${FEMININ(typeSur(devant)) ? 'elle' : 'il'} bougera, ${LA_PIECE(typeSur(derriere))} derrière sera pris${FEMININ(typeSur(derriere)) ? 'e' : ''}.`;
+      fleches.push([de + derriere, 'menace']);
+    }
+    if (!principale && type === 'promotion') principale = `Le pion arrive au bout de l'échiquier et devient ${promo === 'q' ? 'une dame' : promo === 'n' ? 'un cavalier' : promo === 'r' ? 'une tour' : 'un fou'} !`;
+    if (!principale && x.am && x.am[2] !== 'mat') {
+      const vise = x.am[4] ? `${LA_PIECE(x.am[4])}` : 'du matériel';
+      const intro = `L'adversaire menaçait ${gras(x.am[0])}, pour gagner ${x.am[4] ? vise : POINTS_TXT(x.am[2])}.`;
+      principale = intro + ' ' + ({
+        abri: `${N} met ${x.am[4] ? vise : 'la pièce'} à l'abri.`,
+        protege: `Ce coup protège ${x.am[4] ? vise : 'la pièce'}.`,
+        prend: 'Ce coup prend la pièce qui menaçait.',
+        bloque: 'Ce coup se met en travers pour bloquer la menace.',
+        roi: 'Le roi s\'écarte du danger.',
+        contre: 'Mais au lieu de se défendre, ce coup contre-attaque encore plus fort !',
+        pare: 'Ce coup empêche cette menace.',
+      }[x.am[3]]);
+      fleches.push([x.am[1], 'danger']);
+    }
+    if (!principale && x.g >= 1) principale = `Ce coup gagne du matériel : ${POINTS_TXT(x.g)}.`;
+    if (!principale && mo.opposition) principale = 'Les deux rois se font face avec une seule case entre eux : c\'est l\'opposition. Le roi adverse doit céder le passage.';
+    if (!principale && mo['roi-actif']) { principale = 'En fin de partie, le roi devient une pièce forte : il s\'avance pour aider ses pions et attaquer ceux de l\'adversaire.'; fleches.push([mo['roi-actif'][0], 'suite']); }
+    if (!principale && mo['pion-passe']) { principale = 'Ce pion est passé : plus aucun pion adverse ne peut l\'arrêter, il fonce vers la promotion.'; fleches.push([mo['pion-passe'][0], 'suite']); }
+    if (!principale && mo['echange-avance']) principale = 'Avec du matériel en plus, échanger les pièces est une bonne idée : moins il en reste, plus l\'avance compte.';
+    if (!principale && mo.septieme) principale = 'La tour arrive sur l\'avant-dernière rangée de l\'adversaire, où elle attaque ses pions par le côté.';
+    if (!principale && mo['colonne-ouverte']) principale = 'La tour s\'installe sur une colonne ouverte, sans aucun pion : de là, elle pourra entrer dans le camp adverse.';
+    if (!principale && mo['colonne-semi']) principale = 'La tour se place sur une colonne sans pion de son camp : elle met la pression sur le pion adverse au bout.';
+    if (!principale && mo['avant-poste']) principale = 'Le cavalier s\'installe sur une case forte : protégé par un pion, aucun pion adverse ne pourra le chasser.';
+    if (!principale && mo.roque) principale = `${N} roque : le roi est à l'abri et la tour entre dans le jeu.`;
+    if (!principale && mo.centre) principale = 'Ce pion prend sa place au centre de l\'échiquier, là où se joue la partie.';
+    if (!principale && type === 'echec') principale = 'Échec au roi : l\'adversaire doit d\'abord s\'occuper de son roi.';
+    if (!principale && type === 'unique') principale = 'Ici, c\'était le seul bon coup.';
+
+    // 2. une phrase d'appui : la menace du champion, le mat qui arrive, ou un exemple de suite
     if (type !== 'mat') {
       if (x.mt) {
-        phrases.push(x.mt === 1 ? 'Maintenant, le mat ne peut plus être évité : il arrive au prochain coup.' : `Maintenant, le mat ne peut plus être évité : il arrive en ${x.mt} coups.`);
-        if (x.su && x.su.length >= 2) { phrases.push(`Par exemple : ${gras(x.su[0][0])}, puis ${gras(x.su[1][0])}.`); fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']); }
-      } else if (x.me) {
-        phrases.push(x.me[2] !== 'mat' ? `Ce coup menace ${gras(x.me[0])}, qui gagnerait ${POINTS_TXT(x.me[2])}.`
+        appui = x.mt === 1 ? 'Maintenant, le mat ne peut plus être évité : il arrive au prochain coup.' : `Maintenant, le mat ne peut plus être évité : il arrive en ${x.mt} coups.`;
+        if (x.su && x.su.length >= 2 && fleches.length < 2) { appui += ` Par exemple : ${gras(x.su[0][0])}, puis ${gras(x.su[1][0])}.`; fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']); }
+      } else if (x.me && !mo.fourchette) {
+        dejaMenace = true;
+        appui = x.me[2] !== 'mat' ? `Ce coup menace ${gras(x.me[0])}, qui gagnerait ${POINTS_TXT(x.me[2])}.`
           : (x.me[3] || 1) === 1 ? `Ce coup menace ${gras(x.me[0])}, échec et mat !`
-          : `Ce coup prépare ${gras(x.me[0])} : si l'adversaire ne fait rien, l'attaque mène au mat en ${x.me[3]} coups.`);
+          : `Ce coup prépare ${gras(x.me[0])} : si l'adversaire ne fait rien, l'attaque mène au mat en ${x.me[3]} coups.`;
         fleches.push([x.me[1], 'menace']);
-      } else if (x.su && x.su.length >= 2) {
-        phrases.push(`Par exemple, si l'adversaire répond ${gras(x.su[0][0])}, ${N} continue avec ${gras(x.su[1][0])}.`);
+      } else if (x.su && x.su.length >= 2 && fleches.length === 0) {
+        appui = `Par exemple, si l'adversaire répond ${gras(x.su[0][0])}, ${N} continue avec ${gras(x.su[1][0])}.`;
         fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']);
       }
     }
-    if (x.au && x.me && x.au[0] === x.me[0]) phrases.push(`Mais jouer ${gras(x.au[0])} tout de suite aurait été une erreur : il fallait d'abord préparer ce coup.`);
-    else if (x.au) phrases.push(x.au[1] === 'perd' ? `Avec un autre coup, comme ${gras(x.au[0])}, ${N} aurait même pu perdre la partie !`
+
+    // 3. pourquoi pas un autre coup
+    let autre = '';
+    if (mo['evite-echange'] && x.au) autre = `${gras(x.au[0])} aurait échangé des pièces : ici, il valait mieux les garder pour continuer à presser l'adversaire.`;
+    else if (x.au && dejaMenace && x.me && x.au[0] === x.me[0]) autre = `Mais jouer ${gras(x.au[0])} tout de suite aurait été une erreur : il fallait d'abord le préparer.`;
+    else if (x.au) autre = x.au[1] === 'perd' ? `Avec un autre coup, comme ${gras(x.au[0])}, ${N} aurait même pu perdre la partie !`
       : x.au[1] === 'egal' ? (ply % 2 ? `Avec ${gras(x.au[0])} à la place, la partie serait redevenue à peu près égale.` : `Le coup ${gras(x.au[0])}, par exemple, aurait laissé l'adversaire revenir dans la partie.`)
-      : `${gras(x.au[0])} était moins fort : l'avantage aurait été bien plus petit.`);
+      : `${gras(x.au[0])} était moins fort : l'avantage aurait été bien plus petit.`;
+
+    const phrases = [principale, appui, autre].filter(Boolean);
     if (!phrases.length) phrases.push(`C'est le coup qu'a joué ${N}.`);
-    return { html: phrases.join(' '), fleches };
+    return { html: phrases.join(' '), fleches: fleches.slice(0, 3) };
   }
   // pourquoi l'adversaire abandonne
   function expliquerFin() {
@@ -382,7 +468,7 @@
     if (!liste.length) return;
     const r0 = plateau.getBoundingClientRect();
     let h = `<svg class="fleches" viewBox="0 0 ${f1(r0.width)} ${f1(r0.height)}" aria-hidden="true"><defs>`;
-    for (const g of ['menace', 'adversaire', 'suite']) h += `<marker id="pointe-${g}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto"><path d="M0 0 10 5 0 10Z" class="pointe ${g}"/></marker>`;
+    for (const g of ['menace', 'adversaire', 'suite', 'danger']) h += `<marker id="pointe-${g}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto"><path d="M0 0 10 5 0 10Z" class="pointe ${g}"/></marker>`;
     h += '</defs>';
     for (const [u, g] of liste) {
       const a = plateau.querySelector(`[data-case="${u.slice(0, 2)}"]`), b = plateau.querySelector(`[data-case="${u.slice(2, 4)}"]`);

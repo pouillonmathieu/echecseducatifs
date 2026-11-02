@@ -178,6 +178,45 @@ function expliquerMoment(fenAvant, coup, champion, e) {
     else if (ecart(k, champion) - av >= 2 && e.menace.cp - cpSuite >= 120) quoi = ecart(k, champion) - av;
     if (joues[0] && quoi) x.me = quoi === 'mat' ? [joues[0][0], joues[0][1], 'mat', e.menace.mat] : [joues[0][0], joues[0][1], quoi];
   }
+  // en amont : ce que menaçait l'adversaire, et comment le coup du champion y répond
+  // am = [notation de la menace, de-vers, 'mat' + n ou points, parade, pièce visée]
+  // parades : abri (la pièce visée s'en va), prend (on prend la pièce qui menaçait), protege, bloque, roi (le roi s'écarte),
+  //           pare (autre façon), contre (on ne pare pas : on attaque plus fort)
+  const jAvant = new Chess(fenAvant);
+  if (jAvant.inCheck()) x.ec = 1; // le roi du champion était en échec
+  else if (e.amont && e.amont.pv && e.amont.pv.length) {
+    const lui = champion === 'w' ? 'b' : 'w';
+    const champs = fenAvant.split(' ');
+    champs[1] = lui; champs[3] = '-';
+    const k = new Chess(champs.join(' '));
+    const av = ecart(k, lui);
+    const t = suivre(k, e.amont.pv, 3);
+    const gain = ecart(k, lui) - av;
+    const cpNormal = e.autre && e.autre.cp1 !== undefined ? -e.autre.cp1 : 0; // l'éval pour l'adversaire si le champion joue bien
+    const mat = e.amont.mat > 0 ? e.amont.mat : 0;
+    if (t[0] && (mat || (gain >= 2 && e.amont.cp - cpNormal >= 150))) {
+      const tu = t[0][1], tf = tu.slice(0, 2), tt = tu.slice(2, 4);
+      const jm = new Chess(fenAvant);
+      const vise = jm.get(tt);
+      const m = jm.move(coup);
+      let parade = 'pare';
+      // la menace marche-t-elle encore après le coup ? (l'adversaire la joue-t-il dans la suite ?)
+      const encore = e.suite && e.suite.pv && e.suite.pv[0] === tu;
+      if (m.from === tt) parade = 'abri';
+      else if (m.to === tf) parade = 'prend';
+      else if (m.piece === 'k' && !vise) parade = 'roi';
+      else if (vise && jm.attackers(tt, champion).length > new Chess(fenAvant).attackers(tt, champion).length) parade = 'protege';
+      else {
+        // bloque : le coup se met sur la ligne entre la pièce qui menace et sa cible
+        const [c1, r1] = [tf.charCodeAt(0), +tf[1]], [c2, r2] = [tt.charCodeAt(0), +tt[1]], [c3, r3] = [m.to.charCodeAt(0), +m.to[1]];
+        const aligne = (c3 - c1) * (r2 - r1) === (r3 - r1) * (c2 - c1);
+        const entre = Math.min(c1, c2) <= c3 && c3 <= Math.max(c1, c2) && Math.min(r1, r2) <= r3 && r3 <= Math.max(r1, r2);
+        if (aligne && entre && m.to !== tf && m.to !== tt) parade = 'bloque';
+      }
+      if (encore && parade === 'pare') parade = 'contre';
+      x.am = [t[0][0], tu, mat ? 'mat' : gain, parade, vise ? vise.type : '', mat || 0];
+    }
+  }
   if (e.autre && e.autre.coup && e.autre.cp !== null) {
     const k = new Chess(fenAvant);
     const m = suivre(k, [e.autre.coup], 1)[0];
@@ -186,6 +225,112 @@ function expliquerMoment(fenAvant, coup, champion, e) {
   }
   return x;
 }
+// ---------- motifs tactiques, d'échange, de finale et de stratégie ----------
+const COLS = 'abcdefgh';
+const caseDe = (c, r) => (c >= 0 && c < 8 && r >= 1 && r <= 8 ? COLS[c] + r : null);
+const DIRECTIONS = { b: [[1, 1], [1, -1], [-1, 1], [-1, -1]], r: [[1, 0], [-1, 0], [0, 1], [0, -1]] };
+DIRECTIONS.q = [...DIRECTIONS.b, ...DIRECTIONS.r];
+const pionPasse = (j, sq, c) => {
+  const col = COLS.indexOf(sq[0]), rg = +sq[1], sens = c === 'w' ? 1 : -1;
+  for (let r = rg + sens; r >= 1 && r <= 8; r += sens) for (const dc of [-1, 0, 1]) {
+    const q = caseDe(col + dc, r), p = q && j.get(q);
+    if (p && p.type === 'p' && p.color !== c) return false;
+  }
+  return true;
+};
+const materielPieces = (j) => j.board().flat().filter(x => x && x.type !== 'p' && x.type !== 'k').reduce((t, x) => t + POINTS[x.type], 0);
+// mo = [[code, cases…]] : les motifs du coup du champion, dans la position d'après
+function motifs(fenAvant, coup, champion, ply, x, e) {
+  const lui = champion === 'w' ? 'b' : 'w';
+  const j = new Chess(fenAvant);
+  const avant = new Chess(fenAvant);
+  const m = j.move(coup);
+  const mo = [];
+  const p = j.get(m.to);
+  const V = (q) => POINTS[j.get(q).type] || 0;
+  // pièces adverses attaquées par la pièce jouée (le champion rejoue en pensée)
+  const flip = j.fen().split(' '); flip[1] = champion; flip[3] = '-';
+  let cibles = [];
+  try {
+    const k = new Chess(flip.join(' '));
+    cibles = [...new Set(k.moves({ square: m.to, verbose: true }).filter(c => c.captured && c.captured !== 'k').map(c => c.to))];
+  } catch (err) { /* position impossible */ }
+  const roiLui = j.board().flat().find(q => q && q.type === 'k' && q.color === lui);
+  const echecPar = j.inCheck() ? j.attackers(roiLui.square, champion) : [];
+  if (echecPar.length >= 2) mo.push(['double-echec', ...echecPar]);
+  // fourchette : la pièce attaque au moins deux cibles intéressantes (le roi, ou plus forte qu'elle, ou sans défense)
+  const bonnes = cibles.filter(q => V(q) > POINTS[p.type] || !j.attackers(q, lui).length);
+  if (echecPar.includes(m.to) && !bonnes.includes(roiLui.square)) bonnes.push(roiLui.square);
+  if (bonnes.length >= 2 && !j.attackers(m.to, lui).length || bonnes.length >= 2 && bonnes.some(q => V(q) >= 5 || q === roiLui.square)) mo.push(['fourchette', m.to, ...bonnes.slice(0, 3)]);
+  // clouage et enfilade : le long des lignes de la pièce jouée
+  for (const [dc, dr] of DIRECTIONS[p.type] || []) {
+    let c = COLS.indexOf(m.to[0]) + dc, r = +m.to[1] + dr, premier = null;
+    for (; caseDe(c, r); c += dc, r += dr) {
+      const q = caseDe(c, r), pc = j.get(q);
+      if (!pc) continue;
+      if (pc.color === champion) break;
+      if (!premier) { premier = q; continue; }
+      const v1 = pc.type === 'k' ? 100 : POINTS[pc.type], v0 = j.get(premier).type === 'k' ? 100 : POINTS[j.get(premier).type];
+      if (v1 > v0 && v0 < POINTS[p.type] + 1) mo.push(['clouage', m.to, premier, q]);
+      else if (v0 > v1 && v1 >= 3) mo.push(['enfilade', m.to, premier, q]);
+      break;
+    }
+  }
+  // attaque à la découverte : une autre pièce du champion attaque maintenant une cible grâce à la case libérée
+  for (const q of j.board().flat().filter(q => q && q.color === champion && 'bqr'.includes(q.type) && q.square !== m.to)) {
+    for (const [dc, dr] of DIRECTIONS[q.type]) {
+      let c = COLS.indexOf(q.square[0]) + dc, r = +q.square[1] + dr, passe = false;
+      for (; caseDe(c, r); c += dc, r += dr) {
+        const s = caseDe(c, r);
+        if (s === m.from) { passe = true; continue; }
+        const pc = j.get(s);
+        if (!pc) continue;
+        if (pc.color === lui && passe && (pc.type === 'k' || POINTS[pc.type] >= 3)) mo.push(['decouverte', q.square, s]);
+        break;
+      }
+    }
+  }
+  // échanges
+  const ecartAvant = ecart(avant, champion);
+  if (m.captured && POINTS[m.captured] === POINTS[m.piece] && m.piece !== 'p' && j.attackers(m.to, lui).length && ecartAvant >= 2) mo.push(['echange-avance']);
+  if (e && e.autre && e.autre.coup) {
+    try {
+      const k = new Chess(fenAvant);
+      const alt = k.move({ from: e.autre.coup.slice(0, 2), to: e.autre.coup.slice(2, 4), promotion: e.autre.coup[4] });
+      if (alt.captured && POINTS[alt.captured] === POINTS[alt.piece] && alt.piece !== 'p' && !m.captured) mo.push(['evite-echange', e.autre.coup]);
+    } catch (err) { /* rien */ }
+  }
+  // finales
+  const finale = materielPieces(j) <= 16;
+  if (m.piece === 'k' && finale && !m.san.startsWith('O-O')) {
+    const centre = (q) => Math.max(Math.abs(COLS.indexOf(q[0]) - 3.5), Math.abs(+q[1] - 4.5));
+    const roiLuiCase = roiLui.square;
+    const dc = Math.abs(COLS.indexOf(m.to[0]) - COLS.indexOf(roiLuiCase[0])), dr = Math.abs(+m.to[1] - +roiLuiCase[1]);
+    if ((dc === 0 && dr === 2) || (dr === 0 && dc === 2)) mo.push(['opposition', m.to, roiLuiCase]);
+    else if (centre(m.to) < centre(m.from) || +m.to[1] !== +m.from[1] && (champion === 'w' ? +m.to[1] > +m.from[1] : +m.to[1] < +m.from[1])) mo.push(['roi-actif', m.from + m.to]);
+  }
+  if (m.piece === 'p' && pionPasse(j, m.to, champion) && (champion === 'w' ? +m.to[1] >= 5 : +m.to[1] <= 4)) mo.push(['pion-passe', m.to + m.to[0] + (champion === 'w' ? 8 : 1)]);
+  // stratégie
+  if (m.san.startsWith('O-O')) mo.push(['roque']);
+  if (m.piece === 'r') {
+    const col = m.to[0];
+    const pions = j.board().flat().filter(q => q && q.type === 'p' && q.square[0] === col);
+    if (m.from[0] !== col && !pions.length) mo.push(['colonne-ouverte', col]);
+    else if (m.from[0] !== col && !pions.some(q => q.color === champion)) mo.push(['colonne-semi', col]);
+    if (+m.to[1] === (champion === 'w' ? 7 : 2) && +m.from[1] !== +m.to[1]) mo.push(['septieme']);
+  }
+  if (m.piece === 'n') {
+    const col = COLS.indexOf(m.to[0]), rg = +m.to[1], sens = champion === 'w' ? 1 : -1;
+    const chezLui = champion === 'w' ? rg >= 5 : rg <= 4;
+    const soutenu = [-1, 1].some(dc => { const q = caseDe(col + dc, rg - sens), pc = q && j.get(q); return pc && pc.type === 'p' && pc.color === champion; });
+    let chassable = false;
+    for (let r = rg + sens; r >= 1 && r <= 8; r += sens) for (const dc of [-1, 1]) { const q = caseDe(col + dc, r), pc = q && j.get(q); if (pc && pc.type === 'p' && pc.color === lui) chassable = true; }
+    if (chezLui && soutenu && !chassable && rg !== (champion === 'w' ? 8 : 1)) mo.push(['avant-poste', m.to]);
+  }
+  if (m.piece === 'p' && ply < 24 && ['d4', 'e4', 'd5', 'e5', 'c4', 'c5', 'f4', 'f5'].includes(m.to) && !m.captured) mo.push(['centre', m.to]);
+  return mo;
+}
+
 // explication de la fin : mt = mat en n coups, d = avance en matériel, su = suite, pr = un pion va devenir dame, cp
 function expliquerFin(fen, champion, e) {
   if (!e || !e.fin) return null;
@@ -233,7 +378,12 @@ for (const bloc of texte.split(/\n(?=\[White )/)) {
   for (const san of coups) { fens.push(f.fen()); f.move(san); }
   const e = EXPL[numero] || {};
   const x = {};
-  for (const m of moments) { const r = expliquerMoment(fens[m.i], coups[m.i], champion, e[m.i]); if (r) x[m.i] = r; }
+  for (const m of moments) {
+    const r = expliquerMoment(fens[m.i], coups[m.i], champion, e[m.i]) || {};
+    const mo = motifs(fens[m.i], coups[m.i], champion, m.i, r, e[m.i]);
+    if (mo.length) r.mo = mo;
+    if (Object.keys(r).length) x[m.i] = r;
+  }
   const fin = f.isCheckmate() ? { fin: 'mat' } : expliquerFin(f.fen(), champion, e[coups.length]);
   parties.push({
     ch: cle, c: champion, bl: h.White, no: h.Black, l: h.Site || '', a: /\d{4}/.test(h.Date) ? +h.Date : 0, r: h.Result,

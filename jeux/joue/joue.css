@@ -160,6 +160,8 @@ body[data-ecran="partie"] .seulement-choix { display: none !important; }
 .fleche.menace, .pointe.menace { stroke: #E2622A; fill: #E2622A; }
 .fleche.adversaire, .pointe.adversaire { stroke: #5A6474; fill: #5A6474; }
 .fleche.suite, .pointe.suite { stroke: #2FA36B; fill: #2FA36B; }
+.fleche.danger, .pointe.danger { stroke: #C8323C; fill: #C8323C; }
+.fleche.danger { stroke-dasharray: 1 .6; }
 .pointe { stroke: none !important; }
 
 /* ---------- Échiquier : sélection, indice, solution ---------- */
