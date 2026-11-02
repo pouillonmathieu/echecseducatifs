@@ -1,0 +1,182 @@
+/* Jeu : joue le coup
+   1. le choix du champion (grille de portraits) ;
+   2. la partie : l'échiquier à gauche, le duel, la consigne, les outils et la feuille à droite
+      (l'un sous l'autre sur téléphone). */
+.ecran-joue { max-width: 1100px; }
+body[data-ecran="choix"] .seulement-partie,
+body[data-ecran="partie"] .seulement-choix { display: none !important; }
+
+/* ---------- Choix du champion ---------- */
+.titre-choix { margin: 4px 0 14px; font-size: 20px; font-weight: 600; }
+.grille-champions { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.carte-champion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 10px 12px;
+  border: 1px solid var(--ligne);
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--encre);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.carte-champion:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 10px 24px rgba(0, 0, 0, .1); }
+.carte-champion:active { transform: scale(.97); }
+.carte-portrait { position: relative; display: block; width: 100%; aspect-ratio: 1; margin-bottom: 6px; border-radius: 16px; overflow: hidden; }
+.carte-portrait .portrait { display: block; width: 100%; height: 100%; }
+.couronne { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--or); color: #5A3E06; box-shadow: 0 2px 6px rgba(0, 0, 0, .25); }
+.couronne svg { width: 17px; height: 17px; }
+.carte-nom { font-size: 15px; font-weight: 600; line-height: 1.2; }
+.carte-sous { font-size: 12px; line-height: 1.3; color: var(--encre-douce); }
+.carte-nb { margin-top: 4px; padding: 2px 10px; border-radius: 999px; background: var(--accent-doux); color: var(--accent); font-size: 12px; font-weight: 600; }
+.carte-champion.hasard .carte-portrait { display: grid; place-items: center; background: var(--accent); color: var(--sur-accent); }
+.de-hasard { width: 46%; height: 46%; }
+
+/* ---------- Partie ---------- */
+.jeu-joue {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 350px);
+  align-items: center;
+  gap: 28px;
+}
+.plateau-joue {
+  width: min(100%, 600px, calc(100vh - 210px));
+  width: min(100%, 600px, calc(100dvh - 210px));
+  touch-action: none;
+}
+.panneau-joue { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.duel { display: flex; align-items: center; gap: 12px; }
+.duel-portrait { flex: none; width: 64px; height: 64px; border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--ligne); }
+.duel-portrait .portrait { display: block; width: 100%; height: 100%; }
+.duel-texte { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.duel-texte b { font-size: 17px; font-weight: 600; }
+.duel-texte > span { font-size: 13px; color: var(--encre-douce); line-height: 1.35; }
+.camp { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; vertical-align: 2px; }
+.camp.blanc { background: #FFFFFF; color: #2A2E38; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25); }
+.camp.noir { background: #2B303B; color: #FFFFFF; }
+
+.consigne {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 92px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--ligne);
+  transition: border-color .2s, background .2s;
+}
+.consigne p { margin: 0; }
+.consigne-titre { font-size: 20px; font-weight: 700; line-height: 1.2; }
+.consigne-detail { font-size: 14px; line-height: 1.4; color: var(--encre-douce); }
+.consigne-coup { display: flex; align-items: center; gap: 8px; font-size: 30px; font-weight: 700; letter-spacing: .02em; line-height: 1; }
+.consigne-coup .fig { width: 40px; height: 40px; padding: 2px; border-radius: 10px; background: #F4F1E8; }
+.consigne.a-toi { border-color: var(--or); background: color-mix(in srgb, var(--or) 12%, var(--surface)); animation: a-toi 1.6s ease-in-out 2; }
+@keyframes a-toi { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--or) 25%, transparent); } }
+.consigne.reussi { border-color: var(--accent); background: var(--accent-doux); }
+.consigne.reussi .consigne-titre { color: var(--accent); }
+
+.actions-joue { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.outil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px 8px;
+  border: 2px solid var(--ligne);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--encre);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, opacity .15s;
+}
+.outil:hover:not(:disabled) { border-color: var(--accent); }
+.outil:active:not(:disabled) { transform: scale(.96); }
+.outil:disabled { opacity: .4; cursor: default; }
+.outil svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#btn-lecture .ico-lecture { display: none; }
+#btn-lecture.en-pause .ico-lecture { display: inline; }
+#btn-lecture.en-pause .ico-pause { display: none; }
+#btn-lecture.en-pause { border-color: var(--accent); background: var(--accent); color: var(--sur-accent); }
+#btn-indice:not(:disabled) { border-color: var(--or); }
+
+.moments { display: flex; align-items: center; gap: 10px; }
+.moments-titre { font-size: 13px; font-weight: 600; color: var(--encre-douce); }
+.points-moments { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.points-moments li { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--surface-2); box-shadow: inset 0 0 0 2px var(--ligne); }
+.points-moments li.en-cours { box-shadow: inset 0 0 0 3px var(--or); }
+.points-moments li.premier { background: var(--or); box-shadow: none; }
+.points-moments li.aide { background: var(--accent); box-shadow: none; }
+.points-moments li.montre { background: var(--encre-douce); box-shadow: none; opacity: .6; }
+.points-moments svg { width: 15px; height: 15px; fill: #FFFFFF; }
+
+.feuille-joue {
+  display: flex;
+  flex-direction: column;
+  max-height: 150px;
+  margin: 0;
+  padding: 6px 10px;
+  overflow-y: auto;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  list-style: none;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.feuille-joue:empty { display: none; }
+.feuille-joue li { display: grid; grid-template-columns: 38px 1fr 1fr; gap: 6px; padding: 2px 0; }
+.feuille-joue .num { color: var(--encre-douce); }
+.feuille-joue .a-toi { font-weight: 700; }
+.feuille-joue .a-toi.premier { color: #B07A00; }
+.feuille-joue .a-toi.aide { color: var(--accent); }
+
+.fin { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 18px; background: var(--accent-doux); border: 2px solid var(--accent); animation: apparait .35s cubic-bezier(.2, 1.3, .4, 1); }
+@keyframes apparait { from { transform: scale(.94); opacity: .3; } }
+.fin p { margin: 0; }
+.fin-titre { font-size: 19px; font-weight: 700; }
+.fin-detail { font-size: 15px; }
+.fin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.fin-actions svg { width: 20px; height: 20px; }
+
+/* ---------- Échiquier : sélection, indice, solution ---------- */
+.plateau-joue .case-e { cursor: default; }
+.case-e.arrivee-calme::after { opacity: 1; background: rgba(242, 184, 39, .55); box-shadow: inset 0 0 0 4px var(--e-coup); }
+.case-e.choisie::after { opacity: 1; background: rgba(47, 163, 107, .35); box-shadow: inset 0 0 0 4px #2FA36B; }
+.case-e.possible::after { opacity: 1; background: radial-gradient(circle, rgba(24, 30, 40, .35) 0 15%, transparent 17%); }
+.case-e.possible-prise::after { opacity: 1; background: radial-gradient(circle, transparent 0 62%, rgba(24, 30, 40, .32) 64% 76%, transparent 78%); }
+.case-e.indice::after { opacity: 1; box-shadow: inset 0 0 0 5px #F2B827; background: rgba(242, 184, 39, .3); animation: brille 1.1s ease-in-out infinite; }
+@keyframes brille { 50% { background: rgba(242, 184, 39, .6); } }
+.case-e.cible::after { opacity: 1; box-shadow: inset 0 0 0 5px #2FA36B; background: radial-gradient(circle, rgba(47, 163, 107, .7) 0 22%, transparent 24%); }
+.case-e.trouve::after { opacity: 1; background: rgba(47, 163, 107, .5); box-shadow: inset 0 0 0 4px #2FA36B; }
+.case-e.refus { animation: refus .45s; }
+@keyframes refus { 20%, 60% { box-shadow: inset 0 0 0 4cqi rgba(214, 69, 50, .55); } }
+.plateau-joue .piece-e { touch-action: none; }
+.plateau-joue .piece-e.en-main { opacity: .3; }
+.piece-glissee { position: fixed; top: 0; left: 0; z-index: 1000; pointer-events: none; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .35)); }
+
+@media (max-width: 860px) {
+  .jeu-joue { grid-template-columns: 1fr; gap: 12px; align-content: start; }
+  .plateau-joue { width: min(100%, 540px, calc(100dvh - 330px)); min-width: min(100%, 290px); }
+  .panneau-joue { width: min(100%, 540px); justify-self: center; gap: 10px; }
+  .consigne { min-height: 0; padding: 10px 14px; }
+  .consigne-titre { font-size: 18px; }
+  .consigne-coup { font-size: 26px; }
+  .duel { order: -1; }
+  .duel-portrait { width: 48px; height: 48px; border-radius: 12px; }
+  .feuille-joue { max-height: 110px; }
+  .grille-champions { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+}
+@media (max-width: 420px) {
+  .grille-champions { grid-template-columns: repeat(2, 1fr); }
+  .outil { font-size: 11px; padding: 8px 2px 6px; }
+}

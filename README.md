@@ -36,6 +36,12 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (échec, mat, pièce à préciser, roque, promotion, prise en passant ; 373 coups). Notation française ou anglaise,
   conseil ciblé en cas d'erreur et notation découpée en morceaux expliqués. Mode libre, défi (10 coups) et défi
   chrono (20 s par coup). Mode tout-petits : clavier et marges de l'échiquier avec les pièces dessinées, les animaux et les doigts.
+- **Joue le coup** (`jeux/joue/`) : on choisit un champion parmi 29 (portraits dessinés, ou « au hasard »), une de
+  ses parties se joue toute seule sur l'échiquier, vu de son côté (bouton pour retourner l'échiquier), et aux
+  moments importants (sacrifice, gain de matériel, échec, mat, coup-clé) c'est l'enfant qui joue à sa place.
+  Facile : le coup est écrit, il faut le jouer ; difficile : il faut le trouver. Indice (la pièce qui doit bouger
+  brille) et « Montre-moi ». On joue en touchant les cases ou en faisant glisser la pièce ; les cases possibles
+  sont montrées. 301 parties classiques, vitesse réglable, notation française ou anglaise.
 - **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
   (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
 - **Dice chess** (`jeux/des/`) : compagnon pour jouer aux échecs avec des dés sur un vrai échiquier.
@@ -52,8 +58,13 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
 - Six positions d'une fiche d'exercices [Logiqboard](https://logiqboard.com) (positions seules ; explications rédigées pour ce site).
 - Ouvertures Lichess : [lichess-org/chess-openings](https://github.com/lichess-org/chess-openings) (domaine public, CC0),
   pour les coups de début de partie de « Note le coup ».
+- Parties de « Joue le coup » : 301 parties classiques de grands maîtres (coups seulement), sélection fournie par
+  Mathieu Pouillon, complétée par 4 parties de [goatchess](https://github.com/goatchess/goatchess.github.io).
+  Les moments où l'enfant joue sont choisis par `outils/parties-champions.js`. Les portraits sont dessinés
+  par le site (`jeux/joue/portraits.js`), sans aucune photo.
 - Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
-  par `outils/positions-mat.js` et `outils/coups-notation.js` ; chess.js n'est pas utilisé par le site lui-même.
+  par `outils/positions-mat.js`, `outils/coups-notation.js` et `outils/parties-champions.js` ; chess.js n'est pas
+  utilisé par le site lui-même.
 
 ## Organisation
 
@@ -71,6 +82,7 @@ js/echiquier.js       échiquier partagé : affichage d'une position (FEN) et su
 css/echiquier.css     style de cet échiquier
 outils/positions-mat.js  génère jeux/mat/positions.js en vérifiant chaque position avec chess.js
 outils/coups-notation.js génère jeux/notation/coups.js (ouvertures et problèmes Lichess rejoués avec chess.js)
+outils/parties-champions.js génère jeux/joue/parties.js (parties de outils/parties-champions.pgn et moments à jouer)
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js)
 ```
 

@@ -192,3 +192,9 @@
 .vignette .de3d .ombre-droite { fill: #3A2E1A; opacity: .2; }
 .vignette .de3d.noir .ombre-gauche, .vignette .de3d.noir .ombre-droite { fill: #1A2030; }
 .vignette .de3d .reflet { fill: none; stroke: #FFFFFF; stroke-opacity: .8; stroke-width: .035; stroke-linecap: round; }
+
+/* joue le coup : le coup à jouer et le champion */
+.vignette .fleche-joue { fill: none; stroke: #2FA36B; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.vignette .cadre-portrait { fill: var(--surface); stroke: var(--ligne); stroke-width: 1.5; }
+.vignette .bulle-a-toi { fill: var(--or); }
+.vignette .texte-a-toi { font-family: var(--police); font-size: 14px; font-weight: 700; text-anchor: middle; fill: #2A2E38; }

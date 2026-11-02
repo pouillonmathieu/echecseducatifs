@@ -1,0 +1,141 @@
+/* Génère jeux/joue/parties.js : les parties du jeu « Joue le coup ».
+
+   Source : outils/parties-champions.pgn (coups des parties seulement, sans commentaire).
+   Chaque partie est rejouée et vérifiée avec chess.js. Le « champion » d'une partie est son vainqueur :
+   c'est lui que l'enfant fait jouer. Les moments où l'enfant prend la main sont choisis parmi les coups
+   du champion, à partir du 8e coup :
+   - mat, promotion, sacrifice (la pièce jouée peut être prise sans compensation immédiate),
+     gain de matériel, échec ;
+   - pas les reprises toutes simples ;
+   - au moins 6 demi-coups entre deux moments, 6 moments au plus ;
+   - s'il y en a moins de 4, on complète avec des coups calmes de pièce, bien répartis.
+   Pour chaque moment, on garde la liste des coups légaux (pour montrer où la pièce peut aller).
+   Le PGN source a été préparé à partir des parties fournies par Mathieu Pouillon (300 parties classiques),
+   complétées par 4 parties de la base github.com/goatchess/goatchess.github.io.
+
+   Lancement : NODE_PATH=…/node_modules node outils/parties-champions.js */
+const fs = require('fs');
+const path = require('path');
+const { Chess } = require('chess.js');
+
+// Les champions qui ont leur portrait (au moins 3 parties gagnées, plus Morphy et Euwe).
+// Les autres vainqueurs sont regroupés sous « autres ».
+const CHAMPIONS = {
+  'Paul Morphy': 'morphy', 'Wilhelm Steinitz': 'steinitz', 'Mikhaïl Tchigorine': 'tchigorine', 'Siegbert Tarrasch': 'tarrasch',
+  'Emanuel Lasker': 'lasker', 'Carl Schlechter': 'schlechter', 'Akiba Rubinstein': 'rubinstein', 'Aron Nimzowitsch': 'nimzowitsch',
+  'José Raúl Capablanca': 'capablanca', 'Richard Réti': 'reti', 'Alexandre Alekhine': 'alekhine', 'Max Euwe': 'euwe',
+  'Mikhaïl Botvinnik': 'botvinnik', 'Paul Keres': 'keres', 'Vassily Smyslov': 'smyslov', 'Isaac Boleslavski': 'boleslavski',
+  'David Bronstein': 'bronstein', 'Miguel Najdorf': 'najdorf', 'Svetozar Gligorić': 'gligoric', 'Tigran Petrossian': 'petrossian',
+  'Mikhaïl Tal': 'tal', 'Leonid Stein': 'stein', 'Lev Polougaïevski': 'polougaievski', 'Boris Spassky': 'spassky',
+  'Bent Larsen': 'larsen', 'Bobby Fischer': 'fischer', 'Ulf Andersson': 'andersson', 'Anatoli Karpov': 'karpov', 'Garry Kasparov': 'kasparov',
+};
+
+const VALEUR = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
+const racine = path.join(__dirname, '..');
+const texte = fs.readFileSync(path.join(__dirname, 'parties-champions.pgn'), 'utf8');
+
+function lirePgn(bloc) {
+  const h = {};
+  bloc.replace(/^\[(\w+) "(.*)"\]$/gm, (_, k, v) => { h[k] = v; });
+  const coups = bloc.replace(/^\[.*\]$/gm, '').replace(/\d+\./g, ' ').replace(/(1-0|0-1)\s*$/, '').split(/\s+/).filter(Boolean);
+  return { h, coups };
+}
+
+// note d'un coup du champion : plus c'est haut, plus c'est un moment à jouer soi-même
+function noter(avant, m, precedent) {
+  const apres = new Chess(avant.fen());
+  apres.move(m.san);
+  const moi = m.color, lui = moi === 'w' ? 'b' : 'w';
+  let note = 0, type = 'calme';
+  if (m.san.includes('#')) return { note: 100, type: 'mat' };
+  if (m.promotion) { note += 50; type = 'promotion'; }
+  const gain = m.captured ? VALEUR[m.captured] : 0;
+  const v = VALEUR[m.promotion || m.piece];
+  const attaquants = apres.attackers(m.to, lui).map(c => VALEUR[apres.get(c).type]);
+  const defenseurs = apres.attackers(m.to, moi).length;
+  let risque = 0;
+  if (attaquants.length && m.piece !== 'k') {
+    const plusPetit = Math.min(...attaquants.map(a => a || 100));
+    risque = defenseurs ? Math.max(0, v - plusPetit) : v;
+  }
+  const bilan = gain - risque;
+  const reprise = precedent && precedent.captured && precedent.to === m.to;
+  if (bilan <= -2) { note += 60 + 5 * Math.min(6, -bilan); type = 'sacrifice'; }
+  else if (gain >= 3 && bilan >= 1 && !reprise) { note += 35; type = type === 'calme' ? 'gain' : type; }
+  else if (gain >= 1 && bilan >= 1 && !reprise) { note += 15; type = type === 'calme' ? 'gain' : type; }
+  if (m.san.includes('+')) { note += 22; if (type === 'calme') type = 'echec'; }
+  if (reprise && type !== 'sacrifice') note -= 40;
+  return { note, type };
+}
+
+function choisirMoments(jeu, coups, champion) {
+  const notes = [];
+  const j = new Chess();
+  let precedent = null;
+  coups.forEach((san, i) => {
+    const m = j.moves({ verbose: true }).find(x => x.san === san);
+    if (m.color === champion && i >= 14) notes.push({ i, ...noter(j, m, precedent), m });
+    j.move(san);
+    precedent = m;
+  });
+  const pris = [];
+  const libre = i => pris.every(p => Math.abs(p.i - i) >= 6);
+  // le dernier coup du champion, s'il conclut (mat, gain, échec)
+  const dernier = notes[notes.length - 1];
+  if (dernier && dernier.note >= 20) pris.push(dernier);
+  for (const n of [...notes].sort((a, b) => b.note - a.note)) {
+    if (pris.length >= 6) break;
+    if (n.note >= 25 && libre(n.i)) pris.push(n);
+  }
+  // compléter avec des coups calmes de pièce (pas le roi), répartis dans la partie
+  if (pris.length < 4) {
+    const calmes = notes.filter(n => n.note >= 0 && n.m.piece !== 'k' && n.m.piece !== 'p');
+    const pas = Math.max(1, Math.floor(calmes.length / 5));
+    for (let k = Math.floor(pas / 2); k < calmes.length && pris.length < 4; k += pas) if (libre(calmes[k].i)) pris.push(calmes[k]);
+  }
+  pris.sort((a, b) => a.i - b.i);
+  return pris;
+}
+
+const parties = [];
+const parChampion = {};
+for (const bloc of texte.split(/\n(?=\[White )/)) {
+  const { h, coups } = lirePgn(bloc);
+  if (!h.White) continue;
+  const champion = h.Result === '1-0' ? 'w' : 'b';
+  const vainqueur = champion === 'w' ? h.White : h.Black;
+  // vérification complète : chaque coup doit être légal
+  const j = new Chess();
+  const uci = [];
+  for (const san of coups) { const m = j.move(san); uci.push(m.from + m.to + (m.promotion || '')); }
+  const moments = choisirMoments(j, coups, champion);
+  // coups légaux à chaque moment (de + vers), pour montrer les cases possibles
+  const legaux = {};
+  const k = new Chess();
+  coups.forEach((san, i) => {
+    if (moments.some(m => m.i === i)) {
+      // regroupés par case de départ : « g1f3h3 » = le cavalier g1 peut aller en f3 ou h3
+      const groupes = {};
+      for (const m of k.moves({ verbose: true })) (groupes[m.from] = groupes[m.from] || new Set()).add(m.to);
+      legaux[i] = Object.entries(groupes).map(([de, vers]) => de + [...vers].join('')).join(' ');
+    }
+    k.move(san);
+  });
+  const cle = CHAMPIONS[vainqueur] || 'autres';
+  parChampion[cle] = (parChampion[cle] || 0) + 1;
+  parties.push({
+    ch: cle, c: champion, bl: h.White, no: h.Black, l: h.Site || '', a: /\d{4}/.test(h.Date) ? +h.Date : 0, r: h.Result,
+    u: uci.join(' '), s: coups.join(' '), m: moments.map(m => [m.i, m.type]), lg: legaux,
+  });
+}
+
+const sortie = '/* Généré par outils/parties-champions.js — ne pas modifier à la main.\n' +
+  '   Parties : coups seulement (faits historiques). u = coups (de-vers), s = notation anglaise,\n' +
+  '   m = moments où l\'enfant joue [demi-coup, type], lg = coups légaux à ces moments\n   (groupés par case de départ : « g1f3h3 »). */\n' +
+  'window.PARTIES_CHAMPIONS = ' + JSON.stringify(parties) + ';\n';
+fs.writeFileSync(path.join(racine, 'jeux/joue/parties.js'), sortie);
+const types = {};
+parties.forEach(p => p.m.forEach(([, t]) => { types[t] = (types[t] || 0) + 1; }));
+console.log(parties.length, 'parties ;', Object.keys(parChampion).length - 1, 'champions + autres ;', (sortie.length / 1024).toFixed(0), 'Ko');
+console.log('moments :', types, '; par partie :', (parties.reduce((s, p) => s + p.m.length, 0) / parties.length).toFixed(1));
+console.log(Object.entries(parChampion).sort((a, b) => b[1] - a[1]).map(e => e.join(':')).join(' '));
