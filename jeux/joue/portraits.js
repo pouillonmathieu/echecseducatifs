@@ -9,35 +9,35 @@
 
   // Description de chaque champion (traits connus, dessinés librement)
   const CHAMPIONS = {
-    morphy: { nom: 'Paul Morphy', pays: 'États-Unis', epoque: '1837–1884', sepia: true, peau: 'claire', cheveux: 'brun', coiffure: 'raie', visage: 0.95, menton: 0.72, tenue: 'noeud', yeux: '#4A3A2A' },
-    steinitz: { nez: 'fort',  nom: 'Wilhelm Steinitz', pays: 'Autriche', epoque: '1836–1900', monde: true, sepia: true, peau: 'rose', cheveux: 'roux', coiffure: 'degarni', barbe: 'pleine', moustache: 'epaisse', visage: 1.16, menton: 0.85, tenue: 'noeud', age: 2 },
-    tchigorine: { nom: 'Mikhaïl Tchigorine', pays: 'Russie', epoque: '1850–1908', sepia: true, peau: 'claire', cheveux: 'noir', coiffure: 'arriere', barbe: 'pleine', moustache: 'epaisse', visage: 1.0, menton: 0.8, tenue: 'noeud', age: 1 },
-    tarrasch: { nom: 'Siegbert Tarrasch', pays: 'Allemagne', epoque: '1862–1934', sepia: true, peau: 'rose', cheveux: 'brun', coiffure: 'chauve', barbe: 'bouc', moustache: 'epaisse', lunettes: 'pincenez', visage: 1.0, menton: 0.75, tenue: 'noeud', age: 1 },
-    lasker: { accessoire: 'cigare', sourcils: 1.6,  nom: 'Emanuel Lasker', pays: 'Allemagne', epoque: '1868–1941', monde: true, sepia: true, peau: 'rose', cheveux: 'poivre', coiffure: 'couronne', moustache: 'epaisse', visage: 1.02, menton: 0.8, tenue: 'costume', age: 2 },
-    schlechter: { nom: 'Carl Schlechter', pays: 'Autriche', epoque: '1874–1918', sepia: true, peau: 'claire', cheveux: 'brun', coiffure: 'raie', moustache: 'guidon', visage: 0.9, menton: 0.68, tenue: 'noeud' },
-    rubinstein: { regard: 'intense',  nom: 'Akiba Rubinstein', pays: 'Pologne', epoque: '1880–1961', sepia: true, peau: 'claire', cheveux: 'noir', coiffure: 'arriere', visage: 0.95, menton: 0.75, tenue: 'costume', yeux: '#2E2622' },
-    nimzowitsch: { nez: 'fort', long: 2,  nom: 'Aron Nimzowitsch', pays: 'Lettonie, Danemark', epoque: '1886–1935', sepia: true, peau: 'claire', cheveux: 'brun', coiffure: 'boucles', visage: 0.84, menton: 0.62, tenue: 'costume' },
-    capablanca: { nez: 'fin',  nom: 'José Raúl Capablanca', pays: 'Cuba', epoque: '1888–1942', monde: true, peau: 'mate', cheveux: 'noir', coiffure: 'plaque', visage: 0.98, menton: 0.78, tenue: 'costume', cravate: '#7A2E2E', yeux: '#2E2622', sourire: 1 },
-    reti: { nom: 'Richard Réti', pays: 'Tchécoslovaquie', epoque: '1889–1929', peau: 'claire', cheveux: 'noir', coiffure: 'plaque', visage: 1.02, menton: 0.8, tenue: 'costume', cravate: '#3A4660' },
-    alekhine: { accessoire: 'chat',  nom: 'Alexandre Alekhine', pays: 'Russie, France', epoque: '1892–1946', monde: true, peau: 'claire', cheveux: 'clair', coiffure: 'arriere', visage: 0.98, menton: 0.82, tenue: 'costume', cravate: '#2F3E5C', yeux: '#5D7186' },
-    euwe: { nom: 'Max Euwe', pays: 'Pays-Bas', epoque: '1901–1981', monde: true, peau: 'rose', cheveux: 'chatain', coiffure: 'degarni', lunettes: 'rondes', visage: 0.95, menton: 0.75, tenue: 'costume', cravate: '#B5651D', sourire: 1, age: 1 },
-    botvinnik: { nez: 'long', long: 1,  nom: 'Mikhaïl Botvinnik', pays: 'URSS', epoque: '1911–1995', monde: true, peau: 'claire', cheveux: 'brun', coiffure: 'degarni', lunettes: 'carrees', visage: 1.0, menton: 0.82, tenue: 'costume', cravate: '#5A2A2A', age: 1 },
-    keres: { nom: 'Paul Keres', pays: 'Estonie', epoque: '1916–1975', peau: 'claire', cheveux: 'chatain', coiffure: 'arriere', visage: 0.96, menton: 0.8, tenue: 'costume', cravate: '#2C5A7A', sourire: 1 },
-    smyslov: { nez: 'fort',  nom: 'Vassily Smyslov', pays: 'URSS', epoque: '1921–2010', monde: true, peau: 'rose', cheveux: 'gris', coiffure: 'ondule', visage: 1.06, menton: 0.84, tenue: 'costume', cravate: '#4A3A6A', age: 1, sourire: 1 },
-    boleslavski: { nom: 'Isaac Boleslavski', pays: 'URSS', epoque: '1919–1977', peau: 'claire', cheveux: 'brun', coiffure: 'degarni', lunettes: 'carrees', visage: 1.06, menton: 0.86, tenue: 'costume', cravate: '#2A4A3A' },
-    bronstein: { oreilles: 1.25, nez: 'fort',  nom: 'David Bronstein', pays: 'URSS', epoque: '1924–2006', peau: 'claire', cheveux: 'noir', coiffure: 'chauve', lunettes: 'carrees', sourcils: 1.6, visage: 1.0, menton: 0.78, tenue: 'costume', cravate: '#6A2A2A', age: 1 },
-    najdorf: { nom: 'Miguel Najdorf', pays: 'Pologne, Argentine', epoque: '1910–1997', peau: 'mate', cheveux: 'gris', coiffure: 'degarni', visage: 1.08, menton: 0.88, tenue: 'costume', cravate: '#7A5A1A', sourire: 2, age: 2 },
-    gligoric: { nom: 'Svetozar Gligorić', pays: 'Yougoslavie', epoque: '1923–2012', peau: 'mate', cheveux: 'noir', coiffure: 'ondule', visage: 0.9, menton: 0.72, tenue: 'costume', cravate: '#2A3A6A' },
-    petrossian: { nez: 'fort',  nom: 'Tigran Petrossian', pays: 'URSS (Arménie)', epoque: '1929–1984', monde: true, peau: 'olive', cheveux: 'noir', coiffure: 'degarni', sourcils: 1.5, visage: 1.08, menton: 0.86, tenue: 'costume', cravate: '#3A3A3A', yeux: '#2E2622', sourire: 1 },
-    tal: { regard: 'intense', nez: 'fort',  nom: 'Mikhaïl Tal', pays: 'URSS (Lettonie)', epoque: '1936–1992', monde: true, peau: 'claire', cheveux: 'noir', coiffure: 'hirsute', sourcils: 1.3, visage: 0.9, menton: 0.7, tenue: 'costume', cravate: '#1E2A44', yeux: '#2A2220' },
-    stein: { nom: 'Leonid Stein', pays: 'URSS (Ukraine)', epoque: '1934–1973', peau: 'claire', cheveux: 'noir', coiffure: 'plaque', visage: 1.04, menton: 0.84, tenue: 'costume', cravate: '#5A3A2A' },
-    polougaievski: { nom: 'Lev Polougaïevski', pays: 'URSS', epoque: '1934–1995', peau: 'claire', cheveux: 'chatain', coiffure: 'degarni', lunettes: 'carrees', visage: 1.02, menton: 0.84, tenue: 'costume', cravate: '#3A5A7A' },
-    spassky: { nez: 'fin',  nom: 'Boris Spassky', pays: 'URSS, France', epoque: '1937–2025', monde: true, peau: 'claire', cheveux: 'blond', coiffure: 'ondule', visage: 1.04, menton: 0.84, tenue: 'costume', cravate: '#2A4A6A', yeux: '#5D7186', sourire: 1 },
-    larsen: { long: 2, nez: 'long',  nom: 'Bent Larsen', pays: 'Danemark', epoque: '1935–2010', peau: 'rose', cheveux: 'blond', coiffure: 'frange', visage: 0.96, menton: 0.76, tenue: 'col', yeux: '#5D7186' },
-    fischer: { long: 3, nez: 'long',  nom: 'Bobby Fischer', pays: 'États-Unis', epoque: '1943–2008', monde: true, peau: 'claire', cheveux: 'chatain', coiffure: 'meche', visage: 0.92, menton: 0.7, tenue: 'costume', cravate: '#24324E', yeux: '#4E5E4A' },
-    andersson: { nom: 'Ulf Andersson', pays: 'Suède', epoque: 'né en 1951', peau: 'rose', cheveux: 'chatain', coiffure: 'long', barbe: 'pleine', moustache: 'epaisse', visage: 0.95, menton: 0.78, tenue: 'pull' },
-    karpov: { long: 2, nez: 'fin',  nom: 'Anatoli Karpov', pays: 'URSS, Russie', epoque: 'né en 1951', monde: true, peau: 'claire', cheveux: 'chatain', coiffure: 'meche', visage: 0.86, menton: 0.66, tenue: 'costume', cravate: '#6A2A3A', yeux: '#4E5E6A' },
-    kasparov: { regard: 'intense', nez: 'fort',  nom: 'Garry Kasparov', pays: 'URSS, Russie', epoque: 'né en 1963', monde: true, peau: 'mate', cheveux: 'noir', coiffure: 'courts', sourcils: 1.5, visage: 1.02, menton: 0.86, tenue: 'costume', cravate: '#7A1E1E', yeux: '#3A2A22' },
+    morphy: { formeYeux: 'ronds', formeSourcils: 'arque', sourcils: .8,  nom: 'Paul Morphy', pays: 'États-Unis', epoque: '1837–1884', sepia: true, peau: 'claire', cheveux: 'brun', coiffure: 'raie', visage: 0.95, menton: 0.72, tenue: 'noeud', yeux: '#4A3A2A' },
+    steinitz: { formeYeux: 'etroits', formeSourcils: 'droit', touffus: 1, sourcils: 1.5,  nez: 'fort',  nom: 'Wilhelm Steinitz', pays: 'Autriche', epoque: '1836–1900', monde: true, sepia: true, peau: 'rose', cheveux: 'roux', coiffure: 'degarni', barbe: 'pleine', moustache: 'epaisse', visage: 1.16, menton: 0.85, tenue: 'noeud', age: 2 },
+    tchigorine: { formeYeux: 'amande', formeSourcils: 'droit', sourcils: 1.4, ecart: .4,  nom: 'Mikhaïl Tchigorine', pays: 'Russie', epoque: '1850–1908', sepia: true, peau: 'claire', cheveux: 'noir', coiffure: 'arriere', barbe: 'pleine', moustache: 'epaisse', visage: 1.0, menton: 0.8, tenue: 'noeud', age: 1 },
+    tarrasch: { formeYeux: 'etroits', tailleYeux: .9, formeSourcils: 'fronce',  nom: 'Siegbert Tarrasch', pays: 'Allemagne', epoque: '1862–1934', sepia: true, peau: 'rose', cheveux: 'brun', coiffure: 'chauve', barbe: 'bouc', moustache: 'epaisse', lunettes: 'pincenez', visage: 1.0, menton: 0.75, tenue: 'noeud', age: 1 },
+    lasker: { formeYeux: 'tombants', formeSourcils: 'arque', touffus: 1,  accessoire: 'cigare', sourcils: 1.6,  nom: 'Emanuel Lasker', pays: 'Allemagne', epoque: '1868–1941', monde: true, sepia: true, peau: 'rose', cheveux: 'poivre', coiffure: 'couronne', moustache: 'epaisse', visage: 1.02, menton: 0.8, tenue: 'costume', age: 2 },
+    schlechter: { formeYeux: 'amande', formeSourcils: 'arque', sourcils: .9, ecart: -.3,  nom: 'Carl Schlechter', pays: 'Autriche', epoque: '1874–1918', sepia: true, peau: 'claire', cheveux: 'brun', coiffure: 'raie', moustache: 'guidon', visage: 0.9, menton: 0.68, tenue: 'noeud' },
+    rubinstein: { formeYeux: 'enfonces', formeSourcils: 'droit', sourcils: 1.5,  regard: 'intense',  nom: 'Akiba Rubinstein', pays: 'Pologne', epoque: '1880–1961', sepia: true, peau: 'claire', cheveux: 'noir', coiffure: 'arriere', visage: 0.95, menton: 0.75, tenue: 'costume', yeux: '#2E2622' },
+    nimzowitsch: { formeYeux: 'ronds', tailleYeux: 1.1, formeSourcils: 'arque', sourcils: 1.1, regardX: .5,  nez: 'fort', long: 2,  nom: 'Aron Nimzowitsch', pays: 'Lettonie, Danemark', epoque: '1886–1935', sepia: true, peau: 'claire', cheveux: 'brun', coiffure: 'boucles', visage: 0.84, menton: 0.62, tenue: 'costume' },
+    capablanca: { formeYeux: 'amande', formeSourcils: 'arque', sourcils: 1.1, regardX: -.4,  nez: 'fin',  nom: 'José Raúl Capablanca', pays: 'Cuba', epoque: '1888–1942', monde: true, peau: 'mate', cheveux: 'noir', coiffure: 'plaque', visage: 0.98, menton: 0.78, tenue: 'costume', cravate: '#7A2E2E', yeux: '#2E2622', sourire: 1 },
+    reti: { formeYeux: 'ronds', formeSourcils: 'droit', sourcils: 1.2,  nom: 'Richard Réti', pays: 'Tchécoslovaquie', epoque: '1889–1929', peau: 'claire', cheveux: 'noir', coiffure: 'plaque', visage: 1.02, menton: 0.8, tenue: 'costume', cravate: '#3A4660' },
+    alekhine: { formeYeux: 'etroits', formeSourcils: 'droit', sourcils: .8,  accessoire: 'chat',  nom: 'Alexandre Alekhine', pays: 'Russie, France', epoque: '1892–1946', monde: true, peau: 'claire', cheveux: 'clair', coiffure: 'arriere', visage: 0.98, menton: 0.82, tenue: 'costume', cravate: '#2F3E5C', yeux: '#5D7186' },
+    euwe: { formeYeux: 'ronds', formeSourcils: 'arque',  nom: 'Max Euwe', pays: 'Pays-Bas', epoque: '1901–1981', monde: true, peau: 'rose', cheveux: 'chatain', coiffure: 'degarni', lunettes: 'rondes', visage: 0.95, menton: 0.75, tenue: 'costume', cravate: '#B5651D', sourire: 1, age: 1 },
+    botvinnik: { formeYeux: 'etroits', formeSourcils: 'fronce', sourcils: 1.3,  nez: 'long', long: 1,  nom: 'Mikhaïl Botvinnik', pays: 'URSS', epoque: '1911–1995', monde: true, peau: 'claire', cheveux: 'brun', coiffure: 'degarni', lunettes: 'carrees', visage: 1.0, menton: 0.82, tenue: 'costume', cravate: '#5A2A2A', age: 1 },
+    keres: { formeYeux: 'amande', formeSourcils: 'arque', sourcils: 1.2, ecart: .3,  nom: 'Paul Keres', pays: 'Estonie', epoque: '1916–1975', peau: 'claire', cheveux: 'chatain', coiffure: 'arriere', visage: 0.96, menton: 0.8, tenue: 'costume', cravate: '#2C5A7A', sourire: 1 },
+    smyslov: { formeYeux: 'tombants', formeSourcils: 'arque', touffus: 1, sourcils: 1.3,  nez: 'fort',  nom: 'Vassily Smyslov', pays: 'URSS', epoque: '1921–2010', monde: true, peau: 'rose', cheveux: 'gris', coiffure: 'ondule', visage: 1.06, menton: 0.84, tenue: 'costume', cravate: '#4A3A6A', age: 1, sourire: 1 },
+    boleslavski: { formeYeux: 'ronds', formeSourcils: 'droit',  nom: 'Isaac Boleslavski', pays: 'URSS', epoque: '1919–1977', peau: 'claire', cheveux: 'brun', coiffure: 'degarni', lunettes: 'carrees', visage: 1.06, menton: 0.86, tenue: 'costume', cravate: '#2A4A3A' },
+    bronstein: { formeYeux: 'ronds', tailleYeux: 1.1, formeSourcils: 'arque', touffus: 1,  oreilles: 1.25, nez: 'fort',  nom: 'David Bronstein', pays: 'URSS', epoque: '1924–2006', peau: 'claire', cheveux: 'noir', coiffure: 'chauve', lunettes: 'carrees', sourcils: 1.6, visage: 1.0, menton: 0.78, tenue: 'costume', cravate: '#6A2A2A', age: 1 },
+    najdorf: { formeYeux: 'etroits', formeSourcils: 'arque', sourcils: 1.2,  nom: 'Miguel Najdorf', pays: 'Pologne, Argentine', epoque: '1910–1997', peau: 'mate', cheveux: 'gris', coiffure: 'degarni', visage: 1.08, menton: 0.88, tenue: 'costume', cravate: '#7A5A1A', sourire: 2, age: 2 },
+    gligoric: { formeYeux: 'amande', formeSourcils: 'droit', sourcils: 1.3, regardX: .4,  nom: 'Svetozar Gligorić', pays: 'Yougoslavie', epoque: '1923–2012', peau: 'mate', cheveux: 'noir', coiffure: 'ondule', visage: 0.9, menton: 0.72, tenue: 'costume', cravate: '#2A3A6A' },
+    petrossian: { formeYeux: 'tombants', formeSourcils: 'tombant', touffus: 1,  nez: 'fort',  nom: 'Tigran Petrossian', pays: 'URSS (Arménie)', epoque: '1929–1984', monde: true, peau: 'olive', cheveux: 'noir', coiffure: 'degarni', sourcils: 1.5, visage: 1.08, menton: 0.86, tenue: 'costume', cravate: '#3A3A3A', yeux: '#2E2622', sourire: 1 },
+    tal: { formeYeux: 'enfonces', tailleYeux: 1.1, formeSourcils: 'fronce',  regard: 'intense', nez: 'fort',  nom: 'Mikhaïl Tal', pays: 'URSS (Lettonie)', epoque: '1936–1992', monde: true, peau: 'claire', cheveux: 'noir', coiffure: 'hirsute', sourcils: 1.3, visage: 0.9, menton: 0.7, tenue: 'costume', cravate: '#1E2A44', yeux: '#2A2220' },
+    stein: { formeYeux: 'amande', formeSourcils: 'droit', sourcils: 1.5,  nom: 'Leonid Stein', pays: 'URSS (Ukraine)', epoque: '1934–1973', peau: 'claire', cheveux: 'noir', coiffure: 'plaque', visage: 1.04, menton: 0.84, tenue: 'costume', cravate: '#5A3A2A' },
+    polougaievski: { formeYeux: 'ronds', formeSourcils: 'arque', sourcils: 1.1,  nom: 'Lev Polougaïevski', pays: 'URSS', epoque: '1934–1995', peau: 'claire', cheveux: 'chatain', coiffure: 'degarni', lunettes: 'carrees', visage: 1.02, menton: 0.84, tenue: 'costume', cravate: '#3A5A7A' },
+    spassky: { formeYeux: 'etroits', formeSourcils: 'arque', sourcils: 1.1, ecart: .4,  nez: 'fin',  nom: 'Boris Spassky', pays: 'URSS, France', epoque: '1937–2025', monde: true, peau: 'claire', cheveux: 'blond', coiffure: 'ondule', visage: 1.04, menton: 0.84, tenue: 'costume', cravate: '#2A4A6A', yeux: '#5D7186', sourire: 1 },
+    larsen: { formeYeux: 'amande', formeSourcils: 'droit', sourcils: .9,  long: 2, nez: 'long',  nom: 'Bent Larsen', pays: 'Danemark', epoque: '1935–2010', peau: 'rose', cheveux: 'blond', coiffure: 'frange', visage: 0.96, menton: 0.76, tenue: 'col', yeux: '#5D7186' },
+    fischer: { formeYeux: 'amande', formeSourcils: 'droit', sourcils: 1.2, regardX: .5, ecart: -.4,  long: 3, nez: 'long',  nom: 'Bobby Fischer', pays: 'États-Unis', epoque: '1943–2008', monde: true, peau: 'claire', cheveux: 'chatain', coiffure: 'meche', visage: 0.92, menton: 0.7, tenue: 'costume', cravate: '#24324E', yeux: '#4E5E4A' },
+    andersson: { formeYeux: 'ronds', formeSourcils: 'droit', sourcils: 1.2,  nom: 'Ulf Andersson', pays: 'Suède', epoque: 'né en 1951', peau: 'rose', cheveux: 'chatain', coiffure: 'long', barbe: 'pleine', moustache: 'epaisse', visage: 0.95, menton: 0.78, tenue: 'pull' },
+    karpov: { formeYeux: 'etroits', formeSourcils: 'droit', sourcils: .9, ecart: -.3,  long: 2, nez: 'fin',  nom: 'Anatoli Karpov', pays: 'URSS, Russie', epoque: 'né en 1951', monde: true, peau: 'claire', cheveux: 'chatain', coiffure: 'meche', visage: 0.86, menton: 0.66, tenue: 'costume', cravate: '#6A2A3A', yeux: '#4E5E6A' },
+    kasparov: { formeYeux: 'enfonces', formeSourcils: 'fronce',  regard: 'intense', nez: 'fort',  nom: 'Garry Kasparov', pays: 'URSS, Russie', epoque: 'né en 1963', monde: true, peau: 'mate', cheveux: 'noir', coiffure: 'courts', sourcils: 1.5, visage: 1.02, menton: 0.86, tenue: 'costume', cravate: '#7A1E1E', yeux: '#3A2A22' },
   };
 
   let compteur = 0;
@@ -117,19 +117,35 @@
     }
     s += `</g>`;
 
-    // yeux
+    // yeux : forme (amande, ronds, étroits, tombants, enfoncés), taille, écart, direction du regard
+    const FORMES = { amande: [2.9, 2.2, 0, 3.8], ronds: [3.4, 2.8, 0, 3.4], etroits: [1.9, 1.5, 0, 4], tombants: [2.6, 2, 1.3, 3.8], enfonces: [2.3, 1.9, .2, 3.7] };
+    const [hautOeil, basOeil, chute, largeOeil] = FORMES[c.formeYeux || 'amande'];
+    const ty = c.tailleYeux || 1, intense = c.regard === 'intense' || c.formeYeux === 'enfonces';
     for (const sx of [-1, 1]) {
-      const x = cx + sx * 7.6;
-      s += `<path d="M${f(x - 3.8)} ${yeux}Q${f(x)} ${yeux - 2.9} ${f(x + 3.8)} ${yeux}Q${f(x)} ${yeux + 2.2} ${f(x - 3.8)} ${yeux}Z" fill="#FBFAF7"/>`;
-      s += `<circle cx="${f(x + sx * .2)}" cy="${yeux - .2}" r="1.75" fill="${c.yeux || '#5A4632'}"/><circle cx="${f(x + sx * .2)}" cy="${yeux - .2}" r=".8" fill="#141210"/><circle cx="${f(x + sx * .2 + .55)}" cy="${yeux - .8}" r=".45" fill="#FFF"/>`;
-      const intense = c.regard === 'intense';
-      s += `<path d="M${f(x - 4)} ${yeux + .2}Q${f(x)} ${yeux - 3.3} ${f(x + 4)} ${yeux + .2}" fill="none" stroke="#2A1E18" stroke-width="${intense ? 1.5 : .9}" stroke-linecap="round"/>`;
-      s += `<path d="M${f(x - 3.4)} ${yeux - 1.9}Q${f(x)} ${yeux - 4.6} ${f(x + 3.6)} ${yeux - 1.8}" fill="none" stroke="${tresSombre}" stroke-width=".55" opacity="${intense ? .9 : .55}"/>`;
-      if (intense) s += `<path d="M${f(x - 4.2)} ${yeux - 3}Q${f(x)} ${yeux - 5.5} ${f(x + 4.2)} ${yeux - 3}L${f(x + 4)} ${yeux - 1}Q${f(x)} ${yeux - 3.6} ${f(x - 4)} ${yeux - 1}Z" fill="${tresSombre}" opacity=".35"/>`;
-      s += `<path d="M${f(x - 3)} ${yeux + 2.4}Q${f(x)} ${yeux + 3.4} ${f(x + 3)} ${yeux + 2.4}" fill="none" stroke="${tresSombre}" stroke-width=".5" opacity=".6"/>`;
-      // sourcils
-      const sc = c.cheveux === 'blanc' || c.cheveux === 'gris' ? ombre(ch, .7) : ombre(ch, .9);
-      s += `<path d="M${f(x - sx * 4.4)} ${yeux - 4.2}Q${f(x - sx * .5)} ${yeux - 6.8 - sourcils * .3} ${f(x + sx * 4.6)} ${yeux - 4.6}" fill="none" stroke="${sc}" stroke-width="${f(1.2 * sourcils)}" stroke-linecap="round"/>`;
+      const x = cx + sx * (7.6 + (c.ecart || 0));
+      const ew = largeOeil * ty, xi = x - sx * ew, xo = x + sx * ew, yi = yeux - (chute ? .3 : 0), yo = yeux + chute;
+      const contour = `M${f(xi)} ${f(yi)}Q${f(x - sx * .4)} ${f(yeux - hautOeil * ty * 1.3)} ${f(xo)} ${f(yo)}Q${f(x)} ${f(yeux + basOeil * ty * 1.2)} ${f(xi)} ${f(yi)}Z`;
+      // orbite plus creuse pour les yeux enfoncés
+      if (c.formeYeux === 'enfonces') s += `<ellipse cx="${f(x)}" cy="${yeux - 1.8}" rx="${f(ew + 1.6)}" ry="3.8" fill="${tresSombre}" opacity=".28"/>`;
+      s += `<clipPath id="${id}o${sx + 1}"><path d="${contour}"/></clipPath><path d="${contour}" fill="#FBFAF7"/>`;
+      const ix = x + (c.regardX || 0) + sx * .15, iy = yeux - .15 + (chute ? .3 : 0), ri = 1.75 * ty * (c.formeYeux === 'ronds' ? 1.05 : 1);
+      s += `<g clip-path="url(#${id}o${sx + 1})"><circle cx="${f(ix)}" cy="${f(iy)}" r="${f(ri)}" fill="${c.yeux || '#5A4632'}"/><circle cx="${f(ix)}" cy="${f(iy)}" r="${f(ri * .78)}" fill="none" stroke="#000" stroke-width=".35" opacity=".25"/>` +
+        `<circle cx="${f(ix)}" cy="${f(iy)}" r="${f(ri * .46)}" fill="#141210"/><circle cx="${f(ix + .55)}" cy="${f(iy - .6)}" r=".45" fill="#FFF"/>` +
+        `<path d="M${f(xi)} ${f(yi - 3)}H${f(xo)}V${f(yeux - hautOeil * .45)}H${f(xi)}Z" fill="${tresSombre}" opacity=".18"/></g>`;
+      // paupière (trait épais en haut), pli au-dessus, cerne léger en bas
+      s += `<path d="M${f(xi - sx * .2)} ${f(yi + .1)}Q${f(x - sx * .4)} ${f(yeux - hautOeil * ty * 1.3 - .3)} ${f(xo + sx * .3)} ${f(yo + .1)}" fill="none" stroke="#24180F" stroke-width="${intense ? 1.5 : 1}" stroke-linecap="round"/>`;
+      s += `<path d="M${f(xi + sx * .4)} ${f(yi - 1.6)}Q${f(x)} ${f(yeux - hautOeil * ty * 1.3 - 2.4)} ${f(xo - sx * .2)} ${f(yo - 1.4)}" fill="none" stroke="${tresSombre}" stroke-width=".55" opacity="${intense ? .9 : .5}"/>`;
+      s += `<path d="M${f(xi + sx * .8)} ${f(yi + basOeil + .9)}Q${f(x)} ${f(yeux + basOeil * ty * 1.2 + 1.3)} ${f(xo - sx * .6)} ${f(yo + 1.1)}" fill="none" stroke="${tresSombre}" stroke-width=".5" opacity="${c.age ? .7 : .4}"/>`;
+      // sourcils : arqué, droit, tombant, froncé ; touffus ou fins
+      const ep = 1.2 * sourcils, forme = c.formeSourcils || 'arque';
+      const SOURCILS = { arque: [-4.6, -7.4, -5.2, .4], droit: [-5, -5.9, -5.3, .5], tombant: [-5.8, -6.8, -3.9, .3], fronce: [-3.8, -5.6, -5.8, .5] };
+      const [yIn, yPic, yOut, posPic] = SOURCILS[forme].map((v, k) => (k < 3 ? yeux + v - (chute && k === 2 ? -.4 : 0) : v));
+      const bi = x - sx * 4.6, bo = x + sx * 4.9, bp = bi + (bo - bi) * posPic;
+      const sc = c.cheveux === 'blanc' || c.cheveux === 'gris' ? ombre(ch, .7) : ombre(ch, .85);
+      // forme effilée : épaisse côté nez, fine vers l'extérieur
+      s += `<path d="M${f(bi)} ${f(yIn - ep * .6)}Q${f(bp)} ${f(yPic - ep * .7)} ${f(bo)} ${f(yOut - ep * .2)}Q${f(bp)} ${f(yPic + ep * .45)} ${f(bi)} ${f(yIn + ep * .55)}Z" fill="${sc}"/>`;
+      // touffus : un second sourcil plus large et plus clair, au bord irrégulier
+      if (c.touffus) s += `<path d="M${f(bi - sx * .6)} ${f(yIn - ep)}Q${f(bp)} ${f(yPic - ep * 1.25)} ${f(bo + sx * .6)} ${f(yOut - ep * .5)}L${f(bo)} ${f(yOut + ep * .3)}Q${f(bp)} ${f(yPic + ep * .9)} ${f(bi)} ${f(yIn + ep * .9)}Z" fill="${sc}" opacity=".45"/>`;
     }
     // nez (fin, normal, fort, long)
     const nz = { fin: .85, fort: 1.3, long: 1.05 }[c.nez] || 1, nl = c.nez === 'long' ? 1.5 : c.nez === 'fort' ? 1 : 0;
