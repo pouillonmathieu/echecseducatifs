@@ -40,7 +40,9 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   anciens, ou « au hasard »), une de ses parties se joue toute seule sur l'échiquier, vue de son côté (bouton pour
   retourner l'échiquier), et une dizaine de fois par partie c'est l'enfant qui joue à sa place (coups-clés choisis
   avec Stockfish, parfois plusieurs à la suite). Facile : le coup est écrit, il faut le jouer ; difficile : il faut le
-  trouver. Indice (la pièce qui doit bouger brille) et « Montre-moi ». On joue en touchant les cases ou en faisant
+  trouver. Après chaque coup trouvé, une explication simple (ce que le coup menace ou gagne, pourquoi un autre coup
+  était moins bon), avec des flèches sur l'échiquier ; à la fin, pourquoi l'adversaire abandonne. Indice (la pièce
+  qui doit bouger brille) et « Montre-moi ». On joue en touchant les cases ou en faisant
   glisser la pièce ; les cases possibles sont montrées. Parties classiques de Steinitz à Kasparov, et parties
   récentes des champions et championnes d'aujourd'hui ; vitesse réglable, notation française ou anglaise.
 - **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
@@ -65,7 +67,9 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (domaine public, CC0), et parties de Judit Polgar et d'Irina Krush tirées de goatchess et de
   [chessdatabase](https://github.com/Dragjon/chessdatabase) (licence MIT). Les moments où l'enfant joue sont choisis
   par `outils/parties-champions.js` à partir de l'analyse de [Stockfish](https://stockfishchess.org) 16.1
-  (`outils/analyser-parties.js`, résultat dans `outils/analyse-parties.json`). Les portraits sont dessinés par le
+  (`outils/analyser-parties.js`, résultat dans `outils/analyse-parties.json`) ; les explications des coups et des
+  abandons (menace, suite, autre coup, avance en matériel) viennent de `outils/analyser-explications.js`
+  (résultat dans `outils/explications.json`) et sont rédigées par le jeu. Les portraits sont dessinés par le
   site (`jeux/joue/portraits.js`), sans aucune photo.
 - Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
   par `outils/positions-mat.js`, `outils/coups-notation.js` et `outils/parties-champions.js` ; chess.js n'est pas

@@ -6,7 +6,22 @@
    L'indice montre la pièce qui doit bouger ; « Montre-moi » montre le coup. */
 (function () {
   const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
-  const PARTIES = window.PARTIES_CHAMPIONS;
+  // les parties sont rangées dans un fichier par champion (parties/<clé>.js), chargé quand on le choisit
+  const INDEX = window.PARTIES_INDEX;
+  const TOTAL = Object.values(INDEX).reduce((a, b) => a + b, 0);
+  const VERSION = ((document.currentScript && document.currentScript.src) || '').split('?v=')[1] || '';
+  const chargements = {};
+  function charger(cle) {
+    if (window.PARTIES_CH && window.PARTIES_CH[cle]) return Promise.resolve(window.PARTIES_CH[cle]);
+    if (!chargements[cle]) chargements[cle] = new Promise((ok, ko) => {
+      const sc = document.createElement('script');
+      sc.src = `parties/${cle}.js${VERSION ? '?v=' + VERSION : ''}`;
+      sc.onload = () => ok(window.PARTIES_CH[cle]);
+      sc.onerror = () => { delete chargements[cle]; ko(new Error('chargement')); };
+      document.head.appendChild(sc);
+    });
+    return chargements[cle];
+  }
   const CHAMPIONS = window.Portraits.CHAMPIONS;
   const $ = (id) => document.getElementById(id);
   const plateau = $('echiquier');
@@ -78,11 +93,17 @@
   };
   const nomChampion = () => (jeu.cle !== 'autres' ? CHAMPIONS[jeu.cle].nom : jeu.couleur === 'blanc' ? jeu.partie.bl : jeu.partie.no);
   const nomAdversaire = () => (jeu.couleur === 'blanc' ? jeu.partie.no : jeu.partie.bl);
-  const nomCourt = () => nomChampion().split(' ').slice(-1)[0];
+  // nom court : le nom de famille, sauf pour les noms où il vient en premier (Ju Wenjun) ou qu'on n'utilise pas (Humpy, Gukesh)
+  const COURTS = { 'Ju Wenjun': 'Ju Wenjun', 'Tan Zhongyi': 'Tan Zhongyi', 'Lei Tingjie': 'Lei Tingjie', 'Zhu Jiner': 'Zhu Jiner', 'Ding Liren': 'Ding Liren',
+    'Koneru Humpy': 'Humpy', 'Gukesh Dommaraju': 'Gukesh', 'Rameshbabu Praggnanandhaa': 'Praggnanandhaa', 'Vaishali Rameshbabu': 'Vaishali',
+    'Divya Deshmukh': 'Divya', 'Arjun Erigaisi': 'Arjun', 'Duc de Brunswick et comte Isouard': 'le duc et le comte' };
+  const NOM_EN_PREMIER = /^(Ju|Lei|Tan|Zhu|Ding|Wang|Wei|Yu|Li|Liu|Zhao|Hou|Ni|Bu|Xu|Song|Guo|Huang|Zhai|Lu|Ning|Shen|Zhang|Chen|Sun|Gu|Yip|Yan|Qi) /;
+  const court = (nom) => COURTS[nom] || (NOM_EN_PREMIER.test(nom) ? nom : nom.split(' ').slice(-1)[0]);
+  const nomCourt = () => court(nomChampion());
 
   // ---------- Écran de choix ----------
   const annee = (c) => +(c.epoque.match(/\d{4}/) || [0])[0];
-  const nbParties = (cle) => PARTIES.filter(p => p.ch === cle).length;
+  const nbParties = (cle) => INDEX[cle] || 0;
   function construireChoix() {
     // les plus récents d'abord ; seulement les champions qui ont des parties
     const cles = Object.keys(CHAMPIONS).filter(cle => nbParties(cle)).sort((a, b) => annee(CHAMPIONS[b]) - annee(CHAMPIONS[a]));
@@ -91,7 +112,7 @@
       `<span class="carte-portrait">${portrait}${monde ? `<span class="couronne" title="${CHAMPIONS[cle] && CHAMPIONS[cle].femme ? 'Championne' : 'Champion'} du monde">`+'<svg viewBox="0 0 24 24"><use href="#ico-couronne"/></svg></span>' : ''}</span>` +
       `<span class="carte-nom">${echapper(nom)}</span><span class="carte-sous">${echapper(sous)}</span>` +
       (n ? `<span class="carte-nb">${n} partie${n > 1 ? 's' : ''}</span>` : '') + '</button>';
-    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'Une partie au hasard', PARTIES.length);
+    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'Une partie au hasard', TOTAL);
     for (const cle of cles) {
       const c = CHAMPIONS[cle];
       h += carte(cle, window.Portraits.svg(cle), c.nom, `${c.epoque} · ${c.pays}`, nbParties(cle), c.monde);
@@ -104,14 +125,21 @@
     if (b) choisirPartie(b.dataset.cle);
   });
 
-  function choisirPartie(cle) {
-    let liste = PARTIES.map((p, i) => i).filter(i => cle === 'hasard' || PARTIES[i].ch === cle);
-    const neuves = liste.filter(i => !jeu.recentes.includes(i));
-    if (neuves.length) liste = neuves;
-    const i = liste[Math.floor(Math.random() * liste.length)];
-    jeu.recentes = [i, ...jeu.recentes].slice(0, 30);
+  async function choisirPartie(cle) {
+    let ch = cle;
+    if (cle === 'hasard') {
+      let r = Math.random() * TOTAL;
+      for (const [k, n] of Object.entries(INDEX)) { ch = k; if ((r -= n) < 0) break; }
+    }
+    let liste;
+    try { liste = await charger(ch); } catch (e) { return; }
+    let choix = liste.map((p, i) => i);
+    const neuves = choix.filter(i => !jeu.recentes.includes(ch + ':' + i));
+    if (neuves.length) choix = neuves;
+    const i = choix[Math.floor(Math.random() * choix.length)];
+    jeu.recentes = [ch + ':' + i, ...jeu.recentes].slice(0, 40);
     jeu.choixCle = cle;
-    lancerPartie(PARTIES[i]);
+    lancerPartie(liste[i]);
   }
 
   // ---------- Partie ----------
@@ -149,6 +177,7 @@
 
   function arreter() {
     clearTimeout(jeu.minuterie);
+    jeu.fleches = [];
     jeu.anim++;
     jeu.selection = null;
   }
@@ -251,35 +280,124 @@
     jeu.resultats[ply] = r;
     jeu.etat = 'anim';
     Sons.bravo();
-    const promo = jeu.coups[ply][4];
-    const BRAVO = {
-      mat: `Échec et mat ! ${nomCourt()} gagne comme ça.`,
-      sacrifice: `${nomCourt()} ose donner une pièce : c'est un sacrifice !`,
-      gain: 'Ce coup gagne du matériel.',
-      echec: 'Échec au roi !',
-      promotion: `Le pion devient ${promo === 'q' ? 'une dame' : promo === 'n' ? 'un cavalier' : promo === 'r' ? 'une tour' : 'un fou'} !`,
-      calme: `C'est bien le coup de ${nomCourt()}.`,
-      unique: `C'était le seul bon coup, et ${nomCourt()} l'a trouvé : toi aussi !`,
-    };
     const titre = r === 'premier' ? 'Bravo, du premier coup !' : r === 'aide' ? 'Bravo !' : 'C\'est ça !';
-    consigne(titre, coupEcrit(jeu.san[ply], jeu.couleur), BRAVO[type] || BRAVO.calme);
+    const ex = expliquer(ply);
+    consigne(titre, coupEcrit(jeu.san[ply], jeu.couleur), ex.html, true);
     $('consigne').classList.add('reussi');
     animer(ply, 0, () => {
       Echiquier.marquer(plateau, [jeu.coups[ply].slice(2, 4)], 'trouve');
       jeu.ply = ply + 1;
+      jeu.fleches = ex.fleches;
+      dessinerFleches();
       dessinerPoints();
       dessinerFeuille();
       majBoutons();
-      jeu.minuterie = setTimeout(() => {
-        $('consigne').classList.remove('reussi');
-        if (jeu.etat !== 'anim') return;
-        jeu.etat = 'lecture';
-        if (jeu.ply < jeu.coups.length) consigne('La partie continue…', '', '');
-        majBoutons();
-        planifier();
-      }, 2200);
+      // on laisse le temps de lire : la partie reprend avec « Continuer »
+      $('btn-continuer').hidden = false;
+      $('btn-continuer').focus({ preventScroll: true });
     });
   }
+
+  function continuer() {
+    if (jeu.etat !== 'anim' || $('btn-continuer').hidden) return;
+    $('btn-continuer').hidden = true;
+    $('consigne').classList.remove('reussi');
+    jeu.fleches = [];
+    dessinerFleches();
+    jeu.etat = 'lecture';
+    if (jeu.ply < jeu.coups.length) consigne('La partie continue…', '', '');
+    majBoutons();
+    planifier();
+  }
+
+  // ---------- Explications ----------
+  const POINTS_TXT = (n) => {
+    const eq = { 1: 'un pion', 3: 'un cavalier ou un fou', 5: 'une tour', 9: 'une dame' }[n];
+    return `${n} point${n > 1 ? 's' : ''}${eq ? ` (comme ${eq})` : ''}`;
+  };
+  const SA_PIECE = { pion: 'un pion', cavalier: 'son cavalier', fou: 'son fou', tour: 'sa tour', dame: 'sa dame', roi: 'son roi' };
+  const gras = (san) => `<b>${echapper(traduire(san))}</b>`;
+  // ce que permet le coup du champion : à partir de l'analyse de Stockfish (menace, suite, autre coup)
+  function expliquer(ply) {
+    const x = (jeu.partie.x || {})[ply] || {};
+    const type = jeu.moments.get(ply);
+    const N = echapper(nomCourt());
+    const piece = jeu.positions[ply][jeu.coups[ply].slice(0, 2)].piece;
+    const promo = jeu.coups[ply][4];
+    const phrases = [], fleches = [];
+    if (type === 'mat') phrases.push('Échec et mat ! Le roi est attaqué et n\'a plus aucune case pour s\'échapper.');
+    else if (type === 'promotion') phrases.push(`Le pion arrive au bout de l'échiquier et devient ${promo === 'q' ? 'une dame' : promo === 'n' ? 'un cavalier' : promo === 'r' ? 'une tour' : 'un fou'} !`);
+    else if (type === 'sacrifice') phrases.push(`${N} donne ${SA_PIECE[piece]} exprès : c'est un sacrifice.` +
+      (x.g >= 1 ? ` Au bout de la suite, ${N} a regagné plus : ${POINTS_TXT(x.g)} d'avance.` : x.g >= 0 ? ` Au bout de la suite, le matériel donné est récupéré.` : ' En échange, l\'attaque devient très dangereuse.'));
+    else if (x.g >= 1) phrases.push(`Ce coup gagne du matériel : ${POINTS_TXT(x.g)}.`);
+    else if (type === 'echec') phrases.push('Échec au roi : l\'adversaire doit d\'abord s\'occuper de son roi.');
+    else if (type === 'unique') phrases.push('Ici, c\'était le seul bon coup.');
+    if (type !== 'mat') {
+      if (x.mt) {
+        phrases.push(x.mt === 1 ? 'Maintenant, le mat ne peut plus être évité : il arrive au prochain coup.' : `Maintenant, le mat ne peut plus être évité : il arrive en ${x.mt} coups.`);
+        if (x.su && x.su.length >= 2) { phrases.push(`Par exemple : ${gras(x.su[0][0])}, puis ${gras(x.su[1][0])}.`); fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']); }
+      } else if (x.me) {
+        phrases.push(x.me[2] !== 'mat' ? `Ce coup menace ${gras(x.me[0])}, qui gagnerait ${POINTS_TXT(x.me[2])}.`
+          : (x.me[3] || 1) === 1 ? `Ce coup menace ${gras(x.me[0])}, échec et mat !`
+          : `Ce coup prépare ${gras(x.me[0])} : si l'adversaire ne fait rien, l'attaque mène au mat en ${x.me[3]} coups.`);
+        fleches.push([x.me[1], 'menace']);
+      } else if (x.su && x.su.length >= 2) {
+        phrases.push(`Par exemple, si l'adversaire répond ${gras(x.su[0][0])}, ${N} continue avec ${gras(x.su[1][0])}.`);
+        fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']);
+      }
+    }
+    if (x.au && x.me && x.au[0] === x.me[0]) phrases.push(`Mais jouer ${gras(x.au[0])} tout de suite aurait été une erreur : il fallait d'abord préparer ce coup.`);
+    else if (x.au) phrases.push(x.au[1] === 'perd' ? `Avec un autre coup, comme ${gras(x.au[0])}, ${N} aurait même pu perdre la partie !`
+      : x.au[1] === 'egal' ? (ply % 2 ? `Avec ${gras(x.au[0])} à la place, la partie serait redevenue à peu près égale.` : `Le coup ${gras(x.au[0])}, par exemple, aurait laissé l'adversaire revenir dans la partie.`)
+      : `${gras(x.au[0])} était moins fort : l'avantage aurait été bien plus petit.`);
+    if (!phrases.length) phrases.push(`C'est le coup qu'a joué ${N}.`);
+    return { html: phrases.join(' '), fleches };
+  }
+  // pourquoi l'adversaire abandonne
+  function expliquerFin() {
+    const f = jeu.partie.f;
+    const N = echapper(nomCourt()), A = echapper(court(nomAdversaire()));
+    if (!f || f.fin === 'mat') return { html: 'Le roi est attaqué et ne peut plus s\'échapper : la partie est finie.', fleches: [] };
+    const phrases = [], fleches = [];
+    if (f.mt) phrases.push(`Quoi que ${A} fasse, ${N} va faire échec et mat${f.mt === 1 ? ' au prochain coup' : ` en ${f.mt} coups`}.`);
+    else {
+      if (f.d >= 2) phrases.push(`${N} a ${POINTS_TXT(f.d)} de matériel en plus.`);
+      else if (f.d <= -2) phrases.push(f.cp >= 400 ? `${N} a donné du matériel, mais son attaque est imparable.` : `${N} a donné du matériel, mais sa position est bien meilleure.`);
+      if (f.pr) phrases.push('Bientôt, un pion va devenir une dame.');
+      if (f.d > -2) phrases.push(f.cp >= 400 ? `${f.d >= 2 ? 'Avec cette avance et les menaces' : 'Avec les menaces'}, il n'y a plus de bonne défense : la position de ${A} est perdue.` : `La position de ${A} est devenue très difficile.`);
+    }
+    if (f.su && f.su.length >= 2) {
+      phrases.push(`Par exemple, si ${A} joue ${gras(f.su[0][0])}, ${N} répond ${gras(f.su[1][0])}.`);
+      fleches.push([f.su[0][1], 'adversaire'], [f.su[1][1], 'suite']);
+    }
+    phrases.push('Quand on sait qu\'on va perdre, on peut abandonner : on arrête la partie et on serre la main de son adversaire.');
+    return { html: phrases.join(' '), fleches };
+  }
+
+  // flèches sur l'échiquier : menace (orange), réponse de l'adversaire (gris), suite du champion (vert)
+  function dessinerFleches() {
+    const vieux = plateau.querySelector('.fleches');
+    if (vieux) vieux.remove();
+    const liste = jeu.fleches || [];
+    if (!liste.length) return;
+    const r0 = plateau.getBoundingClientRect();
+    let h = `<svg class="fleches" viewBox="0 0 ${f1(r0.width)} ${f1(r0.height)}" aria-hidden="true"><defs>`;
+    for (const g of ['menace', 'adversaire', 'suite']) h += `<marker id="pointe-${g}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto"><path d="M0 0 10 5 0 10Z" class="pointe ${g}"/></marker>`;
+    h += '</defs>';
+    for (const [u, g] of liste) {
+      const a = plateau.querySelector(`[data-case="${u.slice(0, 2)}"]`), b = plateau.querySelector(`[data-case="${u.slice(2, 4)}"]`);
+      if (!a || !b) continue;
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      const x1 = ra.left + ra.width / 2 - r0.left, y1 = ra.top + ra.height / 2 - r0.top;
+      let x2 = rb.left + rb.width / 2 - r0.left, y2 = rb.top + rb.height / 2 - r0.top;
+      const d = Math.hypot(x2 - x1, y2 - y1) || 1, recul = ra.width * 0.28;
+      x2 -= (x2 - x1) / d * recul; y2 -= (y2 - y1) / d * recul;
+      h += `<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" class="fleche ${g}" stroke-width="${f1(ra.width * 0.15)}" marker-end="url(#pointe-${g})"/>`;
+    }
+    plateau.insertAdjacentHTML('beforeend', h + '</svg>');
+  }
+  const f1 = (n) => Math.round(n * 10) / 10;
+  window.addEventListener('resize', () => { if (jeu.fleches && jeu.fleches.length) dessinerFleches(); });
 
   function donnerIndice() {
     if (jeu.etat !== 'moment') return;
@@ -368,6 +486,10 @@
     const premiers = Object.values(jeu.resultats).filter(r => r === 'premier').length;
     $('fin-titre').textContent = dernier.endsWith('#') ? `Échec et mat ! ${nomChampion()} gagne.` : `${nomAdversaire()} abandonne : ${nomChampion()} gagne !`;
     $('fin-detail').textContent = `Tu as trouvé ${premiers} coup${premiers > 1 ? 's' : ''} sur ${total} du premier coup.`;
+    const ex = expliquerFin();
+    $('fin-explication').innerHTML = ex.html;
+    jeu.fleches = ex.fleches;
+    dessinerFleches();
     $('btn-autre-texte').textContent = jeu.choixCle === 'hasard' ? 'Une autre partie au hasard' : jeu.cle === 'autres' ? 'Une autre partie' : `Une autre partie de ${nomCourt()}`;
     $('fin').hidden = false;
     $('actions-joue').hidden = true;
@@ -378,11 +500,13 @@
   }
 
   // ---------- Affichage ----------
-  function consigne(titre, coup, detail) {
+  function consigne(titre, coup, detail, html) {
     $('consigne-titre').textContent = titre;
     $('consigne-coup').hidden = !coup;
     $('consigne-coup').innerHTML = coup || '';
-    $('consigne-detail').textContent = detail || '';
+    if (html) $('consigne-detail').innerHTML = detail || '';
+    else $('consigne-detail').textContent = detail || '';
+    if (!html) $('btn-continuer').hidden = true;
     $('consigne').classList.toggle('a-toi', jeu.etat === 'moment');
   }
 
@@ -445,14 +569,16 @@
   });
   $('btn-indice').addEventListener('click', () => { donnerIndice(); if (reglages.niveau === 'difficile' && !jeu.montre) consigne('Un indice', '', 'La pièce qui doit bouger brille.'); });
   $('btn-montrer').addEventListener('click', montrer);
+  $('btn-continuer').addEventListener('click', continuer);
   $('btn-retourner').addEventListener('click', () => {
     jeu.orientation = jeu.orientation === 'blanc' ? 'noir' : 'blanc';
-    if (jeu.etat === 'anim') return;
+    if (jeu.etat === 'anim' && $('btn-continuer').hidden) return;
     const sel = jeu.selection;
     dessiner(jeu.ply);
     if (jeu.indice) Echiquier.marquer(plateau, [jeu.coups[jeu.ply].slice(0, 2)], 'indice');
     if (jeu.montre) Echiquier.marquer(plateau, [jeu.coups[jeu.ply].slice(2, 4)], 'cible');
     if (sel) selectionner(sel);
+    dessinerFleches();
   });
   $('btn-champions').addEventListener('click', retourChoix);
   $('btn-changer').addEventListener('click', retourChoix);
@@ -467,6 +593,7 @@
 
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea') || document.body.dataset.ecran !== 'partie') return;
+    if ((e.key === ' ' || e.key === 'Enter') && !$('btn-continuer').hidden) { e.preventDefault(); continuer(); return; }
     if (e.key === ' ' && (jeu.etat === 'lecture' || jeu.etat === 'pause')) { e.preventDefault(); $('btn-lecture').click(); }
     if (e.key === 'Escape') deselectionner();
   });
@@ -499,5 +626,5 @@
   appliquerCoordonnees();
   construireChoix();
   // pour les tests
-  window.JoueLeCoup = { jeu, choisirPartie, lancerPartie, tenter, PARTIES };
+  window.JoueLeCoup = { jeu, choisirPartie, lancerPartie, tenter, continuer, charger, INDEX };
 })();

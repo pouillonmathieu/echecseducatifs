@@ -133,6 +133,72 @@ function choisirMoments(coups, champion, analyse) {
 const fichierAnalyse = path.join(__dirname, 'analyse-parties.json');
 const ANALYSE = fs.existsSync(fichierAnalyse) ? JSON.parse(fs.readFileSync(fichierAnalyse, 'utf8')) : {};
 
+// explications (facultatives) : outils/explications.json, produit par outils/analyser-explications.js
+const fichierExpl = path.join(__dirname, 'explications.json');
+const EXPL = fs.existsSync(fichierExpl) ? JSON.parse(fs.readFileSync(fichierExpl, 'utf8')) : {};
+const POINTS = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
+const materiel = (j, c) => j.board().flat().filter(x => x && x.color === c).reduce((t, x) => t + POINTS[x.type], 0);
+const ecart = (j, c) => materiel(j, c) - materiel(j, c === 'w' ? 'b' : 'w');
+// joue une suite de coups « de-vers » ; renvoie les coups joués [notation, de-vers]
+function suivre(j, pv, max) {
+  const joues = [];
+  for (const u of (pv || []).slice(0, max)) {
+    try { const m = j.move({ from: u.slice(0, 2), to: u.slice(2, 4), promotion: u[4] }); joues.push([m.san, u]); } catch (e) { break; }
+  }
+  return joues;
+}
+// explication d'un moment : g = matériel gagné au bout de la suite, me = menace [notation, de-vers, points] ou
+// [notation, de-vers, 'mat', mat en n coups],
+// au = autre coup [notation, 'perd' | 'egal' | 'moins'], su = suite [[notation, de-vers]…], mt = mat inévitable en n coups
+function expliquerMoment(fenAvant, coup, champion, e) {
+  if (!e) return null;
+  const x = {};
+  const j = new Chess(fenAvant);
+  const avant = ecart(j, champion);
+  j.move(coup);
+  const fenApres = j.fen();
+  if (e.suite) {
+    const k = new Chess(fenApres);
+    x.su = suivre(k, e.suite.pv, 3);
+    const l = new Chess(fenApres);
+    suivre(l, e.suite.pv, 5);
+    x.g = ecart(l, champion) - avant;
+    if (e.suite.mat < 0) x.mt = -e.suite.mat; // l'adversaire est maté en n coups
+  }
+  if (e.menace && e.menace.pv && e.menace.pv.length) {
+    // la menace : le champion rejoue tout de suite (on change le trait)
+    const champs = fenApres.split(' ');
+    champs[1] = champion; champs[3] = '-';
+    const k = new Chess(champs.join(' '));
+    const av = ecart(k, champion);
+    const joues = suivre(k, e.menace.pv, 3);
+    const cpSuite = e.suite ? -e.suite.cp : 0;
+    let quoi = null;
+    if (e.menace.mat > 0) quoi = 'mat';
+    else if (ecart(k, champion) - av >= 2 && e.menace.cp - cpSuite >= 120) quoi = ecart(k, champion) - av;
+    if (joues[0] && quoi) x.me = quoi === 'mat' ? [joues[0][0], joues[0][1], 'mat', e.menace.mat] : [joues[0][0], joues[0][1], quoi];
+  }
+  if (e.autre && e.autre.coup && e.autre.cp !== null) {
+    const k = new Chess(fenAvant);
+    const m = suivre(k, [e.autre.coup], 1)[0];
+    const cp2 = e.autre.cp, cp1 = e.autre.cp1;
+    if (m && chances(cp1) - chances(cp2) >= 0.08) x.au = [m[0], cp2 < -150 ? 'perd' : Math.abs(cp2) < 90 ? 'egal' : 'moins'];
+  }
+  return x;
+}
+// explication de la fin : mt = mat en n coups, d = avance en matériel, su = suite, pr = un pion va devenir dame, cp
+function expliquerFin(fen, champion, e) {
+  if (!e || !e.fin) return null;
+  const j = new Chess(fen);
+  const signe = j.turn() === champion ? 1 : -1;
+  const x = { d: ecart(j, champion), cp: Math.max(-2000, Math.min(2000, signe * e.fin.cp)) };
+  if (e.fin.mat && Math.sign(e.fin.mat) === signe) x.mt = Math.abs(e.fin.mat);
+  const k = new Chess(fen);
+  x.su = suivre(k, e.fin.pv, 4);
+  if (x.su.some(([san]) => /=/.test(san))) x.pr = 1;
+  return x;
+}
+
 const parties = [];
 const parChampion = {};
 let numero = -1;
@@ -161,19 +227,42 @@ for (const bloc of texte.split(/\n(?=\[White )/)) {
   });
   const cle = CHAMPIONS[vainqueur] || 'autres';
   parChampion[cle] = (parChampion[cle] || 0) + 1;
+  // explications des moments et de la fin
+  const fens = [];
+  const f = new Chess();
+  for (const san of coups) { fens.push(f.fen()); f.move(san); }
+  const e = EXPL[numero] || {};
+  const x = {};
+  for (const m of moments) { const r = expliquerMoment(fens[m.i], coups[m.i], champion, e[m.i]); if (r) x[m.i] = r; }
+  const fin = f.isCheckmate() ? { fin: 'mat' } : expliquerFin(f.fen(), champion, e[coups.length]);
   parties.push({
     ch: cle, c: champion, bl: h.White, no: h.Black, l: h.Site || '', a: /\d{4}/.test(h.Date) ? +h.Date : 0, r: h.Result,
     u: uci.join(' '), s: coups.join(' '), m: moments.map(m => (m.critique ? [m.i, m.type, 1] : [m.i, m.type])), lg: legaux,
+    x, f: fin,
   });
 }
 
-const sortie = '/* Généré par outils/parties-champions.js — ne pas modifier à la main.\n' +
+// sortie : un fichier par champion (chargé quand on le choisit) et un petit index
+const dossier = path.join(racine, 'jeux/joue/parties');
+fs.mkdirSync(dossier, { recursive: true });
+for (const f of fs.readdirSync(dossier)) if (f.endsWith('.js')) fs.unlinkSync(path.join(dossier, f));
+const entete = '/* Généré par outils/parties-champions.js — ne pas modifier à la main.\n' +
   '   Parties : coups seulement (faits historiques). u = coups (de-vers), s = notation anglaise,\n' +
-  '   m = moments où l\'enfant joue [demi-coup, type, 1 si c\'était le seul bon coup], lg = coups légaux à ces moments\n   (groupés par case de départ : « g1f3h3 »). */\n' +
-  'window.PARTIES_CHAMPIONS = ' + JSON.stringify(parties) + ';\n';
+  '   m = moments où l\'enfant joue [demi-coup, type, 1 si c\'était le seul bon coup], lg = coups légaux à ces moments\n' +
+  '   (groupés par case de départ : « g1f3h3 »), x = explications des moments, f = explication de la fin. */\n';
+let taille = 0;
+for (const cle of Object.keys(parChampion)) {
+  const texteCh = entete + `(window.PARTIES_CH = window.PARTIES_CH || {})[${JSON.stringify(cle)}] = ` + JSON.stringify(parties.filter(p => p.ch === cle)) + ';\n';
+  fs.writeFileSync(path.join(dossier, cle + '.js'), texteCh);
+  taille += texteCh.length;
+}
+const sortie = '/* Généré par outils/parties-champions.js — nombre de parties par champion (les parties sont dans parties/). */\n' +
+  'window.PARTIES_INDEX = ' + JSON.stringify(parChampion) + ';\n';
 fs.writeFileSync(path.join(racine, 'jeux/joue/parties.js'), sortie);
+// les moments, pour outils/analyser-explications.js
+fs.writeFileSync(path.join(__dirname, 'moments.json'), JSON.stringify(parties.map(p => p.m.map(m => m[0]))));
 const types = {};
 parties.forEach(p => p.m.forEach(([, t]) => { types[t] = (types[t] || 0) + 1; }));
-console.log(parties.length, 'parties ;', Object.keys(parChampion).length - 1, 'champions + autres ;', (sortie.length / 1024).toFixed(0), 'Ko');
+console.log(parties.length, 'parties ;', Object.keys(parChampion).length - 1, 'champions + autres ;', (taille / 1024).toFixed(0), 'Ko en tout');
 console.log('moments :', types, '; par partie :', (parties.reduce((s, p) => s + p.m.length, 0) / parties.length).toFixed(1));
 console.log(Object.entries(parChampion).sort((a, b) => b[1] - a[1]).map(e => e.join(':')).join(' '));

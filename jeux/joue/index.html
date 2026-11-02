@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="../../css/commun.css">
 <link rel="stylesheet" href="../../css/jeux.css">
 <link rel="stylesheet" href="../../css/echiquier.css">
-<link rel="stylesheet" href="joue.css?v=202611022251">
+<link rel="stylesheet" href="joue.css?v=202611022310">
 <script src="../../js/commun.js"></script>
 </head>
 <body data-ecran="choix">
@@ -110,6 +110,10 @@
         <p class="consigne-titre" id="consigne-titre"></p>
         <p class="consigne-coup" id="consigne-coup" hidden></p>
         <p class="consigne-detail" id="consigne-detail"></p>
+        <button id="btn-continuer" class="bouton-principal btn-continuer" type="button" hidden>
+          Continuer
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
       </div>
 
       <div class="actions-joue" id="actions-joue">
@@ -140,6 +144,7 @@
 
       <div class="fin" id="fin" hidden>
         <p class="fin-titre" id="fin-titre"></p>
+        <p class="fin-explication" id="fin-explication"></p>
         <p class="fin-detail" id="fin-detail"></p>
         <div class="fin-actions">
           <button id="btn-autre" class="bouton-principal" type="button">
@@ -159,8 +164,8 @@
 <script src="../../js/sons.js"></script>
 <script src="../../js/ui.js"></script>
 <script src="../../js/echiquier.js"></script>
-<script src="portraits.js?v=202611022251"></script>
-<script src="parties.js?v=202611022251"></script>
-<script src="joue.js?v=202611022251"></script>
+<script src="portraits.js?v=202611022310"></script>
+<script src="parties.js?v=202611022310"></script>
+<script src="joue.js?v=202611022310"></script>
 </body>
 </html>

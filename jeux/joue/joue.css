@@ -148,6 +148,20 @@ body[data-ecran="partie"] .seulement-choix { display: none !important; }
 .fin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .fin-actions svg { width: 20px; height: 20px; }
 
+/* explications */
+.consigne-detail b { color: var(--encre); font-weight: 700; }
+.btn-continuer { align-self: flex-start; min-height: 44px; margin-top: 4px; }
+.btn-continuer svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.fin-explication { font-size: 15px; line-height: 1.45; }
+.fin-explication b { font-weight: 700; }
+.plateau-joue { position: relative; }
+.fleches { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; pointer-events: none; }
+.fleche { stroke-linecap: round; opacity: .85; }
+.fleche.menace, .pointe.menace { stroke: #E2622A; fill: #E2622A; }
+.fleche.adversaire, .pointe.adversaire { stroke: #5A6474; fill: #5A6474; }
+.fleche.suite, .pointe.suite { stroke: #2FA36B; fill: #2FA36B; }
+.pointe { stroke: none !important; }
+
 /* ---------- Échiquier : sélection, indice, solution ---------- */
 .plateau-joue .case-e { cursor: default; }
 .case-e.arrivee-calme::after { opacity: 1; background: rgba(242, 184, 39, .55); box-shadow: inset 0 0 0 4px var(--e-coup); }
