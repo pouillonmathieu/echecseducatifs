@@ -161,7 +161,12 @@
     $('titre').textContent = nomChampion();
     $('duel-portrait').innerHTML = window.Portraits.svg(jeu.cle === 'autres' ? 'autres' : jeu.cle);
     $('duel-champion').innerHTML = `${echapper(nomChampion())} <span class="camp ${jeu.couleur}">${jeu.couleur === 'blanc' ? 'Blancs' : 'Noirs'}</span>`;
-    $('duel-adversaire').textContent = `contre ${nomAdversaire()}` + (p.l || p.a ? ` · ${[p.l, p.a || ''].filter(Boolean).join(', ')}` : '');
+    // partie célèbre : une introduction historique (jeux/joue/intros.js)
+    const intro = (window.INTROS_PARTIES || []).find(i => p.bl.includes(i.blancs) && p.no.includes(i.noirs) && p.s.startsWith(i.debut) && (!i.seulement || p.a === i.seulement));
+    $('intro-partie').hidden = !intro;
+    if (intro) { $('intro-titre').textContent = intro.titre; $('intro-texte').textContent = intro.texte; }
+    const lieu = p.l || (intro && intro.lieu) || '', an = p.a || (intro && intro.annee) || '';
+    $('duel-adversaire').textContent = `contre ${nomAdversaire()}` + (lieu || an ? ` · ${[lieu, an].filter(Boolean).join(', ')}` : '');
     $('fin').hidden = true;
     $('actions-joue').hidden = false;
     $('consigne').hidden = false;

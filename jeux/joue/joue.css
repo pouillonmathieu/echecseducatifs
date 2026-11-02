@@ -148,6 +148,13 @@ body[data-ecran="partie"] .seulement-choix { display: none !important; }
 .fin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .fin-actions svg { width: 20px; height: 20px; }
 
+/* introduction des parties célèbres */
+.intro-partie { padding: 12px 14px; border-radius: 16px; background: color-mix(in srgb, var(--or) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--or) 45%, transparent); }
+.intro-partie p { margin: 0; }
+.intro-titre { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; }
+.intro-titre svg { flex: none; width: 20px; height: 20px; fill: var(--or); }
+.intro-texte { margin-top: 4px !important; font-size: 14px; line-height: 1.45; color: var(--encre); }
+
 /* explications */
 .consigne-detail b { color: var(--encre); font-weight: 700; }
 .btn-continuer { align-self: flex-start; min-height: 44px; margin-top: 4px; }

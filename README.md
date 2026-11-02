@@ -73,7 +73,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   abandons (menace adverse en amont, menace, suite, autre coup, avance en matériel) viennent de
   `outils/analyser-explications.js`
   (résultat dans `outils/explications.json`) et sont rédigées par le jeu. Les portraits sont dessinés par le
-  site (`jeux/joue/portraits.js`), sans aucune photo.
+  site (`jeux/joue/portraits.js`), sans aucune photo. Les introductions des parties célèbres
+  (`jeux/joue/intros.js`) sont rédigées pour ce site à partir de faits historiques.
 - Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
   par `outils/positions-mat.js`, `outils/coups-notation.js` et `outils/parties-champions.js` ; chess.js n'est pas
   utilisé par le site lui-même.
