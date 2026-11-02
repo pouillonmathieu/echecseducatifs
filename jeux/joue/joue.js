@@ -84,13 +84,14 @@
   const annee = (c) => +(c.epoque.match(/\d{4}/) || [0])[0];
   const nbParties = (cle) => PARTIES.filter(p => p.ch === cle).length;
   function construireChoix() {
-    const cles = Object.keys(CHAMPIONS).sort((a, b) => annee(CHAMPIONS[a]) - annee(CHAMPIONS[b]));
+    // les plus récents d'abord ; seulement les champions qui ont des parties
+    const cles = Object.keys(CHAMPIONS).filter(cle => nbParties(cle)).sort((a, b) => annee(CHAMPIONS[b]) - annee(CHAMPIONS[a]));
     const carte = (cle, portrait, nom, sous, n, monde) =>
       `<button type="button" class="carte-champion${cle === 'hasard' ? ' hasard' : ''}" data-cle="${cle}">` +
-      `<span class="carte-portrait">${portrait}${monde ? '<span class="couronne" title="Champion du monde"><svg viewBox="0 0 24 24"><use href="#ico-couronne"/></svg></span>' : ''}</span>` +
+      `<span class="carte-portrait">${portrait}${monde ? `<span class="couronne" title="${CHAMPIONS[cle] && CHAMPIONS[cle].femme ? 'Championne' : 'Champion'} du monde">`+'<svg viewBox="0 0 24 24"><use href="#ico-couronne"/></svg></span>' : ''}</span>` +
       `<span class="carte-nom">${echapper(nom)}</span><span class="carte-sous">${echapper(sous)}</span>` +
       (n ? `<span class="carte-nb">${n} partie${n > 1 ? 's' : ''}</span>` : '') + '</button>';
-    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'N\'importe quel champion', PARTIES.length);
+    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'Une partie au hasard', PARTIES.length);
     for (const cle of cles) {
       const c = CHAMPIONS[cle];
       h += carte(cle, window.Portraits.svg(cle), c.nom, `${c.epoque} · ${c.pays}`, nbParties(cle), c.monde);

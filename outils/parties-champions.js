@@ -30,6 +30,13 @@ const CHAMPIONS = {
   'David Bronstein': 'bronstein', 'Miguel Najdorf': 'najdorf', 'Svetozar Gligorić': 'gligoric', 'Tigran Petrossian': 'petrossian',
   'Mikhaïl Tal': 'tal', 'Leonid Stein': 'stein', 'Lev Polougaïevski': 'polougaievski', 'Boris Spassky': 'spassky',
   'Bent Larsen': 'larsen', 'Bobby Fischer': 'fischer', 'Ulf Andersson': 'andersson', 'Anatoli Karpov': 'karpov', 'Garry Kasparov': 'kasparov',
+  // aujourd'hui (parties des diffusions Lichess) et championnes (toutes, même avec peu de parties)
+  'Magnus Carlsen': 'carlsen', 'Gukesh Dommaraju': 'gukesh', 'Ding Liren': 'ding', 'Ian Nepomniachtchi': 'nepo', 'Fabiano Caruana': 'caruana',
+  'Hikaru Nakamura': 'nakamura', 'Rameshbabu Praggnanandhaa': 'pragg', 'Alireza Firouzja': 'firouzja', 'Arjun Erigaisi': 'arjun',
+  'Nodirbek Abdusattorov': 'abdusattorov', 'Judit Polgar': 'polgar', 'Irina Krush': 'krush', 'Alexandra Kosteniuk': 'kosteniuk',
+  'Koneru Humpy': 'humpy', 'Nana Dzagnidze': 'dzagnidze', 'Kateryna Lagno': 'lagno', 'Anna Muzychuk': 'amuzychuk', 'Ju Wenjun': 'ju',
+  'Tan Zhongyi': 'tan', 'Mariya Muzychuk': 'mmuzychuk', 'Lei Tingjie': 'lei', 'Aleksandra Goryachkina': 'goryachkina',
+  'Vaishali Rameshbabu': 'vaishali', 'Zhu Jiner': 'zhu', 'Bibisara Assaubayeva': 'assaubayeva', 'Divya Deshmukh': 'divya',
 };
 
 const VALEUR = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };

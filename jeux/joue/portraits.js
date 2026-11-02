@@ -38,6 +38,35 @@
     andersson: { formeYeux: 'ronds', formeSourcils: 'droit', sourcils: 1.2,  nom: 'Ulf Andersson', pays: 'Suède', epoque: 'né en 1951', peau: 'rose', cheveux: 'chatain', coiffure: 'long', barbe: 'pleine', moustache: 'epaisse', visage: 0.95, menton: 0.78, tenue: 'pull' },
     karpov: { formeYeux: 'etroits', formeSourcils: 'droit', sourcils: .9, ecart: -.3,  long: 2, nez: 'fin',  nom: 'Anatoli Karpov', pays: 'URSS, Russie', epoque: 'né en 1951', monde: true, peau: 'claire', cheveux: 'chatain', coiffure: 'meche', visage: 0.86, menton: 0.66, tenue: 'costume', cravate: '#6A2A3A', yeux: '#4E5E6A' },
     kasparov: { formeYeux: 'enfonces', formeSourcils: 'fronce',  regard: 'intense', nez: 'fort',  nom: 'Garry Kasparov', pays: 'URSS, Russie', epoque: 'né en 1963', monde: true, peau: 'mate', cheveux: 'noir', coiffure: 'courts', sourcils: 1.5, visage: 1.02, menton: 0.86, tenue: 'costume', cravate: '#7A1E1E', yeux: '#3A2A22' },
+
+    // ---------- champions d'aujourd'hui ----------
+    carlsen: { nom: 'Magnus Carlsen', pays: 'Norvège', epoque: 'né en 1990', monde: true, peau: 'rose', cheveux: 'chatain', coiffure: 'raie', visage: 0.98, menton: 0.8, tenue: 'costume', cravate: '#2A3A5A', yeux: '#5D7186', formeYeux: 'amande', formeSourcils: 'droit', sourire: 1 },
+    gukesh: { nom: 'Gukesh Dommaraju', pays: 'Inde', epoque: 'né en 2006', monde: true, peau: 'olive', cheveux: 'noir', coiffure: 'courts', visage: 0.92, menton: 0.76, tenue: 'col', yeux: '#2E2622', formeYeux: 'ronds', formeSourcils: 'arque', sourcils: 1.2 },
+    ding: { nom: 'Ding Liren', pays: 'Chine', epoque: 'né en 1992', monde: true, peau: 'claire', cheveux: 'noir', coiffure: 'courts', lunettes: 'carrees', visage: 1.02, menton: 0.84, tenue: 'costume', cravate: '#3A3A4A', yeux: '#2E2622', formeYeux: 'etroits', formeSourcils: 'droit' },
+    nepo: { nom: 'Ian Nepomniachtchi', pays: 'Russie', epoque: 'né en 1990', peau: 'rose', cheveux: 'roux', coiffure: 'ondule', barbe: 'courte', moustache: 'fine', visage: 1.0, menton: 0.82, tenue: 'col', formeYeux: 'amande', formeSourcils: 'arque' },
+    caruana: { nom: 'Fabiano Caruana', pays: 'États-Unis, Italie', epoque: 'né en 1992', peau: 'claire', cheveux: 'brun', coiffure: 'courts', visage: 0.9, menton: 0.72, tenue: 'costume', cravate: '#2A4A6A', formeYeux: 'enfonces', formeSourcils: 'droit', nez: 'long', long: 1 },
+    nakamura: { nom: 'Hikaru Nakamura', pays: 'États-Unis', epoque: 'né en 1987', peau: 'claire', cheveux: 'noir', coiffure: 'meche', visage: 1.0, menton: 0.84, tenue: 'col', yeux: '#2E2622', formeYeux: 'etroits', formeSourcils: 'droit', sourire: 1 },
+    pragg: { nom: 'Rameshbabu Praggnanandhaa', pays: 'Inde', epoque: 'né en 2005', peau: 'olive', cheveux: 'noir', coiffure: 'raie', visage: 0.94, menton: 0.74, tenue: 'col', yeux: '#2E2622', formeYeux: 'ronds', formeSourcils: 'arque', sourire: 1 },
+    firouzja: { nom: 'Alireza Firouzja', pays: 'France (né en Iran)', epoque: 'né en 2003', peau: 'mate', cheveux: 'noir', coiffure: 'ondule', visage: 0.88, menton: 0.72, tenue: 'costume', cravate: '#1E2A44', yeux: '#2E2622', formeYeux: 'amande', formeSourcils: 'fronce', sourcils: 1.4 },
+    arjun: { nom: 'Arjun Erigaisi', pays: 'Inde', epoque: 'né en 2003', peau: 'olive', cheveux: 'noir', coiffure: 'meche', visage: 1.02, menton: 0.84, tenue: 'col', yeux: '#2E2622', formeYeux: 'amande', formeSourcils: 'droit', sourcils: 1.3 },
+    abdusattorov: { nom: 'Nodirbek Abdusattorov', pays: 'Ouzbékistan', epoque: 'né en 2004', peau: 'mate', cheveux: 'noir', coiffure: 'courts', visage: 0.96, menton: 0.8, tenue: 'costume', cravate: '#3A2A4A', yeux: '#2E2622', formeYeux: 'etroits', formeSourcils: 'arque' },
+    // ---------- championnes ----------
+    polgar: { nom: 'Judit Polgar', pays: 'Hongrie', epoque: 'née en 1976', femme: true, peau: 'claire', cheveux: 'roux', coiffure: 'boucles-longues', visage: 0.9, menton: 0.68, tenue: 'chemisier', haut: '#2E4A6A', formeYeux: 'amande', formeSourcils: 'arque', sourcils: .8, cils: 1, levres: '#C0605A', sourire: 1 },
+    krush: { nom: 'Irina Krush', pays: 'États-Unis', epoque: 'née en 1983', femme: true, peau: 'claire', cheveux: 'chatain', coiffure: 'longs', visage: 0.88, menton: 0.66, tenue: 'veste-f', haut: '#D8D2C8', formeYeux: 'amande', formeSourcils: 'arque', sourcils: .8, cils: 1, levres: '#BE6A64' },
+    kosteniuk: { nom: 'Alexandra Kosteniuk', pays: 'Russie, Suisse', epoque: 'née en 1984', monde: true, femme: true, peau: 'claire', cheveux: 'blond', coiffure: 'longs', visage: 0.88, menton: 0.66, tenue: 'chemisier', haut: '#6A2A3A', formeYeux: 'amande', formeSourcils: 'arque', sourcils: .7, cils: 1, levres: '#C45A5E', yeux: '#5D7186', sourire: 1 },
+    humpy: { nom: 'Koneru Humpy', pays: 'Inde', epoque: 'née en 1987', femme: true, peau: 'olive', cheveux: 'noir', coiffure: 'queue', visage: 0.9, menton: 0.7, tenue: 'chemisier', haut: '#2E6A5A', formeYeux: 'ronds', formeSourcils: 'arque', sourcils: .9, cils: 1, levres: '#A85A50', yeux: '#2E2622' },
+    dzagnidze: { nom: 'Nana Dzagnidze', pays: 'Géorgie', epoque: 'née en 1987', femme: true, peau: 'claire', cheveux: 'noir', coiffure: 'longs', visage: 0.9, menton: 0.68, tenue: 'veste-f', haut: '#E8E2D6', formeYeux: 'amande', formeSourcils: 'arque', cils: 1, levres: '#B85A5A', yeux: '#3A2A22' },
+    lagno: { nom: 'Kateryna Lagno', pays: 'Ukraine, Russie', epoque: 'née en 1989', femme: true, peau: 'claire', cheveux: 'blond', coiffure: 'chignon', visage: 0.9, menton: 0.7, tenue: 'veste-f', haut: '#F0ECE4', formeYeux: 'amande', formeSourcils: 'arque', sourcils: .8, cils: 1, levres: '#C06064', yeux: '#5D7186', boucles: '#E8D9A0' },
+    amuzychuk: { nom: 'Anna Muzychuk', pays: 'Ukraine', epoque: 'née en 1990', femme: true, peau: 'claire', cheveux: 'blond', coiffure: 'longs', visage: 0.9, menton: 0.68, tenue: 'chemisier', haut: '#2E4A7A', formeYeux: 'tombants', formeSourcils: 'arque', sourcils: .8, cils: 1, levres: '#BE6264', yeux: '#4E6A7A' },
+    ju: { nom: 'Ju Wenjun', pays: 'Chine', epoque: 'née en 1991', monde: true, femme: true, peau: 'claire', cheveux: 'noir', coiffure: 'longs', visage: 0.94, menton: 0.72, tenue: 'veste-f', haut: '#B8323A', formeYeux: 'etroits', formeSourcils: 'droit', sourcils: .8, cils: 1, levres: '#B85A5A', yeux: '#2E2622', sourire: 1 },
+    tan: { nom: 'Tan Zhongyi', pays: 'Chine', epoque: 'née en 1991', monde: true, femme: true, peau: 'claire', cheveux: 'noir', coiffure: 'carre', visage: 0.94, menton: 0.74, tenue: 'chemisier', haut: '#3A5A8A', formeYeux: 'etroits', formeSourcils: 'arque', sourcils: .8, cils: 1, levres: '#B4625E', yeux: '#2E2622' },
+    mmuzychuk: { nom: 'Mariya Muzychuk', pays: 'Ukraine', epoque: 'née en 1992', monde: true, femme: true, peau: 'claire', cheveux: 'chatain', coiffure: 'queue', visage: 0.9, menton: 0.7, tenue: 'chemisier', haut: '#E4C04A', formeYeux: 'tombants', formeSourcils: 'arque', sourcils: .8, cils: 1, levres: '#BE6264', yeux: '#4E6A7A' },
+    lei: { nom: 'Lei Tingjie', pays: 'Chine', epoque: 'née en 1997', femme: true, peau: 'claire', cheveux: 'noir', coiffure: 'carre', visage: 0.96, menton: 0.76, tenue: 'chemisier', haut: '#8A3A6A', formeYeux: 'ronds', formeSourcils: 'droit', sourcils: .8, cils: 1, levres: '#BA5E62', yeux: '#2E2622', sourire: 2 },
+    goryachkina: { nom: 'Aleksandra Goryachkina', pays: 'Russie', epoque: 'née en 1998', femme: true, peau: 'claire', cheveux: 'chatain', coiffure: 'longs', visage: 0.94, menton: 0.72, tenue: 'chemisier', haut: '#4A4A6A', formeYeux: 'amande', formeSourcils: 'droit', sourcils: .8, cils: 1, levres: '#BC6A66', yeux: '#5A6A5A' },
+    vaishali: { nom: 'Vaishali Rameshbabu', pays: 'Inde', epoque: 'née en 2001', femme: true, peau: 'olive', cheveux: 'noir', coiffure: 'queue', visage: 0.92, menton: 0.72, tenue: 'chemisier', haut: '#C4683A', formeYeux: 'ronds', formeSourcils: 'arque', sourcils: .9, cils: 1, levres: '#A85A50', yeux: '#2E2622', sourire: 1 },
+    zhu: { nom: 'Zhu Jiner', pays: 'Chine', epoque: 'née en 2002', femme: true, peau: 'claire', cheveux: 'noir', coiffure: 'carre', visage: 0.92, menton: 0.72, tenue: 'chemisier', haut: '#5A8AB8', formeYeux: 'ronds', formeSourcils: 'droit', sourcils: .8, cils: 1, levres: '#C06A6A', yeux: '#2E2622' },
+    assaubayeva: { nom: 'Bibisara Assaubayeva', pays: 'Kazakhstan', epoque: 'née en 2004', femme: true, peau: 'claire', cheveux: 'brun', coiffure: 'longs', visage: 0.92, menton: 0.7, tenue: 'veste-f', haut: '#E8E4DC', formeYeux: 'amande', formeSourcils: 'arque', sourcils: .9, cils: 1, levres: '#BC5E62', yeux: '#3A2A22' },
+    divya: { nom: 'Divya Deshmukh', pays: 'Inde', epoque: 'née en 2005', femme: true, peau: 'olive', cheveux: 'noir', coiffure: 'longs', visage: 0.92, menton: 0.72, tenue: 'chemisier', haut: '#2E5A8A', formeYeux: 'ronds', formeSourcils: 'arque', sourcils: .9, cils: 1, levres: '#A85A50', yeux: '#2E2622', sourire: 1 },
   };
 
   let compteur = 0;
@@ -77,12 +106,27 @@
 
     // cheveux longs derrière la tête
     if (c.coiffure === 'long') s += `<path d="M${f(cx - w - 4)} 40C${f(cx - w - 8)} 60 ${f(cx - w - 6)} 76 ${f(cx - w + 2)} 82H${f(cx + w - 2)}C${f(cx + w + 6)} 76 ${f(cx + w + 8)} 60 ${f(cx + w + 4)} 40Z" fill="${ombre(ch, 0.8)}"/>`;
+    if (c.coiffure === 'longs') s += `<path d="M${f(cx - w - 3)} 34C${f(cx - w - 7)} 58 ${f(cx - w - 7)} 80 ${f(cx - w - 2)} 88H${f(cx + w + 2)}C${f(cx + w + 7)} 80 ${f(cx + w + 7)} 58 ${f(cx + w + 3)} 34Z" fill="${ombre(ch, 0.78)}"/>`;
+    if (c.coiffure === 'carre') s += `<path d="M${f(cx - w - 3)} 34C${f(cx - w - 6)} 52 ${f(cx - w - 5)} 64 ${f(cx - w)} 68H${f(cx + w)}C${f(cx + w + 5)} 64 ${f(cx + w + 6)} 52 ${f(cx + w + 3)} 34Z" fill="${ombre(ch, 0.78)}"/>`;
+    if (c.coiffure === 'boucles-longues') {
+      let d = `M${f(cx - w - 4)} 30`;
+      for (let k = 0; k < 6; k++) d += `q-4 3 -1 7`;
+      d += `L${f(cx + w + 4)} 72`; for (let k = 0; k < 6; k++) d += `q3 -4 1 -7`;
+      s += `<path d="${d}Z" fill="${ombre(ch, 0.8)}"/><path d="M${f(cx - w - 6)} 62Q${cx} 92 ${f(cx + w + 6)} 62L${f(cx + w + 4)} 84H${f(cx - w - 4)}Z" fill="${ombre(ch, 0.75)}"/>`;
+    }
+    if (c.coiffure === 'queue') s += `<path d="M${f(cx + w + 1)} 40C${f(cx + w + 8)} 46 ${f(cx + w + 7)} 66 ${f(cx + w + 3)} 76C${f(cx + w + 1)} 66 ${f(cx + w + 2)} 52 ${f(cx + w - 2)} 44Z" fill="${ombre(ch, 0.8)}"/>`;
 
     // épaules et tenue
     s += `<path d="M2 100C4 86 16 79 33 76L50 83L67 76C84 79 96 86 98 100Z" fill="url(#${id}v)"/>`;
     s += `<path d="M42 60V77Q50 83 58 77V60Z" fill="${sombre}"/>`;
     s += `<path d="M42 66Q50 73 58 66V62H42Z" fill="${tresSombre}" opacity=".35"/>`;
-    if (c.tenue === 'pull') {
+    if (c.tenue === 'chemisier' || c.tenue === 'veste-f') {
+      // encolure arrondie, haut de couleur ; la veste ajoute des revers
+      s += `<path d="M38 75Q50 88 62 75L67 76C76 78 86 84 90 100H10C14 84 24 78 33 76Z" fill="${c.haut || '#7A4A6A'}"/>`;
+      s += `<path d="M38 75Q50 88 62 75" fill="none" stroke="${ombre(c.haut || '#7A4A6A', .7)}" stroke-width="1.2"/>`;
+      if (c.tenue === 'veste-f') s += `<path d="M2 100C4 86 16 79 33 76L44 96L36 100Z" fill="url(#${id}v)"/><path d="M98 100C96 86 84 79 67 76L56 96L64 100Z" fill="url(#${id}v)"/>`;
+      if (c.collier) s += `<path d="M42 74Q50 83 58 74" fill="none" stroke="#F3EFE6" stroke-width="1.1" stroke-dasharray=".1 1.8" stroke-linecap="round"/>`;
+    } else if (c.tenue === 'pull') {
       s += `<path d="M36 76Q50 86 64 76L62 74Q50 82 38 74Z" fill="#5E4232"/>`;
     } else if (c.tenue === 'col') {
       s += `<path d="M38 75L50 90L62 75L57 73L50 81L43 73Z" fill="#F4F1EA"/><path d="M43 73L50 81L46 86L39 76Z" fill="#E2DED4"/>`;
@@ -98,6 +142,7 @@
     const ro = c.oreilles || 1;
     for (const sx of [-1, 1]) s += `<ellipse cx="${f(cx + sx * (w - 0.5 + ro))}" cy="${yeux + 3}" rx="${f(3.4 * ro)}" ry="${f(6 * ro)}" fill="${sombre}"/><ellipse cx="${f(cx + sx * (w - 0.2))}" cy="${yeux + 3}" rx="1.6" ry="3.6" fill="${tresSombre}" opacity=".45"/>`;
 
+    if (c.boucles) for (const sx of [-1, 1]) s += `<circle cx="${f(cx + sx * (w + .3))}" cy="${yeux + 9.5}" r="1.3" fill="${c.boucles}"/>`;
     // visage
     s += `<path d="${tete}" fill="url(#${id}p)"/>`;
     s += `<g clip-path="url(#${id}t)">`;
@@ -136,6 +181,7 @@
       s += `<path d="M${f(xi - sx * .2)} ${f(yi + .1)}Q${f(x - sx * .4)} ${f(yeux - hautOeil * ty * 1.3 - .3)} ${f(xo + sx * .3)} ${f(yo + .1)}" fill="none" stroke="#24180F" stroke-width="${intense ? 1.5 : 1}" stroke-linecap="round"/>`;
       s += `<path d="M${f(xi + sx * .4)} ${f(yi - 1.6)}Q${f(x)} ${f(yeux - hautOeil * ty * 1.3 - 2.4)} ${f(xo - sx * .2)} ${f(yo - 1.4)}" fill="none" stroke="${tresSombre}" stroke-width=".55" opacity="${intense ? .9 : .5}"/>`;
       s += `<path d="M${f(xi + sx * .8)} ${f(yi + basOeil + .9)}Q${f(x)} ${f(yeux + basOeil * ty * 1.2 + 1.3)} ${f(xo - sx * .6)} ${f(yo + 1.1)}" fill="none" stroke="${tresSombre}" stroke-width=".5" opacity="${c.age ? .7 : .4}"/>`;
+      if (c.cils) s += `<path d="M${f(xo)} ${f(yo)}l${f(sx * 1.4)} -1.1M${f(xo - sx * 1.2)} ${f(yo - 1.2)}l${f(sx * 1)} -1.3" stroke="#24180F" stroke-width=".7" stroke-linecap="round"/>`;
       // sourcils : arqué, droit, tombant, froncé ; touffus ou fins
       const ep = 1.2 * sourcils, forme = c.formeSourcils || 'arque';
       const SOURCILS = { arque: [-4.6, -7.4, -5.2, .4], droit: [-5, -5.9, -5.3, .5], tombant: [-5.8, -6.8, -3.9, .3], fronce: [-3.8, -5.6, -5.8, .5] };
@@ -156,7 +202,7 @@
     // bouche
     const sr = c.sourire || 0;
     const yb = yeux + 16.2 + (c.long || 0) * .4;
-    s += `<path d="M${cx - 5} ${f(yb - sr * .4)}Q${cx - 2.5} ${f(yb - 1.6)} ${cx} ${f(yb - .9)}Q${cx + 2.5} ${f(yb - 1.6)} ${cx + 5} ${f(yb - sr * .4)}Q${cx} ${f(yb + .6 + sr * .9)} ${cx - 5} ${f(yb - sr * .4)}Z" fill="#B0645A" opacity=".55"/>`;
+    s += `<path d="M${cx - 5} ${f(yb - sr * .4)}Q${cx - 2.5} ${f(yb - 1.6)} ${cx} ${f(yb - .9)}Q${cx + 2.5} ${f(yb - 1.6)} ${cx + 5} ${f(yb - sr * .4)}Q${cx} ${f(yb + .6 + sr * .9)} ${cx - 5} ${f(yb - sr * .4)}Z" fill="${c.levres || '#B0645A'}" opacity="${c.levres ? .8 : .55}"/>`;
     s += `<path d="M${cx - 5} ${f(yb - sr * .4)}Q${cx} ${f(yb + 1.4 + sr * .9)} ${cx + 5} ${f(yb - sr * .4)}" fill="none" stroke="#8A4038" stroke-width="1" stroke-linecap="round"/>`;
     s += `<path d="M${cx - 3.2} ${yeux + 18.4}Q${cx} ${yeux + 19.8} ${cx + 3.2} ${yeux + 18.4}" fill="none" stroke="#B86A5E" stroke-width=".9" stroke-linecap="round" opacity=".55"/>`;
 
@@ -235,6 +281,27 @@
       case 'long': // cheveux mi-longs, raie au milieu (Andersson)
         return `<path d="M${L - 1.5} ${yeux + 4}C${L - 3} 22 ${cx - 12} 11.5 ${cx} 11.5C${cx + 12} 11.5 ${R + 3} 22 ${R + 1.5} ${yeux + 4}L${R - 1.5} ${yeux - 5}C${R - 3} 30 ${cx + 8} 22 ${cx} 19C${cx - 8} 22 ${L + 3} 30 ${L + 1.5} ${yeux - 5}Z" fill="${g}"/>` +
           meches(`M${cx} 13V19M${cx - 3} 14Q${cx - 10} 20 ${L + 1} 34M${cx + 3} 14Q${cx + 10} 20 ${R - 1} 34`, 1.1);
+      case 'longs': // cheveux longs, raie sur le côté, qui encadrent le visage
+        return `<path d="M${L - 2} ${yeux + 14}C${L - 4} 22 ${cx - 12} 11 ${cx + 1} 11C${cx + 14} 11 ${R + 4} 22 ${R + 2} ${yeux + 14}L${R - 1.5} ${yeux - 2}C${R - 2} 30 ${cx + 11} 23 ${cx + 5} 22C${cx} 21 ${cx - 7} 24 ${cx - 11} 29C${cx - 14} 32 ${L + 2} 36 ${L + 1.5} ${yeux - 2}Z" fill="${g}"/>` +
+          meches(`M${cx + 5} 12.5Q${cx - 4} 15 ${cx - 11} 28M${cx + 7} 13Q${cx + 12} 18 ${R - 1} 34M${L + 1} 34Q${L - 1} 44 ${L} ${yeux + 12}M${R - 1} 36Q${R + 1} 46 ${R} ${yeux + 12}`, 1.1);
+      case 'chignon': // cheveux tirés en arrière, chignon sur le haut
+        return `<circle cx="${cx}" cy="10.5" r="6.5" fill="${g}"/>` + meches(`M${cx - 4} 9Q${cx} 6 ${cx + 4} 10`, 1) +
+          `<path d="M${L} ${yeux - 2}C${L - 1} 24 ${cx - 12} 13 ${cx} 13C${cx + 12} 13 ${R + 1} 24 ${R} ${yeux - 2}C${R - 1} 31 ${cx + 11} 23.5 ${cx} 23C${cx - 11} 23.5 ${L + 1} 31 ${L} ${yeux - 2}Z" fill="${g}"/>` +
+          meches(`M${cx - 9} 22Q${cx - 6} 16 ${cx - 1} 14M${cx + 9} 22Q${cx + 6} 16 ${cx + 1} 14`);
+      case 'queue': // cheveux tirés, raie au milieu (queue de cheval derrière)
+        return `<path d="M${L} ${yeux - 1}C${L - 1} 24 ${cx - 12} 13 ${cx} 13C${cx + 12} 13 ${R + 1} 24 ${R} ${yeux - 1}C${R - 1} 30 ${cx + 9} 22.5 ${cx} 21.5C${cx - 9} 22.5 ${L + 1} 30 ${L} ${yeux - 1}Z" fill="${g}"/>` +
+          meches(`M${cx} 14V21M${cx - 2} 14.5Q${cx - 9} 18 ${L + 1} 32M${cx + 2} 14.5Q${cx + 9} 18 ${R - 1} 32`);
+      case 'carre': // carré avec frange
+        return `<path d="M${L - 2} ${yeux + 18}C${L - 4} 22 ${cx - 12} 11 ${cx} 11C${cx + 12} 11 ${R + 4} 22 ${R + 2} ${yeux + 18}L${R - 1.5} ${yeux + 2}C${R - 1} 36 ${R - 3} 33 ${cx + 9} 33.5C${cx + 4} 32.5 ${cx - 4} 34 ${cx - 9} 33.5C${L + 3} 33 ${L + 1} 36 ${L + 1.5} ${yeux + 2}Z" fill="${g}"/>` +
+          meches(`M${cx - 9} 33L${cx - 8} 24M${cx - 3} 33.5L${cx - 2} 23M${cx + 3} 33.5L${cx + 3} 23M${cx + 9} 33L${cx + 8} 24`, 1);
+      case 'boucles-longues': { // grande chevelure ondulée (Judit Polgar)
+        let d = `M${L - 3} ${yeux + 10}`;
+        const n = 12, pt = i => { const a = Math.PI * (1.12 - i / n * 1.24); return [cx + Math.cos(a) * (w + 4.5), 32 - Math.sin(a) * 21]; };
+        d += `L${f(pt(0)[0])} ${f(pt(0)[1])}`;
+        for (let i = 1; i <= n; i++) { const [x, y] = pt(i); d += `A3.2 3.2 0 0 1 ${f(x)} ${f(y)}`; }
+        d += `L${R + 3} ${yeux + 10}L${R - 1.5} ${yeux - 3}C${R - 2} 30 ${cx + 10} 25 ${cx + 4} 24C${cx} 26.5 ${cx - 5} 23 ${cx - 9} 26C${cx - 13} 28 ${L + 2} 33 ${L + 1.5} ${yeux - 3}Z`;
+        return `<path d="${d}" fill="${g}"/>` + meches(`M${cx - 12} 26a2.5 2.5 0 1 1 4 1M${cx - 3} 20a2.5 2.5 0 1 1 4 1M${cx + 7} 22a2.5 2.5 0 1 1 4 1M${L} 38a2.5 2.5 0 1 1 3 2M${R - 3} 38a2.5 2.5 0 1 1 3 2`, 1.1);
+      }
       default: return '';
     }
   }
