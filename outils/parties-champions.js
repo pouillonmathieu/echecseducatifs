@@ -4,10 +4,11 @@
    Chaque partie est rejouée et vérifiée avec chess.js. Le « champion » d'une partie est son vainqueur :
    c'est lui que l'enfant fait jouer. Les moments où l'enfant prend la main sont choisis parmi les coups
    du champion, à partir du 7e coup, grâce à l'analyse de Stockfish (outils/analyse-parties.json) :
+   - les sacrifices que Stockfish confirme comme le meilleur coup (spectaculaires : toujours gardés) ;
    - les coups qu'il fallait trouver : le champion a joué le meilleur coup, et le 2e meilleur faisait perdre
      au moins 12 points de chances de gain (pas les reprises toutes simples) ;
-   - au moins 4 demi-coups entre deux moments, 6 moments au plus, 3 au moins (on complète avec les
-     meilleurs coups du champion, puis avec les coups tactiques : mat, sacrifice, gain, échec) ;
+   - une dizaine de moments par partie (au plus les deux tiers des coups du champion), qui peuvent se suivre ;
+     on complète avec les meilleurs coups du champion, puis avec les coups tactiques (mat, sacrifice, gain, échec) ;
    - le mat final est toujours un moment.
    Sans analyse, on garde seulement les règles tactiques.
    Pour chaque moment, on garde la liste des coups légaux (pour montrer où la pièce peut aller).
@@ -87,6 +88,8 @@ function choisirMoments(coups, champion, analyse) {
         n.ecart = chances(a[0]) - chances(a[1]);
         n.critique = n.ecart >= 0.12 && chances(a[0]) >= 0.3 && !reprise;
         if (n.critique && n.type === 'calme') n.type = 'unique';
+        // un sacrifice que Stockfish confirme comme le meilleur coup : spectaculaire, toujours gardé
+        n.spectaculaire = n.type === 'sacrifice' && chances(a[0]) >= 0.5;
       }
       notes.push(n);
     }
@@ -94,26 +97,21 @@ function choisirMoments(coups, champion, analyse) {
     precedent = m;
   });
   const pris = [];
+  // une dizaine de moments, jamais plus des deux tiers des coups du champion ; les coups qui se suivent sont permis
+  const VISE = Math.min(10, Math.ceil(notes.length * 2 / 3));
   const libre = (i, ecart) => pris.every(p => Math.abs(p.i - i) >= ecart);
+  const prendre = (liste, max = VISE, ecart = 2) => { for (const n of liste) { if (pris.length >= max) break; if (libre(n.i, ecart)) pris.push(n); } };
   const dernier = notes[notes.length - 1];
   if (dernier && dernier.type === 'mat') pris.push(dernier);
   if (analyse) {
-    // 1. les coups qu'il fallait trouver (le plus grand écart d'abord)
-    for (const n of notes.filter(n => n.critique).sort((a, b) => b.ecart - a.ecart)) {
-      if (pris.length >= 6) break;
-      if (libre(n.i, 4)) pris.push(n);
-    }
-    // 2. s'il en manque, les meilleurs coups joués par le champion (pas les reprises)
-    for (const n of notes.filter(n => !n.critique && n.ecart > 0.03 && n.note > -20).sort((a, b) => b.ecart - a.ecart)) {
-      if (pris.length >= 3) break;
-      if (libre(n.i, 4)) pris.push(n);
-    }
+    // 1. les sacrifices confirmés, puis les coups qu'il fallait trouver (le plus grand écart d'abord)
+    prendre(notes.filter(n => n.spectaculaire));
+    prendre(notes.filter(n => n.critique).sort((a, b) => b.ecart - a.ecart));
+    // 2. puis les meilleurs coups joués par le champion (pas les reprises toutes simples)
+    prendre(notes.filter(n => !n.critique && n.ecart > 0.02 && n.note > -20).sort((a, b) => b.ecart - a.ecart));
   }
   // 3. sinon (ou pas d'analyse), les coups tactiques repérés par noter(), puis des coups calmes répartis
-  for (const n of [...notes].sort((a, b) => b.note - a.note)) {
-    if (pris.length >= (analyse ? 3 : 6)) break;
-    if (n.note >= 25 && libre(n.i, 6)) pris.push(n);
-  }
+  prendre([...notes].sort((a, b) => b.note - a.note).filter(n => n.note >= 25), VISE, analyse ? 2 : 6);
   if (pris.length < 3) {
     const calmes = notes.filter(n => n.note >= 0 && n.m.piece !== 'k' && n.m.piece !== 'p');
     const pas = Math.max(1, Math.floor(calmes.length / 5));
