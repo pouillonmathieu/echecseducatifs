@@ -217,3 +217,47 @@ svg.illus { display: block; fill: none; stroke: none; }
 }
 .segments button small { font-size: 11px; font-weight: 500; color: var(--encre-douce); }
 .segments button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-doux); }
+
+/* ---------- Choix posés au-dessus de l'échiquier (pièce, niveau, orientation, pat…) ---------- */
+.colonne-plateau { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
+.choix-jeu { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 12px; }
+.choix-ligne {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+}
+.choix-ligne button {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 5px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--encre);
+  font: inherit;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.choix-ligne button:hover { background: var(--surface-2); }
+.choix-ligne button:active { transform: scale(.94); }
+.choix-ligne button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-doux); }
+.choix-ligne svg { width: 100%; height: 100%; }
+.choix-ligne svg.de { width: 78%; height: 78%; }
+/* bouton avec un mot à côté de l'icône */
+.choix-ligne button.avec-texte { display: flex; align-items: center; gap: 8px; width: auto; padding: 4px 12px 4px 5px; font-size: 15px; font-weight: 600; white-space: nowrap; }
+.choix-ligne button.avec-texte > svg { flex: none; width: 32px; height: 32px; }
+.choix-ligne button.avec-texte .interrupteur { margin-left: 4px; }
+/* niveau : barres pleines ou vides */
+.choix-niveau button:not(.avec-texte) { width: 40px; }
+.barres .pleine { fill: var(--accent); }
+.barres .vide { fill: var(--encre-douce); opacity: .25; }
+@media (max-width: 420px) {
+  .choix-jeu { gap: 8px; }
+  .choix-ligne button { width: 40px; height: 40px; padding: 4px; }
+  .choix-ligne button.avec-texte { height: 40px; font-size: 14px; }
+}

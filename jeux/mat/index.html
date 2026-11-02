@@ -72,10 +72,6 @@
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
           <span>Montrer le roi en échec<small>Aide : le roi attaqué est entouré de rouge</small></span><span class="interrupteur" aria-hidden="true"></span>
         </button>
-        <button id="reg-pat" class="ligne-reglage" type="button">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8 10h8M8 14h8"/></svg>
-          <span>Bouton « pat »<small>Ajoute les positions de pat : pas d'échec, mais aucun coup possible</small></span><span class="interrupteur" aria-hidden="true"></span>
-        </button>
         <button id="reg-son" class="ligne-reglage" type="button">
           <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
           <span>Son</span><span class="interrupteur" aria-hidden="true"></span>
@@ -91,7 +87,19 @@
   </div>
 
   <section class="jeu-mat">
-    <div id="echiquier" class="plateau-mat"></div>
+    <div class="colonne-plateau">
+      <!-- bouton « pat » : ajoute les positions de pat et un troisième bouton de réponse -->
+      <div class="choix-jeu seulement-libre">
+        <div class="choix-ligne">
+          <button id="reg-pat" class="avec-texte" type="button" aria-label="Bouton pat : ajoute les positions de pat (pas d'échec, mais aucun coup possible)" title="Ajoute les positions de pat : pas d'échec, mais aucun coup possible">
+            <span class="pat-icone" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#piece-roi-noir"/></svg><b>=</b></span>
+            Pat
+            <span class="interrupteur" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div id="echiquier" class="plateau-mat"></div>
+    </div>
 
     <div class="panneau-mat">
       <p class="question" id="question" aria-live="polite">

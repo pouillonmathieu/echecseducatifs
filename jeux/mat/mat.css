@@ -14,10 +14,13 @@ body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
   gap: 28px;
 }
 .plateau-mat {
-  width: min(100%, 580px, calc(100vh - 150px));
-  width: min(100%, 580px, calc(100dvh - 150px));
-  justify-self: center;
+  width: min(100%, 580px, calc(100vh - 210px));
+  width: min(100%, 580px, calc(100dvh - 210px));
 }
+/* le bouton « pat » au-dessus de l'échiquier (mode libre) */
+.pat-icone { position: relative; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--or) 22%, transparent); }
+.pat-icone svg { width: 26px; height: 26px; }
+.pat-icone b { position: absolute; right: -5px; bottom: -5px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--or); color: #2A2E38; font-size: 14px; line-height: 1; box-shadow: 0 0 0 2px var(--surface); }
 .panneau-mat { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 
 .question {
@@ -145,7 +148,7 @@ body.presse #minuteur-barre { background: var(--alerte); }
 
 @media (max-width: 860px) {
   .jeu-mat { grid-template-columns: 1fr; gap: 14px; align-content: start; }
-  .plateau-mat { width: min(100%, 520px, calc(100dvh - 380px)); min-width: min(100%, 280px); }
+  .plateau-mat { width: min(100%, 520px, calc(100dvh - 440px)); min-width: min(100%, 280px); }
   .panneau-mat { gap: 12px; width: min(100%, 520px); justify-self: center; }
   .question { font-size: 18px; padding: 10px 12px; }
   .roi-question { width: 36px; height: 36px; }

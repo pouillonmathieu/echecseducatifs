@@ -329,7 +329,7 @@
   }
 
   function brancherCamps(groupe, valeur, quandChange) {
-    const boutons = [...groupe.querySelectorAll('.camp')];
+    const boutons = [...groupe.querySelectorAll('button[data-orientation]')];
     const maj = (v) => boutons.forEach(b => b.setAttribute('aria-pressed', b.dataset.orientation === v ? 'true' : 'false'));
     maj(valeur);
     boutons.forEach(b => b.addEventListener('click', () => { maj(b.dataset.orientation); quandChange(b.dataset.orientation); }));

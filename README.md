@@ -25,7 +25,7 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Boden, Damiano, épaulette…), fins de parties célèbres du domaine public (Morphy, Anderssen, Réti…),
   mats tirés de vraies parties jouées sur Lichess, et « presque mats » (fuite, prise, parade, pat).
   Chaque réponse est expliquée et montrée sur l'échiquier. Mode libre, défi (10 positions) et défi chrono
-  (20 s par position). Réglage « pat » : ajoute un troisième bouton et les positions de pat (sinon absentes).
+  (20 s par position). Bouton « pat » au-dessus de l'échiquier : ajoute un troisième bouton et les positions de pat (sinon absentes).
 - **Trouve la case** (`jeux/cases/`) : une coordonnée s'affiche, il faut toucher la bonne case de l'échiquier.
   Mode libre, défi (10 cases) et défi chrono (le plus de cases en 20 s), orientation blancs / noirs / au hasard,
   et un mode tout-petits (animaux pour les colonnes, doigts pour les rangées).
