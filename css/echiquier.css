@@ -14,6 +14,15 @@
   :root:not([data-theme="light"]) { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
 }
 :root[data-theme="dark"] { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
+/* sur l'échiquier, les pièces gardent leurs couleurs du mode clair (contour foncé) :
+   le contour clair des pièces noires n'est utile que sur fond sombre */
+.echiquier, .piece-glissee {
+  --piece-blanc: #FFFFFF;
+  --piece-blanc-trait: #1A1E27;
+  --piece-noir: #2B303B;
+  --piece-noir-trait: #1A1E27;
+  --piece-noir-detail: #FFFFFF;
+}
 
 .echiquier {
   container-type: inline-size;
