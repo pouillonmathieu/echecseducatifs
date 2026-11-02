@@ -3,12 +3,13 @@
    Source : outils/parties-champions.pgn (coups des parties seulement, sans commentaire).
    Chaque partie est rejouée et vérifiée avec chess.js. Le « champion » d'une partie est son vainqueur :
    c'est lui que l'enfant fait jouer. Les moments où l'enfant prend la main sont choisis parmi les coups
-   du champion, à partir du 8e coup :
-   - mat, promotion, sacrifice (la pièce jouée peut être prise sans compensation immédiate),
-     gain de matériel, échec ;
-   - pas les reprises toutes simples ;
-   - au moins 6 demi-coups entre deux moments, 6 moments au plus ;
-   - s'il y en a moins de 4, on complète avec des coups calmes de pièce, bien répartis.
+   du champion, à partir du 7e coup, grâce à l'analyse de Stockfish (outils/analyse-parties.json) :
+   - les coups qu'il fallait trouver : le champion a joué le meilleur coup, et le 2e meilleur faisait perdre
+     au moins 12 points de chances de gain (pas les reprises toutes simples) ;
+   - au moins 4 demi-coups entre deux moments, 6 moments au plus, 3 au moins (on complète avec les
+     meilleurs coups du champion, puis avec les coups tactiques : mat, sacrifice, gain, échec) ;
+   - le mat final est toujours un moment.
+   Sans analyse, on garde seulement les règles tactiques.
    Pour chaque moment, on garde la liste des coups légaux (pour montrer où la pièce peut aller).
    Le PGN source a été préparé à partir des parties fournies par Mathieu Pouillon (300 parties classiques),
    complétées par 4 parties de la base github.com/goatchess/goatchess.github.io.
@@ -68,47 +69,79 @@ function noter(avant, m, precedent) {
   return { note, type };
 }
 
-function choisirMoments(jeu, coups, champion) {
+// chances de gain (0 à 1) d'après l'évaluation en centièmes de pion
+const chances = (cp) => 1 / (1 + Math.exp(-0.00368208 * cp));
+
+function choisirMoments(coups, champion, analyse) {
   const notes = [];
   const j = new Chess();
   let precedent = null;
   coups.forEach((san, i) => {
     const m = j.moves({ verbose: true }).find(x => x.san === san);
-    if (m.color === champion && i >= 14) notes.push({ i, ...noter(j, m, precedent), m });
+    if (m.color === champion && i >= 12) {
+      const n = { i, ...noter(j, m, precedent), m, ecart: 0 };
+      const reprise = precedent && precedent.captured && precedent.to === m.to;
+      // Stockfish : le champion a joué le meilleur coup, et le 2e meilleur était nettement moins bon
+      const a = analyse && analyse[i];
+      if (a) {
+        n.ecart = chances(a[0]) - chances(a[1]);
+        n.critique = n.ecart >= 0.12 && chances(a[0]) >= 0.3 && !reprise;
+        if (n.critique && n.type === 'calme') n.type = 'unique';
+      }
+      notes.push(n);
+    }
     j.move(san);
     precedent = m;
   });
   const pris = [];
-  const libre = i => pris.every(p => Math.abs(p.i - i) >= 6);
-  // le dernier coup du champion, s'il conclut (mat, gain, échec)
+  const libre = (i, ecart) => pris.every(p => Math.abs(p.i - i) >= ecart);
   const dernier = notes[notes.length - 1];
-  if (dernier && dernier.note >= 20) pris.push(dernier);
-  for (const n of [...notes].sort((a, b) => b.note - a.note)) {
-    if (pris.length >= 6) break;
-    if (n.note >= 25 && libre(n.i)) pris.push(n);
+  if (dernier && dernier.type === 'mat') pris.push(dernier);
+  if (analyse) {
+    // 1. les coups qu'il fallait trouver (le plus grand écart d'abord)
+    for (const n of notes.filter(n => n.critique).sort((a, b) => b.ecart - a.ecart)) {
+      if (pris.length >= 6) break;
+      if (libre(n.i, 4)) pris.push(n);
+    }
+    // 2. s'il en manque, les meilleurs coups joués par le champion (pas les reprises)
+    for (const n of notes.filter(n => !n.critique && n.ecart > 0.03 && n.note > -20).sort((a, b) => b.ecart - a.ecart)) {
+      if (pris.length >= 3) break;
+      if (libre(n.i, 4)) pris.push(n);
+    }
   }
-  // compléter avec des coups calmes de pièce (pas le roi), répartis dans la partie
-  if (pris.length < 4) {
+  // 3. sinon (ou pas d'analyse), les coups tactiques repérés par noter(), puis des coups calmes répartis
+  for (const n of [...notes].sort((a, b) => b.note - a.note)) {
+    if (pris.length >= (analyse ? 3 : 6)) break;
+    if (n.note >= 25 && libre(n.i, 6)) pris.push(n);
+  }
+  if (pris.length < 3) {
     const calmes = notes.filter(n => n.note >= 0 && n.m.piece !== 'k' && n.m.piece !== 'p');
     const pas = Math.max(1, Math.floor(calmes.length / 5));
-    for (let k = Math.floor(pas / 2); k < calmes.length && pris.length < 4; k += pas) if (libre(calmes[k].i)) pris.push(calmes[k]);
+    for (let k = Math.floor(pas / 2); k < calmes.length && pris.length < 3; k += pas) if (libre(calmes[k].i, 6)) pris.push(calmes[k]);
   }
   pris.sort((a, b) => a.i - b.i);
   return pris;
 }
 
+// analyse Stockfish (facultative) : { n° de partie : { demi-coup : [éval du meilleur coup, éval du 2e] } },
+// seulement pour les demi-coups où le champion a joué le meilleur coup. Produite par outils/analyser-parties.js.
+const fichierAnalyse = path.join(__dirname, 'analyse-parties.json');
+const ANALYSE = fs.existsSync(fichierAnalyse) ? JSON.parse(fs.readFileSync(fichierAnalyse, 'utf8')) : {};
+
 const parties = [];
 const parChampion = {};
+let numero = -1;
 for (const bloc of texte.split(/\n(?=\[White )/)) {
   const { h, coups } = lirePgn(bloc);
   if (!h.White) continue;
+  numero++;
   const champion = h.Result === '1-0' ? 'w' : 'b';
   const vainqueur = champion === 'w' ? h.White : h.Black;
   // vérification complète : chaque coup doit être légal
   const j = new Chess();
   const uci = [];
   for (const san of coups) { const m = j.move(san); uci.push(m.from + m.to + (m.promotion || '')); }
-  const moments = choisirMoments(j, coups, champion);
+  const moments = choisirMoments(coups, champion, ANALYSE[numero]);
   // coups légaux à chaque moment (de + vers), pour montrer les cases possibles
   const legaux = {};
   const k = new Chess();
@@ -125,13 +158,13 @@ for (const bloc of texte.split(/\n(?=\[White )/)) {
   parChampion[cle] = (parChampion[cle] || 0) + 1;
   parties.push({
     ch: cle, c: champion, bl: h.White, no: h.Black, l: h.Site || '', a: /\d{4}/.test(h.Date) ? +h.Date : 0, r: h.Result,
-    u: uci.join(' '), s: coups.join(' '), m: moments.map(m => [m.i, m.type]), lg: legaux,
+    u: uci.join(' '), s: coups.join(' '), m: moments.map(m => (m.critique ? [m.i, m.type, 1] : [m.i, m.type])), lg: legaux,
   });
 }
 
 const sortie = '/* Généré par outils/parties-champions.js — ne pas modifier à la main.\n' +
   '   Parties : coups seulement (faits historiques). u = coups (de-vers), s = notation anglaise,\n' +
-  '   m = moments où l\'enfant joue [demi-coup, type], lg = coups légaux à ces moments\n   (groupés par case de départ : « g1f3h3 »). */\n' +
+  '   m = moments où l\'enfant joue [demi-coup, type, 1 si c\'était le seul bon coup], lg = coups légaux à ces moments\n   (groupés par case de départ : « g1f3h3 »). */\n' +
   'window.PARTIES_CHAMPIONS = ' + JSON.stringify(parties) + ';\n';
 fs.writeFileSync(path.join(racine, 'jeux/joue/parties.js'), sortie);
 const types = {};

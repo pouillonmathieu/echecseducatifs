@@ -74,7 +74,7 @@
   const jeu = {
     partie: null, cle: null, couleur: 'blanc', orientation: 'blanc', coups: [], san: [], positions: [], moments: new Map(),
     ply: 0, etat: 'choix', erreurs: 0, indice: false, montre: false, resultats: {}, minuterie: 0, anim: 0,
-    selection: null, legaux: new Map(), recentes: [],
+    selection: null, legaux: new Map(), recentes: [], uniques: new Set(),
   };
   const nomChampion = () => (jeu.cle !== 'autres' ? CHAMPIONS[jeu.cle].nom : jeu.couleur === 'blanc' ? jeu.partie.bl : jeu.partie.no);
   const nomAdversaire = () => (jeu.couleur === 'blanc' ? jeu.partie.no : jeu.partie.bl);
@@ -123,6 +123,7 @@
     jeu.coups = p.u.split(' ');
     jeu.san = p.s.split(' ');
     jeu.moments = new Map(p.m.map(([i, t]) => [i, t]));
+    jeu.uniques = new Set(p.m.filter(m => m[2]).map(m => m[0]));
     jeu.resultats = {};
     jeu.positions = [Echiquier.lireFen(DEPART)];
     for (const u of jeu.coups) jeu.positions.push(appliquer(jeu.positions[jeu.positions.length - 1], u).pos);
@@ -224,7 +225,7 @@
   function consigneMoment() {
     const san = jeu.san[jeu.ply];
     if (reglages.niveau === 'facile' || jeu.montre) consigne('À toi de jouer !', coupEcrit(san, jeu.couleur), jeu.montre ? 'Voici le coup : joue-le sur l\'échiquier.' : `Joue ce coup de ${nomCourt()} sur l'échiquier.`);
-    else consigne('À toi de jouer !', '', `Trouve le coup joué par ${nomCourt()}. Touche une pièce pour voir où elle peut aller.`);
+    else consigne('À toi de jouer !', '', `Trouve le coup joué par ${nomCourt()}.` + (jeu.uniques.has(jeu.ply) ? ' Attention : ici, un seul coup est vraiment bon !' : ' Touche une pièce pour voir où elle peut aller.'));
   }
 
   function tenter(de, a) {
@@ -257,6 +258,7 @@
       echec: 'Échec au roi !',
       promotion: `Le pion devient ${promo === 'q' ? 'une dame' : promo === 'n' ? 'un cavalier' : promo === 'r' ? 'une tour' : 'un fou'} !`,
       calme: `C'est bien le coup de ${nomCourt()}.`,
+      unique: `C'était le seul bon coup, et ${nomCourt()} l'a trouvé : toi aussi !`,
     };
     const titre = r === 'premier' ? 'Bravo, du premier coup !' : r === 'aide' ? 'Bravo !' : 'C\'est ça !';
     consigne(titre, coupEcrit(jeu.san[ply], jeu.couleur), BRAVO[type] || BRAVO.calme);
