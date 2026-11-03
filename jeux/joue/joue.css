@@ -166,6 +166,9 @@ body.en-arriere .plateau-joue { box-shadow: 0 0 0 3px var(--accent), 0 12px 30px
 .intro-titre svg { flex: none; width: 20px; height: 20px; fill: var(--or); }
 .intro-texte { margin-top: 4px !important; font-size: 14px; line-height: 1.45; color: var(--encre); }
 
+/* commentaires du coach */
+.mot-coach { display: inline-block; margin-right: 4px; padding: 1px 8px; border-radius: 999px; background: var(--accent); color: var(--sur-accent); font-size: 12px; font-weight: 700; vertical-align: 1px; }
+
 /* explications */
 .consigne-detail b { color: var(--encre); font-weight: 700; }
 .btn-continuer { align-self: flex-start; min-height: 44px; margin-top: 4px; }

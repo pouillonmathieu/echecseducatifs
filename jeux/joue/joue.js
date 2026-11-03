@@ -164,8 +164,9 @@
     $('duel-champion').innerHTML = `${echapper(nomChampion())} <span class="camp ${jeu.couleur}">${jeu.couleur === 'blanc' ? 'Blancs' : 'Noirs'}</span>`;
     // partie célèbre : une introduction historique (jeux/joue/intros.js)
     const intro = (window.INTROS_PARTIES || []).find(i => p.bl.includes(i.blancs) && p.no.includes(i.noirs) && p.s.startsWith(i.debut) && (!i.seulement || p.a === i.seulement));
-    $('intro-partie').hidden = !intro;
-    if (intro) { $('intro-titre').textContent = intro.titre; $('intro-texte').textContent = intro.texte; }
+    $('intro-partie').hidden = !intro && !p.ci;
+    if (intro) { $('intro-titre').textContent = intro.titre; $('intro-texte').textContent = intro.texte + (p.ci ? ' ' + p.ci : ''); }
+    else if (p.ci) { $('intro-titre').textContent = 'Le mot du coach'; $('intro-texte').textContent = p.ci; }
     const lieu = p.l || (intro && intro.lieu) || '', an = p.a || (intro && intro.annee) || '';
     $('duel-adversaire').textContent = `contre ${nomAdversaire()}` + (lieu || an ? ` · ${[lieu, an].filter(Boolean).join(', ')}` : '');
     $('fin').hidden = true;
@@ -337,6 +338,12 @@
   }
   const typeSurAvance = (x, sq) => { const p = jeu.positions[jeu.ply] && jeu.positions[jeu.ply][sq]; return p && p.piece === 'roi'; };
   function expliquer(ply) {
+    const co = (jeu.partie.co || {})[ply];
+    if (co && co[0]) return { html: `<span class="mot-coach">Le mot du coach</span> ${echapper(co[0])}`, fleches: co[1] };
+    const auto = expliquerAuto(ply);
+    return co && co[1].length ? { html: auto.html, fleches: co[1] } : auto;
+  }
+  function expliquerAuto(ply) {
     const x = (jeu.partie.x || {})[ply] || {};
     const type = jeu.moments.get(ply);
     const N = echapper(nomCourt());
@@ -447,6 +454,7 @@
   }
   // pourquoi l'adversaire abandonne
   function expliquerFin() {
+    if (jeu.partie.cf) return { html: `<span class="mot-coach">Le mot du coach</span> ${echapper(jeu.partie.cf)}`, fleches: [] };
     const f = jeu.partie.f;
     const N = echapper(nomCourt()), A = echapper(court(nomAdversaire()));
     if (!f || f.fin === 'mat') return { html: 'Le roi est attaqué et ne peut plus s\'échapper : la partie est finie.', fleches: [] };

@@ -1,0 +1,406 @@
+{
+ "gukesh-g7ikqk": {
+  "partie": {
+   "annee": 2025,
+   "blancs": "Gukesh Dommaraju",
+   "champion": "gukesh",
+   "debut": "e4 e5 Nf3 Nc6 Bb5 Nf6 d3 Bc5 c3 O-O O-O d6",
+   "noirs": "Magnus Carlsen"
+  },
+  "moments": {
+   "74": {
+    "brut": "la tour était menacé, il fallait la bouger",
+    "texte": "La tour était menacée : il fallait la mettre à l'abri.",
+    "fleches": [
+     [
+      "d5e3",
+      "danger"
+     ]
+    ]
+   },
+   "80": {
+    "brut": "double attaque sur le roi et le pion f7",
+    "texte": "Double attaque : le roi et le pion f7 sont attaqués en même temps.",
+    "fleches": [
+     [
+      "g5e6",
+      "menace"
+     ],
+     [
+      "g5f7",
+      "menace"
+     ],
+     [
+      "a7f7",
+      "menace"
+     ]
+    ]
+   },
+   "82": {
+    "joue": true,
+    "brut": "Gukesh aurait pu prendre le pion f7, mais le roi est plus intéressant ! on continue à l'attaquer !",
+    "texte": "Gukesh aurait pu prendre le pion f7, mais le roi est une cible bien plus intéressante : on continue l'attaque !"
+   },
+   "86": {
+    "joue": true,
+    "brut": "le roi attaquait la tour, il faut la bouger",
+    "texte": "Le roi noir attaquait la tour : il faut la déplacer.",
+    "fleches": [
+     [
+      "d3c2",
+      "danger"
+     ]
+    ]
+   },
+   "92": {
+    "brut": "la tour f3 et le cavalier sont attaqués, la seule façon de ne pas les perdre est d'échanger cette tour pour éloigner le roi noir de la tour f3 et permettre au cavalier de s'échapper au prochain coup",
+    "texte": "La tour f3 et le cavalier sont attaqués tous les deux. Pour ne rien perdre, la seule solution est d'échanger cette tour : le roi noir s'éloigne ainsi de la tour f3, et le cavalier pourra s'échapper au coup suivant.",
+    "fleches": [
+     [
+      "e2f3",
+      "danger"
+     ],
+     [
+      "f6g5",
+      "danger"
+     ],
+     [
+      "e2d2",
+      "suite"
+     ]
+    ]
+   },
+   "94": {
+    "brut": "Le cavalier s'échappe de la menace du pion f6, et attaque 3 choses à la fois : le roi, le pion d6 et le pion f6",
+    "texte": "Le cavalier échappe au pion f6 et attaque trois cibles à la fois : le roi, le pion d6 et le pion f6.",
+    "fleches": [
+     [
+      "f6g5",
+      "danger"
+     ],
+     [
+      "e4d2",
+      "menace"
+     ],
+     [
+      "e4d6",
+      "menace"
+     ],
+     [
+      "e4f6",
+      "menace"
+     ]
+    ]
+   },
+   "96": {
+    "brut": "le cavalier pourra capturer un pion, mais on doit d'abord protéger la tour qui est attaquée par le roi noir",
+    "texte": "Le cavalier pourra bientôt prendre un pion, mais il faut d'abord protéger la tour, attaquée par le roi noir.",
+    "fleches": [
+     [
+      "e2f3",
+      "danger"
+     ],
+     [
+      "e4d6",
+      "menace"
+     ],
+     [
+      "e4f6",
+      "menace"
+     ]
+    ]
+   },
+   "100": {
+    "brut": "On appelle ça un coup intermédiaire. Le cavalier est attaqué, mais avant de le bouger, on donne un échec au roi adverse",
+    "texte": "C'est un coup intermédiaire : le cavalier est attaqué, mais avant de le déplacer, on donne d'abord échec au roi adverse.",
+    "fleches": [
+     [
+      "f8f6",
+      "danger"
+     ],
+     [
+      "f2e2",
+      "menace"
+     ]
+    ]
+   },
+   "102": {
+    "joue": true,
+    "brut": "C'est une fourchette ! Le cavalier attaque la tour et le pion e5",
+    "texte": "C'est une fourchette ! Le cavalier attaque la tour et le pion e5.",
+    "fleches": [
+     [
+      "d7f8",
+      "menace"
+     ],
+     [
+      "d7e5",
+      "menace"
+     ]
+    ]
+   },
+   "104": {
+    "brut": "On est en échec, mais on ne doit pas bouger le roi. On peut capturer le cavalier car la tour en f8 est toujours en prise",
+    "texte": "On est en échec, mais pas besoin de bouger le roi : on peut prendre le cavalier, car la tour en f8 est toujours en prise.",
+    "fleches": [
+     [
+      "d7f8",
+      "menace"
+     ]
+    ]
+   },
+   "106": {
+    "brut": "On se retrouve avec un cavalier en plus pour jouer cette finale. Maintenant, il faut arrêter les pions du centre d'avancer. Le cavalier sera-t-il assez rapide pour les rattraper ?",
+    "texte": "Voilà un cavalier de plus pour jouer cette finale. Maintenant, il faut empêcher les pions du centre d'avancer. Le cavalier sera-t-il assez rapide pour les rattraper ?",
+    "fleches": [
+     [
+      "d5d4",
+      "danger"
+     ],
+     [
+      "d4d3",
+      "danger"
+     ],
+     [
+      "d3d2",
+      "danger"
+     ],
+     [
+      "d2d1",
+      "danger"
+     ]
+    ]
+   },
+   "112": {
+    "brut": "Le pion d des noirs n'est plus qu'à deux cases de la promotion. Le cavalier doit revenir pour l'empêcher de faire une dame.",
+    "texte": "Le pion d noir n'est plus qu'à deux cases de la promotion : le cavalier doit revenir pour l'empêcher de devenir une dame.",
+    "fleches": [
+     [
+      "d3d2",
+      "danger"
+     ],
+     [
+      "d2d1",
+      "danger"
+     ],
+     [
+      "a4b2",
+      "suite"
+     ],
+     [
+      "b2d1",
+      "suite"
+     ]
+    ]
+   },
+   "120": {
+    "brut": "Maintenant c'est le pion e qui est le plus menaçant. Mais grâce à cette fourchette, on oblige le roi noir à aller en e2 (sinon le pion est perdu). Et ça laisse le temps à notre roi de venir aider à défendre.",
+    "texte": "Maintenant, c'est le pion e le plus dangereux. Grâce à cette fourchette, le roi noir est obligé d'aller en e2, sinon le pion est perdu. Et pendant ce temps, notre roi a le temps de venir aider.",
+    "fleches": [
+     [
+      "c4d2",
+      "menace"
+     ],
+     [
+      "c4e3",
+      "menace"
+     ],
+     [
+      "g3f4",
+      "suite"
+     ],
+     [
+      "b3b4",
+      "suite"
+     ],
+     [
+      "b4b5",
+      "suite"
+     ],
+     [
+      "b5b6",
+      "suite"
+     ],
+     [
+      "b6b7",
+      "suite"
+     ],
+     [
+      "b7b8",
+      "suite"
+     ]
+    ]
+   },
+   "122": {
+    "fleches": [
+     [
+      "c4e3",
+      "suite"
+     ],
+     [
+      "e3d1",
+      "suite"
+     ]
+    ]
+   }
+  },
+  "fin_brut": "Avec l'aide du roi, le cavalier va pouvoir prendre le pion e3 au prochain coup, et est prêt à se sacrifier contre le pion d si il fait une promotion. Les pions blancs peuvent tranquillement avancer vers la promotion.",
+  "fin": "Avec l'aide de son roi, le cavalier va prendre le pion e3 au prochain coup, et il pourra se sacrifier pour arrêter le pion d si celui-ci file à la promotion. Pendant ce temps, les pions blancs avancent tranquillement vers la promotion."
+ },
+ "gukesh-imbc4i": {
+  "partie": {
+   "annee": 2025,
+   "blancs": "Gukesh Dommaraju",
+   "champion": "gukesh",
+   "debut": "e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Be7 O-O O-O Re1 d6",
+   "noirs": "Hikaru Nakamura"
+  },
+  "moments": {
+   "12": {
+    "joue": true,
+    "brut": "Un idée souvent utilisée par les noirs dans la partie italienne est d'attaquer le fou c4 avec le cavalier. jouer a4 permet au fou d'avoir une case de repli en a2",
+    "texte": "Dans la partie italienne, les Noirs cherchent souvent à attaquer le fou c4 avec leur cavalier. Jouer a4 prépare une case de repli pour le fou, en a2.",
+    "fleches": [
+     [
+      "c6a5",
+      "danger"
+     ],
+     [
+      "a5c4",
+      "danger"
+     ],
+     [
+      "c4a2",
+      "suite"
+     ]
+    ]
+   },
+   "22": {
+    "brut": "Les noirs proposent un échange. Ici, c'est mieux d'échanger en e6 et \"doubler\" les pions des noirs, plutôt que de les laisser échanger en a2, ce qui amènerait notre tour sur une case où elle serait un peu bloquée",
+    "texte": "Les Noirs proposent un échange. Ici, il vaut mieux prendre en e6 et « doubler » les pions noirs, plutôt que de les laisser échanger en a2 : notre tour arriverait alors sur une case où elle serait un peu bloquée.",
+    "fleches": [
+     [
+      "f7e6",
+      "suite"
+     ],
+     [
+      "a1a2",
+      "adversaire"
+     ]
+    ]
+   },
+   "34": {
+    "joue": true,
+    "brut": "l'adversaire s'attendait surement à une simple recapture en d4, mais j'ai décidé de faire autrement : attaquer le pion d6",
+    "texte": "L'adversaire s'attendait sûrement à une simple reprise en d4, mais Gukesh choisit autre chose : attaquer le pion d6.",
+    "fleches": [
+     [
+      "b4d6",
+      "menace"
+     ],
+     [
+      "c4d6",
+      "menace"
+     ],
+     [
+      "f3d4",
+      "suite"
+     ]
+    ]
+   },
+   "42": {
+    "joue": true,
+    "brut": "Encore une fois, je pouvais récupérer le pion en c4, mais j'ai eu une meilleure idée. En e5, le cavalier menace la fourchette en g6. Les noirs vont devoir défendre et je pourrai prendre le pion c avec mon cavalier. Ce qui me permet de garder ma tour sur la colonne d, où elle est très forte.",
+    "texte": "Encore une fois, Gukesh pouvait reprendre le pion en c4, mais il a une meilleure idée. En e5, le cavalier menace une fourchette en g6. Les Noirs vont devoir se défendre, et le cavalier pourra ensuite prendre le pion c. Comme ça, la tour reste sur la colonne d, où elle est très forte.",
+    "fleches": [
+     [
+      "d4c4",
+      "suite"
+     ],
+     [
+      "e5g6",
+      "menace"
+     ],
+     [
+      "e5c4",
+      "menace"
+     ]
+    ]
+   },
+   "48": {
+    "joue": true,
+    "brut": "très souvent dans les parties, on essaye de mettre les deux tours sur la même colonne",
+    "texte": "Très souvent, on cherche à placer ses deux tours sur la même colonne."
+   },
+   "58": {
+    "brut": "fourchette dame et pion a7",
+    "texte": "Fourchette : la dame et le pion a7 sont attaqués en même temps.",
+    "fleches": [
+     [
+      "c6d8",
+      "menace"
+     ],
+     [
+      "c6a7",
+      "menace"
+     ]
+    ]
+   },
+   "62": {
+    "brut": "le pion a7 n'était plus défendu, je peux le prendre maintenant",
+    "texte": "Le pion a7 n'est plus défendu : on peut le prendre maintenant."
+   },
+   "72": {
+    "joue": false
+   },
+   "78": {
+    "brut": "tu as peut-etre vu que la dame noire attaque le pion b5, mais je n'ai pas besoin de le défendre, je vais attaquer le roi ! Si mon adversaire prend le pion, au prochain coup je peux faire échec et mat !",
+    "texte": "Tu as peut-être vu que la dame noire attaque le pion b5. Pas besoin de le défendre : on attaque le roi ! Si l'adversaire prend le pion, c'est échec et mat au coup suivant.",
+    "fleches": [
+     [
+      "d5b5",
+      "danger"
+     ],
+     [
+      "f7g8",
+      "menace"
+     ]
+    ]
+   },
+   "80": {
+    "brut": "Je pouvais faire échec en g2, mais je n'avais pas de bonne continuation après. Alors mangeons des pions, c'est bon pour la santé !",
+    "texte": "On pouvait donner échec en g2, mais sans bonne suite après. Alors mangeons des pions, c'est bon pour la santé !",
+    "fleches": [
+     [
+      "f7g6",
+      "suite"
+     ]
+    ]
+   },
+   "82": {
+    "brut": "Aie Aie Aie, mon adversaire a craqué. Je peux faire cette fourchette.",
+    "texte": "Aïe aïe aïe, l'adversaire a craqué ! Voici une fourchette.",
+    "fleches": [
+     [
+      "f5h7",
+      "menace"
+     ],
+     [
+      "f5f2",
+      "menace"
+     ],
+     [
+      "h7h8",
+      "suite"
+     ],
+     [
+      "e7g6",
+      "suite"
+     ]
+    ]
+   }
+  },
+  "fin_brut": "Après Rh2, les blancs vont d'abord sauver leur cavalier en jouant Cg2+, puis tranquillement capturer le cavalier en f2.",
+  "fin": "Après Rh2, les Blancs vont d'abord sauver leur cavalier avec Cg2+, puis prendre tranquillement le cavalier en f2."
+ }
+}

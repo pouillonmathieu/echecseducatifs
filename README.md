@@ -85,7 +85,9 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
 `outils/coach/index.html` est une page à part (publiée comme artefact Claude, privée) pour écrire ses propres
 commentaires : on rejoue les parties de « Joue le coup », on choisit les coups que l'enfant doit trouver, on écrit
 l'explication de chaque coup (avec des flèches), la raison de l'abandon et une introduction. Les commentaires sont
-enregistrés dans la base de l'artefact, puis repris (style seulement) et intégrés aux données du jeu.
+enregistrés dans la base de l'artefact, puis repris (style seulement) dans `outils/commentaires-coach.json`
+(le texte d'origine est gardé à côté) et intégrés aux données du jeu par `outils/parties-champions.js` : ils
+remplacent l'explication automatique, avec leurs flèches, et décident des coups que l'enfant doit trouver.
 
 ## Organisation
 

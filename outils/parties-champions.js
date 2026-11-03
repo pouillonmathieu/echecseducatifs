@@ -348,6 +348,13 @@ function expliquerFin(fen, champion, e) {
   return x;
 }
 
+// commentaires écrits par le coach dans l'atelier (outils/coach), style retouché : outils/commentaires-coach.json
+// { "<champion>-<empreinte des coups>": { moments: { demi-coup: { joue, texte, fleches } }, fin, intro } }
+const fichierCoach = path.join(__dirname, 'commentaires-coach.json');
+const COACH = fs.existsSync(fichierCoach) ? JSON.parse(fs.readFileSync(fichierCoach, 'utf8')) : {};
+// même empreinte que dans l'atelier du coach
+function empreinte(t) { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); }
+
 const parties = [];
 const parChampion = {};
 let numero = -1;
@@ -361,7 +368,25 @@ for (const bloc of texte.split(/\n(?=\[White )/)) {
   const j = new Chess();
   const uci = [];
   for (const san of coups) { const m = j.move(san); uci.push(m.from + m.to + (m.promotion || '')); }
-  const moments = choisirMoments(coups, champion, ANALYSE[numero]);
+  let moments = choisirMoments(coups, champion, ANALYSE[numero]);
+  // les choix du coach : un coup commenté (ou coché) devient un moment, un coup décoché n'en est plus un
+  const cleCh = CHAMPIONS[vainqueur] || 'autres';
+  const coach = COACH[`${cleCh}-${empreinte(coups.join(' '))}`];
+  if (coach) {
+    const ici = new Set(moments.map(m => m.i));
+    for (const [k, v] of Object.entries(coach.moments || {})) {
+      const i = +k;
+      const veut = v.joue !== undefined ? v.joue : ici.has(i) || !!(v.texte || (v.fleches && v.fleches.length));
+      if (!veut) moments = moments.filter(m => m.i !== i);
+      else if (!ici.has(i)) {
+        const q = new Chess();
+        for (const san of coups.slice(0, i)) q.move(san);
+        const m = q.moves({ verbose: true }).find(x => x.san === coups[i]);
+        moments.push({ i, ...noter(q, m, null), m });
+      }
+    }
+    moments.sort((a, b) => a.i - b.i);
+  }
   // coups légaux à chaque moment (de + vers), pour montrer les cases possibles
   const legaux = {};
   const k = new Chess();
@@ -393,6 +418,11 @@ for (const bloc of texte.split(/\n(?=\[White )/)) {
     ch: cle, c: champion, bl: h.White, no: h.Black, l: h.Site || '', a: /\d{4}/.test(h.Date) ? +h.Date : 0, r: h.Result,
     u: uci.join(' '), s: coups.join(' '), m: moments.map(m => (m.critique ? [m.i, m.type, 1] : [m.i, m.type])), lg: legaux,
     x, f: fin,
+    ...(coach ? {
+      co: Object.fromEntries(Object.entries(coach.moments || {}).filter(([, v]) => v.texte || (v.fleches && v.fleches.length)).map(([k, v]) => [k, [v.texte || '', v.fleches || []]])),
+      ...(coach.fin ? { cf: coach.fin } : {}),
+      ...(coach.intro ? { ci: coach.intro } : {}),
+    } : {}),
   });
 }
 
@@ -403,7 +433,8 @@ for (const f of fs.readdirSync(dossier)) if (f.endsWith('.js')) fs.unlinkSync(pa
 const entete = '/* Généré par outils/parties-champions.js — ne pas modifier à la main.\n' +
   '   Parties : coups seulement (faits historiques). u = coups (de-vers), s = notation anglaise,\n' +
   '   m = moments où l\'enfant joue [demi-coup, type, 1 si c\'était le seul bon coup], lg = coups légaux à ces moments\n' +
-  '   (groupés par case de départ : « g1f3h3 »), x = explications des moments, f = explication de la fin. */\n';
+  '   (groupés par case de départ : « g1f3h3 »), x = explications des moments, f = explication de la fin,\n' +
+  '   co / cf / ci = commentaires du coach (coups, fin, introduction). */\n';
 let taille = 0;
 for (const cle of Object.keys(parChampion)) {
   const texteCh = entete + `(window.PARTIES_CH = window.PARTIES_CH || {})[${JSON.stringify(cle)}] = ` + JSON.stringify(parties.filter(p => p.ch === cle)) + ';\n';
