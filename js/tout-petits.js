@@ -4,7 +4,7 @@
 (function () {
   const T = '#2A2E38'; // trait des illustrations (identique en thème clair et sombre)
 
-  const ANIMAUX = {
+  const ANIMAUX_FR = {
     a: { nom: 'abeille', dessin: `
       <ellipse cx="18" cy="15" rx="6" ry="9" transform="rotate(-25 18 15)" fill="#DCEFFF" stroke="${T}" stroke-width="1.5"/>
       <ellipse cx="26" cy="14" rx="5.5" ry="8.5" transform="rotate(20 26 14)" fill="#DCEFFF" stroke="${T}" stroke-width="1.5"/>
@@ -110,6 +110,52 @@
       `<rect x="12" y="25" width="26.5" height="21" rx="9" fill="${PEAU}" ${trait}/>`;
     return leves + paume + replies;
   }
+
+  // En anglais, d'autres animaux pour que la première lettre corresponde (ant, bee, crocodile, dolphin, elephant,
+  // frog, giraffe, hippo) : on réutilise les dessins quand l'animal existe déjà.
+  const GRENOUILLE = `
+      <circle cx="15" cy="14" r="6.5" fill="#6CC04A" stroke="${T}" stroke-width="1.8"/>
+      <circle cx="33" cy="14" r="6.5" fill="#6CC04A" stroke="${T}" stroke-width="1.8"/>
+      <path d="M5 30C5 21 13 17 24 17S43 21 43 30C43 38 35 42 24 42S5 38 5 30Z" fill="#6CC04A" stroke="${T}" stroke-width="1.8"/>
+      <path d="M9.5 18.5C11 16 13 15 15 15M38.5 18.5C37 16 35 15 33 15" fill="none" stroke="#6CC04A" stroke-width="3"/>
+      <ellipse cx="24" cy="35.5" rx="12" ry="5" fill="#B9E39A"/>
+      <circle cx="15" cy="14" r="3.8" fill="#fff"/><circle cx="33" cy="14" r="3.8" fill="#fff"/>
+      <circle cx="15.6" cy="14.4" r="2" fill="${T}"/><circle cx="33.6" cy="14.4" r="2" fill="${T}"/>
+      <circle cx="16.2" cy="13.6" r=".7" fill="#fff"/><circle cx="34.2" cy="13.6" r=".7" fill="#fff"/>
+      <circle cx="22" cy="24" r=".9" fill="${T}"/><circle cx="26" cy="24" r=".9" fill="${T}"/>
+      <path d="M13.5 28.5Q24 37 34.5 28.5" fill="none" stroke="${T}" stroke-width="1.7" stroke-linecap="round"/>
+      <ellipse cx="10.5" cy="30.5" rx="2.6" ry="1.7" fill="#F2A0A0" opacity=".85"/><ellipse cx="37.5" cy="30.5" rx="2.6" ry="1.7" fill="#F2A0A0" opacity=".85"/>`;
+  const GIRAFE = `
+      <path d="M18.5 46V31H29.5V46" fill="#F2C14E" stroke="${T}" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M20.5 38.5h3.5v3.5h-3.5zM25.5 42.5h2.5v2.5h-2.5zM25 34h3v3h-3z" fill="#B8742E"/>
+      <path d="M19.5 11.5 17.5 5M28.5 11.5 30.5 5" stroke="${T}" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="17.5" cy="5" r="2.3" fill="#B8742E" stroke="${T}" stroke-width="1.2"/><circle cx="30.5" cy="5" r="2.3" fill="#B8742E" stroke="${T}" stroke-width="1.2"/>
+      <ellipse cx="10.5" cy="15.5" rx="5.2" ry="2.6" transform="rotate(-22 10.5 15.5)" fill="#F2C14E" stroke="${T}" stroke-width="1.5"/>
+      <ellipse cx="37.5" cy="15.5" rx="5.2" ry="2.6" transform="rotate(22 37.5 15.5)" fill="#F2C14E" stroke="${T}" stroke-width="1.5"/>
+      <path d="M14 18C14 11.5 18.5 8.5 24 8.5S34 11.5 34 18V26C34 32 30 35.5 24 35.5S14 32 14 26Z" fill="#F2C14E" stroke="${T}" stroke-width="1.8"/>
+      <circle cx="17.5" cy="13.5" r="1.7" fill="#B8742E"/><circle cx="30.5" cy="13" r="1.5" fill="#B8742E"/><circle cx="24" cy="11.5" r="1.3" fill="#B8742E"/>
+      <ellipse cx="24" cy="29.5" rx="8" ry="5.5" fill="#F7DFA0" stroke="${T}" stroke-width="1.4"/>
+      <circle cx="21" cy="29" r="1" fill="${T}"/><circle cx="27" cy="29" r="1" fill="${T}"/>
+      <path d="M21.5 32.3Q24 33.8 26.5 32.3" fill="none" stroke="${T}" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="19.5" cy="19.5" r="1.9" fill="${T}"/><circle cx="28.5" cy="19.5" r="1.9" fill="${T}"/>
+      <circle cx="20.1" cy="18.9" r=".6" fill="#fff"/><circle cx="29.1" cy="18.9" r=".6" fill="#fff"/>`;
+  const HIPPO = `
+      <ellipse cx="13" cy="10.5" rx="3.6" ry="3.1" fill="#9C8FB5" stroke="${T}" stroke-width="1.5"/>
+      <ellipse cx="35" cy="10.5" rx="3.6" ry="3.1" fill="#9C8FB5" stroke="${T}" stroke-width="1.5"/>
+      <ellipse cx="13" cy="10.8" rx="1.6" ry="1.3" fill="#E9B8BE"/><ellipse cx="35" cy="10.8" rx="1.6" ry="1.3" fill="#E9B8BE"/>
+      <ellipse cx="24" cy="19" rx="13" ry="10" fill="#9C8FB5" stroke="${T}" stroke-width="1.8"/>
+      <ellipse cx="24" cy="31" rx="18" ry="11" fill="#B3A7CA" stroke="${T}" stroke-width="1.8"/>
+      <ellipse cx="17" cy="27" rx="2" ry="2.7" fill="${T}"/><ellipse cx="31" cy="27" rx="2" ry="2.7" fill="${T}"/>
+      <path d="M12.5 35Q24 40.5 35.5 35" fill="none" stroke="${T}" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M17.5 36.6h3v3h-3zM27.5 36.6h3v3h-3z" fill="#FFFDF5" stroke="${T}" stroke-width=".9" stroke-linejoin="round"/>
+      <circle cx="18" cy="16" r="2.7" fill="#fff" stroke="${T}" stroke-width="1"/><circle cx="30" cy="16" r="2.7" fill="#fff" stroke="${T}" stroke-width="1"/>
+      <circle cx="18.4" cy="16.4" r="1.4" fill="${T}"/><circle cx="30.4" cy="16.4" r="1.4" fill="${T}"/>`;
+  const ANIMAUX = document.documentElement.lang === 'en' ? {
+    a: { nom: 'ant', dessin: ANIMAUX_FR.f.dessin }, b: { nom: 'bee', dessin: ANIMAUX_FR.a.dessin },
+    c: { nom: 'crocodile', dessin: ANIMAUX_FR.c.dessin }, d: { nom: 'dolphin', dessin: ANIMAUX_FR.d.dessin },
+    e: { nom: 'elephant', dessin: ANIMAUX_FR.e.dessin }, f: { nom: 'frog', dessin: GRENOUILLE },
+    g: { nom: 'giraffe', dessin: GIRAFE }, h: { nom: 'hippo', dessin: HIPPO },
+  } : ANIMAUX_FR;
 
   function injecterSprite() {
     if (document.getElementById('sprite-tout-petits')) return;

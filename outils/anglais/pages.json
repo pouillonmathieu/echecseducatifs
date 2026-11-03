@@ -22,7 +22,14 @@
   "Pat": "Stalemate",
   "Pas mat": "Not mate",
   "Entrée": "Enter",
-  "Raccourcis :": "Shortcuts:"
+  "Raccourcis :": "Shortcuts:",
+  "Blancs": "White",
+  "Noirs": "Black",
+  "Au hasard": "Random",
+  "Côté des Blancs": "White's side",
+  "Côté des Noirs": "Black's side",
+  "Côté au hasard": "Random side",
+  "Orientation de l'échiquier": "Board orientation"
  },
  "index.html": {
   "Mini-jeux d'échecs": "Chess mini-games",
@@ -108,5 +115,14 @@
   "Bouton pat : ajoute les positions de pat (pas d'échec, mais aucun coup possible)": "Stalemate button: adds stalemate positions (no check, but no legal move)",
   "Ajoute les positions de pat : pas d'échec, mais aucun coup possible": "Adds stalemate positions: no check, but no legal move",
   "Détail des positions": "Position details"
+ },
+ "jeux/cases/index.html": {
+  "Trouve la case": "Find the square",
+  "Nom des cases sous la souris": "Square names under the mouse",
+  "Tout-petits": "Little ones",
+  "De quel côté joues-tu ?": "Which side are you playing?",
+  "10 cases à trouver": "10 squares to find",
+  "Le plus de cases en 20 s": "As many squares as you can in 20 s",
+  "Détail des cases": "Square details"
  }
 }

@@ -86,7 +86,7 @@
       b.dataset.case = nom;
       b.style.gridRow = i + 2;
       b.style.gridColumn = j + 2;
-      b.setAttribute('aria-label', `Case ${nom}`);
+      b.setAttribute('aria-label', t('Case ', 'Square ') + nom);
       b.innerHTML = `<span class="nom-case" aria-hidden="true">${nomVisuel(nom)}</span>`;
       b.addEventListener('click', () => cliquer(b));
       morceaux.appendChild(b);
@@ -94,7 +94,7 @@
     cadre.replaceChildren(morceaux);
     cadre.classList.toggle('cote-blanc', jeu.cote === 'blanc');
     cadre.classList.toggle('cote-noir', jeu.cote === 'noir');
-    cadre.setAttribute('aria-label', `Échiquier vu du côté des ${jeu.cote === 'blanc' ? 'blancs' : 'noirs'}`);
+    cadre.setAttribute('aria-label', t(`Échiquier vu du côté des ${jeu.cote === 'blanc' ? 'blancs' : 'noirs'}`, `Board seen from ${jeu.cote === 'blanc' ? 'White' : 'Black'}'s side`));
   }
 
   function orienter(cote, animer) {
@@ -123,7 +123,7 @@
     c.innerHTML = reglages.toutPetits
       ? `${TP.animal(l)}<span class="texte">${l}${r}</span>${TP.mains(r)}`
       : `<span class="texte">${l}${r}</span>`;
-    c.setAttribute('aria-label', `Trouve la case ${jeu.cible}, côté ${jeu.cote === 'blanc' ? 'blancs' : 'noirs'}` +
+    c.setAttribute('aria-label', t(`Trouve la case ${jeu.cible}, côté ${jeu.cote === 'blanc' ? 'blancs' : 'noirs'}`, `Find the square ${jeu.cible}, ${jeu.cote === 'blanc' ? 'White' : 'Black'}'s side`) +
       (reglages.toutPetits ? ` (${TP.ANIMAUX[l].nom} ${r})` : ''));
     if (!reduireMouvement()) relancer(c, 'nouvelle');
   }
@@ -199,11 +199,11 @@
 
   // ---------- Défis ----------
   function majTitre() {
-    $('titre').textContent = jeu.mode === 'libre' ? 'Trouve la case'
-      : defi.chrono ? 'Défi chrono' : `Case ${defi.numero + 1} sur ${NB_DEFIS}`;
+    $('titre').textContent = jeu.mode === 'libre' ? t('Trouve la case', 'Find the square')
+      : defi.chrono ? t('Défi chrono', 'Timed challenge') : t(`Case ${defi.numero + 1} sur ${NB_DEFIS}`, `Square ${defi.numero + 1} of ${NB_DEFIS}`);
   }
   function construirePoints() {
-    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="Case ${i + 1}"></li>`).join('');
+    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="${t('Case', 'Square')} ${i + 1}"></li>`).join('');
   }
   function majPoints() {
     $('points').querySelectorAll('li').forEach((li, i) => {
@@ -245,8 +245,8 @@
     if (defi.chrono) {
       score = defi.score;
       etoiles = score >= 12 ? 3 : score >= 8 ? 2 : score >= 4 ? 1 : 0;
-      titre = score >= 12 ? 'Incroyable !' : score >= 8 ? 'Bravo !' : score >= 4 ? 'Bien joué !' : 'Essaie encore !';
-      $('res-sur').textContent = score > 1 ? 'cases' : 'case';
+      titre = score >= 12 ? t('Incroyable !', 'Amazing!') : score >= 8 ? t('Bravo !', 'Well done!') : score >= 4 ? t('Bien joué !', 'Nice work!') : t('Essaie encore !', 'Try again!');
+      $('res-sur').textContent = score > 1 ? t('cases', 'squares') : t('case', 'square');
       liste.hidden = true;
       const cle = `echecs.cases.record.${reglages.orientationDefi}`;
       let ancien = 0;
@@ -255,20 +255,20 @@
       if (nouveau) ecrireTexte(cle, String(score));
       record.hidden = false;
       record.classList.toggle('nouveau', nouveau && score > 0);
-      record.textContent = nouveau && score > 0 ? 'Nouveau record !' : `Record : ${ancien}`;
-      $('res-temps').textContent = `${defi.erreurs} erreur${defi.erreurs > 1 ? 's' : ''} en ${DUREE_CHRONO} secondes`;
+      record.textContent = nouveau && score > 0 ? t('Nouveau record !', 'New record!') : t('Record : ', 'Record: ') + ancien;
+      $('res-temps').textContent = t(`${defi.erreurs} erreur${defi.erreurs > 1 ? 's' : ''} en ${DUREE_CHRONO} secondes`, `${defi.erreurs} mistake${defi.erreurs !== 1 ? 's' : ''} in ${DUREE_CHRONO} seconds`);
     } else {
       score = defi.resultats.filter(r => r.ok).length;
       etoiles = score === NB_DEFIS ? 3 : score >= 7 ? 2 : score >= 4 ? 1 : 0;
-      titre = score === NB_DEFIS ? 'Parfait !' : score >= 7 ? 'Bravo !' : score >= 4 ? 'Bien joué !' : 'Continue, tu progresses !';
+      titre = score === NB_DEFIS ? t('Parfait !', 'Perfect!') : score >= 7 ? t('Bravo !', 'Well done!') : score >= 4 ? t('Bien joué !', 'Nice work!') : t('Continue, tu progresses !', 'Keep going, you\'re getting better!');
       $('res-sur').textContent = `/ ${NB_DEFIS}`;
       liste.hidden = false;
       record.hidden = true;
       liste.innerHTML = defi.resultats.map((r, i) =>
-        `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="${r.cible} : ${r.ok ? 'trouvée' : 'ratée'}">` +
+        `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="${r.cible}${t(' : ', ': ')}${r.ok ? t('trouvée', 'found') : t('ratée', 'missed')}">` +
         `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-case">${nomVisuel(r.cible)}</span></li>`).join('');
       const total = defi.resultats.reduce((s, r) => s + r.temps, 0);
-      $('res-temps').textContent = `Temps total : ${formaterDuree(total)}`;
+      $('res-temps').textContent = t('Temps total : ', 'Total time: ') + formaterDuree(total);
     }
 
     $('res-titre').textContent = titre;
