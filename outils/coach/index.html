@@ -1,0 +1,438 @@
+<title>Atelier du coach</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
+<style>
+/* Atelier du coach : l'échiquier et la feuille de partie à gauche, la fiche du coup à commenter à droite.
+   Mêmes couleurs que le site (neutres bleutés, vert de tournoi), une touche d'or pour les coups à jouer. */
+:root {
+  --fond: #F3F4F6; --surface: #FFFFFF; --surface-2: #E8EBF0; --ligne: #D8DCE3;
+  --encre: #1A1E27; --encre-douce: #626979; --accent: #2E7D5B; --accent-doux: #DCEEE5; --sur-accent: #FFFFFF;
+  --or: #C8922E; --or-doux: #F6EBD3; --alerte: #C8323C;
+  --case-claire: #ECECD7; --case-foncee: #739A62; --cadre: #FBFBF8; --texte-cadre: #2A2E38;
+  --police: "Lexend", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --piece-blanc: #FFFFFF; --piece-blanc-trait: #1A1E27; --piece-noir: #2B303B; --piece-noir-trait: #1A1E27; --piece-noir-detail: #FFFFFF;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #2B2E35; --surface: #363A42; --surface-2: #41464F; --ligne: #545A65;
+    --encre: #F2F4F7; --encre-douce: #BCC2CD; --accent: #62C99A; --accent-doux: #284638; --sur-accent: #0D1A13;
+    --or: #E8BE68; --or-doux: #4A3F2A; --alerte: #F6957F; --cadre: #3A3E46; --texte-cadre: #E6E8EC; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fond: #2B2E35; --surface: #363A42; --surface-2: #41464F; --ligne: #545A65;
+  --encre: #F2F4F7; --encre-douce: #BCC2CD; --accent: #62C99A; --accent-doux: #284638; --sur-accent: #0D1A13;
+  --or: #E8BE68; --or-doux: #4A3F2A; --alerte: #F6957F; --cadre: #3A3E46; --texte-cadre: #E6E8EC; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fond); color: var(--encre); font-family: var(--police); font-size: 15px; }
+.page { max-width: 1160px; margin: 0 auto; padding-block: 16px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+.statut { margin-left: auto; padding: 4px 12px; border-radius: 999px; background: var(--surface-2); color: var(--encre-douce); font-size: 13px; font-weight: 500; }
+.statut.ok { background: var(--accent-doux); color: var(--accent); }
+.statut.erreur { background: color-mix(in srgb, var(--alerte) 16%, var(--surface)); color: var(--alerte); }
+.aide { margin: 0; max-width: 70ch; color: var(--encre-douce); line-height: 1.45; }
+
+.choix { display: flex; flex-wrap: wrap; gap: 10px; }
+.choix label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--encre-douce); text-transform: uppercase; letter-spacing: .04em; }
+select, textarea { font: inherit; color: var(--encre); background: var(--surface); border: 1px solid var(--ligne); border-radius: 10px; }
+select { min-height: 42px; padding: 0 10px; max-width: 100%; }
+#choix-partie { min-width: min(100%, 360px); }
+textarea { width: 100%; min-height: 120px; padding: 10px 12px; line-height: 1.45; resize: vertical; }
+textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
+
+.atelier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); gap: 24px; align-items: start; }
+.gauche { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.droite { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+/* échiquier (repris du site) */
+.plateau { position: relative; width: min(100%, 560px, calc(100dvh - 230px)); min-width: min(100%, 280px); align-self: center; }
+.echiquier { container-type: inline-size; display: grid; grid-template-columns: minmax(0, .45fr) repeat(8, minmax(0, 1fr)) minmax(0, .2fr); grid-template-rows: minmax(0, .2fr) repeat(8, minmax(0, 1fr)) minmax(0, .45fr); aspect-ratio: 1; border-radius: 12px; background: var(--cadre); color: var(--texte-cadre); box-shadow: 0 0 0 1px var(--ligne); user-select: none; overflow: hidden; }
+.echiquier .coord { display: grid; place-items: center; font-size: 2.9cqi; font-weight: 600; opacity: .8; }
+.case-e { position: relative; display: grid; place-items: center; cursor: pointer; }
+.case-e.claire { background: var(--case-claire); }
+.case-e.foncee { background: var(--case-foncee); }
+.piece-e { position: relative; z-index: 1; width: 92%; height: 92%; }
+.case-e::after { content: ""; position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.case-e.depart::after { opacity: 1; background: rgba(242, 184, 39, .3); box-shadow: inset 0 0 0 4px #F2B827; }
+.case-e.arrivee::after { opacity: 1; background: rgba(242, 184, 39, .55); box-shadow: inset 0 0 0 4px #F2B827; }
+.case-e.origine::after { opacity: 1; box-shadow: inset 0 0 0 5px #2F7FD0; }
+.fleches { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; pointer-events: none; }
+.fleche { stroke-linecap: round; opacity: .85; }
+.f-menace { stroke: #E2622A; fill: #E2622A; } .f-adversaire { stroke: #5A6474; fill: #5A6474; }
+.f-suite { stroke: #2FA36B; fill: #2FA36B; } .f-danger { stroke: #C8323C; fill: #C8323C; }
+.pointe { stroke: none; }
+
+.navigation { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 12px; border: 1px solid var(--ligne); border-radius: 10px; background: var(--surface); color: var(--encre); font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; }
+.btn:hover:not(:disabled) { background: var(--surface-2); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.btn.or { border-color: var(--or); }
+
+.feuille { display: grid; grid-template-columns: 40px 1fr 1fr; gap: 2px 6px; max-height: 260px; overflow-y: auto; padding: 8px 10px; border-radius: 12px; background: var(--surface); border: 1px solid var(--ligne); font-variant-numeric: tabular-nums; }
+.feuille .num { color: var(--encre-douce); padding-top: 3px; }
+.coup { display: flex; align-items: center; gap: 4px; padding: 2px 6px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.coup:hover { background: var(--surface-2); }
+.coup.adv { color: var(--encre-douce); }
+.coup.moment { font-weight: 700; }
+.coup.moment::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--or); flex: none; }
+.coup.note::after { content: "✎"; color: var(--accent); font-size: 13px; }
+.coup.vu { background: var(--accent); color: var(--sur-accent); }
+.coup.vu.moment::before { background: var(--sur-accent); }
+
+.fiche { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--ligne); }
+.fiche h2 { margin: 0; font-size: 20px; font-weight: 700; text-wrap: balance; }
+.fiche h2 small { display: block; font-size: 13px; font-weight: 500; color: var(--encre-douce); }
+.fiche p { margin: 0; line-height: 1.45; }
+.discret { color: var(--encre-douce); font-size: 14px; }
+.ligne-switch { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--or-doux); }
+.ligne-switch span { font-weight: 600; }
+.switch { position: relative; width: 46px; height: 28px; flex: none; border: 0; border-radius: 999px; background: var(--ligne); cursor: pointer; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #FFF; transition: transform .15s; }
+.switch[aria-checked="true"] { background: var(--or); }
+.switch[aria-checked="true"]::after { transform: translateX(18px); }
+.libelle { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--encre-douce); }
+.couleurs { display: flex; flex-wrap: wrap; gap: 6px; }
+.puce { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 2px solid transparent; border-radius: 999px; background: var(--surface-2); color: var(--encre); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.puce i { width: 12px; height: 12px; border-radius: 50%; }
+.puce[aria-pressed="true"] { border-color: var(--encre); }
+.liste-fleches { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.liste-fleches button { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid var(--ligne); border-radius: 8px; background: var(--surface); color: var(--encre); font: inherit; font-size: 13px; cursor: pointer; }
+.consigne-fleche { padding: 8px 10px; border-radius: 10px; background: color-mix(in srgb, #2F7FD0 14%, var(--surface)); font-size: 14px; }
+.progres { font-size: 14px; color: var(--encre-douce); }
+
+@media (max-width: 860px) {
+  .atelier { grid-template-columns: 1fr; }
+  .plateau { width: min(100%, 520px); }
+}
+@media (prefers-reduced-motion: reduce) { .switch::after { transition: none; } }
+</style>
+
+<div class="page">
+  <header>
+    <h1>Atelier du coach</h1>
+    <span class="statut" id="statut">Connexion…</span>
+    <p class="aide">Rejoue les parties de « Joue le coup » et écris, pour chaque coup que l'enfant doit trouver, ce que ce coup permet et pourquoi il est meilleur. Écris librement : Claude reprendra seulement le style avant de l'ajouter au jeu.</p>
+  </header>
+
+  <div class="choix">
+    <label for="choix-champion">Champion ou championne<select id="choix-champion"></select></label>
+    <label for="choix-partie">Partie<select id="choix-partie"></select></label>
+  </div>
+  <p class="progres" id="progres"></p>
+
+  <div class="atelier">
+    <div class="gauche">
+      <div class="plateau" id="plateau"><div id="echiquier"></div></div>
+      <div class="navigation">
+        <button class="btn" id="nav-debut" type="button" aria-label="Début de la partie" title="Début"><svg viewBox="0 0 24 24"><path d="M6 5v14M18 5l-9 7 9 7Z"/></svg></button>
+        <button class="btn or" id="nav-moment-prec" type="button" title="Coup à jouer précédent">◀ à jouer</button>
+        <button class="btn" id="nav-prec" type="button" aria-label="Coup précédent" title="Coup précédent (←)"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="btn" id="nav-suiv" type="button" aria-label="Coup suivant" title="Coup suivant (→)"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button class="btn or" id="nav-moment-suiv" type="button" title="Coup à jouer suivant">à jouer ▶</button>
+        <button class="btn" id="nav-fin" type="button" aria-label="Fin de la partie" title="Fin"><svg viewBox="0 0 24 24"><path d="M18 5v14M6 5l9 7-9 7Z"/></svg></button>
+      </div>
+      <div class="feuille" id="feuille" aria-label="Coups de la partie"></div>
+    </div>
+
+    <div class="droite">
+      <section class="fiche" id="fiche" aria-live="polite"></section>
+      <section class="fiche" id="fiche-intro">
+        <span class="libelle">Introduction de la partie (facultatif)</span>
+        <p class="discret">Le contexte ou l'histoire de la partie, affiché avant qu'elle commence.</p>
+        <textarea id="texte-intro" placeholder="Par exemple : cette partie a été jouée…"></textarea>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="js/pieces.js"></script>
+<script src="js/echiquier.js"></script>
+<script src="portraits.js"></script>
+<script src="parties-index.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const CHAMPIONS = window.Portraits.CHAMPIONS;
+  const INDEX = window.PARTIES_INDEX;
+  const plateau = $('echiquier');
+  const LETTRES = { K: 'R', Q: 'D', R: 'T', B: 'F', N: 'C' };
+  const fr = (san) => san.replace(/[KQRBN]/g, (c) => LETTRES[c]);
+  const echapper = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const COULEURS = [['menace', 'Menace', '#E2622A'], ['danger', 'Menace adverse', '#C8323C'], ['suite', 'Suite', '#2FA36B'], ['adversaire', 'Réponse adverse', '#5A6474']];
+
+  // ---------- parties ----------
+  const chargements = {};
+  function charger(cle) {
+    if (window.PARTIES_CH && window.PARTIES_CH[cle]) return Promise.resolve(window.PARTIES_CH[cle]);
+    if (!chargements[cle]) chargements[cle] = new Promise((ok, ko) => {
+      const s = document.createElement('script'); s.src = `parties/${cle}.js`;
+      s.onload = () => ok(window.PARTIES_CH[cle]); s.onerror = ko; document.head.appendChild(s);
+    });
+    return chargements[cle];
+  }
+  // identifiant stable d'une partie : le champion et une empreinte des coups
+  function empreinte(s) { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0; return h.toString(36); }
+  const idPartie = (p) => `${p.ch}-${empreinte(p.s)}`;
+
+  const TYPES = { p: 'pion', n: 'cavalier', b: 'fou', r: 'tour', q: 'dame', k: 'roi' };
+  const LETTRE = { pion: 'p', cavalier: 'n', fou: 'b', tour: 'r', dame: 'q', roi: 'k' };
+  function versFen(pos) {
+    const l = [];
+    for (let r = 8; r >= 1; r--) { let s = '', v = 0; for (const c of 'abcdefgh') { const p = pos[c + r]; if (!p) { v++; continue; } if (v) { s += v; v = 0; } const x = LETTRE[p.piece]; s += p.couleur === 'blanc' ? x.toUpperCase() : x; } l.push(s + (v || '')); }
+    return l.join('/');
+  }
+  function appliquer(pos, u) {
+    const de = u.slice(0, 2), a = u.slice(2, 4), promo = u[4], p = pos[de], n = { ...pos };
+    delete n[de];
+    if (p.piece === 'pion' && de[0] !== a[0] && !pos[a]) delete n[a[0] + de[1]];
+    if (p.piece === 'roi' && Math.abs(de.charCodeAt(0) - a.charCodeAt(0)) === 2) { const r = de[1], [t1, t2] = a[0] === 'g' ? ['h' + r, 'f' + r] : ['a' + r, 'd' + r]; n[t2] = n[t1]; delete n[t1]; }
+    n[a] = promo ? { piece: TYPES[promo], couleur: p.couleur } : p;
+    return n;
+  }
+
+  // ---------- état ----------
+  const jeu = { p: null, id: null, coups: [], san: [], positions: [], vue: 0, couleur: 'w', liste: [] };
+  let notes = {};             // id de partie -> document enregistré
+  let courant = null;         // le document de la partie ouverte (copie modifiable)
+  let sale = false;           // des changements pas encore enregistrés
+  let couleurFleche = 'menace', origine = null, modeFleche = false;
+  let db = null;
+
+  const momentsDefaut = () => new Set(jeu.p.m.map(m => m[0]));
+  const estChampion = (k) => (k % 2 === 0 ? 'w' : 'b') === jeu.couleur;
+  const noteDe = (k) => (courant.moments && courant.moments[k]) || {};
+  const estMoment = (k) => { const n = noteDe(k); return n.joue !== undefined ? n.joue : momentsDefaut().has(k); };
+  const nomCh = () => (CHAMPIONS[jeu.p.ch] ? CHAMPIONS[jeu.p.ch].nom : (jeu.couleur === 'w' ? jeu.p.bl : jeu.p.no));
+  const nomAdv = () => (jeu.couleur === 'w' ? jeu.p.no : jeu.p.bl);
+
+  // ---------- sélecteurs ----------
+  const annee = (c) => +(c.epoque.match(/\d{4}/) || [0])[0];
+  const cles = Object.keys(INDEX).filter(k => k !== 'autres').sort((a, b) => annee(CHAMPIONS[b]) - annee(CHAMPIONS[a]));
+  $('choix-champion').innerHTML = [...cles, 'autres'].map(k => `<option value="${k}">${echapper(k === 'autres' ? 'Autres maîtres' : CHAMPIONS[k].nom)} (${INDEX[k]})</option>`).join('');
+  function nbNotes(id) { const d = notes[id]; return d && d.moments ? Object.values(d.moments).filter(m => m.texte && m.texte.trim()).length : 0; }
+  function remplirParties() {
+    $('choix-partie').innerHTML = jeu.liste.map((p, i) => {
+      const n = nbNotes(idPartie(p));
+      return `<option value="${i}">${n ? `✎ ${n} · ` : ''}${echapper(p.bl)} – ${echapper(p.no)}${p.a ? ', ' + p.a : ''}</option>`;
+    }).join('');
+  }
+  async function choisirChampion(cle, i = 0) {
+    $('choix-champion').value = cle;
+    jeu.liste = await charger(cle);
+    remplirParties();
+    $('choix-partie').value = String(i);
+    ouvrir(jeu.liste[i]);
+    try { localStorage.setItem('coach.position', JSON.stringify([cle, i])); } catch (e) { /* rien */ }
+  }
+  $('choix-champion').addEventListener('change', (e) => choisirChampion(e.target.value, 0));
+  $('choix-partie').addEventListener('change', (e) => {
+    ouvrir(jeu.liste[+e.target.value]);
+    try { localStorage.setItem('coach.position', JSON.stringify([$('choix-champion').value, +e.target.value])); } catch (err) { /* rien */ }
+  });
+
+  function ouvrir(p) {
+    enregistrerMaintenant();
+    jeu.p = p; jeu.id = idPartie(p); jeu.coups = p.u.split(' '); jeu.san = p.s.split(' '); jeu.couleur = p.c;
+    jeu.positions = [Echiquier.lireFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')];
+    for (const u of jeu.coups) jeu.positions.push(appliquer(jeu.positions[jeu.positions.length - 1], u));
+    courant = JSON.parse(JSON.stringify(notes[jeu.id] || {}));
+    courant.moments = courant.moments || {};
+    sale = false;
+    $('texte-intro').value = courant.intro || '';
+    const premier = [...momentsDefaut()].sort((a, b) => a - b)[0];
+    voir(premier !== undefined ? premier + 1 : 0);
+  }
+
+  // ---------- affichage ----------
+  function voir(n) {
+    jeu.vue = Math.max(0, Math.min(jeu.coups.length, n));
+    origine = null;
+    dessinerPlateau();
+    dessinerFeuille();
+    dessinerFiche();
+    majNavigation();
+  }
+  function dessinerPlateau() {
+    const n = jeu.vue;
+    Echiquier.dessiner(plateau, versFen(jeu.positions[n]), { orientation: jeu.couleur === 'w' ? 'blanc' : 'noir' });
+    if (n > 0) { const u = jeu.coups[n - 1]; Echiquier.marquer(plateau, [u.slice(0, 2)], 'depart'); Echiquier.marquer(plateau, [u.slice(2, 4)], 'arrivee'); }
+    if (origine) Echiquier.marquer(plateau, [origine], 'origine');
+    dessinerFleches();
+  }
+  function dessinerFleches() {
+    const vieux = $('plateau').querySelector('.fleches'); if (vieux) vieux.remove();
+    const k = jeu.vue - 1;
+    const liste = k >= 0 ? (noteDe(k).fleches || []) : [];
+    if (!liste.length) return;
+    const r0 = plateau.getBoundingClientRect();
+    let h = `<svg class="fleches" viewBox="0 0 ${r0.width} ${r0.height}" aria-hidden="true"><defs>`;
+    for (const [g] of COULEURS) h += `<marker id="p-${g}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto"><path d="M0 0 10 5 0 10Z" class="pointe f-${g}"/></marker>`;
+    h += '</defs>';
+    for (const [u, g] of liste) {
+      const a = plateau.querySelector(`[data-case="${u.slice(0, 2)}"]`), b = plateau.querySelector(`[data-case="${u.slice(2, 4)}"]`);
+      if (!a || !b) continue;
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      const x1 = ra.left + ra.width / 2 - r0.left, y1 = ra.top + ra.height / 2 - r0.top;
+      let x2 = rb.left + rb.width / 2 - r0.left, y2 = rb.top + rb.height / 2 - r0.top;
+      const d = Math.hypot(x2 - x1, y2 - y1) || 1; x2 -= (x2 - x1) / d * ra.width * .28; y2 -= (y2 - y1) / d * ra.width * .28;
+      h += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="fleche f-${g}" stroke-width="${ra.width * .15}" marker-end="url(#p-${g})"/>`;
+    }
+    $('plateau').insertAdjacentHTML('beforeend', h + '</svg>');
+  }
+  window.addEventListener('resize', dessinerFleches);
+
+  function dessinerFeuille() {
+    let h = '';
+    for (let i = 0; i < jeu.san.length; i += 2) {
+      const cell = (j) => {
+        if (j >= jeu.san.length) return '<span></span>';
+        const cls = ['coup', estChampion(j) ? '' : 'adv', estChampion(j) && estMoment(j) ? 'moment' : '', noteDe(j).texte ? 'note' : '', jeu.vue === j + 1 ? 'vu' : ''].filter(Boolean).join(' ');
+        return `<button type="button" class="${cls}" data-k="${j}">${echapper(fr(jeu.san[j]))}</button>`;
+      };
+      h += `<span class="num">${i / 2 + 1}.</span>${cell(i)}${cell(i + 1)}`;
+    }
+    $('feuille').innerHTML = h;
+    const vu = $('feuille').querySelector('.vu'); if (vu) vu.scrollIntoView({ block: 'nearest' });
+    const n = Object.values(courant.moments).filter(m => m.texte && m.texte.trim()).length;
+    const total = jeu.san.filter((_, k) => estChampion(k) && estMoment(k)).length;
+    $('progres').textContent = `${nomCh()} contre ${nomAdv()}${jeu.p.a ? ', ' + jeu.p.a : ''} · ${total} coups à jouer pour l'enfant · ${n} commentaire${n > 1 ? 's' : ''} écrit${n > 1 ? 's' : ''}`;
+  }
+  $('feuille').addEventListener('click', (e) => { const b = e.target.closest('.coup'); if (b) voir(+b.dataset.k + 1); });
+
+  function dessinerFiche() {
+    const k = jeu.vue - 1, fin = jeu.vue === jeu.coups.length;
+    let h = '';
+    if (k < 0) h = `<h2>Position de départ<small>${echapper(nomCh())} joue avec les ${jeu.couleur === 'w' ? 'Blancs' : 'Noirs'}</small></h2><p class="discret">Avance dans la partie avec les flèches ou en cliquant sur un coup. Les coups marqués d'un point doré sont ceux que l'enfant doit trouver.</p>`;
+    else if (!estChampion(k)) h = `<h2>${Math.floor(k / 2) + 1}${k % 2 ? '…' : '.'} ${echapper(fr(jeu.san[k]))}<small>Coup de ${echapper(nomAdv())}</small></h2><p class="discret">Les commentaires se font sur les coups de ${echapper(nomCh())}.</p>`;
+    else {
+      const n = noteDe(k), moment = estMoment(k);
+      h = `<h2>${Math.floor(k / 2) + 1}${k % 2 ? '…' : '.'} ${echapper(fr(jeu.san[k]))}<small>Coup de ${echapper(nomCh())}</small></h2>
+        <div class="ligne-switch"><span>L'enfant doit trouver ce coup</span><button type="button" class="switch" id="sw-moment" role="switch" aria-checked="${moment}" aria-label="L'enfant doit trouver ce coup"></button></div>
+        <label class="libelle" for="texte-coup">Ton explication</label>
+        <textarea id="texte-coup" placeholder="Ce que ce coup permet, la menace qu'il pare ou qu'il crée, pourquoi il est meilleur qu'un autre…">${echapper(n.texte || '')}</textarea>
+        <span class="libelle">Flèches sur l'échiquier</span>
+        <div class="couleurs" id="couleurs">${COULEURS.map(([g, lab, c]) => `<button type="button" class="puce" data-g="${g}" aria-pressed="${g === couleurFleche}"><i style="background:${c}"></i>${lab}</button>`).join('')}</div>
+        <button type="button" class="btn" id="btn-fleche">${modeFleche ? 'Arrêter de dessiner' : 'Dessiner une flèche'}</button>
+        ${modeFleche ? `<p class="consigne-fleche">${origine ? 'Clique maintenant sur la case d\'arrivée.' : 'Clique sur la case de départ de la flèche.'}</p>` : ''}
+        <ul class="liste-fleches" id="liste-fleches">${(n.fleches || []).map(([u, g], i) => `<li><button type="button" data-i="${i}" title="Retirer cette flèche"><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${(COULEURS.find(c => c[0] === g) || COULEURS[0])[2]}"></i>${u.slice(0, 2)} → ${u.slice(2, 4)} ✕</button></li>`).join('')}</ul>`;
+    }
+    if (fin) h += `<span class="libelle">Fin de la partie : pourquoi ${echapper(nomAdv())} abandonne</span><textarea id="texte-fin" placeholder="Ce qui rend la position perdue…">${echapper(courant.fin || '')}</textarea>`;
+    $('fiche').innerHTML = h;
+    const sw = $('sw-moment');
+    if (sw) sw.addEventListener('click', () => { const v = sw.getAttribute('aria-checked') !== 'true'; modifier(k, { joue: v }); sw.setAttribute('aria-checked', String(v)); dessinerFeuille(); });
+    const t = $('texte-coup');
+    if (t) t.addEventListener('input', () => { modifier(k, { texte: t.value }); });
+    const tf = $('texte-fin');
+    if (tf) tf.addEventListener('input', () => { courant.fin = tf.value; programmer(); });
+    const cs = $('couleurs');
+    if (cs) cs.addEventListener('click', (e) => { const b = e.target.closest('.puce'); if (!b) return; couleurFleche = b.dataset.g; cs.querySelectorAll('.puce').forEach(x => x.setAttribute('aria-pressed', String(x === b))); });
+    const bf = $('btn-fleche');
+    if (bf) bf.addEventListener('click', () => { modeFleche = !modeFleche; origine = null; dessinerPlateau(); dessinerFiche(); });
+    const lf = $('liste-fleches');
+    if (lf) lf.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; const f = [...(noteDe(k).fleches || [])]; f.splice(+b.dataset.i, 1); modifier(k, { fleches: f }); dessinerPlateau(); dessinerFiche(); });
+  }
+  $('texte-intro').addEventListener('input', (e) => { courant.intro = e.target.value; programmer(); });
+
+  // dessiner une flèche : deux clics sur l'échiquier
+  plateau.addEventListener('click', (e) => {
+    const c = e.target.closest('.case-e'); const k = jeu.vue - 1;
+    if (!c || !modeFleche || k < 0 || !estChampion(k)) return;
+    if (!origine) { origine = c.dataset.case; dessinerPlateau(); dessinerFiche(); return; }
+    if (c.dataset.case !== origine) modifier(k, { fleches: [...(noteDe(k).fleches || []), [origine + c.dataset.case, couleurFleche]] });
+    origine = null; dessinerPlateau(); dessinerFiche();
+  });
+
+  function majNavigation() {
+    const n = jeu.vue;
+    $('nav-debut').disabled = $('nav-prec').disabled = n === 0;
+    $('nav-suiv').disabled = $('nav-fin').disabled = n === jeu.coups.length;
+    $('nav-moment-prec').disabled = prochain(-1) < 0;
+    $('nav-moment-suiv').disabled = prochain(1) < 0;
+  }
+  // le coup à jouer suivant (sens 1) ou précédent (sens -1), en demi-coups
+  function prochain(sens) {
+    for (let k = jeu.vue - 1 + sens; k >= 0 && k < jeu.coups.length; k += sens) if (estChampion(k) && estMoment(k)) return k;
+    return -1;
+  }
+  $('nav-debut').addEventListener('click', () => voir(0));
+  $('nav-prec').addEventListener('click', () => voir(jeu.vue - 1));
+  $('nav-suiv').addEventListener('click', () => voir(jeu.vue + 1));
+  $('nav-fin').addEventListener('click', () => voir(jeu.coups.length));
+  $('nav-moment-prec').addEventListener('click', () => { const k = prochain(-1); if (k >= 0) voir(k + 1); });
+  $('nav-moment-suiv').addEventListener('click', () => { const k = prochain(1); if (k >= 0) voir(k + 1); });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.closest('textarea, select, input')) return;
+    if (e.key === 'ArrowLeft') { e.preventDefault(); voir(jeu.vue - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); voir(jeu.vue + 1); }
+  });
+
+  // ---------- enregistrement ----------
+  function modifier(k, champs) {
+    const m = { ...(courant.moments[k] || {}), ...champs };
+    courant.moments[k] = m;
+    programmer();
+    if ('texte' in champs) dessinerFeuille();
+  }
+  let minuterie = 0, enCours = false, encore = false;
+  function programmer() { sale = true; statut('Modifications…', ''); clearTimeout(minuterie); minuterie = setTimeout(enregistrerMaintenant, 900); }
+  async function enregistrerMaintenant() {
+    clearTimeout(minuterie);
+    if (!sale || !courant || !jeu.p) return;
+    if (enCours) { encore = true; return; }
+    enCours = true; sale = false;
+    const corps = { ...courant, partie: { champion: jeu.p.ch, blancs: jeu.p.bl, noirs: jeu.p.no, annee: jeu.p.a, debut: jeu.san.slice(0, 12).join(' ') }, maj: new Date().toISOString() };
+    const id = jeu.id;
+    notes[id] = corps;
+    try {
+      if (db) await db.doc(`commentaires/${id}`).set(corps);
+      else localStorage.setItem('coach.notes', JSON.stringify(notes));
+      statut(db ? 'Enregistré' : 'Enregistré dans ce navigateur', 'ok');
+    } catch (e) {
+      sale = true;
+      statut(e && e.code === 'invalid_argument' ? 'Tu n\'as pas le droit d\'écrire ici' : 'Pas encore enregistré, nouvel essai…', 'erreur');
+      setTimeout(enregistrerMaintenant, 4000);
+    }
+    enCours = false;
+    if (encore) { encore = false; enregistrerMaintenant(); }
+    if (jeu.p && id === jeu.id) { const sel = $('choix-partie').value; remplirParties(); $('choix-partie').value = sel; }
+  }
+  window.addEventListener('pagehide', enregistrerMaintenant);
+  function statut(t, cls) { $('statut').textContent = t; $('statut').className = 'statut' + (cls ? ' ' + cls : ''); }
+
+  // ---------- démarrage ----------
+  window.Echecs.injecterSprite();
+  let depart = [cles[0], 0];
+  try { const s = JSON.parse(localStorage.getItem('coach.position') || 'null'); if (s && INDEX[s[0]]) depart = s; } catch (e) { /* rien */ }
+  choisirChampion(depart[0], depart[1]);
+
+  (async () => {
+    db = window.claude && window.claude.use ? await window.claude.use('db') : null;
+    if (!db) {
+      try { notes = JSON.parse(localStorage.getItem('coach.notes') || '{}'); } catch (e) { notes = {}; }
+      statut('Sauvegarde en ligne indisponible : tes notes restent dans ce navigateur', 'erreur');
+      if (jeu.p) { courant = JSON.parse(JSON.stringify(notes[jeu.id] || { moments: {} })); courant.moments = courant.moments || {}; $('texte-intro').value = courant.intro || ''; voir(jeu.vue); }
+      return;
+    }
+    const delai = setTimeout(() => statut('La sauvegarde ne répond pas encore…', 'erreur'), 10000);
+    let premier = true;
+    db.collection('commentaires').onSnapshot((snap) => {
+      clearTimeout(delai);
+      for (const d of snap.docs) notes[d.id] = d.data();
+      if (premier || !snap.metadata.hasPendingWrites) statut('Enregistré', 'ok');
+      // la partie ouverte : on reprend les données enregistrées si on n'est pas en train d'écrire
+      if (jeu.p && !sale && notes[jeu.id] && document.activeElement.tagName !== 'TEXTAREA') {
+        courant = JSON.parse(JSON.stringify(notes[jeu.id])); courant.moments = courant.moments || {};
+        $('texte-intro').value = courant.intro || '';
+        if (premier) voir(jeu.vue); else { dessinerFeuille(); }
+      }
+      const sel = $('choix-partie').value; remplirParties(); $('choix-partie').value = sel;
+      premier = false;
+    }, () => { clearTimeout(delai); statut('La sauvegarde en ligne s\'est arrêtée : recharge la page', 'erreur'); });
+  })();
+})();
+</script>

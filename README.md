@@ -80,6 +80,13 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   par `outils/positions-mat.js`, `outils/coups-notation.js` et `outils/parties-champions.js` ; chess.js n'est pas
   utilisé par le site lui-même.
 
+## Atelier du coach
+
+`outils/coach/index.html` est une page à part (publiée comme artefact Claude, privée) pour écrire ses propres
+commentaires : on rejoue les parties de « Joue le coup », on choisit les coups que l'enfant doit trouver, on écrit
+l'explication de chaque coup (avec des flèches), la raison de l'abandon et une introduction. Les commentaires sont
+enregistrés dans la base de l'artefact, puis repris (style seulement) et intégrés aux données du jeu.
+
 ## Organisation
 
 ```
