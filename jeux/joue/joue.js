@@ -960,13 +960,17 @@
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
   construireChoix();
-  // crédits des photos (auteur, licence, lien vers la page Commons)
+  // crédits des photos (auteur, licence avec son lien, page d'origine)
+  function lienLicence(l) {
+    const m = l.match(/^CC (BY(?:-SA)?) ([\d.]+)/);
+    return m ? `<a href="https://creativecommons.org/licenses/${m[1].toLowerCase()}/${m[2]}/" target="_blank" rel="noopener">${echapper(l)}</a>` : echapper(l);
+  }
   const credits = Object.entries(PHOTOS).sort((a, b) => CHAMPIONS[a[0]].nom.localeCompare(CHAMPIONS[b[0]].nom));
   if (credits.length) {
     $('credits-photos').hidden = false;
     $('liste-credits').innerHTML = credits.map(([cle, ph]) =>
       `<li><b>${echapper(affiche(CHAMPIONS[cle].nom))}</b>${t(' : ', ': ')}<a href="${echapper(ph.url)}" target="_blank" rel="noopener">${echapper(ph.titre)}</a>` +
-      ` — ${echapper(EN && ph.auteur === 'Auteur inconnu' ? 'Unknown author' : ph.auteur)}, ${echapper(ph.licence)}</li>`).join('');
+      ` — ${echapper(EN ? ph.auteur.replace(/^Auteur inconnu/, 'Unknown author') : ph.auteur)}, ${lienLicence(ph.licence)}</li>`).join('');
   }
   if (somme(COACH)) {
     $('filtre-coach').hidden = false;

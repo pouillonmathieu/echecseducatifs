@@ -1,6 +1,6 @@
 # Photos des champions pour « Joue le coup » (Wikimedia Commons, licences libres vérifiées une par une).
-#   python3 outils/photos-champions.py <dossier des recadrages>
-# outils/photos-champions.json : { "<cle>": { "source": "<fichier recadré>", "titre", "auteur", "licence", "url" } }
+#   python3 outils/photos-champions.py <dossier des photos (source relative à ce dossier)>
+# outils/photos-champions.json : { "<cle>": { "source": "<fichier recadré>"  (Commons, Openverse/Flickr, Library of Congress), "titre", "auteur", "licence", "url" } }
 # Copie chaque photo (200 px, JPEG) dans jeux/joue/photos/<cle>.jpg et écrit jeux/joue/photos.js (crédits compris).
 # Un champion sans photo garde son portrait dessiné.
 import json, os, sys

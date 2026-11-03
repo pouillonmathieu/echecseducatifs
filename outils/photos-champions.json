@@ -1,37 +1,51 @@
 {
  "morphy": {
-  "source": "morphy-0.jpg",
+  "source": "recadrages/morphy-0.jpg",
   "titre": "Morphy, Paul 1855 (Est. Date) - DPLA",
   "auteur": "Auteur inconnu",
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Morphy,_Paul_1855_(Est._Date)_-_DPLA_-_192f43dd2a7c3fe3d2604a28829946e8.jpg"
  },
  "schlechter": {
-  "source": "schlechter-5.jpg",
+  "source": "recadrages/schlechter-5.jpg",
   "titre": "Schlechter, Carl 1896 - DPLA - 832da5245429c37f5e2ffcdf1fa3b902 (cropped)",
   "auteur": "Schumann, Fritz",
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Schlechter,_Carl_1896_-_DPLA_-_832da5245429c37f5e2ffcdf1fa3b902_(cropped).jpg"
  },
  "rubinstein": {
-  "source": "rubinstein-1.jpg",
+  "source": "recadrages/rubinstein-1.jpg",
   "titre": "Akiba-RubinsteinC",
   "auteur": "Auteur inconnu",
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Akiba-RubinsteinC.jpg"
  },
  "reti": {
-  "source": "reti-2.jpg",
+  "source": "recadrages/reti-2.jpg",
   "titre": "Richard Reti",
   "auteur": "Auteur inconnu",
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Richard_Reti.jpg"
  },
  "alekhine": {
-  "source": "alekhine-1.jpg",
+  "source": "recadrages/alekhine-1.jpg",
   "titre": "Alexander Alekhine in 1913",
   "auteur": "Auteur inconnu",
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Alexander_Alekhine_in_1913.jpeg"
+ },
+ "capablanca": {
+  "source": "recadrages-libres/capablanca-1.jpg",
+  "titre": "[Jose R. Capablanca, Cuban chess champion]",
+  "auteur": "Auteur inconnu (New York World-Telegram & Sun, Library of Congress)",
+  "licence": "Public domain (no known restrictions)",
+  "url": "https://www.loc.gov/item/2020630083/"
+ },
+ "carlsen": {
+  "source": "recadrages-libres/carlsen-5.jpg",
+  "titre": "Magnus Carlsen (NOR)",
+  "auteur": "Federació d'Escacs Valls d'Andorra",
+  "licence": "CC BY 2.0",
+  "url": "https://www.flickr.com/photos/9472417@N03/14795362996"
  }
 }
