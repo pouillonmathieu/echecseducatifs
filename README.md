@@ -122,3 +122,9 @@ jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js)
 ## Licence
 
 © 2026 Mathieu Pouillon. Tous droits réservés. Aucune licence n'est accordée pour réutiliser ce code ou ces dessins.
+
+Exception : les photos des champions (`jeux/joue/photos/`) viennent de Wikimedia Commons. Elles sont dans le domaine
+public ou sous licence libre (CC0, CC BY, CC BY-SA), vérifiée photo par photo ; l'auteur, la licence et la page
+d'origine de chacune sont dans `jeux/joue/photos.js` et affichés sur la page du jeu (« Crédits des photos »). Elles
+restent soumises à leur propre licence. La liste est tenue dans `outils/photos-champions.json`
+(`outils/photos-champions.py` copie les photos et écrit `photos.js`).

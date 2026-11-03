@@ -11,13 +11,21 @@
   const COACH = window.PARTIES_COACH || {};
   const somme = (o) => Object.values(o).reduce((a, b) => a + (Array.isArray(b) ? b.length : b), 0);
   const TOTAL = somme(INDEX);
-  const VERSION = ((document.currentScript && document.currentScript.src) || '').split('?v=')[1] || '';
+  const SRC = (document.currentScript && document.currentScript.src) || '';
+  const VERSION = SRC.split('?v=')[1] || '';
+  // dossier de ce script : les pages anglaises (en/) chargent les mêmes fichiers
+  const BASE = SRC ? SRC.split('?')[0].replace(/[^/]*$/, '') : '';
+  // portrait : la photo (Wikimedia Commons) quand il y en a une, sinon le dessin
+  const PHOTOS = window.PHOTOS_CHAMPIONS || {};
+  const portrait = (cle) => (PHOTOS[cle]
+    ? `<img class="portrait photo" src="${BASE}photos/${cle}.jpg${VERSION ? '?v=' + VERSION : ''}" alt="" loading="lazy" decoding="async">`
+    : window.Portraits.svg(cle));
   const chargements = {};
   function charger(cle) {
     if (window.PARTIES_CH && window.PARTIES_CH[cle]) return Promise.resolve(window.PARTIES_CH[cle]);
     if (!chargements[cle]) chargements[cle] = new Promise((ok, ko) => {
       const sc = document.createElement('script');
-      sc.src = `parties/${cle}.js${VERSION ? '?v=' + VERSION : ''}`;
+      sc.src = `${BASE}parties/${cle}.js${VERSION ? '?v=' + VERSION : ''}`;
       sc.onload = () => ok(window.PARTIES_CH[cle]);
       sc.onerror = () => { delete chargements[cle]; ko(new Error('chargement')); };
       document.head.appendChild(sc);
@@ -120,7 +128,7 @@
     let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'Une partie au hasard', filtreCoach() ? somme(COACH) : TOTAL);
     for (const cle of cles) {
       const c = CHAMPIONS[cle];
-      h += carte(cle, window.Portraits.svg(cle), c.nom, `${c.epoque} · ${c.pays}`, nbParties(cle), c.monde);
+      h += carte(cle, portrait(cle), c.nom, `${c.epoque} · ${c.pays}`, nbParties(cle), c.monde);
     }
     if (nbParties('autres')) h += carte('autres', window.Portraits.svg('autres'), 'Autres maîtres', 'D\'autres grands joueurs', nbParties('autres'));
     $('grille-champions').innerHTML = h;
@@ -166,7 +174,7 @@
     jeu.vue = null;
     document.body.dataset.ecran = 'partie';
     $('titre').textContent = nomChampion();
-    $('duel-portrait').innerHTML = window.Portraits.svg(jeu.cle === 'autres' ? 'autres' : jeu.cle);
+    $('duel-portrait').innerHTML = portrait(jeu.cle === 'autres' ? 'autres' : jeu.cle);
     $('duel-champion').innerHTML = `${echapper(nomChampion())} <span class="camp ${jeu.couleur}">${jeu.couleur === 'blanc' ? 'Blancs' : 'Noirs'}</span>`;
     // partie célèbre : une introduction historique (jeux/joue/intros.js)
     const intro = (window.INTROS_PARTIES || []).find(i => p.bl.includes(i.blancs) && p.no.includes(i.noirs) && p.s.startsWith(i.debut) && (!i.seulement || p.a === i.seulement));
@@ -793,6 +801,14 @@
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
   construireChoix();
+  // crédits des photos (auteur, licence, lien vers la page Commons)
+  const credits = Object.entries(PHOTOS).sort((a, b) => CHAMPIONS[a[0]].nom.localeCompare(CHAMPIONS[b[0]].nom));
+  if (credits.length) {
+    $('credits-photos').hidden = false;
+    $('liste-credits').innerHTML = credits.map(([cle, ph]) =>
+      `<li><b>${echapper(CHAMPIONS[cle].nom)}</b> : <a href="${echapper(ph.url)}" target="_blank" rel="noopener">${echapper(ph.titre)}</a>` +
+      ` — ${echapper(ph.auteur)}, ${echapper(ph.licence)}</li>`).join('');
+  }
   if (somme(COACH)) {
     $('filtre-coach').hidden = false;
     brancherInterrupteur($('reg-coach'), reglages.coach, (v) => {

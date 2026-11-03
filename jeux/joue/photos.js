@@ -1,0 +1,9 @@
+/* Généré par outils/photos-champions.py — photos de Wikimedia Commons (licences libres) et leurs crédits. */
+window.PHOTOS_CHAMPIONS = {
+ "morphy": {
+  "titre": "Morphy, Paul 1855 (Est. Date) - DPLA",
+  "auteur": "Auteur inconnu",
+  "licence": "Public domain",
+  "url": "https://commons.wikimedia.org/wiki/File:Morphy,_Paul_1855_(Est._Date)_-_DPLA_-_192f43dd2a7c3fe3d2604a28829946e8.jpg"
+ }
+};
