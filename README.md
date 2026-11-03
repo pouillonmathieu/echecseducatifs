@@ -45,7 +45,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   opposition, pion passé, colonne ouverte, 7e rangée, avant-poste…), ce que le coup menace ou gagne, et pourquoi un
   autre coup était moins bon, avec des flèches sur l'échiquier ; à la fin, pourquoi l'adversaire abandonne. Indice (la pièce
   qui doit bouger brille) et « Montre-moi ». On joue en touchant les cases ou en faisant
-  glisser la pièce ; les cases possibles sont montrées. Parties classiques de Steinitz à Kasparov, et parties
+  glisser la pièce ; les cases possibles sont montrées. On peut revoir les coups déjà joués (flèches sous
+  l'échiquier, flèches du clavier, ou clic sur un coup de la feuille). Parties classiques de Steinitz à Kasparov, et parties
   récentes des champions et championnes d'aujourd'hui ; vitesse réglable, notation française ou anglaise.
 - **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
   (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
