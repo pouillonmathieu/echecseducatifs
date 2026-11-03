@@ -1,5 +1,5 @@
 /* Pièces d'échecs partagées par tous les jeux : valeurs, noms et dessins.
-   Deux dessins au choix (réglage « Pièces », retenu pour tout le site) :
+   Deux dessins au choix (réglage « Pièces » du menu de la page d'accueil, retenu pour tout le site) :
    - « classiques » : le jeu de Colin M. L. Burnett (Cburnett, Wikimedia Commons), sous licence BSD
      (il est aussi publié sous GFDL et GPL) ; copie des fichiers SVG de lichess-org/lila, couleurs reliées au thème ;
    - « simples » : les pièces dessinées pour le site.
@@ -124,7 +124,7 @@
     conteneur.innerHTML = `<svg id="sprite-pieces" width="0" height="0" style="position:absolute" aria-hidden="true">${symboles()}</svg>`;
     document.body.prepend(conteneur.firstChild);
     majMiniPion();
-    ajouterReglage();
+    brancherReglage();
   }
 
   // Change de dessin : les <use> de la page se mettent à jour tout seuls.
@@ -137,23 +137,18 @@
     document.querySelectorAll('#reg-pieces button').forEach(b => b.setAttribute('aria-pressed', b.dataset.pieces === jeu ? 'true' : 'false'));
   }
 
-  // Réglage « Pièces » ajouté au bas du panneau de réglages des jeux (s'il y en a un).
-  function ajouterReglage() {
-    const panneau = document.getElementById('panneau-reglages');
-    if (!panneau || document.getElementById('reg-pieces')) return;
-    const EN = document.documentElement.lang === 'en';
+  // Réglage « Pièces » (menu de la page d'accueil) : groupe #reg-pieces avec des boutons data-pieces.
+  // On ajoute à chaque bouton un aperçu (cavalier blanc et dame noire) du dessin.
+  function brancherReglage() {
+    const groupe = document.getElementById('reg-pieces');
+    if (!groupe || groupe.dataset.branche) return;
+    groupe.dataset.branche = 'oui';
     const apercu = (nomJeu) => `<svg viewBox="0 0 ${2 * boite(nomJeu)} ${boite(nomJeu)}" width="52" height="26" aria-hidden="true">` +
       `<g>${dessin('cavalier', 'blanc', nomJeu)}</g><g transform="translate(${boite(nomJeu)} 0)">${dessin('dame', 'noir', nomJeu)}</g></svg>`;
-    const bloc = document.createElement('div');
-    bloc.className = 'ligne-reglage-bloc';
-    bloc.innerHTML =
-      '<span class="ligne-titre"><svg viewBox="0 0 24 24"><use href="#piece-cavalier-blanc" width="24" height="24"/></svg>' +
-      (EN ? 'Pieces' : 'Pièces') + '</span>' +
-      `<div class="segments" id="reg-pieces" role="group" aria-label="${EN ? 'Piece style' : 'Dessin des pièces'}">` +
-      `<button type="button" data-pieces="classiques">${apercu('classiques')}<small>${EN ? 'Classic' : 'Classiques'}</small></button>` +
-      `<button type="button" data-pieces="simples">${apercu('simples')}<small>${EN ? 'Simple' : 'Simples'}</small></button></div>`;
-    panneau.append(bloc);
-    bloc.querySelectorAll('button').forEach(b => b.addEventListener('click', () => choisirJeu(b.dataset.pieces)));
+    groupe.querySelectorAll('button[data-pieces]').forEach(b => {
+      b.insertAdjacentHTML('afterbegin', apercu(b.dataset.pieces));
+      b.addEventListener('click', () => choisirJeu(b.dataset.pieces));
+    });
     choisirJeu(jeu);
   }
 

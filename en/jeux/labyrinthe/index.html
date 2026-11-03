@@ -9,11 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../../css/commun.css?v=202611030851">
-<link rel="stylesheet" href="../../../css/jeux.css?v=202611030851">
-<link rel="stylesheet" href="../../../css/echiquier.css?v=202611030851">
-<link rel="stylesheet" href="../../../jeux/labyrinthe/labyrinthe.css?v=202611030851">
-<script src="../../../js/commun.js?v=202611030851"></script>
+<link rel="stylesheet" href="../../../css/commun.css?v=202611030855">
+<link rel="stylesheet" href="../../../css/jeux.css?v=202611030855">
+<link rel="stylesheet" href="../../../css/echiquier.css?v=202611030855">
+<link rel="stylesheet" href="../../../jeux/labyrinthe/labyrinthe.css?v=202611030855">
+<script src="../../../js/commun.js?v=202611030855"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- obstacles (une case chacun), maison et icônes -->
@@ -74,8 +74,8 @@
   <!-- icônes des modes : un petit labyrinthe -->
   <symbol id="mini-laby" viewBox="0 0 48 48">
     <rect x="4" y="4" width="40" height="40" rx="7" style="fill:#FBFBF8;stroke:#2A2E38" stroke-width="1.4"/>
-    <rect x="9" y="9" width="30" height="30" style="fill:#ECECD7"/>
-    <rect x="24" y="9" width="15" height="15" style="fill:#739A62"/><rect x="9" y="24" width="15" height="15" style="fill:#739A62"/>
+    <rect x="9" y="9" width="30" height="30" style="fill:var(--plateau-claire)"/>
+    <rect x="24" y="9" width="15" height="15" style="fill:var(--plateau-foncee)"/><rect x="9" y="24" width="15" height="15" style="fill:var(--plateau-foncee)"/>
     <rect x="16" y="9" width="7" height="20" rx="3" style="fill:#8A8E96;stroke:#4A4D55" stroke-width="1.2"/>
     <path d="M32 11l6 5h-1.6v6h-8.8v-6H26Z" style="fill:rgba(242,184,39,.45);stroke:#E0A526" stroke-width="1.2" stroke-linejoin="round"/>
     <use href="#piece-tour-noir" x="10" y="27" width="12" height="12"/>
@@ -182,9 +182,9 @@
       <!-- pour le cavalier : il saute par-dessus les obstacles -->
       <div class="bulle-cavalier" id="bulle-cavalier" hidden>
         <svg class="bulle-dessin" viewBox="0 0 136 60" aria-hidden="true">
-          <rect x="2" y="18" width="40" height="40" rx="6" fill="#ECECD7"/>
-          <rect x="48" y="18" width="40" height="40" rx="6" fill="#739A62"/>
-          <rect x="94" y="18" width="40" height="40" rx="6" fill="#ECECD7"/>
+          <rect x="2" y="18" width="40" height="40" rx="6" style="fill:var(--plateau-claire)"/>
+          <rect x="48" y="18" width="40" height="40" rx="6" style="fill:var(--plateau-foncee)"/>
+          <rect x="94" y="18" width="40" height="40" rx="6" style="fill:var(--plateau-claire)"/>
           <use href="#piece-cavalier-noir" x="5" y="21" width="34" height="34"/>
           <svg id="bulle-obstacle" x="49" y="19" width="38" height="38" viewBox="298 398 104 104"></svg>
           <circle cx="114" cy="38" r="9" fill="none" stroke="#2E7D5B" stroke-width="2.5" stroke-dasharray="4 3"/>
@@ -318,10 +318,10 @@
   </div>
 </div>
 
-<script src="../../../js/pieces.js?v=202611030851"></script>
-<script src="../../../js/sons.js?v=202611030851"></script>
-<script src="../../../js/ui.js?v=202611030851"></script>
-<script src="../../../js/echiquier.js?v=202611030851"></script>
-<script src="../../../jeux/labyrinthe/labyrinthe.js?v=202611030851"></script>
+<script src="../../../js/pieces.js?v=202611030855"></script>
+<script src="../../../js/sons.js?v=202611030855"></script>
+<script src="../../../js/ui.js?v=202611030855"></script>
+<script src="../../../js/echiquier.js?v=202611030855"></script>
+<script src="../../../jeux/labyrinthe/labyrinthe.js?v=202611030855"></script>
 </body>
 </html>

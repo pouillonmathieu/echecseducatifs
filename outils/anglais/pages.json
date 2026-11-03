@@ -98,7 +98,18 @@
   "À deux": "Two players",
   "Règles expliquées": "Rules explained",
   "Sans compte et sans publicité. Les réglages restent dans ce navigateur.": "No account and no ads. Your settings stay in this browser.",
-  "Valeur des pièces : pion 1, cavalier 3, fou 3, tour 5, dame 9": "Piece values: pawn 1, knight 3, bishop 3, rook 5, queen 9"
+  "Valeur des pièces : pion 1, cavalier 3, fou 3, tour 5, dame 9": "Piece values: pawn 1, knight 3, bishop 3, rook 5, queen 9",
+  "Pour tous les jeux du site": "For every game on the site",
+  "Pièces": "Pieces",
+  "Dessin des pièces": "Piece style",
+  "Classiques": "Classic",
+  "Simples": "Simple",
+  "Échiquier": "Board",
+  "Couleur de l'échiquier": "Board colour",
+  "Vert": "Green",
+  "Bleu": "Blue",
+  "Rouge": "Red",
+  "Bois": "Wood"
  },
  "identiques": [
   "Dice chess",

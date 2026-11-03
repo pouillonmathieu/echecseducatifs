@@ -23,6 +23,26 @@
     if (t === 'dark' || t === 'light') racine.setAttribute('data-theme', t);
   } catch (e) { /* rien */ }
 
+  // ---------- Couleur de l'échiquier (réglage de la page d'accueil, pour tout le site) ----------
+  const PLATEAUX = ['vert', 'bleu', 'rouge', 'bois'];
+  function appliquerPlateau(nom) {
+    if (nom && nom !== 'vert' && PLATEAUX.includes(nom)) racine.setAttribute('data-plateau', nom);
+    else racine.removeAttribute('data-plateau');
+  }
+  try { appliquerPlateau(localStorage.getItem('echecs.plateau')); } catch (e) { /* rien */ }
+  const plateauActuel = () => racine.getAttribute('data-plateau') || 'vert';
+  function choisirPlateau(nom) {
+    appliquerPlateau(nom);
+    try { localStorage.setItem('echecs.plateau', plateauActuel()); } catch (e) { /* rien */ }
+  }
+  // boutons <button data-plateau="bleu"> d'un groupe : aria-pressed sur celui choisi
+  function brancherPlateau(groupe) {
+    const boutons = groupe.querySelectorAll('button[data-plateau]');
+    const maj = () => boutons.forEach(b => b.setAttribute('aria-pressed', b.dataset.plateau === plateauActuel() ? 'true' : 'false'));
+    boutons.forEach(b => b.addEventListener('click', () => { choisirPlateau(b.dataset.plateau); maj(); }));
+    maj();
+  }
+
   function themeEffectif() {
     const t = racine.getAttribute('data-theme');
     if (t === 'dark' || t === 'light') return t;
@@ -77,5 +97,5 @@
     return { definir: maj };
   }
 
-  window.Commun = { EN, t, Prefs, themeEffectif, brancherBoutonTheme, brancherReglages, brancherInterrupteur };
+  window.Commun = { EN, t, Prefs, PLATEAUX, choisirPlateau, brancherPlateau, themeEffectif, brancherBoutonTheme, brancherReglages, brancherInterrupteur };
 })();

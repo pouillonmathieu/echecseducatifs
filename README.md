@@ -96,6 +96,16 @@ refaire la même chose l'efface. Dans le jeu, ces dessins s'effacent quand la po
 possibilité (code commun : `Echiquier.annotations` dans `js/echiquier.js`) ; les dessins s'effacent quand la pièce bouge.
 « Mat ou pas mat ? » aussi ; les dessins s'effacent à chaque nouvelle position.
 
+## Réglages du site
+
+Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé dans le navigateur) :
+- **Pièces** : classiques (dessin Cburnett) ou simples (`js/pieces.js`, clé `echecs.pieces.classiques`) ;
+  les petits pions des icônes (symbole `#mini-pion`) suivent le même choix ;
+- **Échiquier** : vert, bleu, rouge ou bois (`js/commun.js`, clé `echecs.plateau`, attribut `data-plateau` de `<html>`).
+  Les couleurs sont les variables `--plateau-claire` et `--plateau-foncee` de `css/commun.css` (avec leur version
+  pour le mode sombre) ; tous les échiquiers et toutes les icônes d'échiquier s'en servent. L'image du labyrinthe de
+  l'accueil (`img/vignette-labyrinthe.webp`) n'a que les buissons, sur fond transparent.
+
 ## Version anglaise
 
 Les pages anglaises (dossier `en/`) sont générées par `python3 outils/anglais/generer.py` à partir des pages
@@ -144,7 +154,7 @@ d'origine de chacune sont dans `jeux/joue/photos.js` et affichés sur la page du
 restent soumises à leur propre licence. La liste est tenue dans `outils/photos-champions.json`
 (`outils/photos-champions.py` copie les photos et écrit `photos.js`).
 
-Exception : les pièces « classiques » (`js/pieces.js`, réglage « Pièces » des jeux) sont le jeu de
+Exception : les pièces « classiques » (`js/pieces.js`, réglage « Pièces » de la page d'accueil) sont le jeu de
 [Colin M. L. Burnett](https://en.wikipedia.org/wiki/User:Cburnett) publié sur Wikimedia Commons (fichiers
 `Chess_klt45.svg`, etc.), sous licence BSD (il est aussi diffusé sous GFDL et GPL) ; les tracés viennent des fichiers
 SVG de [lichess-org/lila](https://github.com/lichess-org/lila/tree/master/public/piece/cburnett), seules les couleurs

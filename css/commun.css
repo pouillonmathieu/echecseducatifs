@@ -240,6 +240,38 @@ body {
 [aria-checked="true"] > .interrupteur { background: var(--accent); }
 [aria-checked="true"] > .interrupteur::after { transform: translateX(18px); }
 
+/* ---------- Réglage sur plusieurs lignes (titre + choix) ---------- */
+.ligne-reglage-bloc { display: flex; flex-direction: column; gap: 8px; padding: 10px 10px 8px; }
+.ligne-titre { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+.ligne-titre svg { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--encre-douce); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ligne-reglage small { display: block; margin-top: 1px; font-size: 12px; color: var(--encre-douce); }
+
+/* choix segmenté (ex. 1 dé / 3 dés) */
+.segments { display: flex; gap: 6px; }
+.segments button {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 7px 4px;
+  border: 2px solid var(--ligne);
+  border-radius: 10px;
+  background: var(--fond);
+  color: var(--encre);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.segments button small { font-size: 11px; font-weight: 500; color: var(--encre-douce); }
+.segments button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-doux); }
+
+.note-reglages { margin: 4px 10px 2px; font-size: 12px; color: var(--encre-douce); }
+.segments-plateau { gap: 4px; }
+.segments-plateau button { padding: 6px 2px; }
+.segments-plateau svg { border-radius: 4px; box-shadow: 0 0 0 1px var(--ligne); }
+
 /* ---------- Fenêtre par-dessus le jeu ---------- */
 .voile {
   position: fixed;
@@ -273,3 +305,19 @@ body {
   color: var(--encre-douce);
   text-align: center;
 }
+
+/* ---------- Couleur de l'échiquier (réglage de la page d'accueil, valable pour tout le site) ---------- */
+:root { --plateau-claire: #ECECD7; --plateau-foncee: #739A62; }
+:root[data-plateau="bleu"] { --plateau-claire: #E3EAF1; --plateau-foncee: #7898B8; }
+:root[data-plateau="rouge"] { --plateau-claire: #F4E1D9; --plateau-foncee: #CB726B; }
+:root[data-plateau="bois"] { --plateau-claire: #F0D9B5; --plateau-foncee: #B58863; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --plateau-claire: #D6D6C0; --plateau-foncee: #628751; }
+  :root:not([data-theme="light"])[data-plateau="bleu"] { --plateau-claire: #C9D3DD; --plateau-foncee: #5F7F9F; }
+  :root:not([data-theme="light"])[data-plateau="rouge"] { --plateau-claire: #DCC7BF; --plateau-foncee: #A95B56; }
+  :root:not([data-theme="light"])[data-plateau="bois"] { --plateau-claire: #D9C19C; --plateau-foncee: #96704D; }
+}
+:root[data-theme="dark"] { --plateau-claire: #D6D6C0; --plateau-foncee: #628751; }
+:root[data-theme="dark"][data-plateau="bleu"] { --plateau-claire: #C9D3DD; --plateau-foncee: #5F7F9F; }
+:root[data-theme="dark"][data-plateau="rouge"] { --plateau-claire: #DCC7BF; --plateau-foncee: #A95B56; }
+:root[data-theme="dark"][data-plateau="bois"] { --plateau-claire: #D9C19C; --plateau-foncee: #96704D; }

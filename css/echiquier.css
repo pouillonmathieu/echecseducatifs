@@ -1,8 +1,8 @@
-/* Échiquier partagé (js/echiquier.js) : cases vert et crème, coordonnées à gauche et en bas,
+/* Échiquier partagé (js/echiquier.js) : couleurs du réglage « Échiquier » (commun.css), coordonnées à gauche et en bas,
    surlignages pour expliquer une position. */
 :root {
-  --e-claire: #ECECD7;
-  --e-foncee: #739A62;
+  --e-claire: var(--plateau-claire);
+  --e-foncee: var(--plateau-foncee);
   --e-cadre: #FBFBF8;
   --e-texte: #2A2E38;
   --e-danger: rgba(214, 69, 50, .85);
@@ -11,9 +11,9 @@
   --e-coup: #F2B827;        /* coup joué : jaune, bien visible sur le vert comme sur le crème */
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
+  :root:not([data-theme="light"]) { --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
 }
-:root[data-theme="dark"] { --e-claire: #D6D6C0; --e-foncee: #628751; --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
+:root[data-theme="dark"] { --e-cadre: #3A3E46; --e-texte: #E6E8EC; }
 /* sur l'échiquier, les pièces gardent leurs couleurs du mode clair (contour foncé) :
    le contour clair des pièces noires n'est utile que sur fond sombre */
 .echiquier, .piece-glissee {

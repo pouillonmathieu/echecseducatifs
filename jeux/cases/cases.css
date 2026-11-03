@@ -2,8 +2,8 @@
    Mise en page : la consigne (pastille verte) au-dessus d'un échiquier encadré
    de la couleur du camp (cadre blanc ou noir, avec lettres et chiffres). */
 :root {
-  --case-claire: #ECECD7;
-  --case-foncee: #739A62;
+  --case-claire: var(--plateau-claire);
+  --case-foncee: var(--plateau-foncee);
   --cadre-blanc: #FBFBF8;
   --cadre-noir: #22252C;
   --texte-cadre-blanc: #2A2E38;
@@ -13,16 +13,6 @@
   --juste: rgba(47, 163, 107, .72);
   --faux: rgba(210, 85, 63, .72);
   --indice: #F5C542;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --case-claire: #D6D6C0;
-    --case-foncee: #628751;
-  }
-}
-:root[data-theme="dark"] {
-  --case-claire: #D6D6C0;
-  --case-foncee: #628751;
 }
 
 /* ---------- Affichage selon le défi ---------- */

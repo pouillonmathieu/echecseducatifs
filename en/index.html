@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../css/commun.css?v=202611030851">
-<link rel="stylesheet" href="../css/accueil.css?v=202611030851">
-<script src="../js/commun.js?v=202611030851"></script>
+<link rel="stylesheet" href="../css/commun.css?v=202611030855">
+<link rel="stylesheet" href="../css/accueil.css?v=202611030855">
+<script src="../js/commun.js?v=202611030855"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -44,6 +44,36 @@
       <svg class="icone-lune" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
       <svg class="icone-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
     </button>
+    <div class="reglages">
+      <button id="btn-reglages" class="bouton-icone" type="button" aria-label="Settings" title="Settings" aria-controls="panneau-reglages" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+      </button>
+      <div id="panneau-reglages" class="panneau panneau-site" hidden>
+        <p class="note-reglages">For every game on the site</p>
+        <div class="ligne-reglage-bloc">
+          <span class="ligne-titre">
+            <svg viewBox="0 0 24 24"><use href="#piece-cavalier-blanc" width="24" height="24"/></svg>
+            Pieces
+          </span>
+          <div class="segments" id="reg-pieces" role="group" aria-label="Piece style">
+            <button type="button" data-pieces="classiques"><small>Classic</small></button>
+            <button type="button" data-pieces="simples"><small>Simple</small></button>
+          </div>
+        </div>
+        <div class="ligne-reglage-bloc">
+          <span class="ligne-titre">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg>
+            Board
+          </span>
+          <div class="segments segments-plateau" id="reg-plateau" role="group" aria-label="Board colour">
+            <button type="button" data-plateau="vert"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#ECECD7"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#739A62"/></svg><small>Green</small></button>
+            <button type="button" data-plateau="bleu"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#E3EAF1"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#7898B8"/></svg><small>Blue</small></button>
+            <button type="button" data-plateau="rouge"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#F4E1D9"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#CB726B"/></svg><small>Red</small></button>
+            <button type="button" data-plateau="bois"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#F0D9B5"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#B58863"/></svg><small>Wood</small></button>
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
 
   <section class="intro">
@@ -62,8 +92,10 @@
         <div class="vignette">
           <svg viewBox="0 0 240 150" aria-hidden="true">
             <rect x="49" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <!-- échiquier et buissons : image tirée du jeu (jeux/labyrinthe, dessinCalque) -->
-            <image href="../img/vignette-labyrinthe.webp" x="58" y="23" width="104" height="104"/>
+            <!-- échiquier aux couleurs du réglage, buissons : image tirée du jeu (jeux/labyrinthe, dessinCalque, fond transparent) -->
+            <rect x="58" y="23" width="104" height="104" style="fill:var(--plateau-claire)"/>
+            <g style="fill:var(--plateau-foncee)"><rect x="84" y="23" width="26" height="26"/><rect x="136" y="23" width="26" height="26"/><rect x="58" y="49" width="26" height="26"/><rect x="110" y="49" width="26" height="26"/><rect x="84" y="75" width="26" height="26"/><rect x="136" y="75" width="26" height="26"/><rect x="58" y="101" width="26" height="26"/><rect x="110" y="101" width="26" height="26"/></g>
+            <image href="../img/vignette-labyrinthe.webp?v=2" x="58" y="23" width="104" height="104"/>
             <rect x="137" y="24" width="24" height="24" fill="rgba(242,184,39,.3)" stroke="#E0A526" stroke-width="1.6"/>
             <path d="M149 27 159 36H156.5v10.5h-15V36H139Z" fill="rgba(242,184,39,.4)" stroke="#E0A526" stroke-width="1.6" stroke-linejoin="round"/>
             <use href="#piece-cavalier-noir" x="143.5" y="36" width="11" height="11" opacity=".55"/>
@@ -91,8 +123,8 @@
           <svg viewBox="0 0 240 150" aria-hidden="true">
             <defs><radialGradient id="v-danger"><stop offset="0" stop-color="#D64532" stop-opacity=".85"/><stop offset="1" stop-color="#D64532" stop-opacity="0"/></radialGradient></defs>
             <rect x="6" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="15" y="23" width="104" height="104" fill="#ECECD7"/>
-            <g fill="#739A62">
+            <rect x="15" y="23" width="104" height="104" style="fill:var(--plateau-claire)"/>
+            <g style="fill:var(--plateau-foncee)">
               <rect x="41" y="23" width="26" height="26"/><rect x="93" y="23" width="26" height="26"/>
               <rect x="15" y="49" width="26" height="26"/><rect x="67" y="49" width="26" height="26"/>
               <rect x="41" y="75" width="26" height="26"/><rect x="93" y="75" width="26" height="26"/>
@@ -131,8 +163,8 @@
         <div class="vignette">
           <svg viewBox="0 0 240 150" aria-hidden="true">
             <rect x="96" y="12" width="128" height="128" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="108" y="24" width="104" height="104" fill="#ECECD7"/>
-            <g fill="#739A62" id="cases-foncees"></g>
+            <rect x="108" y="24" width="104" height="104" style="fill:var(--plateau-claire)"/>
+            <g style="fill:var(--plateau-foncee)" id="cases-foncees"></g>
             <rect x="134" y="50" width="13" height="13" fill="#F5C542" stroke="#2A2E38" stroke-width="1.6"/>
             <g class="lettres-mini">
               <text x="114.5" y="137">a</text><text x="127.5" y="137">b</text><text x="140.5" y="137">c</text><text x="153.5" y="137">d</text>
@@ -162,8 +194,8 @@
         <div class="vignette">
           <svg viewBox="0 0 240 150" aria-hidden="true">
             <rect x="12" y="7" width="128" height="135" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="27" y="15" width="105" height="105" fill="#ECECD7"/>
-            <g fill="#739A62"><rect x="48" y="15" width="21" height="21"/><rect x="90" y="15" width="21" height="21"/><rect x="27" y="36" width="21" height="21"/><rect x="69" y="36" width="21" height="21"/><rect x="111" y="36" width="21" height="21"/><rect x="48" y="57" width="21" height="21"/><rect x="90" y="57" width="21" height="21"/><rect x="27" y="78" width="21" height="21"/><rect x="69" y="78" width="21" height="21"/><rect x="111" y="78" width="21" height="21"/><rect x="48" y="99" width="21" height="21"/><rect x="90" y="99" width="21" height="21"/></g>
+            <rect x="27" y="15" width="105" height="105" style="fill:var(--plateau-claire)"/>
+            <g style="fill:var(--plateau-foncee)"><rect x="48" y="15" width="21" height="21"/><rect x="90" y="15" width="21" height="21"/><rect x="27" y="36" width="21" height="21"/><rect x="69" y="36" width="21" height="21"/><rect x="111" y="36" width="21" height="21"/><rect x="48" y="57" width="21" height="21"/><rect x="90" y="57" width="21" height="21"/><rect x="27" y="78" width="21" height="21"/><rect x="69" y="78" width="21" height="21"/><rect x="111" y="78" width="21" height="21"/><rect x="48" y="99" width="21" height="21"/><rect x="90" y="99" width="21" height="21"/></g>
             <rect x="91" y="100" width="19" height="19" fill="rgba(242,184,39,.35)" stroke="#F2B827" stroke-width="2"/>
             <rect x="70" y="58" width="19" height="19" fill="rgba(242,184,39,.62)" stroke="#F2B827" stroke-width="2"/>
             <use href="#piece-dame-blanc" x="28" y="100" width="19" height="19"/>
@@ -215,8 +247,8 @@
           <svg viewBox="0 0 240 150" aria-hidden="true">
             <defs><clipPath id="clip-portrait-acc"><rect x="156" y="20" width="66" height="66" rx="14"/></clipPath></defs>
             <rect x="14" y="14" width="122" height="122" rx="12" fill="#FBFBF8" class="cadre-mini"/>
-            <rect x="23" y="23" width="104" height="104" fill="#ECECD7"/>
-            <g fill="#739A62">
+            <rect x="23" y="23" width="104" height="104" style="fill:var(--plateau-claire)"/>
+            <g style="fill:var(--plateau-foncee)">
               <rect x="49" y="23" width="26" height="26"/><rect x="101" y="23" width="26" height="26"/>
               <rect x="23" y="49" width="26" height="26"/><rect x="75" y="49" width="26" height="26"/>
               <rect x="49" y="75" width="26" height="26"/><rect x="101" y="75" width="26" height="26"/>
@@ -342,7 +374,7 @@
   </footer>
 </main>
 
-<script src="../js/pieces.js?v=202611030851"></script>
+<script src="../js/pieces.js?v=202611030855"></script>
 <script>
   (function () {
     const { PIECES, injecterSprite, pastilles } = window.Echecs;
@@ -356,6 +388,8 @@
     for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if ((r + c) % 2) cases += `<rect x="${108 + c * 13}" y="${24 + r * 13}" width="13" height="13"/>`;
     document.getElementById('cases-foncees').innerHTML = cases;
     Commun.brancherBoutonTheme(document.getElementById('btn-theme'));
+    Commun.brancherReglages(document.getElementById('btn-reglages'), document.getElementById('panneau-reglages'));
+    Commun.brancherPlateau(document.getElementById('reg-plateau'));
   })();
 </script>
 </body>
