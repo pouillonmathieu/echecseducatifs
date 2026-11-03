@@ -4,7 +4,7 @@
            défi (10 cases, un seul essai chacune),
            défi chrono (le plus de cases possible en 20 secondes). */
 (function () {
-  const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   const { lancerPluie, compterJusqua, formaterDuree, allumerEtoiles, ICONES, reduireMouvement } = window.UI;
   const Sons = window.Sons;
   const TP = window.ToutPetits;

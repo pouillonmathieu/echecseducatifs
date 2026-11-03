@@ -7,7 +7,7 @@
    Niveaux facile / moyen / difficile, mode libre, défi (10 labyrinthes) et défi chrono (30 s chacun).
    La pièce se déplace en touchant une case ou en la faisant glisser (glisser-déposer). */
 (function () {
-  const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   const { lancerPluie, allumerEtoiles, compterJusqua, formaterDuree, ICONES } = window.UI;
   const Sons = window.Sons;
   const $ = (id) => document.getElementById(id);

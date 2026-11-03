@@ -3,12 +3,13 @@
    les fichiers directement depuis le disque.
    Les couleurs viennent des variables CSS --piece-* (thème clair ou sombre). */
 (function () {
+  const EN = document.documentElement.lang === 'en';
   const PIECES = [
-    { id: 'pion',     valeur: 1, nom: { blanc: 'un pion blanc',     noir: 'un pion noir' } },
-    { id: 'cavalier', valeur: 3, nom: { blanc: 'un cavalier blanc', noir: 'un cavalier noir' } },
-    { id: 'fou',      valeur: 3, nom: { blanc: 'un fou blanc',      noir: 'un fou noir' } },
-    { id: 'tour',     valeur: 5, nom: { blanc: 'une tour blanche',  noir: 'une tour noire' } },
-    { id: 'dame',     valeur: 9, nom: { blanc: 'une dame blanche',  noir: 'une dame noire' } },
+    { id: 'pion',     valeur: 1, nom: EN ? { blanc: 'a white pawn', noir: 'a black pawn' } : { blanc: 'un pion blanc',     noir: 'un pion noir' } },
+    { id: 'cavalier', valeur: 3, nom: EN ? { blanc: 'a white knight', noir: 'a black knight' } : { blanc: 'un cavalier blanc', noir: 'un cavalier noir' } },
+    { id: 'fou',      valeur: 3, nom: EN ? { blanc: 'a white bishop', noir: 'a black bishop' } : { blanc: 'un fou blanc',      noir: 'un fou noir' } },
+    { id: 'tour',     valeur: 5, nom: EN ? { blanc: 'a white rook', noir: 'a black rook' } : { blanc: 'une tour blanche',  noir: 'une tour noire' } },
+    { id: 'dame',     valeur: 9, nom: EN ? { blanc: 'a white queen', noir: 'a black queen' } : { blanc: 'une dame blanche',  noir: 'une dame noire' } },
   ];
 
   const TEINTES = {

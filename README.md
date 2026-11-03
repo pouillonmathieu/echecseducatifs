@@ -91,6 +91,14 @@ remplacent l'explication automatique, avec leurs flèches, et décident des coup
 commenté mais pas « à jouer » est joué tout seul, puis la partie s'arrête pour montrer le commentaire. Dans la
 galerie, l'interrupteur « Commentées par le coach » ne montre que ces parties-là.
 
+## Version anglaise
+
+Les pages anglaises (dossier `en/`) sont générées par `python3 outils/anglais/generer.py` à partir des pages
+françaises et du dictionnaire `outils/anglais/pages.json` : on ne les modifie pas à la main. Elles utilisent les mêmes
+fichiers CSS et JS que le site français ; le code des jeux choisit sa langue avec `document.documentElement.lang`
+(`Commun.t('texte français', 'English text')`). Un jeu est traduit quand sa page française a le bouton « EN » ; le
+script signale tout texte sans traduction.
+
 ## Organisation
 
 ```

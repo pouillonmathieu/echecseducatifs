@@ -4,7 +4,7 @@
    En mode équilibré, chaque pièce sort selon son nombre sur l'échiquier (pion 8/16, roi 1/16…).
    La partie en cours est gardée dans le navigateur pour pouvoir la reprendre. */
 (function () {
-  const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   const { lancerPluie, reduireMouvement, ICONES } = window.UI;
   const Sons = window.Sons;
   const $ = (id) => document.getElementById(id);

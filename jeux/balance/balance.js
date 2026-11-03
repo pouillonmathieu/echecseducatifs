@@ -5,7 +5,7 @@
            défis (10 positions aléatoires à équilibrer, 6 pièces max, avec ou sans chrono de 20 s). */
 (function () {
   const { PIECES, injecterSprite, pastilles } = window.Echecs;
-  const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   const Sons = window.Sons;
   const NS = 'http://www.w3.org/2000/svg';
   const VALEUR = Object.fromEntries(PIECES.map(p => [p.id, p.valeur]));
@@ -73,7 +73,7 @@
     for (const cote of COTES) {
       $('plateau-' + cote).querySelectorAll('.piece-btn').forEach(b => {
         const p = PIECES.find(x => x.id === b.dataset.piece);
-        b.setAttribute('aria-label', `Poser ${p.nom[COULEUR[cote]]}` + (reglages().valeurs ? ` (${p.valeur})` : ''));
+        b.setAttribute('aria-label', t('Poser ', 'Place ') + p.nom[COULEUR[cote]] + (reglages().valeurs ? ` (${p.valeur})` : ''));
       });
     }
   }
@@ -192,8 +192,9 @@
     svg.classList.toggle('avec-chrono', jeu.mode === 'defi' && defi.chrono);
     document.body.classList.toggle('sans-valeurs', !reglages().valeurs);
     $('balance-resume').textContent = reglages().totaux
-      ? `Balance : ${g} à gauche, ${d} à droite`
-      : `Balance : ${g > d ? 'la gauche est plus lourde' : g < d ? 'la droite est plus lourde' : 'équilibrée'}`;
+      ? t(`Balance : ${g} à gauche, ${d} à droite`, `Scales: ${g} on the left, ${d} on the right`)
+      : t(`Balance : ${g > d ? 'la gauche est plus lourde' : g < d ? 'la droite est plus lourde' : 'équilibrée'}`,
+        `Scales: ${g > d ? 'the left side is heavier' : g < d ? 'the right side is heavier' : 'balanced'}`);
     expression(g, d);
 
     for (const cote of COTES) {
@@ -316,7 +317,7 @@
   let positionPrecedente = null;
 
   function construirePoints() {
-    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="Défi ${i + 1}"></li>`).join('');
+    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="${t('Défi', 'Challenge')} ${i + 1}"></li>`).join('');
   }
   function majPoints() {
     $('points').querySelectorAll('li').forEach((li, i) => {
@@ -335,7 +336,7 @@
     jeu.toutTombe = true;
     etaitEquilibre = false;
     defi.debut = performance.now();
-    $('titre').textContent = `Défi ${defi.numero + 1} sur ${NB_DEFIS}`;
+    $('titre').textContent = t(`Défi ${defi.numero + 1} sur ${NB_DEFIS}`, `Challenge ${defi.numero + 1} of ${NB_DEFIS}`);
     majPoints();
     rendre();
     if (defi.chrono) demarrerChrono();
@@ -390,7 +391,7 @@
     jeu.statut = 'fin';
     const score = defi.resultats.filter(r => r.ok).length;
     const etoiles = score === NB_DEFIS ? 3 : score >= 7 ? 2 : score >= 4 ? 1 : 0;
-    const titre = score === NB_DEFIS ? 'Parfait !' : score >= 7 ? 'Bravo !' : score >= 4 ? 'Bien joué !' : 'Continue, tu progresses !';
+    const titre = score === NB_DEFIS ? t('Parfait !', 'Perfect!') : score >= 7 ? t('Bravo !', 'Well done!') : score >= 4 ? t('Bien joué !', 'Nice work!') : t('Continue, tu progresses !', 'Keep going, you\'re getting better!');
     $('res-titre').textContent = titre;
 
     $('etoiles').querySelectorAll('svg').forEach((e, i) => {
@@ -399,13 +400,13 @@
     });
 
     $('res-liste').innerHTML = defi.resultats.map((r, i) =>
-      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="Défi ${i + 1} : ${r.ok ? 'réussi' : 'raté'}, ${formaterDuree(r.temps)}">` +
+      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="${t('Défi', 'Challenge')} ${i + 1}${t(' : ', ': ')}${r.ok ? t('réussi', 'passed') : t('raté', 'missed')}, ${formaterDuree(r.temps)}">` +
       `<span class="res-rond">${r.ok ? ICONE_OK : ICONE_RATE}</span><span class="res-t">${Math.round(r.temps)} s</span></li>`).join('');
 
     const reussis = defi.resultats.filter(r => r.ok);
     const totalTemps = defi.resultats.reduce((s, r) => s + r.temps, 0);
-    $('res-temps').textContent = `Temps total : ${formaterDuree(totalTemps)}` +
-      (reussis.length ? ` · ${formaterDuree(reussis.reduce((s, r) => s + r.temps, 0) / reussis.length)} en moyenne par balance réussie` : '');
+    $('res-temps').textContent = t('Temps total : ', 'Total time: ') + formaterDuree(totalTemps) +
+      (reussis.length ? ` · ${formaterDuree(reussis.reduce((s, r) => s + r.temps, 0) / reussis.length)}` + t(' en moyenne par balance réussie', ' on average per balanced scale') : '');
 
     $('resultats').hidden = false;
     $('btn-rejouer').focus({ preventScroll: true });
@@ -459,7 +460,7 @@
 
   function lancerLibre() {
     changerMode('libre');
-    $('titre').textContent = 'La balance';
+    $('titre').textContent = t('La balance', 'The scales');
     rendre();
   }
 

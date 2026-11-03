@@ -11,8 +11,12 @@
     },
   };
 
-  // ---------- Thème ----------
+  // ---------- Langue : les pages anglaises (dossier en/) ont lang="en" ----------
   const racine = document.documentElement;
+  const EN = racine.lang === 'en';
+  const t = (fr, en) => (EN ? en : fr);
+
+  // ---------- Thème ----------
   const requeteSombre = window.matchMedia('(prefers-color-scheme: dark)');
   try {
     const t = localStorage.getItem('echecs.theme');
@@ -28,7 +32,7 @@
   function brancherBoutonTheme(bouton) {
     const maj = () => {
       const sombre = themeEffectif() === 'dark';
-      const label = sombre ? 'Passer en mode clair' : 'Passer en mode sombre';
+      const label = sombre ? t('Passer en mode clair', 'Switch to light mode') : t('Passer en mode sombre', 'Switch to dark mode');
       bouton.dataset.theme = sombre ? 'dark' : 'light';
       bouton.setAttribute('aria-label', label);
       bouton.title = label;
@@ -73,5 +77,5 @@
     return { definir: maj };
   }
 
-  window.Commun = { Prefs, themeEffectif, brancherBoutonTheme, brancherReglages, brancherInterrupteur };
+  window.Commun = { EN, t, Prefs, themeEffectif, brancherBoutonTheme, brancherReglages, brancherInterrupteur };
 })();

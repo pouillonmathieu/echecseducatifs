@@ -4,7 +4,7 @@
    Modes : libre (positions à la suite), défi (10 positions), défi chrono (20 s par position).
    Les positions et leurs explications viennent de positions.js (vérifiées avec chess.js). */
 (function () {
-  const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   const { lancerPluie, compterJusqua, formaterDuree, allumerEtoiles, ICONES } = window.UI;
   const Sons = window.Sons;
   const POSITIONS = window.POSITIONS_MAT;

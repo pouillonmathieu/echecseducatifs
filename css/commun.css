@@ -153,6 +153,7 @@ body {
   transition: background .15s, color .15s, transform .1s;
 }
 .bouton-icone svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bouton-langue { font-size: 14px; font-weight: 700; letter-spacing: .04em; text-decoration: none; }
 .bouton-icone:hover { background: var(--surface-2); }
 .bouton-icone:active { transform: scale(.94); }
 .bouton-icone[aria-expanded="true"] { background: var(--surface-2); }

@@ -7,7 +7,7 @@
    les pièces dessinées, les animaux (lettres) et les doigts (chiffres).
    Les coups viennent de coups.js (généré et vérifié par outils/coups-notation.js), en anglais. */
 (function () {
-  const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   const { lancerPluie, compterJusqua, formaterDuree, allumerEtoiles, ICONES } = window.UI;
   const Sons = window.Sons;
   const COUPS = window.COUPS_NOTATION;

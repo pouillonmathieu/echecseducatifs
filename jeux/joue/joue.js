@@ -5,7 +5,7 @@
    - difficile : il faut le trouver.
    L'indice montre la pièce qui doit bouger ; « Montre-moi » montre le coup. */
 (function () {
-  const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   // les parties sont rangées dans un fichier par champion (parties/<clé>.js), chargé quand on le choisit
   const INDEX = window.PARTIES_INDEX;
   const COACH = window.PARTIES_COACH || {};
