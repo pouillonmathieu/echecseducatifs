@@ -8,6 +8,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du couloir",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi est enfermé derrière ses propres pions.",
+  "motif_en": "Back-rank mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The king is trapped behind its own pawns.",
   "roi": "g8",
   "attaquants": [
    "d8"
@@ -22,6 +24,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du couloir",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi blanc est enfermé derrière ses propres pions.",
+  "motif_en": "Back-rank mate",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it. The white king is trapped behind its own pawns.",
   "roi": "g1",
   "attaquants": [
    "d1"
@@ -36,6 +40,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du couloir",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame attaque toute la dernière rangée.",
+  "motif_en": "Back-rank mate",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The queen controls the whole back rank.",
   "roi": "g8",
   "attaquants": [
    "e8"
@@ -50,6 +56,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du berger",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame prend en f7, protégée par le fou : le roi ne peut pas la prendre.",
+  "motif_en": "Scholar's mate",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The queen takes on f7, protected by the bishop: the king can't take her.",
   "roi": "e8",
   "attaquants": [
    "f7"
@@ -64,6 +72,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du lion",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le mat le plus rapide : les pions f et g ont ouvert la diagonale du roi.",
+  "motif_en": "Fool's mate",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it. The fastest mate: the f- and g-pawns have opened the king's diagonal.",
   "roi": "e1",
   "attaquants": [
    "h4"
@@ -78,6 +88,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat à l'étouffée",
   "explication": "Le roi noir est attaqué par le cavalier blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi est entouré de ses propres pièces : le cavalier le met mat.",
+  "motif_en": "Smothered mate",
+  "explication_en": "The black king is attacked by the white knight. It can't run away or capture the attacker, and no piece can protect it. The king is surrounded by its own pieces: the knight delivers mate.",
   "roi": "h8",
   "attaquants": [
    "f7"
@@ -92,6 +104,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat à l'étouffée",
   "explication": "Le roi blanc est attaqué par le cavalier noir. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi blanc est coincé par sa tour et ses pions.",
+  "motif_en": "Smothered mate",
+  "explication_en": "The white king is attacked by the black knight. It can't run away or capture the attacker, and no piece can protect it. The white king is boxed in by its rook and its pawns.",
   "roi": "h1",
   "attaquants": [
    "f2"
@@ -106,6 +120,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de Légal",
   "explication": "Le roi noir est attaqué par le cavalier blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Les Blancs ont sacrifié leur dame : le fou et les deux cavaliers suffisent.",
+  "motif_en": "Légal's mate",
+  "explication_en": "The black king is attacked by the white knight. It can't run away or capture the attacker, and no piece can protect it. White sacrificed the queen: the bishop and the two knights are enough.",
   "roi": "e7",
   "attaquants": [
    "d5"
@@ -120,6 +136,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat d'Anastasie",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le cavalier garde g6 et g8, la tour attaque sur la colonne h.",
+  "motif_en": "Anastasia's mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The knight covers g6 and g8, and the rook attacks along the h-file.",
   "roi": "h7",
   "attaquants": [
    "h1"
@@ -134,6 +152,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat d'Arabie",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le cavalier protège la tour et garde la case g8.",
+  "motif_en": "Arabian mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The knight protects the rook and covers g8.",
   "roi": "h8",
   "attaquants": [
    "h7"
@@ -148,6 +168,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de Boden",
   "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Les deux fous se croisent et gardent toutes les cases du roi.",
+  "motif_en": "Boden's mate",
+  "explication_en": "The black king is attacked by the white bishop. It can't run away or capture the attacker, and no piece can protect it. The two bishops cross and cover all the king's squares.",
   "roi": "c8",
   "attaquants": [
    "a6"
@@ -162,6 +184,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de Damiano",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le pion protège la dame : le roi ne peut pas la prendre.",
+  "motif_en": "Damiano's mate",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The pawn protects the queen: the king can't take her.",
   "roi": "g8",
   "attaquants": [
    "h7"
@@ -176,6 +200,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de l'épaulette",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Les deux tours noires bouchent les cases à côté du roi.",
+  "motif_en": "Epaulette mate",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The two black rooks block the squares next to the king.",
   "roi": "e8",
   "attaquants": [
    "e6"
@@ -190,6 +216,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du baiser",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame touche le roi, protégée par son propre roi.",
+  "motif_en": "Kiss of death",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The queen is right next to the king, protected by her own king.",
   "roi": "e8",
   "attaquants": [
    "e7"
@@ -204,6 +232,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de l'escalier",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Une tour garde la 7e rangée, l'autre attaque sur la 8e.",
+  "motif_en": "Staircase mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. One rook covers the 7th rank, the other attacks on the 8th.",
   "roi": "g8",
   "attaquants": [
    "a8"
@@ -218,6 +248,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat roi et tour",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi blanc garde les cases de fuite, la tour attaque.",
+  "motif_en": "King and rook mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The white king covers the escape squares, and the rook attacks.",
   "roi": "e8",
   "attaquants": [
    "a8"
@@ -232,6 +264,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat roi et tour",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi blanc garde f7, g7 et h7.",
+  "motif_en": "King and rook mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The white king covers f7, g7 and h7.",
   "roi": "g8",
   "attaquants": [
    "a8"
@@ -246,6 +280,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Dame et fou",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le fou protège la dame, qui garde f8 et h8.",
+  "motif_en": "Queen and bishop",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The bishop protects the queen, which covers f8 and h8.",
   "roi": "g8",
   "attaquants": [
    "g7"
@@ -260,6 +296,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Dame et cavalier",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le cavalier protège la dame : le roi ne peut pas la prendre.",
+  "motif_en": "Queen and knight",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The knight protects the queen: the king can't take her.",
   "roi": "g8",
   "attaquants": [
    "g7"
@@ -274,6 +312,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat en h7",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le fou protège la dame en h7 ; la tour f8 bouche la fuite.",
+  "motif_en": "Mate on h7",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The bishop protects the queen on h7, and the rook on f8 blocks the escape.",
   "roi": "g8",
   "attaquants": [
    "h7"
@@ -288,6 +328,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de Morphy",
   "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le fou attaque sur la grande diagonale, la tour ferme la colonne g.",
+  "motif_en": "Morphy's mate",
+  "explication_en": "The black king is attacked by the white bishop. It can't run away or capture the attacker, and no piece can protect it. The bishop attacks along the long diagonal, and the rook closes the g-file.",
   "roi": "h8",
   "attaquants": [
    "b2"
@@ -302,6 +344,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de Greco",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La tour attaque sur la colonne h, le fou garde la case g8.",
+  "motif_en": "Greco's mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The rook attacks along the h-file, and the bishop covers g8.",
   "roi": "h8",
   "attaquants": [
    "h1"
@@ -316,6 +360,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de Pillsbury",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La tour donne échec sur la colonne g, le fou garde h8.",
+  "motif_en": "Pillsbury's mate",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The rook gives check on the g-file, and the bishop covers h8.",
   "roi": "g8",
   "attaquants": [
    "g1"
@@ -330,6 +376,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat des deux fous",
   "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Un fou attaque le roi, l'autre garde la case g8.",
+  "motif_en": "Two-bishop mate",
+  "explication_en": "The black king is attacked by the white bishop. It can't run away or capture the attacker, and no piece can protect it. One bishop attacks the king, the other covers g8.",
   "roi": "h8",
   "attaquants": [
    "b2"
@@ -344,6 +392,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat de la queue d'aronde",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame, protégée par le pion, garde toutes les cases ; la tour et le pion noirs bouchent les autres.",
+  "motif_en": "Dovetail mate",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it. The queen, protected by the pawn, covers every square; the black rook and pawn block the others.",
   "roi": "e7",
   "attaquants": [
    "d6"
@@ -358,6 +408,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie de l'Opéra (Morphy, 1858)",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Morphy a sacrifié sa dame : la tour, protégée par le fou g5, met mat.",
+  "motif_en": "The Opera Game (Morphy, 1858)",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. Morphy sacrificed his queen: the rook, protected by the bishop on g5, delivers mate.",
   "roi": "e8",
   "attaquants": [
    "d8"
@@ -372,6 +424,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Réti contre Tartakower (Vienne, 1910)",
   "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Après le sacrifice de la dame, le fou en d8 est protégé par la tour d1.",
+  "motif_en": "Réti vs Tartakower (Vienna, 1910)",
+  "explication_en": "The black king is attacked by the white bishop. It can't run away or capture the attacker, and no piece can protect it. After the queen sacrifice, the bishop on d8 is protected by the rook on d1.",
   "roi": "c7",
   "attaquants": [
    "d8"
@@ -386,6 +440,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "L'Immortelle (Anderssen, 1851)",
   "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Anderssen a donné ses deux tours et sa dame : il mate avec trois petites pièces.",
+  "motif_en": "The Immortal Game (Anderssen, 1851)",
+  "explication_en": "The black king is attacked by the white bishop. It can't run away or capture the attacker, and no piece can protect it. Anderssen gave up both rooks and his queen: he mates with three minor pieces.",
   "roi": "d8",
   "attaquants": [
    "e7"
@@ -400,6 +456,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "La Toujours-verte (Anderssen, 1852)",
   "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Les deux fous blancs chassent le roi jusqu'au mat.",
+  "motif_en": "The Evergreen Game (Anderssen, 1852)",
+  "explication_en": "The black king is attacked by the white bishop. It can't run away or capture the attacker, and no piece can protect it. The two white bishops chase the king all the way to mate.",
   "roi": "f8",
   "attaquants": [
    "e7"
@@ -414,6 +472,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Edward Lasker contre Thomas (Londres, 1912)",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi noir a traversé tout l'échiquier : un simple coup du roi blanc le met mat.",
+  "motif_en": "Edward Lasker vs Thomas (London, 1912)",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The black king has walked across the whole board: a simple king move by White mates it.",
   "roi": "g1",
   "attaquants": [
    "a1"
@@ -428,6 +488,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Piège de Greco (1620)",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La tour, protégée par la dame, met mat sur la colonne h.",
+  "motif_en": "Greco's trap (1620)",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it. The rook, protected by the queen, mates on the h-file.",
   "roi": "h6",
   "attaquants": [
    "h5"
@@ -442,6 +504,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Piège de Blackburne",
   "explication": "Le roi blanc est attaqué par le cavalier noir. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi blanc est étouffé par son fou et sa tour.",
+  "motif_en": "Blackburne's trap",
+  "explication_en": "The white king is attacked by the black knight. It can't run away or capture the attacker, and no piece can protect it. The white king is smothered by its bishop and its rook.",
   "roi": "e1",
   "attaquants": [
    "f3"
@@ -456,6 +520,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Piège de l'Englund",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame noire entre en c1 : le roi blanc est coincé par ses propres pièces.",
+  "motif_en": "Englund Gambit trap",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it. The black queen lands on c1: the white king is boxed in by its own pieces.",
   "roi": "e1",
   "attaquants": [
    "c1"
@@ -470,6 +536,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Piège sibérien",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. La dame, protégée par le cavalier g4, met mat en h2.",
+  "motif_en": "Siberian trap",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it. The queen, protected by the knight on g4, mates on h2.",
   "roi": "g1",
   "attaquants": [
    "h2"
@@ -484,6 +552,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du couloir",
   "explication": "Le roi noir peut s'enfuir en h7. Le pion h6 a laissé une case libre au roi : une « fenêtre ».",
+  "motif_en": "Almost a back-rank mate",
+  "explication_en": "The black king can escape to h7. The h6 pawn has left the king a free square: an escape hatch.",
   "roi": "g8",
   "attaquants": [
    "d8"
@@ -501,6 +571,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du couloir",
   "explication": "La tour noire peut prendre la tour blanche en d8.",
+  "motif_en": "Almost a back-rank mate",
+  "explication_en": "The black rook can take the white rook on d8.",
   "roi": "g8",
   "attaquants": [
    "d8"
@@ -518,6 +590,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du couloir",
   "explication": "Le fou noir peut se placer en f8 pour bloquer l'échec.",
+  "motif_en": "Almost a back-rank mate",
+  "explication_en": "The black bishop can move to f8 to block the check.",
   "roi": "g8",
   "attaquants": [
    "d8"
@@ -535,6 +609,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du berger",
   "explication": "La dame noire peut prendre la dame blanche en f7. La dame noire en e7 défend la case f7.",
+  "motif_en": "Almost Scholar's mate",
+  "explication_en": "The black queen can take the white queen on f7. The black queen on e7 defends f7.",
   "roi": "e8",
   "attaquants": [
    "f7"
@@ -552,6 +628,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du berger",
   "explication": "Le roi noir peut prendre la dame blanche en f7. Sans le fou en c4, la dame n'est pas protégée.",
+  "motif_en": "Almost Scholar's mate",
+  "explication_en": "The black king can take the white queen on f7. Without the bishop on c4, the queen isn't protected.",
   "roi": "e8",
   "attaquants": [
    "f7"
@@ -569,6 +647,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du lion",
   "explication": "Le pion blanc peut se placer en g3 pour bloquer l'échec.",
+  "motif_en": "Almost Fool's mate",
+  "explication_en": "The white pawn can move to g3 to block the check.",
   "roi": "e1",
   "attaquants": [
    "h4"
@@ -586,6 +666,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat à l'étouffée",
   "explication": "Le roi noir peut s'enfuir en h7.",
+  "motif_en": "Almost a smothered mate",
+  "explication_en": "The black king can escape to h7.",
   "roi": "h8",
   "attaquants": [
    "f7"
@@ -603,6 +685,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat d'Anastasie",
   "explication": "Le roi noir peut s'enfuir en g8. Sans le cavalier en e7, rien ne garde g6 ni g8.",
+  "motif_en": "Almost Anastasia's mate",
+  "explication_en": "The black king can escape to g8. Without the knight on e7, nothing covers g6 or g8.",
   "roi": "h7",
   "attaquants": [
    "h1"
@@ -620,6 +704,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat d'Arabie",
   "explication": "Le roi noir peut prendre la tour blanche en h7. Le cavalier est mal placé : il ne protège pas la tour.",
+  "motif_en": "Almost an Arabian mate",
+  "explication_en": "The black king can take the white rook on h7. The knight is in the wrong place: it doesn't protect the rook.",
   "roi": "h8",
   "attaquants": [
    "h7"
@@ -637,6 +723,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat de Boden",
   "explication": "Le roi noir peut s'enfuir en b8. Le pion c7 coupe la diagonale du fou f4.",
+  "motif_en": "Almost Boden's mate",
+  "explication_en": "The black king can escape to b8. The c7 pawn blocks the f4 bishop's diagonal.",
   "roi": "c8",
   "attaquants": [
    "a6"
@@ -654,6 +742,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat de Damiano",
   "explication": "Le roi noir peut prendre la dame blanche en h7. Sans le pion g6, la dame n'est pas protégée.",
+  "motif_en": "Almost Damiano's mate",
+  "explication_en": "The black king can take the white queen on h7. Without the g6 pawn, the queen isn't protected.",
   "roi": "g8",
   "attaquants": [
    "h7"
@@ -671,6 +761,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat de l'épaulette",
   "explication": "Le roi noir peut s'enfuir en f8.",
+  "motif_en": "Almost an epaulette mate",
+  "explication_en": "The black king can escape to f8.",
   "roi": "e8",
   "attaquants": [
    "e6"
@@ -688,6 +780,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du baiser",
   "explication": "Le roi noir peut prendre la dame blanche en e7. Le roi blanc est trop loin pour protéger sa dame.",
+  "motif_en": "Almost a kiss of death",
+  "explication_en": "The black king can take the white queen on e7. The white king is too far away to protect its queen.",
   "roi": "e8",
   "attaquants": [
    "e7"
@@ -705,6 +799,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat de l'escalier",
   "explication": "Le roi noir peut s'enfuir en h7 en prenant la tour blanche. La tour en h7 est trop près du roi et n'est pas protégée.",
+  "motif_en": "Almost a staircase mate",
+  "explication_en": "The black king can escape to h7 by taking the white rook. The rook on h7 is too close to the king and isn't protected.",
   "roi": "g8",
   "attaquants": [
    "a8"
@@ -722,6 +818,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat roi et tour",
   "explication": "Le roi noir peut s'enfuir en h7. Le roi blanc est trop loin pour garder les cases de fuite.",
+  "motif_en": "Almost a king and rook mate",
+  "explication_en": "The black king can escape to h7. The white king is too far away to cover the escape squares.",
   "roi": "g8",
   "attaquants": [
    "a8"
@@ -739,6 +837,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat en coin",
   "explication": "Le roi noir peut s'enfuir en g8. Le fou garde g7, mais personne ne garde g8.",
+  "motif_en": "Almost a corner mate",
+  "explication_en": "The black king can escape to g8. The bishop covers g7, but nobody covers g8.",
   "roi": "h8",
   "attaquants": [
    "b2",
@@ -757,6 +857,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi noir n'est pas en échec, mais les Noirs n'ont aucun coup possible. La partie est nulle.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The black king isn't in check, but Black has no legal move. The game is a draw.",
   "roi": "h8",
   "attaquants": [],
   "coup": null
@@ -769,6 +871,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi noir n'est pas en échec, mais les Noirs n'ont aucun coup possible. La partie est nulle.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The black king isn't in check, but Black has no legal move. The game is a draw.",
   "roi": "a8",
   "attaquants": [],
   "coup": null
@@ -781,6 +885,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi noir n'est pas en échec, mais les Noirs n'ont aucun coup possible. La partie est nulle.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The black king isn't in check, but Black has no legal move. The game is a draw.",
   "roi": "h8",
   "attaquants": [],
   "coup": null
@@ -793,6 +899,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi noir n'est pas en échec, mais les Noirs n'ont aucun coup possible. La partie est nulle. La dame garde toutes les cases autour du roi, sans lui faire échec.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The black king isn't in check, but Black has no legal move. The game is a draw. The queen covers every square around the king, without giving check.",
   "roi": "a8",
   "attaquants": [],
   "coup": null
@@ -805,6 +913,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi noir n'est pas en échec, mais les Noirs n'ont aucun coup possible. La partie est nulle. Le roi ne peut pas prendre la tour : le roi blanc la protège.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The black king isn't in check, but Black has no legal move. The game is a draw. The king can't take the rook: the white king protects it.",
   "roi": "a8",
   "attaquants": [],
   "coup": null
@@ -817,6 +927,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi noir n'est pas en échec, mais les Noirs n'ont aucun coup possible. La partie est nulle. Le roi et le fou blancs gardent les trois cases autour du roi noir.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The black king isn't in check, but Black has no legal move. The game is a draw. The white king and bishop cover the three squares around the black king.",
   "roi": "h8",
   "attaquants": [],
   "coup": null
@@ -829,6 +941,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi blanc n'est pas en échec, mais les Blancs n'ont aucun coup possible. La partie est nulle. Le roi blanc est coincé derrière le pion noir.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The white king isn't in check, but White has no legal move. The game is a draw. The white king is stuck behind the black pawn.",
   "roi": "a1",
   "attaquants": [],
   "coup": null
@@ -841,6 +955,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pas d'échec",
   "explication": "Le roi noir n'est même pas en échec : les Noirs peuvent jouer normalement. La dame et le fou visent f7, mais ce n'est encore qu'une menace.",
+  "motif_en": "No check",
+  "explication_en": "The black king isn't even in check: Black can play normally. The queen and bishop are aiming at f7, but it's still only a threat.",
   "roi": "e8",
   "attaquants": [],
   "coup": null
@@ -853,6 +969,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du couloir",
   "explication": "Le fou blanc peut prendre la tour noire en c1. C'est le seul coup qui sauve le roi : regarde bien les pièces loin du roi !",
+  "motif_en": "Almost a back-rank mate",
+  "explication_en": "The white bishop can take the black rook on c1. It's the only move that saves the king: look carefully at the pieces far from the king!",
   "roi": "g1",
   "attaquants": [
    "c1"
@@ -870,6 +988,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque un mat du couloir",
   "explication": "Le fou blanc peut se placer en f1 pour bloquer l'échec. C'est le seul coup qui sauve le roi.",
+  "motif_en": "Almost a back-rank mate",
+  "explication_en": "The white bishop can move to f1 to block the check. It's the only move that saves the king.",
   "roi": "g1",
   "attaquants": [
    "c1"
@@ -887,6 +1007,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Dame et fou",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger. Le roi ne peut pas prendre la dame : le fou en c6 la protège de loin.",
+  "motif_en": "Queen and bishop",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it. The king can't take the queen: the bishop on c6 protects her from afar.",
   "roi": "g1",
   "attaquants": [
    "h1"
@@ -901,6 +1023,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi blanc n'est pas en échec, mais les Blancs n'ont aucun coup possible. La partie est nulle. Le pion en d6 est bloqué, et le roi ne peut aller sur aucune case.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The white king isn't in check, but White has no legal move. The game is a draw. The d6 pawn is blocked, and the king has no square to go to.",
   "roi": "h1",
   "attaquants": [],
   "coup": null
@@ -913,6 +1037,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pas d'échec",
   "explication": "Le roi blanc n'est même pas en échec : les Blancs peuvent jouer normalement. Le roi ne peut pas bouger, mais le pion peut avancer en d6 : ce n'est donc pas pat.",
+  "motif_en": "No check",
+  "explication_en": "The white king isn't even in check: White can play normally. The king can't move, but the pawn can advance to d6: so it isn't stalemate.",
   "roi": "h1",
   "attaquants": [],
   "coup": null
@@ -925,6 +1051,8 @@ window.POSITIONS_MAT = [
   "echec": false,
   "motif": "Pat",
   "explication": "C'est pat ! Le roi blanc n'est pas en échec, mais les Blancs n'ont aucun coup possible. La partie est nulle. Le cavalier et le fou sont cloués : s'ils bougeaient, le roi serait en échec.",
+  "motif_en": "Stalemate",
+  "explication_en": "It's stalemate! The white king isn't in check, but White has no legal move. The game is a draw. The knight and the bishop are pinned: if they moved, the king would be in check.",
   "roi": "g1",
   "attaquants": [],
   "coup": null
@@ -937,6 +1065,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat à l'étouffée (partie Lichess)",
   "explication": "Le roi noir est attaqué par le cavalier blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Smothered mate (Lichess game)",
+  "explication_en": "The black king is attacked by the white knight. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "f7"
@@ -952,6 +1082,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du crochet (partie Lichess)",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Hook mate (Lichess game)",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "c3",
   "attaquants": [
    "b3"
@@ -967,6 +1099,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat des deux fous (partie Lichess)",
   "explication": "Le roi noir est attaqué par le fou blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Two-bishop mate (Lichess game)",
+  "explication_en": "The black king is attacked by the white bishop. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "e5"
@@ -982,6 +1116,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat d'Anastasie (partie Lichess)",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Anastasia's mate (Lichess game)",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h3",
   "attaquants": [
    "h7"
@@ -997,6 +1133,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat à l'étouffée (partie Lichess)",
   "explication": "Le roi noir est attaqué par le cavalier blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Smothered mate (Lichess game)",
+  "explication_en": "The black king is attacked by the white knight. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "f7"
@@ -1012,6 +1150,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "g1",
   "attaquants": [
    "g2"
@@ -1027,6 +1167,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h1",
   "attaquants": [
    "f1"
@@ -1042,6 +1184,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "g1",
   "attaquants": [
    "e1"
@@ -1057,6 +1201,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "g1",
   "attaquants": [
    "e1"
@@ -1072,6 +1218,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "h6"
@@ -1087,6 +1235,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "e2",
   "attaquants": [
    "d3"
@@ -1102,6 +1252,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h2",
   "attaquants": [
    "f2"
@@ -1117,6 +1269,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h4",
   "attaquants": [
    "h2"
@@ -1132,6 +1286,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du couloir (partie Lichess)",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Back-rank mate (Lichess game)",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "f8"
@@ -1147,6 +1303,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "g8",
   "attaquants": [
    "g7"
@@ -1162,6 +1320,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi noir est attaqué par le pion blanc. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The black king is attacked by the white pawn. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "f8",
   "attaquants": [
    "e7"
@@ -1177,6 +1337,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du couloir (partie Lichess)",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Back-rank mate (Lichess game)",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "a8",
   "attaquants": [
    "d8"
@@ -1192,6 +1354,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "d1",
   "attaquants": [
    "e1"
@@ -1207,6 +1371,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "g7"
@@ -1222,6 +1388,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la dame noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "f2",
   "attaquants": [
    "e1"
@@ -1237,6 +1405,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du couloir (partie Lichess)",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Back-rank mate (Lichess game)",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "f8"
@@ -1252,6 +1422,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h8",
   "attaquants": [
    "f8"
@@ -1267,6 +1439,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "f2",
   "attaquants": [
    "f1"
@@ -1282,6 +1456,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi noir est attaqué par la dame blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The black king is attacked by the white queen. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "a7",
   "attaquants": [
    "b7"
@@ -1297,6 +1473,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Partie jouée sur Lichess",
   "explication": "Le roi noir est attaqué par la tour blanche. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Game played on Lichess",
+  "explication_en": "The black king is attacked by the white rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "g8",
   "attaquants": [
    "f8"
@@ -1312,6 +1490,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Mat du couloir (partie Lichess)",
   "explication": "Le roi blanc est attaqué par la tour noire. Il ne peut ni s'enfuir, ni prendre l'attaquant, et aucune pièce ne peut le protéger.",
+  "motif_en": "Back-rank mate (Lichess game)",
+  "explication_en": "The white king is attacked by the black rook. It can't run away or capture the attacker, and no piece can protect it.",
   "roi": "h1",
   "attaquants": [
    "f1"
@@ -1327,6 +1507,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Réti contre Tartakower (Vienne, 1910)",
   "explication": "Le roi noir peut s'enfuir en b6. Dans la partie, c'est le fou blanc en d8 qui a donné mat.",
+  "motif_en": "Almost: Réti vs Tartakower (Vienna, 1910)",
+  "explication_en": "The black king can escape to b6. In the game, the white bishop on d8 gave mate.",
   "roi": "c7",
   "attaquants": [
    "d7"
@@ -1344,6 +1526,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : L'Immortelle (Anderssen, 1851)",
   "explication": "Le cavalier noir peut prendre le fou blanc en c7. Dans la partie, c'est le fou blanc en e7 qui a donné mat.",
+  "motif_en": "Almost: The Immortal Game (Anderssen, 1851)",
+  "explication_en": "The black knight can take the white bishop on c7. In the game, the white bishop on e7 gave mate.",
   "roi": "d8",
   "attaquants": [
    "c7"
@@ -1361,6 +1545,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : La Toujours-verte (Anderssen, 1852)",
   "explication": "Le roi noir peut s'enfuir en g7. Dans la partie, c'est le fou blanc en e7 qui a donné mat.",
+  "motif_en": "Almost: The Evergreen Game (Anderssen, 1852)",
+  "explication_en": "The black king can escape to g7. In the game, the white bishop on e7 gave mate.",
   "roi": "f8",
   "attaquants": [
    "e7"
@@ -1378,6 +1564,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Edward Lasker contre Thomas (Londres, 1912)",
   "explication": "Le roi noir peut s'enfuir en g2. Dans la partie, c'est le roi blanc en d2 qui a donné mat.",
+  "motif_en": "Almost: Edward Lasker vs Thomas (London, 1912)",
+  "explication_en": "The black king can escape to g2. In the game, the white king on d2 gave mate.",
   "roi": "g1",
   "attaquants": [
    "h1"
@@ -1395,6 +1583,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Piège de Greco (1620)",
   "explication": "Le roi noir peut s'enfuir en h7. Dans la partie, c'est la tour blanche en h5 qui a donné mat.",
+  "motif_en": "Almost: Greco's trap (1620)",
+  "explication_en": "The black king can escape to h7. In the game, the white rook on h5 gave mate.",
   "roi": "h6",
   "attaquants": [
    "f8"
@@ -1412,6 +1602,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Piège de Blackburne",
   "explication": "La dame blanche peut prendre le cavalier noir en c2. Dans la partie, c'est le cavalier noir en f3 qui a donné mat.",
+  "motif_en": "Almost: Blackburne's trap",
+  "explication_en": "The white queen can take the black knight on c2. In the game, the black knight on f3 gave mate.",
   "roi": "e1",
   "attaquants": [
    "c2"
@@ -1429,6 +1621,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Piège de l'Englund",
   "explication": "Le roi blanc peut s'enfuir en d1. Dans la partie, c'est la dame noire en c1 qui a donné mat.",
+  "motif_en": "Almost: Englund Gambit trap",
+  "explication_en": "The white king can escape to d1. In the game, the black queen on c1 gave mate.",
   "roi": "e1",
   "attaquants": [
    "c3"
@@ -1446,6 +1640,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Mat du crochet (partie Lichess)",
   "explication": "Le roi blanc peut s'enfuir en d3. Dans la partie, c'est la tour noire en b3 qui a donné mat.",
+  "motif_en": "Almost: Hook mate (Lichess game)",
+  "explication_en": "The white king can escape to d3. In the game, the black rook on b3 gave mate.",
   "roi": "c3",
   "attaquants": [
    "b5"
@@ -1464,6 +1660,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi blanc peut s'enfuir en f1. Dans la partie, c'est la dame noire en g2 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The white king can escape to f1. In the game, the black queen on g2 gave mate.",
   "roi": "g1",
   "attaquants": [
    "h2"
@@ -1482,6 +1680,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi noir peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en h6 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The black king can take the white queen on g7. In the game, the white queen on h6 gave mate.",
   "roi": "h8",
   "attaquants": [
    "g7"
@@ -1500,6 +1700,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi blanc peut s'enfuir en e3. Dans la partie, c'est la dame noire en d3 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The white king can escape to e3. In the game, the black queen on d3 gave mate.",
   "roi": "e2",
   "attaquants": [
    "g4"
@@ -1518,6 +1720,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi blanc peut s'enfuir en h1. Dans la partie, c'est la tour noire en f2 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The white king can escape to h1. In the game, the black rook on f2 gave mate.",
   "roi": "h2",
   "attaquants": [
    "e2"
@@ -1536,6 +1740,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le pion blanc peut prendre la dame noire en g4. Dans la partie, c'est la dame noire en h2 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The white pawn can take the black queen on g4. In the game, the black queen on h2 gave mate.",
   "roi": "h4",
   "attaquants": [
    "g4"
@@ -1554,6 +1760,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi noir peut s'enfuir en h7. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The black king can escape to h7. In the game, the white queen on g7 gave mate.",
   "roi": "g8",
   "attaquants": [
    "f8"
@@ -1572,6 +1780,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi noir peut prendre la dame blanche en e8. Dans la partie, c'est le pion blanc en e7 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The black king can take the white queen on e8. In the game, the white pawn on e7 gave mate.",
   "roi": "f8",
   "attaquants": [
    "e8"
@@ -1590,6 +1800,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi blanc peut s'enfuir en c1. Dans la partie, c'est la tour noire en e1 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The white king can escape to c1. In the game, the black rook on e1 gave mate.",
   "roi": "d1",
   "attaquants": [
    "b3"
@@ -1608,6 +1820,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "La dame noire peut prendre la dame blanche en e8. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The black queen can take the white queen on e8. In the game, the white queen on g7 gave mate.",
   "roi": "h8",
   "attaquants": [
    "e8"
@@ -1626,6 +1840,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi blanc peut prendre la dame noire en g2. Dans la partie, c'est la dame noire en e1 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The white king can take the black queen on g2. In the game, the black queen on e1 gave mate.",
   "roi": "f2",
   "attaquants": [
    "g2"
@@ -1644,6 +1860,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Mat du couloir (partie Lichess)",
   "explication": "Le roi noir peut s'enfuir en g8. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
+  "motif_en": "Almost: Back-rank mate (Lichess game)",
+  "explication_en": "The black king can escape to g8. In the game, the white rook on f8 gave mate.",
   "roi": "h8",
   "attaquants": [
    "g6"
@@ -1662,6 +1880,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi noir peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en f8 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The black king can take the white queen on g7. In the game, the white queen on f8 gave mate.",
   "roi": "h8",
   "attaquants": [
    "g7"
@@ -1680,6 +1900,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi noir peut s'enfuir en a8. Dans la partie, c'est la dame blanche en b7 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The black king can escape to a8. In the game, the white queen on b7 gave mate.",
   "roi": "a7",
   "attaquants": [
    "b6"
@@ -1698,6 +1920,8 @@ window.POSITIONS_MAT = [
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
   "explication": "Le roi noir peut s'enfuir en f7. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
+  "motif_en": "Almost: Game played on Lichess",
+  "explication_en": "The black king can escape to f7. In the game, the white rook on f8 gave mate.",
   "roi": "g8",
   "attaquants": [
    "h7"

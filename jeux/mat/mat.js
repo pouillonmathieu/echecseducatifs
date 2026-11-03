@@ -61,7 +61,9 @@
     // le roi de la question et des boutons est celui du camp concerné
     document.querySelectorAll('#roi-question, .roi-rep').forEach(u => u.setAttribute('href', `#piece-roi-${position.trait}`));
     const camp = blancs ? 'Les Blancs' : 'Les Noirs';
-    $('question-texte').textContent = reglages.pat ? `${camp} sont‑ils mat ou pat ?` : `${camp} sont‑ils échec et mat ?`;
+    $('question-texte').textContent = EN
+      ? (reglages.pat ? `Is ${blancs ? 'White' : 'Black'} checkmated or stalemated?` : `Is ${blancs ? 'White' : 'Black'} checkmated?`)
+      : reglages.pat ? `${camp} sont‑ils mat ou pat ?` : `${camp} sont‑ils échec et mat ?`;
     const q = $('question');
     q.classList.remove('nouvelle'); void q.offsetWidth; q.classList.add('nouvelle');
     $('reponses').hidden = false;
@@ -90,17 +92,19 @@
       return;
     }
     arreterChrono();
-    defi.resultats.push({ ok: juste, reponse: bonneReponse(p), motif: p.motif, temps: (performance.now() - defi.debut) / 1000 });
+    defi.resultats.push({ ok: juste, reponse: bonneReponse(p), motif: EN ? p.motif_en : p.motif, temps: (performance.now() - defi.debut) / 1000 });
     majPoints();
-    if (defi.numero === NB_DEFIS - 1) $('btn-suivant').firstChild.textContent = 'Voir le résultat ';
+    if (defi.numero === NB_DEFIS - 1) $('btn-suivant').firstChild.textContent = t('Voir le résultat ', 'See the result ');
   }
 
   function montrerExplication(p, juste, tempsEcoule) {
-    const verdict = { mat: 'C\'est échec et mat.', pat: 'C\'est pat.', rien: reglages.pat ? 'Ni mat, ni pat.' : 'Ce n\'est pas mat.' }[bonneReponse(p)];
+    const verdict = EN
+      ? { mat: 'It\'s checkmate.', pat: 'It\'s stalemate.', rien: reglages.pat ? 'Neither mate nor stalemate.' : 'It isn\'t mate.' }[bonneReponse(p)]
+      : { mat: 'C\'est échec et mat.', pat: 'C\'est pat.', rien: reglages.pat ? 'Ni mat, ni pat.' : 'Ce n\'est pas mat.' }[bonneReponse(p)];
     $('verdict').innerHTML = (juste ? ICONE_JUSTE : ICONE_FAUX) +
-      `<span>${tempsEcoule ? 'Temps écoulé ! ' : juste ? 'Bravo ! ' : 'Raté ! '}${verdict}</span>`;
-    $('motif').textContent = p.motif;
-    $('explication').textContent = p.explication;
+      `<span>${tempsEcoule ? t('Temps écoulé ! ', 'Time\'s up! ') : juste ? t('Bravo ! ', 'Well done! ') : t('Raté ! ', 'Missed! ')}${verdict}</span>`;
+    $('motif').textContent = EN ? p.motif_en : p.motif;
+    $('explication').textContent = EN ? p.explication_en : p.explication;
     const lien = $('lien-partie');
     lien.hidden = !p.lien;
     if (p.lien) lien.href = p.lien;
@@ -114,7 +118,7 @@
     if (p.echec) Echiquier.marquer(plateau, [p.roi], 'roi-attaque');
     Echiquier.marquer(plateau, p.attaquants, 'attaquant');
     if (p.coup) { Echiquier.marquer(plateau, [p.coup[0]], 'depart'); Echiquier.marquer(plateau, [p.coup[1]], 'arrivee'); }
-    $('btn-suivant').firstChild.textContent = 'Suivant ';
+    $('btn-suivant').firstChild.textContent = t('Suivant ', 'Next ');
     $('btn-suivant').focus({ preventScroll: true });
   }
 
@@ -138,7 +142,7 @@
   }
 
   function lancerPosition() {
-    $('titre').textContent = `Position ${defi.numero + 1} sur ${NB_DEFIS}`;
+    $('titre').textContent = t(`Position ${defi.numero + 1} sur ${NB_DEFIS}`, `Position ${defi.numero + 1} of ${NB_DEFIS}`);
     afficher(defi.liste[defi.numero]);
     majPoints();
     defi.debut = performance.now();
@@ -172,13 +176,13 @@
     arreterChrono();
     const score = defi.resultats.filter(r => r.ok).length;
     const etoiles = score === NB_DEFIS ? 3 : score >= 7 ? 2 : score >= 4 ? 1 : 0;
-    $('res-titre').textContent = score === NB_DEFIS ? 'Parfait !' : score >= 7 ? 'Bravo !' : score >= 4 ? 'Bien joué !' : 'Continue, tu progresses !';
+    $('res-titre').textContent = score === NB_DEFIS ? t('Parfait !', 'Perfect!') : score >= 7 ? t('Bravo !', 'Well done!') : score >= 4 ? t('Bien joué !', 'Nice work!') : t('Continue, tu progresses !', 'Keep going, you\'re getting better!');
     allumerEtoiles($('etoiles'), etoiles);
     $('res-liste').innerHTML = defi.resultats.map((r, i) =>
-      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="Position ${i + 1} (${r.motif}) : ${r.ok ? 'réussie' : 'ratée'}">` +
-      `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t">${{ mat: 'Mat', pat: 'Pat', rien: 'Pas mat' }[r.reponse]}</span></li>`).join('');
+      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="Position ${i + 1} (${r.motif})${t(' : ', ': ')}${r.ok ? t('réussie', 'right') : t('ratée', 'wrong')}">` +
+      `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t">${(EN ? { mat: 'Mate', pat: 'Stalemate', rien: 'Not mate' } : { mat: 'Mat', pat: 'Pat', rien: 'Pas mat' })[r.reponse]}</span></li>`).join('');
     const total = defi.resultats.reduce((s, r) => s + r.temps, 0);
-    $('res-temps').textContent = `Temps total : ${formaterDuree(total)}`;
+    $('res-temps').textContent = t('Temps total : ', 'Total time: ') + formaterDuree(total);
     $('resultats').hidden = false;
     $('btn-rejouer').focus({ preventScroll: true });
     compterJusqua($('res-score'), score);
@@ -198,7 +202,7 @@
   function lancerLibre() {
     preparer('libre');
     document.body.dataset.chrono = 'non';
-    $('titre').textContent = 'Mat ou pas mat ?';
+    $('titre').textContent = t('Mat ou pas mat ?', 'Mate or not mate?');
     jeu.justes = 0; jeu.total = 0;
     $('score-libre').textContent = '0 / 0';
     afficher(piocher());
@@ -228,9 +232,10 @@
       return;
     }
     const k = e.key.toLowerCase();
+    // raccourcis : M mat, P pas mat, T pat (en anglais : M mate, N not mate, S stalemate)
     if (k === 'm') repondre('mat');
-    else if (k === 'p') repondre('rien');
-    else if (k === 't') repondre('pat');
+    else if (k === (EN ? 'n' : 'p')) repondre('rien');
+    else if (k === (EN ? 's' : 't')) repondre('pat');
     else if (e.key === 'Enter' && jeu.repondu && document.activeElement === document.body) suivant();
   });
 
@@ -257,7 +262,7 @@
   function appliquerPat() {
     document.body.classList.toggle('avec-pat', reglages.pat);
     $('rep-pat').hidden = !reglages.pat;
-    $('rep-pas-mat-texte').textContent = reglages.pat ? 'Ni l\'un ni l\'autre' : 'Pas mat';
+    $('rep-pas-mat-texte').textContent = reglages.pat ? t('Ni l\'un ni l\'autre', 'Neither') : t('Pas mat', 'Not mate');
   }
   brancherInterrupteur($('reg-pat'), reglages.pat, (v) => {
     reglages.pat = v; Prefs.ecrire('echecs.mat.pat', v);

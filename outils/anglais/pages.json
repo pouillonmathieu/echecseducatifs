@@ -15,7 +15,14 @@
   "Fermer": "Close",
   "Sans chrono": "No timer",
   "Prends ton temps": "Take your time",
-  "Chrono": "Timer"
+  "Chrono": "Timer",
+  "Lettres et chiffres": "Letters and numbers",
+  "Suivant": "Next",
+  "Progression des défis": "Challenge progress",
+  "Pat": "Stalemate",
+  "Pas mat": "Not mate",
+  "Entrée": "Enter",
+  "Raccourcis :": "Shortcuts:"
  },
  "index.html": {
   "Mini-jeux d'échecs": "Chess mini-games",
@@ -67,6 +74,7 @@
   "English",
   "English version",
   "Lexend",
+  "M",
   "Mathieu Pouillon"
  ],
  "jeux/balance/index.html": {
@@ -81,5 +89,24 @@
   "Progression des défis": "Challenge progress",
   "Pièces à poser": "Pieces to place",
   "Détail des défis": "Challenge details"
+ },
+ "jeux/mat/index.html": {
+  "Mat ou pas mat ?": "Mate or not mate?",
+  "Montrer le roi en échec": "Show the king in check",
+  "Aide : le roi attaqué est entouré de rouge": "Help: the attacked king is circled in red",
+  "Les Noirs sont‑ils mat ?": "Is Black checkmated?",
+  "Échec et mat": "Checkmate",
+  "Voir le problème sur Lichess": "See the puzzle on Lichess",
+  "P": "N",
+  "mat,": "mate,",
+  "pas mat,": "not mate,",
+  "T": "S",
+  "pat,": "stalemate,",
+  "suivant.": "next.",
+  "10 positions : mat ou pas mat ?": "10 positions: mate or not mate?",
+  "20 secondes par position": "20 seconds per position",
+  "Bouton pat : ajoute les positions de pat (pas d'échec, mais aucun coup possible)": "Stalemate button: adds stalemate positions (no check, but no legal move)",
+  "Ajoute les positions de pat : pas d'échec, mais aucun coup possible": "Adds stalemate positions: no check, but no legal move",
+  "Détail des positions": "Position details"
  }
 }
