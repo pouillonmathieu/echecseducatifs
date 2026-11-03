@@ -100,6 +100,7 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
 .puce { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 2px solid transparent; border-radius: 999px; background: var(--surface-2); color: var(--encre); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 .puce i { width: 12px; height: 12px; border-radius: 50%; }
 .puce[aria-pressed="true"] { border-color: var(--encre); }
+.puce kbd { padding: 0 5px; border-radius: 4px; background: var(--surface); color: var(--encre-douce); font: inherit; font-size: 11px; font-weight: 600; }
 .liste-fleches { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .liste-fleches button { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid var(--ligne); border-radius: 8px; background: var(--surface); color: var(--encre); font: inherit; font-size: 13px; cursor: pointer; }
 .consigne-fleche { padding: 8px 10px; border-radius: 10px; background: color-mix(in srgb, #2F7FD0 14%, var(--surface)); font-size: 14px; }
@@ -163,7 +164,7 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
   const LETTRES = { K: 'R', Q: 'D', R: 'T', B: 'F', N: 'C' };
   const fr = (san) => san.replace(/[KQRBN]/g, (c) => LETTRES[c]);
   const echapper = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const COULEURS = [['menace', 'Menace', '#E2622A'], ['danger', 'Menace adverse', '#C8323C'], ['suite', 'Suite', '#2FA36B'], ['adversaire', 'Réponse adverse', '#5A6474']];
+  const COULEURS = [['suite', 'Suite', '#2FA36B', 'clic droit'], ['menace', 'Menace', '#E2622A', 'Maj'], ['danger', 'Menace adverse', '#C8323C', 'Ctrl'], ['adversaire', 'Réponse adverse', '#5A6474', 'Alt']];
 
   // ---------- parties ----------
   const chargements = {};
@@ -200,7 +201,7 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
   let notes = {};             // id de partie -> document enregistré
   let courant = null;         // le document de la partie ouverte (copie modifiable)
   let sale = false;           // des changements pas encore enregistrés
-  let couleurFleche = 'menace', origine = null, modeFleche = false;
+  let couleurFleche = 'suite', origine = null, modeFleche = false;
   let db = null;
 
   const momentsDefaut = () => new Set(jeu.p.m.map(m => m[0]));
@@ -316,8 +317,9 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
         <label class="libelle" for="texte-coup">Ton explication</label>
         <textarea id="texte-coup" placeholder="Ce que ce coup permet, la menace qu'il pare ou qu'il crée, pourquoi il est meilleur qu'un autre…">${echapper(n.texte || '')}</textarea>
         <span class="libelle">Flèches sur l'échiquier</span>
-        <div class="couleurs" id="couleurs">${COULEURS.map(([g, lab, c]) => `<button type="button" class="puce" data-g="${g}" aria-pressed="${g === couleurFleche}"><i style="background:${c}"></i>${lab}</button>`).join('')}</div>
-        <button type="button" class="btn" id="btn-fleche">${modeFleche ? 'Arrêter de dessiner' : 'Dessiner une flèche'}</button>
+        <p class="discret">Fais glisser le clic droit sur l'échiquier. La touche tenue choisit la couleur ; refaire la même flèche l'efface.</p>
+        <div class="couleurs" id="couleurs">${COULEURS.map(([g, lab, c, touche]) => `<button type="button" class="puce" data-g="${g}" aria-pressed="${g === couleurFleche}"><i style="background:${c}"></i>${lab}<kbd>${touche}</kbd></button>`).join('')}</div>
+        <button type="button" class="btn" id="btn-fleche">${modeFleche ? 'Arrêter de dessiner' : 'Dessiner une flèche au clic (tablette)'}</button>
         ${modeFleche ? `<p class="consigne-fleche">${origine ? 'Clique maintenant sur la case d\'arrivée.' : 'Clique sur la case de départ de la flèche.'}</p>` : ''}
         <ul class="liste-fleches" id="liste-fleches">${(n.fleches || []).map(([u, g], i) => `<li><button type="button" data-i="${i}" title="Retirer cette flèche"><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${(COULEURS.find(c => c[0] === g) || COULEURS[0])[2]}"></i>${u.slice(0, 2)} → ${u.slice(2, 4)} ✕</button></li>`).join('')}</ul>`;
     }
@@ -345,6 +347,33 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
     if (!origine) { origine = c.dataset.case; dessinerPlateau(); dessinerFiche(); return; }
     if (c.dataset.case !== origine) modifier(k, { fleches: [...(noteDe(k).fleches || []), [origine + c.dataset.case, couleurFleche]] });
     origine = null; dessinerPlateau(); dessinerFiche();
+  });
+
+  // clic droit glissé sur l'échiquier : une flèche, de la couleur de la touche tenue
+  // (sans touche : verte, Maj : orange, Ctrl ou Cmd : rouge, Alt : grise) ; refaire la même flèche l'efface
+  const couleurTouche = (e) => (e.shiftKey ? 'menace' : e.ctrlKey || e.metaKey ? 'danger' : e.altKey ? 'adversaire' : 'suite');
+  let departFleche = null;
+  plateau.addEventListener('contextmenu', (e) => e.preventDefault());
+  plateau.addEventListener('pointerdown', (e) => {
+    if (e.button !== 2) return;
+    const c = e.target.closest('.case-e');
+    departFleche = c ? c.dataset.case : null;
+  });
+  window.addEventListener('pointerup', (e) => {
+    if (e.button !== 2 || !departFleche) return;
+    const de = departFleche, k = jeu.vue - 1;
+    departFleche = null;
+    const sous = document.elementFromPoint(e.clientX, e.clientY);
+    const c = sous && sous.closest('#echiquier .case-e');
+    if (!c || c.dataset.case === de || k < 0 || !estChampion(k)) return;
+    const u = de + c.dataset.case, g = couleurTouche(e);
+    const f = [...(noteDe(k).fleches || [])];
+    const i = f.findIndex(x => x[0] === u);
+    if (i >= 0 && f[i][1] === g) f.splice(i, 1);
+    else if (i >= 0) f[i] = [u, g];
+    else f.push([u, g]);
+    modifier(k, { fleches: f });
+    dessinerPlateau(); dessinerFiche();
   });
 
   function majNavigation() {
