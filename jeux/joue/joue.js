@@ -100,7 +100,7 @@
   const jeu = {
     partie: null, cle: null, couleur: 'blanc', orientation: 'blanc', coups: [], san: [], positions: [], moments: new Map(),
     ply: 0, etat: 'choix', erreurs: 0, indice: false, montre: false, resultats: {}, minuterie: 0, anim: 0,
-    selection: null, legaux: new Map(), recentes: [], uniques: new Set(), vue: null,
+    selection: null, legaux: new Map(), recentes: [], uniques: new Set(), vue: null, annotations: [], cleAnnot: null,
   };
   // noms des joueurs (quelques-uns sont écrits en français dans les données)
   const NOMS_EN = { 'Duc de Brunswick et comte Isouard': 'Duke of Brunswick and Count Isouard', Anonyme: 'Anonymous',
@@ -654,16 +654,29 @@
   }
 
   // flèches sur l'échiquier : menace (orange), réponse de l'adversaire (gris), suite du champion (vert)
+  // flèches et cases colorées : celles de l'explication (position en cours) et celles que le joueur dessine
+  // au clic droit (elles s'effacent quand la position change). Une entrée de 2 lettres (« e4 ») est une case.
+  // cases colorées : un voile de couleur sur le fond de la case, sous la pièce
+  const VOILES = { menace: 'rgba(226, 98, 42, .62)', adversaire: 'rgba(90, 100, 116, .55)', suite: 'rgba(47, 163, 107, .6)', danger: 'rgba(200, 50, 60, .6)' };
+  function colorerCases(plateau, liste) {
+    plateau.querySelectorAll('.case-e[data-voile]').forEach(c => { c.style.backgroundImage = ''; delete c.dataset.voile; });
+    for (const [u, g] of liste.filter(f => f[0].length === 2)) {
+      const c = plateau.querySelector(`[data-case="${u}"]`);
+      if (c) { c.style.backgroundImage = `linear-gradient(${VOILES[g]}, ${VOILES[g]})`; c.dataset.voile = g; }
+    }
+  }
+  const clePos = () => (jeu.vue === null ? 'p' + jeu.ply : 'v' + jeu.vue);
   function dessinerFleches() {
     const vieux = plateau.querySelector('.fleches');
     if (vieux) vieux.remove();
-    const liste = jeu.fleches || [];
-    if (!liste.length) return;
+    const liste = [...(jeu.vue === null ? jeu.fleches || [] : []), ...(jeu.cleAnnot === clePos() ? jeu.annotations : [])];
+    colorerCases(plateau, liste);
+    if (!liste.some(f => f[0].length >= 4)) return;
     const r0 = plateau.getBoundingClientRect();
     let h = `<svg class="fleches" viewBox="0 0 ${f1(r0.width)} ${f1(r0.height)}" aria-hidden="true"><defs>`;
     for (const g of ['menace', 'adversaire', 'suite', 'danger']) h += `<marker id="pointe-${g}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto"><path d="M0 0 10 5 0 10Z" class="pointe ${g}"/></marker>`;
     h += '</defs>';
-    for (const [u, g] of liste) {
+    for (const [u, g] of liste.filter(f => f[0].length >= 4)) {
       const a = plateau.querySelector(`[data-case="${u.slice(0, 2)}"]`), b = plateau.querySelector(`[data-case="${u.slice(2, 4)}"]`);
       if (!a || !b) continue;
       const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
@@ -676,7 +689,33 @@
     plateau.insertAdjacentHTML('beforeend', h + '</svg>');
   }
   const f1 = (n) => Math.round(n * 10) / 10;
-  window.addEventListener('resize', () => { if (jeu.fleches && jeu.fleches.length) dessinerFleches(); });
+  window.addEventListener('resize', () => { if ((jeu.fleches && jeu.fleches.length) || jeu.annotations.length) dessinerFleches(); });
+
+  // clic droit : glisser pour une flèche, sur une seule case pour la colorer ; la touche tenue choisit la couleur
+  // (sans touche : vert, Maj : orange, Ctrl ou Cmd : rouge, Alt : gris) ; refaire la même chose l'efface
+  const couleurTouche = (e) => (e.shiftKey ? 'menace' : e.ctrlKey || e.metaKey ? 'danger' : e.altKey ? 'adversaire' : 'suite');
+  let departAnnot = null;
+  plateau.addEventListener('contextmenu', (e) => e.preventDefault());
+  plateau.addEventListener('pointerdown', (e) => {
+    if (e.button !== 2) return;
+    const c = e.target.closest('.case-e');
+    departAnnot = c ? c.dataset.case : null;
+  });
+  window.addEventListener('pointerup', (e) => {
+    if (e.button !== 2 || !departAnnot || !jeu.partie) return;
+    const de = departAnnot;
+    departAnnot = null;
+    const sous = document.elementFromPoint(e.clientX, e.clientY);
+    const c = sous && sous.closest('#echiquier .case-e');
+    if (!c) return;
+    if (jeu.cleAnnot !== clePos()) { jeu.annotations = []; jeu.cleAnnot = clePos(); }
+    const u = c.dataset.case === de ? de : de + c.dataset.case, g = couleurTouche(e);
+    const i = jeu.annotations.findIndex(x => x[0] === u);
+    if (i >= 0 && jeu.annotations[i][1] === g) jeu.annotations.splice(i, 1);
+    else if (i >= 0) jeu.annotations[i] = [u, g];
+    else jeu.annotations.push([u, g]);
+    dessinerFleches();
+  });
 
   function donnerIndice() {
     if (jeu.etat !== 'moment') return;

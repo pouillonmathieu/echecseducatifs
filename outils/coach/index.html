@@ -265,16 +265,23 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
     if (origine) Echiquier.marquer(plateau, [origine], 'origine');
     dessinerFleches();
   }
+  const VOILES = { menace: 'rgba(226, 98, 42, .62)', adversaire: 'rgba(90, 100, 116, .55)', suite: 'rgba(47, 163, 107, .6)', danger: 'rgba(200, 50, 60, .6)' };
   function dessinerFleches() {
     const vieux = $('plateau').querySelector('.fleches'); if (vieux) vieux.remove();
     const k = jeu.vue - 1;
     const liste = k >= 0 ? (noteDe(k).fleches || []) : [];
-    if (!liste.length) return;
+    // une entrée de 2 lettres (« e4 ») est une case colorée : un voile sur le fond de la case, sous la pièce
+    plateau.querySelectorAll('.case-e[data-voile]').forEach(c => { c.style.backgroundImage = ''; delete c.dataset.voile; });
+    for (const [u, g] of liste.filter(f => f[0].length === 2)) {
+      const c = plateau.querySelector(`[data-case="${u}"]`);
+      if (c) { c.style.backgroundImage = `linear-gradient(${VOILES[g]}, ${VOILES[g]})`; c.dataset.voile = g; }
+    }
+    if (!liste.some(f => f[0].length >= 4)) return;
     const r0 = plateau.getBoundingClientRect();
     let h = `<svg class="fleches" viewBox="0 0 ${r0.width} ${r0.height}" aria-hidden="true"><defs>`;
     for (const [g] of COULEURS) h += `<marker id="p-${g}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto"><path d="M0 0 10 5 0 10Z" class="pointe f-${g}"/></marker>`;
     h += '</defs>';
-    for (const [u, g] of liste) {
+    for (const [u, g] of liste.filter(f => f[0].length >= 4)) {
       const a = plateau.querySelector(`[data-case="${u.slice(0, 2)}"]`), b = plateau.querySelector(`[data-case="${u.slice(2, 4)}"]`);
       if (!a || !b) continue;
       const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
@@ -317,11 +324,11 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
         <label class="libelle" for="texte-coup">Ton explication</label>
         <textarea id="texte-coup" placeholder="Ce que ce coup permet, la menace qu'il pare ou qu'il crée, pourquoi il est meilleur qu'un autre…">${echapper(n.texte || '')}</textarea>
         <span class="libelle">Flèches sur l'échiquier</span>
-        <p class="discret">Fais glisser le clic droit sur l'échiquier. La touche tenue choisit la couleur ; refaire la même flèche l'efface.</p>
+        <p class="discret">Fais glisser le clic droit sur l'échiquier pour une flèche ; un clic droit sur une case la colore. La touche tenue choisit la couleur ; refaire la même chose l'efface.</p>
         <div class="couleurs" id="couleurs">${COULEURS.map(([g, lab, c, touche]) => `<button type="button" class="puce" data-g="${g}" aria-pressed="${g === couleurFleche}"><i style="background:${c}"></i>${lab}<kbd>${touche}</kbd></button>`).join('')}</div>
-        <button type="button" class="btn" id="btn-fleche">${modeFleche ? 'Arrêter de dessiner' : 'Dessiner une flèche au clic (tablette)'}</button>
-        ${modeFleche ? `<p class="consigne-fleche">${origine ? 'Clique maintenant sur la case d\'arrivée.' : 'Clique sur la case de départ de la flèche.'}</p>` : ''}
-        <ul class="liste-fleches" id="liste-fleches">${(n.fleches || []).map(([u, g], i) => `<li><button type="button" data-i="${i}" title="Retirer cette flèche"><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${(COULEURS.find(c => c[0] === g) || COULEURS[0])[2]}"></i>${u.slice(0, 2)} → ${u.slice(2, 4)} ✕</button></li>`).join('')}</ul>`;
+        <button type="button" class="btn" id="btn-fleche">${modeFleche ? 'Arrêter de dessiner' : 'Dessiner au clic (tablette)'}</button>
+        ${modeFleche ? `<p class="consigne-fleche">${origine ? 'Clique maintenant sur la case d\'arrivée (ou encore sur la même case pour la colorer).' : 'Clique sur la case de départ de la flèche, ou sur la case à colorer.'}</p>` : ''}
+        <ul class="liste-fleches" id="liste-fleches">${(n.fleches || []).map(([u, g], i) => `<li><button type="button" data-i="${i}" title="${u.length === 2 ? 'Retirer cette case' : 'Retirer cette flèche'}"><i style="display:inline-block;width:10px;height:10px;border-radius:${u.length === 2 ? '2px' : '50%'};background:${(COULEURS.find(c => c[0] === g) || COULEURS[0])[2]}"></i>${u.length === 2 ? `case ${u}` : `${u.slice(0, 2)} → ${u.slice(2, 4)}`} ✕</button></li>`).join('')}</ul>`;
     }
     if (fin) h += `<span class="libelle">Fin de la partie : pourquoi ${echapper(nomAdv())} abandonne</span><textarea id="texte-fin" placeholder="Ce qui rend la position perdue…">${echapper(courant.fin || '')}</textarea>`;
     $('fiche').innerHTML = h;
@@ -345,12 +352,13 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
     const c = e.target.closest('.case-e'); const k = jeu.vue - 1;
     if (!c || !modeFleche || k < 0 || !estChampion(k)) return;
     if (!origine) { origine = c.dataset.case; dessinerPlateau(); dessinerFiche(); return; }
-    if (c.dataset.case !== origine) modifier(k, { fleches: [...(noteDe(k).fleches || []), [origine + c.dataset.case, couleurFleche]] });
+    // même case deux fois : la case est colorée
+    modifier(k, { fleches: [...(noteDe(k).fleches || []), [c.dataset.case === origine ? origine : origine + c.dataset.case, couleurFleche]] });
     origine = null; dessinerPlateau(); dessinerFiche();
   });
 
-  // clic droit glissé sur l'échiquier : une flèche, de la couleur de la touche tenue
-  // (sans touche : verte, Maj : orange, Ctrl ou Cmd : rouge, Alt : grise) ; refaire la même flèche l'efface
+  // clic droit glissé sur l'échiquier : une flèche ; clic droit sur une case : la case colorée.
+  // Couleur selon la touche tenue (sans touche : vert, Maj : orange, Ctrl ou Cmd : rouge, Alt : gris) ; refaire l'efface
   const couleurTouche = (e) => (e.shiftKey ? 'menace' : e.ctrlKey || e.metaKey ? 'danger' : e.altKey ? 'adversaire' : 'suite');
   let departFleche = null;
   plateau.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -365,8 +373,8 @@ textarea:focus-visible, select:focus-visible, button:focus-visible { outline: 3p
     departFleche = null;
     const sous = document.elementFromPoint(e.clientX, e.clientY);
     const c = sous && sous.closest('#echiquier .case-e');
-    if (!c || c.dataset.case === de || k < 0 || !estChampion(k)) return;
-    const u = de + c.dataset.case, g = couleurTouche(e);
+    if (!c || k < 0 || !estChampion(k)) return;
+    const u = c.dataset.case === de ? de : de + c.dataset.case, g = couleurTouche(e);
     const f = [...(noteDe(k).fleches || [])];
     const i = f.findIndex(x => x[0] === u);
     if (i >= 0 && f[i][1] === g) f.splice(i, 1);
