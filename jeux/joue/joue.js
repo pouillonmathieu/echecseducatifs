@@ -462,7 +462,6 @@
       phrases.push(`Par exemple, si ${A} joue ${gras(f.su[0][0])}, ${N} répond ${gras(f.su[1][0])}.`);
       fleches.push([f.su[0][1], 'adversaire'], [f.su[1][1], 'suite']);
     }
-    phrases.push('Quand on sait qu\'on va perdre, on peut abandonner : on arrête la partie et on serre la main de son adversaire.');
     return { html: phrases.join(' '), fleches };
   }
 
