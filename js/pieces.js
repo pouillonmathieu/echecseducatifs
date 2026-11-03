@@ -82,6 +82,16 @@
     },
   };
 
+  // Petit pion des icônes (symbole #mini-pion des pages, boîte de 10 × 12) : même dessin que les pièces choisies.
+  const MINI_PION = {
+    classiques: '<path d="M5 .8a1.36 1.36 0 0 0-1.1 2.18 2.21 2.21 0 0 0-.3 3.63c-1.02.36-2.53 1.89-2.53 4.59h7.84c0-2.7-1.5-4.23-2.53-4.59a2.2 2.2 0 0 0-.3-3.63A1.37 1.37 0 0 0 5 .8z"/>',
+    simples: '<circle cx="5" cy="3.2" r="2.4"/><path d="M2 11.2h6L7 7.3H3Z"/>',
+  };
+  function majMiniPion() {
+    const symbole = document.getElementById('mini-pion');
+    if (symbole) symbole.innerHTML = MINI_PION[jeu];
+  }
+
   const CLE = 'echecs.pieces.classiques';
   const JEUX = {
     classiques: { boite: 45, dessin: (id, t) => CLASSIQUES[id][t.couleur].replace(/\{C\}/g, t.corps).replace(/\{T\}/g, t.trait).replace(/\{D\}/g, t.detail) },
@@ -113,6 +123,7 @@
     const conteneur = document.createElement('div');
     conteneur.innerHTML = `<svg id="sprite-pieces" width="0" height="0" style="position:absolute" aria-hidden="true">${symboles()}</svg>`;
     document.body.prepend(conteneur.firstChild);
+    majMiniPion();
     ajouterReglage();
   }
 
@@ -122,6 +133,7 @@
     if (window.Commun) Commun.Prefs.ecrire(CLE, nomJeu === 'classiques');
     const sprite = document.getElementById('sprite-pieces');
     if (sprite) sprite.innerHTML = symboles();
+    majMiniPion();
     document.querySelectorAll('#reg-pieces button').forEach(b => b.setAttribute('aria-pressed', b.dataset.pieces === jeu ? 'true' : 'false'));
   }
 
@@ -135,7 +147,7 @@
     const bloc = document.createElement('div');
     bloc.className = 'ligne-reglage-bloc';
     bloc.innerHTML =
-      '<span class="ligne-titre"><svg viewBox="0 0 24 24"><path d="M7 20h10M8.5 20c0-4 2-6 4.5-8-2 0-4 .5-5.5 1.5L6 11l5-6 1-2 1 2.2c4 .8 5.5 4.5 5 9.8V20"/></svg>' +
+      '<span class="ligne-titre"><svg viewBox="0 0 24 24"><use href="#piece-cavalier-blanc" width="24" height="24"/></svg>' +
       (EN ? 'Pieces' : 'Pièces') + '</span>' +
       `<div class="segments" id="reg-pieces" role="group" aria-label="${EN ? 'Piece style' : 'Dessin des pièces'}">` +
       `<button type="button" data-pieces="classiques">${apercu('classiques')}<small>${EN ? 'Classic' : 'Classiques'}</small></button>` +

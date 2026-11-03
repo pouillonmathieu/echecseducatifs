@@ -371,5 +371,6 @@
 
   // ---------- Démarrage : mode libre, côté blancs par défaut ----------
   TP.injecterSprite();
+  window.Echecs.injecterSprite();
   lancerLibre();
 })();
