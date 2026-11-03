@@ -29,6 +29,7 @@
   const NOMS = { cavalier: 'le cavalier', fou: 'le fou', tour: 'la tour', dame: 'la dame' };
   const DE = { cavalier: 'du cavalier', fou: 'du fou', tour: 'de la tour', dame: 'de la dame' };
   const majuscule = (s) => s[0].toUpperCase() + s.slice(1);
+  const NAMES = { cavalier: 'knight', fou: 'bishop', tour: 'rook', dame: 'queen' };
 
   // cases où la pièce peut aller depuis `c`
   function coups(piece, c, obstacles) {
@@ -406,7 +407,7 @@
     Echiquier.dessiner(plateau, '8/8/8/8/8/8/8/8');
     for (const c of L.obstacles) {
       cellule(c).classList.add('bloquee');
-      cellule(c).setAttribute('aria-label', `${c} : obstacle`);
+      cellule(c).setAttribute('aria-label', `${c}${t(' : ', ': ')}obstacle`);
     }
     dessinerObstacles();
     const maison = cellule(L.maison);
@@ -415,7 +416,7 @@
       `<svg class="maison-dessin" viewBox="0 0 100 100" aria-hidden="true">` +
       `<path d="M50 9 93 47H81v44H19V47H7Z" class="maison-trace"/>` +
       `<use href="#piece-${L.piece}-noir" x="24" y="38" width="52" height="52" class="maison-fantome"/></svg>`);
-    maison.setAttribute('aria-label', `${L.maison} : maison ${DE[L.piece]}`);
+    maison.setAttribute('aria-label', EN ? `${L.maison}: the ${NAMES[L.piece]}'s home` : `${L.maison} : maison ${DE[L.piece]}`);
     poserPiece(ici());
     majMarques();
   }
@@ -490,7 +491,7 @@
     $('resultats').hidden = true;
     $('pluie').innerHTML = '';
     $('retour').hidden = true;
-    $('consigne').textContent = `Ramène ${NOMS[jeu.laby.piece]} à sa maison`;
+    $('consigne').textContent = EN ? `Bring the ${NAMES[jeu.laby.piece]} back home` : `Ramène ${NOMS[jeu.laby.piece]} à sa maison`;
     $('nb-optimal').textContent = jeu.laby.optimal;
     dessiner();
   }
@@ -624,11 +625,14 @@
     const p = jeu.partie;
     setTimeout(() => {
       if (p !== jeu.partie) return;
-      $('res-titre').textContent = n === opt && !jeu.aide ? 'Parfait !' : 'Bravo !';
-      $('res-detail').innerHTML =
-        `${majuscule(NOMS[jeu.laby.piece])} est rentré${jeu.laby.piece === 'tour' || jeu.laby.piece === 'dame' ? 'e' : ''} en <b>${n} coup${n > 1 ? 's' : ''}</b>.<br>` +
-        (n === opt ? 'C\'est le chemin le plus court !' : `Le chemin le plus court se fait en <b>${opt} coups</b>.`) +
-        (jeu.aide ? '<br><small>Avec l\'aide de la solution.</small>' : '');
+      $('res-titre').textContent = n === opt && !jeu.aide ? t('Parfait !', 'Perfect!') : t('Bravo !', 'Well done!');
+      $('res-detail').innerHTML = EN
+        ? `The ${NAMES[jeu.laby.piece]} got home in <b>${n} move${n > 1 ? 's' : ''}</b>.<br>` +
+          (n === opt ? 'That\'s the shortest path!' : `The shortest path takes <b>${opt} moves</b>.`) +
+          (jeu.aide ? '<br><small>With help from the solution.</small>' : '')
+        : `${majuscule(NOMS[jeu.laby.piece])} est rentré${jeu.laby.piece === 'tour' || jeu.laby.piece === 'dame' ? 'e' : ''} en <b>${n} coup${n > 1 ? 's' : ''}</b>.<br>` +
+          (n === opt ? 'C\'est le chemin le plus court !' : `Le chemin le plus court se fait en <b>${opt} coups</b>.`) +
+          (jeu.aide ? '<br><small>Avec l\'aide de la solution.</small>' : '');
       allumerEtoiles($('etoiles'), etoiles);
       $('resultats').hidden = false;
       $('btn-res-nouveau').focus({ preventScroll: true });
@@ -655,7 +659,7 @@
   const ICONE_JUSTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const ICONE_FAUX = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>';
   function construirePoints() {
-    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="Labyrinthe ${i + 1}"></li>`).join('');
+    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="${t('Labyrinthe', 'Maze')} ${i + 1}"></li>`).join('');
   }
   function majPoints() {
     $('points').querySelectorAll('li').forEach((li, i) => {
@@ -676,7 +680,7 @@
     lancerLabyrintheDefi();
   }
   function lancerLabyrintheDefi() {
-    $('titre').textContent = `Labyrinthe ${defi.numero + 1} sur ${NB_DEFIS}`;
+    $('titre').textContent = t(`Labyrinthe ${defi.numero + 1} sur ${NB_DEFIS}`, `Maze ${defi.numero + 1} of ${NB_DEFIS}`);
     nouveau();
     majPoints();
     defi.debut = performance.now();
@@ -692,16 +696,18 @@
     majPoints();
     if (ok) Sons.juste(); else Sons.echec();
     $('verdict').innerHTML = (ok ? ICONE_JUSTE : ICONE_FAUX) +
-      `<span>${tempsEcoule ? 'Temps écoulé !' : n === null ? 'Passé' : ok ? 'Le plus court !' : 'Arrivé !'}</span>`;
-    $('retour-detail').innerHTML = n === null
-      ? `Le chemin le plus court se faisait en <b>${opt} coups</b> (en pointillé).`
-      : ok ? `${opt} coup${opt > 1 ? 's' : ''} : impossible de faire mieux.` : `${n} coups, mais on pouvait le faire en <b>${opt}</b>.`;
+      `<span>${tempsEcoule ? t('Temps écoulé !', 'Time\'s up!') : n === null ? t('Passé', 'Skipped') : ok ? t('Le plus court !', 'The shortest!') : t('Arrivé !', 'Made it!')}</span>`;
+    $('retour-detail').innerHTML = EN
+      ? (n === null ? `The shortest path took <b>${opt} moves</b> (dotted line).`
+        : ok ? `${opt} move${opt > 1 ? 's' : ''}: you can't do better.` : `${n} moves, but it could be done in <b>${opt}</b>.`)
+      : n === null ? `Le chemin le plus court se faisait en <b>${opt} coups</b> (en pointillé).`
+        : ok ? `${opt} coup${opt > 1 ? 's' : ''} : impossible de faire mieux.` : `${n} coups, mais on pouvait le faire en <b>${opt}</b>.`;
     $('retour').className = `retour ${ok ? 'juste' : 'faux'}`;
     $('retour').hidden = false;
     // pas arrivé : on montre le chemin le plus court
     if (n === null) jeu.solution = [...jeu.parcours.slice(0, -1), ...chemin(jeu.laby.piece, ici(), jeu.laby.maison, jeu.laby.obstacles)];
     majMarques();
-    $('btn-suivant').firstChild.textContent = defi.numero === NB_DEFIS - 1 ? 'Voir le résultat ' : 'Suivant ';
+    $('btn-suivant').firstChild.textContent = defi.numero === NB_DEFIS - 1 ? t('Voir le résultat ', 'See the result ') : t('Suivant ', 'Next ');
     $('btn-suivant').focus({ preventScroll: true });
   }
   function suivant() {
@@ -736,13 +742,13 @@
     arreterChrono();
     const score = defi.resultats.filter(r => r.ok).length;
     const etoiles = score === NB_DEFIS ? 3 : score >= 7 ? 2 : score >= 4 ? 1 : 0;
-    $('resd-titre').textContent = score === NB_DEFIS ? 'Parfait !' : score >= 7 ? 'Bravo !' : score >= 4 ? 'Bien joué !' : 'Continue, tu progresses !';
+    $('resd-titre').textContent = score === NB_DEFIS ? t('Parfait !', 'Perfect!') : score >= 7 ? t('Bravo !', 'Well done!') : score >= 4 ? t('Bien joué !', 'Nice work!') : t('Continue, tu progresses !', 'Keep going, you\'re getting better!');
     allumerEtoiles($('etoiles-defi'), etoiles);
     $('res-liste').innerHTML = defi.resultats.map((r, i) =>
-      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="Labyrinthe ${i + 1} : ${r.n === null ? 'pas fini' : `${r.n} coups, le plus court ${r.opt}`}">` +
+      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="${t('Labyrinthe', 'Maze')} ${i + 1}${t(' : ', ': ')}${r.n === null ? t('pas fini', 'not finished') : EN ? `${r.n} moves, shortest ${r.opt}` : `${r.n} coups, le plus court ${r.opt}`}">` +
       `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t">${r.n === null ? '–' : r.n} / ${r.opt}</span></li>`).join('');
     const total = defi.resultats.reduce((s, r) => s + r.temps, 0);
-    $('res-temps').textContent = `Temps total : ${formaterDuree(total)}`;
+    $('res-temps').textContent = t('Temps total : ', 'Total time: ') + formaterDuree(total);
     $('resultats-defi').hidden = false;
     $('btn-rejouer-defi').focus({ preventScroll: true });
     compterJusqua($('res-score'), score);
@@ -764,11 +770,11 @@
   function lancerLibre() {
     preparer('libre');
     document.body.dataset.chrono = 'non';
-    $('titre').textContent = 'Le labyrinthe';
+    $('titre').textContent = t('Le labyrinthe', 'The maze');
     nouveau();
   }
   function ouvrirChoix() {
-    $('choix-niveau').textContent = `niveau ${reglages.niveau}`;
+    $('choix-niveau').textContent = EN ? `${{ facile: 'easy', moyen: 'medium', difficile: 'hard' }[reglages.niveau]} level` : `niveau ${reglages.niveau}`;
     $('choix-defi').hidden = false;
     $('mode-defi').focus({ preventScroll: true });
   }
