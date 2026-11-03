@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="../../css/commun.css">
 <link rel="stylesheet" href="../../css/jeux.css">
 <link rel="stylesheet" href="../../css/echiquier.css">
-<link rel="stylesheet" href="joue.css?v=202611022353">
+<link rel="stylesheet" href="joue.css?v=202611030003">
 <script src="../../js/commun.js"></script>
 </head>
 <body data-ecran="choix">
@@ -95,6 +95,13 @@
         </div>
       </div>
       <div id="echiquier" class="plateau-joue"></div>
+      <div class="navigation" role="group" aria-label="Revoir les coups de la partie">
+        <button id="nav-debut" class="bouton-icone" type="button" aria-label="Début de la partie" title="Début"><svg viewBox="0 0 24 24"><path d="M6 5v14M18 5l-9 7 9 7Z"/></svg></button>
+        <button id="nav-prec" class="bouton-icone" type="button" aria-label="Coup précédent" title="Coup précédent (←)"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span class="nav-pos" id="nav-pos" aria-live="polite"></span>
+        <button id="nav-suiv" class="bouton-icone" type="button" aria-label="Coup suivant" title="Coup suivant (→)"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button id="nav-direct" class="bouton-icone" type="button" aria-label="Revenir à la position en cours" title="Position en cours"><svg viewBox="0 0 24 24"><path d="M18 5v14M6 5l9 7-9 7Z"/></svg></button>
+      </div>
     </div>
 
     <div class="panneau-joue">
@@ -169,9 +176,9 @@
 <script src="../../js/sons.js"></script>
 <script src="../../js/ui.js"></script>
 <script src="../../js/echiquier.js"></script>
-<script src="portraits.js?v=202611022353"></script>
-<script src="intros.js?v=202611022353"></script>
-<script src="parties.js?v=202611022353"></script>
-<script src="joue.js?v=202611022353"></script>
+<script src="portraits.js?v=202611030003"></script>
+<script src="intros.js?v=202611030003"></script>
+<script src="parties.js?v=202611030003"></script>
+<script src="joue.js?v=202611030003"></script>
 </body>
 </html>

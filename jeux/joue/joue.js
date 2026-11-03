@@ -89,7 +89,7 @@
   const jeu = {
     partie: null, cle: null, couleur: 'blanc', orientation: 'blanc', coups: [], san: [], positions: [], moments: new Map(),
     ply: 0, etat: 'choix', erreurs: 0, indice: false, montre: false, resultats: {}, minuterie: 0, anim: 0,
-    selection: null, legaux: new Map(), recentes: [], uniques: new Set(),
+    selection: null, legaux: new Map(), recentes: [], uniques: new Set(), vue: null,
   };
   const nomChampion = () => (jeu.cle !== 'autres' ? CHAMPIONS[jeu.cle].nom : jeu.couleur === 'blanc' ? jeu.partie.bl : jeu.partie.no);
   const nomAdversaire = () => (jeu.couleur === 'blanc' ? jeu.partie.no : jeu.partie.bl);
@@ -157,6 +157,7 @@
     jeu.positions = [Echiquier.lireFen(DEPART)];
     for (const u of jeu.coups) jeu.positions.push(appliquer(jeu.positions[jeu.positions.length - 1], u).pos);
     jeu.ply = 0;
+    jeu.vue = null;
     document.body.dataset.ecran = 'partie';
     $('titre').textContent = nomChampion();
     $('duel-portrait').innerHTML = window.Portraits.svg(jeu.cle === 'autres' ? 'autres' : jeu.cle);
@@ -191,6 +192,7 @@
   function planifier() {
     clearTimeout(jeu.minuterie);
     if (jeu.etat !== 'lecture') return;
+    if (jeu.vue !== null) direct();
     if (jeu.ply >= jeu.coups.length) { finir(); return; }
     if (jeu.moments.has(jeu.ply)) { debutMoment(); return; }
     jeu.minuterie = setTimeout(() => {
@@ -305,6 +307,7 @@
 
   function continuer() {
     if (jeu.etat !== 'anim' || $('btn-continuer').hidden) return;
+    if (jeu.vue !== null) direct();
     $('btn-continuer').hidden = true;
     $('consigne').classList.remove('reussi');
     jeu.fleches = [];
@@ -316,10 +319,6 @@
   }
 
   // ---------- Explications ----------
-  const POINTS_TXT = (n) => {
-    const eq = { 1: 'un pion', 3: 'un cavalier ou un fou', 5: 'une tour', 9: 'une dame' }[n];
-    return `${n} point${n > 1 ? 's' : ''}${eq ? ` (comme ${eq})` : ''}`;
-  };
   const SA_PIECE = { pion: 'un pion', cavalier: 'son cavalier', fou: 'son fou', tour: 'sa tour', dame: 'sa dame', roi: 'son roi' };
   const gras = (san) => `<b>${echapper(traduire(san))}</b>`;
   // Ce que permet le coup du champion. On choisit d'abord l'idée principale (par ordre d'importance) :
@@ -364,7 +363,7 @@
       fleches.push([x.am[1], 'danger']);
     }
     if (!principale && type === 'sacrifice') principale = `${N} donne ${SA_PIECE[piece]} exprès : c'est un sacrifice.` +
-      (x.g >= 1 ? ` Au bout de la suite, ${N} a regagné plus : ${POINTS_TXT(x.g)} d'avance.` : x.g >= 0 ? ' Au bout de la suite, le matériel donné est récupéré.' : ' En échange, l\'attaque devient très dangereuse.');
+      (x.g >= 1 ? ` Au bout de la suite, ${N} récupère encore plus de matériel.` : x.g >= 0 ? ' Au bout de la suite, le matériel donné est récupéré.' : ' En échange, l\'attaque devient très dangereuse.');
     if (!principale && mo['double-echec']) principale = 'Échec double : deux pièces donnent échec en même temps, le roi est obligé de bouger.';
     if (!principale && mo.fourchette) {
       const [de, ...cibles] = mo.fourchette;
@@ -388,11 +387,11 @@
     }
     if (!principale && type === 'promotion') principale = `Le pion arrive au bout de l'échiquier et devient ${promo === 'q' ? 'une dame' : promo === 'n' ? 'un cavalier' : promo === 'r' ? 'une tour' : 'un fou'} !`;
     if (!principale && x.am && x.am[2] !== 'mat') {
-      const vise = x.am[4] ? `${LA_PIECE(x.am[4])}` : 'du matériel';
-      const intro = `L'adversaire menaçait ${gras(x.am[0])}, pour gagner ${x.am[4] ? vise : POINTS_TXT(x.am[2])}.`;
+      const vise = LA_PIECE(x.am[4]);
+      const intro = `L'adversaire menaçait ${gras(x.am[0])}, pour prendre ${vise}.`;
       principale = intro + ' ' + ({
-        abri: `${N} met ${x.am[4] ? vise : 'la pièce'} à l'abri.`,
-        protege: `Ce coup protège ${x.am[4] ? vise : 'la pièce'}.`,
+        abri: `${N} met ${vise} à l'abri.`,
+        protege: `Ce coup protège ${vise}.`,
         prend: 'Ce coup prend la pièce qui menaçait.',
         bloque: 'Ce coup se met en travers pour bloquer la menace.',
         roi: 'Le roi s\'écarte du danger.',
@@ -401,7 +400,9 @@
       }[x.am[3]]);
       fleches.push([x.am[1], 'danger']);
     }
-    if (!principale && x.g >= 1) principale = `Ce coup gagne du matériel : ${POINTS_TXT(x.g)}.`;
+    const prise = pos[u.slice(2, 4)];
+    if (!principale && x.g >= 1) principale = !prise ? 'Au bout de la suite, ce coup gagne du matériel.'
+      : prise.piece === 'pion' ? 'Ce coup gagne un pion.' : `Ce coup prend ${LA_PIECE(lettre[prise.piece])}, et l'adversaire ne pourra pas regagner autant.`;
     if (!principale && mo.opposition) principale = 'Les deux rois se font face avec une seule case entre eux : c\'est l\'opposition. Le roi adverse doit céder le passage.';
     if (!principale && mo['roi-actif']) { principale = 'En fin de partie, le roi devient une pièce forte : il s\'avance pour aider ses pions et attaquer ceux de l\'adversaire.'; fleches.push([mo['roi-actif'][0], 'suite']); }
     if (!principale && mo['pion-passe']) { principale = 'Ce pion est passé : plus aucun pion adverse ne peut l\'arrêter, il fonce vers la promotion.'; fleches.push([mo['pion-passe'][0], 'suite']); }
@@ -422,7 +423,7 @@
         if (x.su && x.su.length >= 2 && fleches.length < 2) { appui += ` Par exemple : ${gras(x.su[0][0])}, puis ${gras(x.su[1][0])}.`; fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']); }
       } else if (x.me && !mo.fourchette) {
         dejaMenace = true;
-        appui = x.me[2] !== 'mat' ? `Ce coup menace ${gras(x.me[0])}, qui gagnerait ${POINTS_TXT(x.me[2])}.`
+        appui = x.me[2] !== 'mat' ? `Ce coup menace ${gras(x.me[0])}, qui prendrait ${LA_PIECE(x.me[2])}.`
           : (x.me[3] || 1) === 1 ? `Ce coup menace ${gras(x.me[0])}, échec et mat !`
           : `Ce coup prépare ${gras(x.me[0])} : si l'adversaire ne fait rien, l'attaque mène au mat en ${x.me[3]} coups.`;
         fleches.push([x.me[1], 'menace']);
@@ -452,7 +453,7 @@
     const phrases = [], fleches = [];
     if (f.mt) phrases.push(`Quoi que ${A} fasse, ${N} va faire échec et mat${f.mt === 1 ? ' au prochain coup' : ` en ${f.mt} coups`}.`);
     else {
-      if (f.d >= 2) phrases.push(`${N} a ${POINTS_TXT(f.d)} de matériel en plus.`);
+      if (f.d >= 2) phrases.push(f.d >= 5 ? `${N} a beaucoup plus de matériel.` : `${N} a plus de matériel.`);
       else if (f.d <= -2) phrases.push(f.cp >= 400 ? `${N} a donné du matériel, mais son attaque est imparable.` : `${N} a donné du matériel, mais sa position est bien meilleure.`);
       if (f.pr) phrases.push('Bientôt, un pion va devenir une dame.');
       if (f.d > -2) phrases.push(f.cp >= 400 ? `${f.d >= 2 ? 'Avec cette avance et les menaces' : 'Avec les menaces'}, il n'y a plus de bonne défense : la position de ${A} est perdue.` : `La position de ${A} est devenue très difficile.`);
@@ -530,7 +531,7 @@
 
   let glisse = null;
   plateau.addEventListener('pointerdown', (e) => {
-    if (jeu.etat !== 'moment' || e.button > 0) return;
+    if (jeu.etat !== 'moment' || e.button > 0 || jeu.vue !== null) return;
     const c = e.target.closest('.case-e');
     if (!c) return;
     const sq = c.dataset.case;
@@ -631,17 +632,64 @@
       const cell = (j) => {
         if (j >= n) return '<span></span>';
         const r = jeu.resultats[j];
-        return `<span class="${r ? 'a-toi ' + r : ''}">${echapper(traduire(jeu.san[j]))}</span>`;
+        const vu = jeu.vue !== null && j === jeu.vue - 1 ? ' vu' : '';
+        return `<button type="button" class="coup-f${r ? ' a-toi ' + r : ''}${vu}" data-ply="${j}">${echapper(traduire(jeu.san[j]))}</button>`;
       };
       h += `<li><span class="num">${i / 2 + 1}.</span>${cell(i)}${cell(i + 1)}</li>`;
     }
     const f = $('feuille');
     f.innerHTML = h;
-    f.scrollTop = f.scrollHeight;
+    const vu = f.querySelector('.vu');
+    if (vu) vu.scrollIntoView({ block: 'nearest' }); else f.scrollTop = f.scrollHeight;
+    majNavigation();
   }
+
+  // ---------- Navigation dans la partie ----------
+  // on peut revoir les coups déjà joués (jamais les suivants) ; la partie se met en pause
+  function voir(n) {
+    if (document.body.dataset.ecran !== 'partie') return;
+    n = Math.max(0, Math.min(jeu.ply, n));
+    if (n === jeu.ply) { direct(); return; }
+    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne('Partie en pause', '', ''); majBoutons(); }
+    jeu.anim++;
+    deselectionner();
+    jeu.vue = n;
+    dessiner(n);
+    const vieux = plateau.querySelector('.fleches');
+    if (vieux) vieux.remove();
+    dessinerFeuille();
+  }
+  // retour à la position en cours (avec ce qui était affiché : indice, flèches…)
+  function direct() {
+    const etaitVue = jeu.vue !== null;
+    jeu.vue = null;
+    if (etaitVue) {
+      dessiner(jeu.ply);
+      if (jeu.etat === 'moment') {
+        if (jeu.indice) Echiquier.marquer(plateau, [jeu.coups[jeu.ply].slice(0, 2)], 'indice');
+        if (jeu.montre) Echiquier.marquer(plateau, [jeu.coups[jeu.ply].slice(2, 4)], 'cible');
+      }
+      if (jeu.etat === 'anim' && jeu.ply > 0) Echiquier.marquer(plateau, [jeu.coups[jeu.ply - 1].slice(2, 4)], 'trouve');
+      dessinerFleches();
+    }
+    dessinerFeuille();
+  }
+  function majNavigation() {
+    const n = jeu.vue === null ? jeu.ply : jeu.vue;
+    $('nav-debut').disabled = $('nav-prec').disabled = n === 0;
+    $('nav-suiv').disabled = $('nav-direct').disabled = jeu.vue === null;
+    $('nav-pos').textContent = jeu.vue === null ? '' : jeu.vue === 0 ? 'Début de la partie' : `Coup ${Math.ceil(jeu.vue / 2)}${jeu.vue % 2 ? '' : '…'} ${traduire(jeu.san[jeu.vue - 1])}`;
+    document.body.classList.toggle('en-arriere', jeu.vue !== null);
+  }
+  $('nav-debut').addEventListener('click', () => voir(0));
+  $('nav-prec').addEventListener('click', () => voir((jeu.vue === null ? jeu.ply : jeu.vue) - 1));
+  $('nav-suiv').addEventListener('click', () => { if (jeu.vue !== null) voir(jeu.vue + 1); });
+  $('nav-direct').addEventListener('click', direct);
+  $('feuille').addEventListener('click', (e) => { const b = e.target.closest('.coup-f'); if (b) voir(+b.dataset.ply + 1); });
 
   // ---------- Boutons ----------
   $('btn-lecture').addEventListener('click', () => {
+    if (jeu.vue !== null && jeu.etat === 'pause') direct();
     if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne('Partie en pause', '', ''); }
     else if (jeu.etat === 'pause') { jeu.etat = 'lecture'; consigne('La partie continue…', '', ''); planifier(); }
     majBoutons();
@@ -649,6 +697,7 @@
   // « À moi ! » : on avance directement jusqu'au prochain moment (ou jusqu'à la fin s'il n'y en a plus)
   $('btn-suivant').addEventListener('click', () => {
     if (jeu.etat === 'moment' || jeu.etat === 'anim' || jeu.etat === 'fin') return;
+    jeu.vue = null;
     let cible = prochainMoment();
     if (cible < 0) cible = jeu.coups.length;
     arreter();
@@ -687,6 +736,10 @@
     if ((e.key === ' ' || e.key === 'Enter') && !$('btn-continuer').hidden) { e.preventDefault(); continuer(); return; }
     if (e.key === ' ' && (jeu.etat === 'lecture' || jeu.etat === 'pause')) { e.preventDefault(); $('btn-lecture').click(); }
     if (e.key === 'Escape') deselectionner();
+    if (e.key === 'ArrowLeft') { e.preventDefault(); voir((jeu.vue === null ? jeu.ply : jeu.vue) - 1); }
+    if (e.key === 'ArrowRight' && jeu.vue !== null) { e.preventDefault(); voir(jeu.vue + 1); }
+    if (e.key === 'Home') { e.preventDefault(); voir(0); }
+    if (e.key === 'End') { e.preventDefault(); direct(); }
   });
 
   // ---------- Réglages ----------
@@ -717,5 +770,5 @@
   appliquerCoordonnees();
   construireChoix();
   // pour les tests
-  window.JoueLeCoup = { jeu, choisirPartie, lancerPartie, tenter, continuer, charger, INDEX };
+  window.JoueLeCoup = { jeu, choisirPartie, lancerPartie, tenter, continuer, charger, voir, direct, INDEX };
 })();

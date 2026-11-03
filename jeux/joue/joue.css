@@ -134,7 +134,8 @@ body[data-ecran="partie"] .seulement-choix { display: none !important; }
   font-variant-numeric: tabular-nums;
 }
 .feuille-joue:empty { display: none; }
-.feuille-joue li { display: grid; grid-template-columns: 38px 1fr 1fr; gap: 6px; padding: 2px 0; }
+.feuille-joue li { display: grid; grid-template-columns: 38px 1fr 1fr; gap: 6px; padding: 1px 0; align-items: center; }
+.feuille-joue li > span:empty { display: block; }
 .feuille-joue .num { color: var(--encre-douce); }
 .feuille-joue .a-toi { font-weight: 700; }
 .feuille-joue .a-toi.premier { color: #B07A00; }
@@ -147,6 +148,16 @@ body[data-ecran="partie"] .seulement-choix { display: none !important; }
 .fin-detail { font-size: 15px; }
 .fin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .fin-actions svg { width: 20px; height: 20px; }
+
+/* navigation dans la partie */
+.navigation { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.navigation .bouton-icone:disabled { opacity: .35; cursor: default; }
+.nav-pos { min-width: 150px; text-align: center; font-size: 14px; font-weight: 600; color: var(--encre-douce); }
+body.en-arriere .nav-pos { color: var(--accent); }
+body.en-arriere .plateau-joue { box-shadow: 0 0 0 3px var(--accent), 0 12px 30px rgba(0, 0, 0, .10); }
+.coup-f { padding: 1px 4px; border: none; border-radius: 6px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.coup-f:hover { background: var(--surface-2); }
+.coup-f.vu { background: var(--accent); color: var(--sur-accent); }
 
 /* introduction des parties célèbres */
 .intro-partie { padding: 12px 14px; border-radius: 16px; background: color-mix(in srgb, var(--or) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--or) 45%, transparent); }

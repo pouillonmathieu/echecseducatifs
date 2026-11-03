@@ -147,7 +147,7 @@ function suivre(j, pv, max) {
   }
   return joues;
 }
-// explication d'un moment : g = matériel gagné au bout de la suite, me = menace [notation, de-vers, points] ou
+// explication d'un moment : g = matériel gagné au bout de la suite, me = menace [notation, de-vers, pièce prise] ou
 // [notation, de-vers, 'mat', mat en n coups],
 // au = autre coup [notation, 'perd' | 'egal' | 'moins'], su = suite [[notation, de-vers]…], mt = mat inévitable en n coups
 function expliquerMoment(fenAvant, coup, champion, e) {
@@ -171,15 +171,17 @@ function expliquerMoment(fenAvant, coup, champion, e) {
     champs[1] = champion; champs[3] = '-';
     const k = new Chess(champs.join(' '));
     const av = ecart(k, champion);
+    const cible = e.menace.pv[0] && k.get(e.menace.pv[0].slice(2, 4));
     const joues = suivre(k, e.menace.pv, 3);
     const cpSuite = e.suite ? -e.suite.cp : 0;
     let quoi = null;
     if (e.menace.mat > 0) quoi = 'mat';
-    else if (ecart(k, champion) - av >= 2 && e.menace.cp - cpSuite >= 120) quoi = ecart(k, champion) - av;
+    // une vraie menace : le coup prend directement une pièce, et le champion y gagne vraiment
+    else if (cible && cible.color !== champion && cible.type !== 'p' && ecart(k, champion) - av >= 2 && e.menace.cp - cpSuite >= 120) quoi = cible.type;
     if (joues[0] && quoi) x.me = quoi === 'mat' ? [joues[0][0], joues[0][1], 'mat', e.menace.mat] : [joues[0][0], joues[0][1], quoi];
   }
   // en amont : ce que menaçait l'adversaire, et comment le coup du champion y répond
-  // am = [notation de la menace, de-vers, 'mat' + n ou points, parade, pièce visée]
+  // am = [notation de la menace, de-vers, 'mat' ou 'prise', parade, pièce visée, mat en n coups]
   // parades : abri (la pièce visée s'en va), prend (on prend la pièce qui menaçait), protege, bloque, roi (le roi s'écarte),
   //           pare (autre façon), contre (on ne pare pas : on attaque plus fort)
   const jAvant = new Chess(fenAvant);
@@ -194,7 +196,9 @@ function expliquerMoment(fenAvant, coup, champion, e) {
     const gain = ecart(k, lui) - av;
     const cpNormal = e.autre && e.autre.cp1 !== undefined ? -e.autre.cp1 : 0; // l'éval pour l'adversaire si le champion joue bien
     const mat = e.amont.mat > 0 ? e.amont.mat : 0;
-    if (t[0] && (mat || (gain >= 2 && e.amont.cp - cpNormal >= 150))) {
+    const prise = t[0] && new Chess(fenAvant).get(t[0][1].slice(2, 4));
+    const vraie = prise && prise.color === champion && prise.type !== 'p' && gain >= 2 && e.amont.cp - cpNormal >= 150;
+    if (t[0] && (mat || vraie)) {
       const tu = t[0][1], tf = tu.slice(0, 2), tt = tu.slice(2, 4);
       const jm = new Chess(fenAvant);
       const vise = jm.get(tt);
@@ -214,7 +218,7 @@ function expliquerMoment(fenAvant, coup, champion, e) {
         if (aligne && entre && m.to !== tf && m.to !== tt) parade = 'bloque';
       }
       if (encore && parade === 'pare') parade = 'contre';
-      x.am = [t[0][0], tu, mat ? 'mat' : gain, parade, vise ? vise.type : '', mat || 0];
+      x.am = [t[0][0], tu, mat ? 'mat' : 'prise', parade, vise ? vise.type : '', mat || 0];
     }
   }
   if (e.autre && e.autre.coup && e.autre.cp !== null) {
