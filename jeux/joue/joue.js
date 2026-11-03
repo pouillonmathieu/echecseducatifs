@@ -8,7 +8,9 @@
   const { Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   // les parties sont rangées dans un fichier par champion (parties/<clé>.js), chargé quand on le choisit
   const INDEX = window.PARTIES_INDEX;
-  const TOTAL = Object.values(INDEX).reduce((a, b) => a + b, 0);
+  const COACH = window.PARTIES_COACH || {};
+  const somme = (o) => Object.values(o).reduce((a, b) => a + (Array.isArray(b) ? b.length : b), 0);
+  const TOTAL = somme(INDEX);
   const VERSION = ((document.currentScript && document.currentScript.src) || '').split('?v=')[1] || '';
   const chargements = {};
   function charger(cle) {
@@ -33,6 +35,7 @@
     vitesse: lireTexte('echecs.joue.vitesse', 'normal'),
     niveau: lireTexte('echecs.joue.niveau', 'facile'),
     coordonnees: Prefs.lire('echecs.joue.coordonnees', true),
+    coach: Prefs.lire('echecs.joue.coach', false),
   };
   const DELAI = { lent: 2300, normal: 1400, rapide: 750 };
 
@@ -103,7 +106,9 @@
 
   // ---------- Écran de choix ----------
   const annee = (c) => +(c.epoque.match(/\d{4}/) || [0])[0];
-  const nbParties = (cle) => INDEX[cle] || 0;
+  // avec le filtre « Commentées par le coach », on ne compte que ces parties-là
+  const filtreCoach = () => reglages.coach && somme(COACH) > 0;
+  const nbParties = (cle) => (filtreCoach() ? (COACH[cle] || []).length : INDEX[cle] || 0);
   function construireChoix() {
     // les plus récents d'abord ; seulement les champions qui ont des parties
     const cles = Object.keys(CHAMPIONS).filter(cle => nbParties(cle)).sort((a, b) => annee(CHAMPIONS[b]) - annee(CHAMPIONS[a]));
@@ -112,12 +117,12 @@
       `<span class="carte-portrait">${portrait}${monde ? `<span class="couronne" title="${CHAMPIONS[cle] && CHAMPIONS[cle].femme ? 'Championne' : 'Champion'} du monde">`+'<svg viewBox="0 0 24 24"><use href="#ico-couronne"/></svg></span>' : ''}</span>` +
       `<span class="carte-nom">${echapper(nom)}</span><span class="carte-sous">${echapper(sous)}</span>` +
       (n ? `<span class="carte-nb">${n} partie${n > 1 ? 's' : ''}</span>` : '') + '</button>';
-    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'Une partie au hasard', TOTAL);
+    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'Une partie au hasard', filtreCoach() ? somme(COACH) : TOTAL);
     for (const cle of cles) {
       const c = CHAMPIONS[cle];
       h += carte(cle, window.Portraits.svg(cle), c.nom, `${c.epoque} · ${c.pays}`, nbParties(cle), c.monde);
     }
-    h += carte('autres', window.Portraits.svg('autres'), 'Autres maîtres', 'D\'autres grands joueurs', nbParties('autres'));
+    if (nbParties('autres')) h += carte('autres', window.Portraits.svg('autres'), 'Autres maîtres', 'D\'autres grands joueurs', nbParties('autres'));
     $('grille-champions').innerHTML = h;
   }
   $('grille-champions').addEventListener('click', (e) => {
@@ -128,12 +133,13 @@
   async function choisirPartie(cle) {
     let ch = cle;
     if (cle === 'hasard') {
-      let r = Math.random() * TOTAL;
-      for (const [k, n] of Object.entries(INDEX)) { ch = k; if ((r -= n) < 0) break; }
+      const parCle = filtreCoach() ? COACH : INDEX;
+      let r = Math.random() * somme(parCle);
+      for (const [k, n] of Object.entries(parCle)) { ch = k; if ((r -= Array.isArray(n) ? n.length : n) < 0) break; }
     }
     let liste;
     try { liste = await charger(ch); } catch (e) { return; }
-    let choix = liste.map((p, i) => i);
+    let choix = filtreCoach() && COACH[ch] ? COACH[ch].slice() : liste.map((p, i) => i);
     const neuves = choix.filter(i => !jeu.recentes.includes(ch + ':' + i));
     if (neuves.length) choix = neuves;
     const i = choix[Math.floor(Math.random() * choix.length)];
@@ -202,6 +208,17 @@
       animer(ply, Math.min(520, DELAI[reglages.vitesse] * 0.45), () => {
         jeu.ply = ply + 1;
         dessinerFeuille();
+        // un coup commenté par le coach sans être à jouer : on s'arrête pour lire le commentaire
+        const co = (jeu.partie.co || {})[ply];
+        if (co && co[0] && !jeu.moments.has(ply) && jeu.etat === 'lecture') {
+          jeu.etat = 'anim';
+          consigne('Regarde bien', coupEcrit(jeu.san[ply], ply % 2 ? 'noir' : 'blanc'), `<span class="mot-coach">Le mot du coach</span> ${echapper(co[0])}`, true);
+          jeu.fleches = co[1];
+          dessinerFleches();
+          majBoutons();
+          $('btn-continuer').hidden = false;
+          return;
+        }
         planifier();
       });
     }, DELAI[reglages.vitesse]);
@@ -776,6 +793,13 @@
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
   construireChoix();
+  if (somme(COACH)) {
+    $('filtre-coach').hidden = false;
+    brancherInterrupteur($('reg-coach'), reglages.coach, (v) => {
+      reglages.coach = v; Prefs.ecrire('echecs.joue.coach', v);
+      construireChoix();
+    });
+  }
   // pour les tests
   window.JoueLeCoup = { jeu, choisirPartie, lancerPartie, tenter, continuer, charger, voir, direct, INDEX };
 })();

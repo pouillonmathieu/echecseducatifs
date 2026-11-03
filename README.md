@@ -87,7 +87,9 @@ commentaires : on rejoue les parties de « Joue le coup », on choisit les coups
 l'explication de chaque coup (avec des flèches), la raison de l'abandon et une introduction. Les commentaires sont
 enregistrés dans la base de l'artefact, puis repris (style seulement) dans `outils/commentaires-coach.json`
 (le texte d'origine est gardé à côté) et intégrés aux données du jeu par `outils/parties-champions.js` : ils
-remplacent l'explication automatique, avec leurs flèches, et décident des coups que l'enfant doit trouver.
+remplacent l'explication automatique, avec leurs flèches, et décident des coups que l'enfant doit trouver. Un coup
+commenté mais pas « à jouer » est joué tout seul, puis la partie s'arrête pour montrer le commentaire. Dans la
+galerie, l'interrupteur « Commentées par le coach » ne montre que ces parties-là.
 
 ## Organisation
 

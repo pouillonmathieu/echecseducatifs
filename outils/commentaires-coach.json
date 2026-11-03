@@ -402,5 +402,177 @@
   },
   "fin_brut": "Après Rh2, les blancs vont d'abord sauver leur cavalier en jouant Cg2+, puis tranquillement capturer le cavalier en f2.",
   "fin": "Après Rh2, les Blancs vont d'abord sauver leur cavalier avec Cg2+, puis prendre tranquillement le cavalier en f2."
+ },
+ "divya-z9co8u": {
+  "partie": {
+   "annee": 2026,
+   "blancs": "Bibisara Assaubayeva",
+   "champion": "divya",
+   "debut": "d4 d5 c4 e6 Nf3 Nf6 Nc3 c6 Bg5 Nbd7 e3 Qa5",
+   "noirs": "Divya Deshmukh"
+  },
+  "moments": {
+   "21": {
+    "brut": "la prise libère la 5eme rangée pour la dame. Les blancs ne peuvent recapturer ni du cavalier (sinon on prend le fou), ni du pion c (qui est cloué).",
+    "texte": "La prise libère la 5e rangée pour la dame. Les Blancs ne peuvent reprendre ni avec le cavalier (sinon la dame prend le fou en g5), ni avec le pion c, qui est cloué.",
+    "fleches": [
+     [
+      "a5g5",
+      "menace"
+     ],
+     [
+      "f3d4",
+      "menace"
+     ]
+    ]
+   },
+   "23": {
+    "brut": "Notre fou de cases blanches est bloqué, pour le sortir il faut bouger le pion b.",
+    "texte": "Le fou des cases blanches est bloqué : pour le sortir, il faut avancer le pion b.",
+    "fleches": [
+     [
+      "c8b7",
+      "suite"
+     ]
+    ]
+   },
+   "25": {
+    "brut": "la tour était dans le viseur du fou, on a bien fait de la bouger !",
+    "texte": "La tour était dans le viseur du fou : Divya a bien fait de la déplacer !",
+    "fleches": [
+     [
+      "e4a8",
+      "danger"
+     ]
+    ]
+   },
+   "27": {
+    "brut": "Oh non, notre tour n'a plus de cases ! Heureusement, on trouve une parade pour s'en sortir. Si jamais le fou prend la tour, on prend le fou en e4 avec une attaque sur la tour blanche en c2.",
+    "texte": "Oh non, la tour n'a plus de cases ! Heureusement, il y a une parade : si le fou prend la tour, on prend le fou en e4, avec une attaque sur la tour blanche en c2.",
+    "fleches": [
+     [
+      "f4b8",
+      "suite"
+     ],
+     [
+      "b7e4",
+      "suite"
+     ],
+     [
+      "e4c2",
+      "menace"
+     ],
+     [
+      "d7b8",
+      "menace"
+     ]
+    ]
+   },
+   "47": {
+    "joue": true,
+    "brut": "L'adversaire nous donne un pion pour affiablir notre roi... mais je ne crois pas que son attaque va fonctionner.",
+    "texte": "L'adversaire donne un pion pour affaiblir le roi noir… mais son attaque ne devrait pas fonctionner."
+   },
+   "49": {
+    "joue": false,
+    "brut": "Ici, les blancs menaçaient d'attaquer notre roi maintenant que la colonne g est ouverte. Le cavalier doit venir défendre. Pour le moment, notre roi est en sécurité. Mais l'attaque de l'adversaire arrive ! on va aussi avoir besoin de notre Dame pour défendre...",
+    "texte": "Les Blancs menaçaient d'attaquer le roi par la colonne g, maintenant ouverte. Le cavalier vient défendre. Pour l'instant, le roi est en sécurité, mais l'attaque arrive : la dame va aussi devoir aider à défendre…",
+    "fleches": [
+     [
+      "d3g3",
+      "danger"
+     ],
+     [
+      "e5f7",
+      "danger"
+     ]
+    ]
+   },
+   "55": {
+    "brut": "La dame était attaquée, il fallait la bouger.",
+    "texte": "La dame était attaquée : il fallait la déplacer.",
+    "fleches": [
+     [
+      "c6b7",
+      "danger"
+     ]
+    ]
+   },
+   "65": {
+    "joue": true,
+    "brut": "Dans les parties de championnes, on voit souvent des coups qui se répètent vers le 30ème coup. Ca nous sert à gagner un peu de temps (au coup n°41, on gagne un bonus temps).",
+    "texte": "Dans les parties de championnes, on voit souvent des coups qui se répètent vers le 30e coup. Cela fait gagner un peu de temps : au 41e coup, chaque joueuse reçoit un bonus de temps."
+   },
+   "77": {
+    "brut": "L'adversaire a refusé d'échanger les dames. Ca me permet de gagner le pion. Ici, c'est important de voir que notre dame contrôle la case d8, ça empêche la dame blanche de venir nous embêter.",
+    "texte": "L'adversaire a refusé d'échanger les dames, ce qui permet à Divya de gagner un pion. Ici, il faut bien voir que la dame noire contrôle la case d8 : la dame blanche ne peut pas venir y semer le trouble.",
+    "fleches": [
+     [
+      "d3d8",
+      "danger"
+     ],
+     [
+      "g5d8",
+      "suite"
+     ]
+    ]
+   },
+   "79": {
+    "brut": "Avec le dernier coup des blancs, notre dame ne controle plus la case d8 ! Les blancs menaçaient de faire échec et mat en un coup.",
+    "texte": "Avec son dernier coup, les Blancs ont coupé la dame noire de la case d8 ! Ils menaçaient de faire échec et mat en un coup.",
+    "fleches": [
+     [
+      "d3d8",
+      "danger"
+     ]
+    ]
+   },
+   "81": {
+    "joue": true,
+    "brut": "Les blancs menacent encore une fois de faire échec et mat en d8 en sacrifiant leur dame ! il faut défendre en permettant à notre dame de revenir en g8.",
+    "texte": "Les Blancs menacent encore de faire mat en d8, en sacrifiant leur dame ! Pour se défendre, le roi libère la case g8, où la dame noire pourra revenir.",
+    "fleches": [
+     [
+      "d3d8",
+      "danger"
+     ],
+     [
+      "d1d8",
+      "danger"
+     ],
+     [
+      "c8d8",
+      "suite"
+     ],
+     [
+      "g5g8",
+      "suite"
+     ]
+    ]
+   },
+   "83": {
+    "joue": false
+   },
+   "89": {
+    "joue": false
+   },
+   "91": {
+    "joue": true,
+    "brut": "Le pion g3 est cloué, il ne peut pas capturer ma dame. Je menace de prendre la tour au prochain coup.",
+    "texte": "Le pion g3 est cloué : il ne peut pas prendre la dame. Et Divya menace de prendre la tour au coup suivant.",
+    "fleches": [
+     [
+      "f4e3",
+      "menace"
+     ],
+     [
+      "g8g3",
+      "menace"
+     ]
+    ]
+   }
+  },
+  "fin_brut": "Même si les blancs reviennent défendre avec la dame, je peux tout échanger en g3. la finale de pions avec 2 pions de plus est gagnante pour les noirs.",
+  "fin": "Même si les Blancs reviennent défendre avec la dame, Divya peut tout échanger en g3 : la finale de pions, avec deux pions de plus, est gagnante pour les Noirs."
  }
 }

@@ -442,7 +442,11 @@ for (const cle of Object.keys(parChampion)) {
   taille += texteCh.length;
 }
 const sortie = '/* Généré par outils/parties-champions.js — nombre de parties par champion (les parties sont dans parties/). */\n' +
-  'window.PARTIES_INDEX = ' + JSON.stringify(parChampion) + ';\n';
+  'window.PARTIES_INDEX = ' + JSON.stringify(parChampion) + ';\n' +
+  '/* parties commentées par le coach : numéros dans la liste de chaque champion */\n' +
+  'window.PARTIES_COACH = ' + JSON.stringify(Object.fromEntries(Object.keys(parChampion)
+    .map(cle => [cle, parties.filter(p => p.ch === cle).map((p, i) => (p.co || p.cf || p.ci ? i : -1)).filter(i => i >= 0)])
+    .filter(([, l]) => l.length))) + ';\n';
 fs.writeFileSync(path.join(racine, 'jeux/joue/parties.js'), sortie);
 // les moments, pour outils/analyser-explications.js
 fs.writeFileSync(path.join(__dirname, 'moments.json'), JSON.stringify(parties.map(p => p.m.map(m => m[0]))));

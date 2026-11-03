@@ -8,6 +8,7 @@ body[data-ecran="partie"] .seulement-choix { display: none !important; }
 
 /* ---------- Choix du champion ---------- */
 .titre-choix { margin: 4px 0 14px; font-size: 20px; font-weight: 600; }
+.filtre-coach { justify-content: flex-start; margin: -4px 0 14px; }
 .grille-champions { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 .carte-champion {
   display: flex;
