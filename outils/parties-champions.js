@@ -419,9 +419,11 @@ for (const bloc of texte.split(/\n(?=\[White )/)) {
     u: uci.join(' '), s: coups.join(' '), m: moments.map(m => (m.critique ? [m.i, m.type, 1] : [m.i, m.type])), lg: legaux,
     x, f: fin,
     ...(coach ? {
-      co: Object.fromEntries(Object.entries(coach.moments || {}).filter(([, v]) => v.texte || (v.fleches && v.fleches.length)).map(([k, v]) => [k, [v.texte || '', v.fleches || []]])),
+      co: Object.fromEntries(Object.entries(coach.moments || {}).filter(([, v]) => v.texte || (v.fleches && v.fleches.length)).map(([k, v]) => [k, [v.texte || '', v.fleches || [], v.texte_en || '']])),
       ...(coach.fin ? { cf: coach.fin } : {}),
+      ...(coach.fin_en ? { cf_en: coach.fin_en } : {}),
       ...(coach.intro ? { ci: coach.intro } : {}),
+      ...(coach.intro_en ? { ci_en: coach.intro_en } : {}),
     } : {}),
   });
 }
@@ -434,7 +436,7 @@ const entete = '/* Généré par outils/parties-champions.js — ne pas modifier
   '   Parties : coups seulement (faits historiques). u = coups (de-vers), s = notation anglaise,\n' +
   '   m = moments où l\'enfant joue [demi-coup, type, 1 si c\'était le seul bon coup], lg = coups légaux à ces moments\n' +
   '   (groupés par case de départ : « g1f3h3 »), x = explications des moments, f = explication de la fin,\n' +
-  '   co / cf / ci = commentaires du coach (coups, fin, introduction). */\n';
+  '   co / cf / ci = commentaires du coach (coups [texte, flèches, texte anglais], fin, introduction ; cf_en, ci_en en anglais). */\n';
 let taille = 0;
 for (const cle of Object.keys(parChampion)) {
   const texteCh = entete + `(window.PARTIES_CH = window.PARTIES_CH || {})[${JSON.stringify(cle)}] = ` + JSON.stringify(parties.filter(p => p.ch === cle)) + ';\n';

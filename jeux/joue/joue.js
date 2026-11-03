@@ -39,7 +39,7 @@
   const lireTexte = (cle, defaut) => { try { return localStorage.getItem(cle) || defaut; } catch (e) { return defaut; } };
   const ecrireTexte = (cle, v) => { try { localStorage.setItem(cle, v); } catch (e) { /* stockage indisponible */ } };
   const reglages = {
-    langue: lireTexte('echecs.joue.langue', 'fr'),
+    langue: EN ? 'en' : lireTexte('echecs.joue.langue', 'fr'), // en anglais : notation anglaise seulement
     vitesse: lireTexte('echecs.joue.vitesse', 'normal'),
     niveau: lireTexte('echecs.joue.niveau', 'facile'),
     coordonnees: Prefs.lire('echecs.joue.coordonnees', true),
@@ -102,12 +102,28 @@
     ply: 0, etat: 'choix', erreurs: 0, indice: false, montre: false, resultats: {}, minuterie: 0, anim: 0,
     selection: null, legaux: new Map(), recentes: [], uniques: new Set(), vue: null,
   };
-  const nomChampion = () => (jeu.cle !== 'autres' ? CHAMPIONS[jeu.cle].nom : jeu.couleur === 'blanc' ? jeu.partie.bl : jeu.partie.no);
-  const nomAdversaire = () => (jeu.couleur === 'blanc' ? jeu.partie.no : jeu.partie.bl);
+  // noms des joueurs (quelques-uns sont écrits en français dans les données)
+  const NOMS_EN = { 'Duc de Brunswick et comte Isouard': 'Duke of Brunswick and Count Isouard', Anonyme: 'Anonymous',
+    'Alexandre Alekhine': 'Alexander Alekhine', 'Anatoli Karpov': 'Anatoly Karpov', 'Artur Youssoupov': 'Artur Yusupov',
+    'Evgueni Zagorianski': 'Evgeny Zagoriansky', 'Guennadi Kouzmine': 'Gennady Kuzmin', 'Isaac Boleslavski': 'Isaac Boleslavsky',
+    'Lev Polougaïevski': 'Lev Polugaevsky', 'Mikhaïl Botvinnik': 'Mikhail Botvinnik', 'Mikhaïl Tal': 'Mikhail Tal',
+    'Mikhaïl Tchigorine': 'Mikhail Chigorin', 'Tigran Petrossian': 'Tigran Petrosian', 'Viktor Kortchnoï': 'Viktor Korchnoi',
+    'Viktor Lioublinski': 'Viktor Liublinsky' };
+  const affiche = (n) => (EN && NOMS_EN[n]) || n;
+  const nomChampion = () => affiche(jeu.cle !== 'autres' ? CHAMPIONS[jeu.cle].nom : jeu.couleur === 'blanc' ? jeu.partie.bl : jeu.partie.no);
+  const nomAdversaire = () => affiche(jeu.couleur === 'blanc' ? jeu.partie.no : jeu.partie.bl);
+  // pays et époque des champions, en anglais
+  const PAYS_EN = { 'États-Unis': 'United States', Autriche: 'Austria', Russie: 'Russia', Allemagne: 'Germany', Pologne: 'Poland', Lettonie: 'Latvia',
+    Danemark: 'Denmark', Cuba: 'Cuba', 'Tchécoslovaquie': 'Czechoslovakia', France: 'France', 'Pays-Bas': 'Netherlands', URSS: 'USSR', Estonie: 'Estonia',
+    Argentine: 'Argentina', Yougoslavie: 'Yugoslavia', 'Arménie': 'Armenia', Ukraine: 'Ukraine', 'Suède': 'Sweden', 'Norvège': 'Norway', Inde: 'India',
+    Chine: 'China', Italie: 'Italy', Iran: 'Iran', 'Ouzbékistan': 'Uzbekistan', Hongrie: 'Hungary', Suisse: 'Switzerland', 'Géorgie': 'Georgia', Kazakhstan: 'Kazakhstan' };
+  const paysEn = (p) => p.replace(/né en /, 'born in ').replace(/[A-Za-zÀ-ÿ-]+(?: [A-Z][a-zé-]+)*/g, (m) => PAYS_EN[m] || m);
+  const epoqueEn = (e) => e.replace(/^née? en /, 'born ');
   // nom court : le nom de famille, sauf pour les noms où il vient en premier (Ju Wenjun) ou qu'on n'utilise pas (Humpy, Gukesh)
   const COURTS = { 'Ju Wenjun': 'Ju Wenjun', 'Tan Zhongyi': 'Tan Zhongyi', 'Lei Tingjie': 'Lei Tingjie', 'Zhu Jiner': 'Zhu Jiner', 'Ding Liren': 'Ding Liren',
     'Koneru Humpy': 'Humpy', 'Gukesh Dommaraju': 'Gukesh', 'Rameshbabu Praggnanandhaa': 'Praggnanandhaa', 'Vaishali Rameshbabu': 'Vaishali',
-    'Divya Deshmukh': 'Divya', 'Arjun Erigaisi': 'Arjun', 'Duc de Brunswick et comte Isouard': 'le duc et le comte' };
+    'Divya Deshmukh': 'Divya', 'Arjun Erigaisi': 'Arjun', 'Duc de Brunswick et comte Isouard': 'le duc et le comte',
+    'Duke of Brunswick and Count Isouard': 'the Duke and the Count' };
   const NOM_EN_PREMIER = /^(Ju|Lei|Tan|Zhu|Ding|Wang|Wei|Yu|Li|Liu|Zhao|Hou|Ni|Bu|Xu|Song|Guo|Huang|Zhai|Lu|Ning|Shen|Zhang|Chen|Sun|Gu|Yip|Yan|Qi) /;
   const court = (nom) => COURTS[nom] || (NOM_EN_PREMIER.test(nom) ? nom : nom.split(' ').slice(-1)[0]);
   const nomCourt = () => court(nomChampion());
@@ -122,15 +138,15 @@
     const cles = Object.keys(CHAMPIONS).filter(cle => nbParties(cle)).sort((a, b) => annee(CHAMPIONS[b]) - annee(CHAMPIONS[a]));
     const carte = (cle, portrait, nom, sous, n, monde) =>
       `<button type="button" class="carte-champion${cle === 'hasard' ? ' hasard' : ''}" data-cle="${cle}">` +
-      `<span class="carte-portrait">${portrait}${monde ? `<span class="couronne" title="${CHAMPIONS[cle] && CHAMPIONS[cle].femme ? 'Championne' : 'Champion'} du monde">`+'<svg viewBox="0 0 24 24"><use href="#ico-couronne"/></svg></span>' : ''}</span>` +
+      `<span class="carte-portrait">${portrait}${monde ? `<span class="couronne" title="${EN ? 'World champion' : CHAMPIONS[cle] && CHAMPIONS[cle].femme ? 'Championne du monde' : 'Champion du monde'}">`+'<svg viewBox="0 0 24 24"><use href="#ico-couronne"/></svg></span>' : ''}</span>` +
       `<span class="carte-nom">${echapper(nom)}</span><span class="carte-sous">${echapper(sous)}</span>` +
-      (n ? `<span class="carte-nb">${n} partie${n > 1 ? 's' : ''}</span>` : '') + '</button>';
-    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', 'Au hasard', 'Une partie au hasard', filtreCoach() ? somme(COACH) : TOTAL);
+      (n ? `<span class="carte-nb">${n} ${t('partie', 'game')}${n > 1 ? 's' : ''}</span>` : '') + '</button>';
+    let h = carte('hasard', '<svg class="de-hasard" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>', t('Au hasard', 'Random'), t('Une partie au hasard', 'A random game'), filtreCoach() ? somme(COACH) : TOTAL);
     for (const cle of cles) {
       const c = CHAMPIONS[cle];
-      h += carte(cle, portrait(cle), c.nom, `${c.epoque} · ${c.pays}`, nbParties(cle), c.monde);
+      h += carte(cle, portrait(cle), affiche(c.nom), EN ? `${epoqueEn(c.epoque)} · ${paysEn(c.pays)}` : `${c.epoque} · ${c.pays}`, nbParties(cle), c.monde);
     }
-    if (nbParties('autres')) h += carte('autres', window.Portraits.svg('autres'), 'Autres maîtres', 'D\'autres grands joueurs', nbParties('autres'));
+    if (nbParties('autres')) h += carte('autres', window.Portraits.svg('autres'), t('Autres maîtres', 'Other masters'), t('D\'autres grands joueurs', 'More great players'), nbParties('autres'));
     $('grille-champions').innerHTML = h;
   }
   $('grille-champions').addEventListener('click', (e) => {
@@ -175,14 +191,15 @@
     document.body.dataset.ecran = 'partie';
     $('titre').textContent = nomChampion();
     $('duel-portrait').innerHTML = portrait(jeu.cle === 'autres' ? 'autres' : jeu.cle);
-    $('duel-champion').innerHTML = `${echapper(nomChampion())} <span class="camp ${jeu.couleur}">${jeu.couleur === 'blanc' ? 'Blancs' : 'Noirs'}</span>`;
+    $('duel-champion').innerHTML = `${echapper(nomChampion())} <span class="camp ${jeu.couleur}">${jeu.couleur === 'blanc' ? t('Blancs', 'White') : t('Noirs', 'Black')}</span>`;
     // partie célèbre : une introduction historique (jeux/joue/intros.js)
     const intro = (window.INTROS_PARTIES || []).find(i => p.bl.includes(i.blancs) && p.no.includes(i.noirs) && p.s.startsWith(i.debut) && (!i.seulement || p.a === i.seulement));
-    $('intro-partie').hidden = !intro && !p.ci;
-    if (intro) { $('intro-titre').textContent = intro.titre; $('intro-texte').textContent = intro.texte + (p.ci ? ' ' + p.ci : ''); }
-    else if (p.ci) { $('intro-titre').textContent = 'Le mot du coach'; $('intro-texte').textContent = p.ci; }
-    const lieu = p.l || (intro && intro.lieu) || '', an = p.a || (intro && intro.annee) || '';
-    $('duel-adversaire').textContent = `contre ${nomAdversaire()}` + (lieu || an ? ` · ${[lieu, an].filter(Boolean).join(', ')}` : '');
+    const ci = EN ? p.ci_en : p.ci;
+    $('intro-partie').hidden = !intro && !ci;
+    if (intro) { $('intro-titre').textContent = EN ? intro.titre_en : intro.titre; $('intro-texte').textContent = (EN ? intro.texte_en : intro.texte) + (ci ? ' ' + ci : ''); }
+    else if (ci) { $('intro-titre').textContent = t('Le mot du coach', 'Coach\'s tip'); $('intro-texte').textContent = ci; }
+    const lieu = p.l || (intro && (EN ? intro.lieu_en || intro.lieu : intro.lieu)) || '', an = p.a || (intro && intro.annee) || '';
+    $('duel-adversaire').textContent = t('contre ', 'vs ') + nomAdversaire() + (lieu || an ? ` · ${[lieu, an].filter(Boolean).join(', ')}` : '');
     $('fin').hidden = true;
     $('actions-joue').hidden = false;
     $('consigne').hidden = false;
@@ -191,7 +208,7 @@
     dessiner(0);
     window.scrollTo({ top: 0 });
     jeu.etat = 'lecture';
-    consigne('Regarde la partie…', '', `Elle s'arrête ${jeu.moments.size} fois : à ces moments-là, c'est toi qui joues pour ${nomCourt()}.`);
+    consigne(t('Regarde la partie…', 'Watch the game…'), '', EN ? `It stops ${jeu.moments.size} times: at those moments, you play for ${nomCourt()}.` : `Elle s'arrête ${jeu.moments.size} fois : à ces moments-là, c'est toi qui joues pour ${nomCourt()}.`);
     majBoutons();
     jeu.minuterie = setTimeout(planifier, 1200);
   }
@@ -218,9 +235,10 @@
         dessinerFeuille();
         // un coup commenté par le coach sans être à jouer : on s'arrête pour lire le commentaire
         const co = (jeu.partie.co || {})[ply];
-        if (co && co[0] && !jeu.moments.has(ply) && jeu.etat === 'lecture') {
+        const texteCo = co && (EN ? co[2] : co[0]);
+        if (texteCo && !jeu.moments.has(ply) && jeu.etat === 'lecture') {
           jeu.etat = 'anim';
-          consigne('Regarde bien', coupEcrit(jeu.san[ply], ply % 2 ? 'noir' : 'blanc'), `<span class="mot-coach">Le mot du coach</span> ${echapper(co[0])}`, true);
+          consigne(t('Regarde bien', 'Look closely'), coupEcrit(jeu.san[ply], ply % 2 ? 'noir' : 'blanc'), `<span class="mot-coach">${t('Le mot du coach', 'Coach\'s tip')}</span> ${echapper(texteCo)}`, true);
           jeu.fleches = co[1];
           dessinerFleches();
           majBoutons();
@@ -287,8 +305,8 @@
 
   function consigneMoment() {
     const san = jeu.san[jeu.ply];
-    if (reglages.niveau === 'facile' || jeu.montre) consigne('À toi de jouer !', coupEcrit(san, jeu.couleur), jeu.montre ? 'Voici le coup : joue-le sur l\'échiquier.' : `Joue ce coup de ${nomCourt()} sur l'échiquier.`);
-    else consigne('À toi de jouer !', '', `Trouve le coup joué par ${nomCourt()}.` + (jeu.uniques.has(jeu.ply) ? ' Attention : ici, un seul coup est vraiment bon !' : ' Touche une pièce pour voir où elle peut aller.'));
+    if (reglages.niveau === 'facile' || jeu.montre) consigne(t('À toi de jouer !', 'Your turn!'), coupEcrit(san, jeu.couleur), jeu.montre ? t('Voici le coup : joue-le sur l\'échiquier.', 'Here is the move: play it on the board.') : EN ? `Play this move by ${nomCourt()} on the board.` : `Joue ce coup de ${nomCourt()} sur l'échiquier.`);
+    else consigne(t('À toi de jouer !', 'Your turn!'), '', (EN ? `Find the move ${nomCourt()} played.` : `Trouve le coup joué par ${nomCourt()}.`) + (jeu.uniques.has(jeu.ply) ? t(' Attention : ici, un seul coup est vraiment bon !', ' Careful: here, only one move is really good!') : t(' Touche une pièce pour voir où elle peut aller.', ' Tap a piece to see where it can go.')));
   }
 
   function tenter(de, a) {
@@ -299,10 +317,10 @@
     const legal = jeu.legaux.has(de) && jeu.legaux.get(de).has(a);
     flash(a);
     Sons.refus();
-    if (!legal) { consigne('Ce coup n\'est pas possible.', reglages.niveau === 'facile' || jeu.montre ? coupEcrit(jeu.san[jeu.ply], jeu.couleur) : '', 'Essaie un autre coup.'); return; }
+    if (!legal) { consigne(t('Ce coup n\'est pas possible.', 'That move isn\'t possible.'), reglages.niveau === 'facile' || jeu.montre ? coupEcrit(jeu.san[jeu.ply], jeu.couleur) : '', t('Essaie un autre coup.', 'Try another move.')); return; }
     jeu.erreurs++;
-    if (reglages.niveau === 'facile' || jeu.montre) consigne('Ce n\'est pas ce coup-là.', coupEcrit(jeu.san[jeu.ply], jeu.couleur), 'Regarde bien la pièce et la case écrites.');
-    else consigne(`Ce n'est pas le coup de ${nomCourt()}.`, '', jeu.erreurs >= 2 && !jeu.indice ? 'Un indice : la pièce qui doit bouger brille.' : 'Essaie encore !');
+    if (reglages.niveau === 'facile' || jeu.montre) consigne(t('Ce n\'est pas ce coup-là.', 'That\'s not the one.'), coupEcrit(jeu.san[jeu.ply], jeu.couleur), t('Regarde bien la pièce et la case écrites.', 'Look carefully at the piece and the square written.'));
+    else consigne(EN ? `That's not ${possessif(nomCourt())} move.` : `Ce n'est pas le coup de ${nomCourt()}.`, '', jeu.erreurs >= 2 && !jeu.indice ? t('Un indice : la pièce qui doit bouger brille.', 'A hint: the piece that has to move is glowing.') : t('Essaie encore !', 'Try again!'));
     if (jeu.erreurs >= 2 && !jeu.indice) donnerIndice();
   }
 
@@ -313,7 +331,7 @@
     jeu.resultats[ply] = r;
     jeu.etat = 'anim';
     Sons.bravo();
-    const titre = r === 'premier' ? 'Bravo, du premier coup !' : r === 'aide' ? 'Bravo !' : 'C\'est ça !';
+    const titre = r === 'premier' ? t('Bravo, du premier coup !', 'Well done, first try!') : r === 'aide' ? t('Bravo !', 'Well done!') : t('C\'est ça !', 'That\'s it!');
     const ex = expliquer(ply);
     consigne(titre, coupEcrit(jeu.san[ply], jeu.couleur), ex.html, true);
     $('consigne').classList.add('reussi');
@@ -339,7 +357,7 @@
     jeu.fleches = [];
     dessinerFleches();
     jeu.etat = 'lecture';
-    if (jeu.ply < jeu.coups.length) consigne('La partie continue…', '', '');
+    if (jeu.ply < jeu.coups.length) consigne(t('La partie continue…', 'The game goes on…'), '', '');
     majBoutons();
     planifier();
   }
@@ -364,8 +382,9 @@
   const typeSurAvance = (x, sq) => { const p = jeu.positions[jeu.ply] && jeu.positions[jeu.ply][sq]; return p && p.piece === 'roi'; };
   function expliquer(ply) {
     const co = (jeu.partie.co || {})[ply];
-    if (co && co[0]) return { html: `<span class="mot-coach">Le mot du coach</span> ${echapper(co[0])}`, fleches: co[1] };
-    const auto = expliquerAuto(ply);
+    const texteCo = co && (EN ? co[2] : co[0]);
+    if (texteCo) return { html: `<span class="mot-coach">${t('Le mot du coach', 'Coach\'s tip')}</span> ${echapper(texteCo)}`, fleches: co[1] };
+    const auto = EN ? expliquerAutoEn(ply) : expliquerAuto(ply);
     return co && co[1].length ? { html: auto.html, fleches: co[1] } : auto;
   }
   function expliquerAuto(ply) {
@@ -479,7 +498,9 @@
   }
   // pourquoi l'adversaire abandonne
   function expliquerFin() {
-    if (jeu.partie.cf) return { html: `<span class="mot-coach">Le mot du coach</span> ${echapper(jeu.partie.cf)}`, fleches: [] };
+    const cf = EN ? jeu.partie.cf_en : jeu.partie.cf;
+    if (cf) return { html: `<span class="mot-coach">${t('Le mot du coach', 'Coach\'s tip')}</span> ${echapper(cf)}`, fleches: [] };
+    if (EN) return expliquerFinEn();
     const f = jeu.partie.f;
     const N = echapper(nomCourt()), A = echapper(court(nomAdversaire()));
     if (!f || f.fin === 'mat') return { html: 'Le roi est attaqué et ne peut plus s\'échapper : la partie est finie.', fleches: [] };
@@ -493,6 +514,140 @@
     }
     if (f.su && f.su.length >= 2) {
       phrases.push(`Par exemple, si ${A} joue ${gras(f.su[0][0])}, ${N} répond ${gras(f.su[1][0])}.`);
+      fleches.push([f.su[0][1], 'adversaire'], [f.su[1][1], 'suite']);
+    }
+    return { html: phrases.join(' '), fleches };
+  }
+
+  // ---------- Explications en anglais (même logique que expliquerAuto / expliquerFin) ----------
+  const THE = { p: 'the pawn', n: 'the knight', b: 'the bishop', r: 'the rook', q: 'the queen', k: 'the king' };
+  const THE_PIECE = (t) => THE[t] || 'the piece';
+  const BOTH = { p: 'both pawns', n: 'both knights', b: 'both bishops', r: 'both rooks', q: 'both queens', k: 'the king' };
+  const A_PIECE = { pion: 'a pawn', cavalier: 'a knight', fou: 'a bishop', tour: 'a rook', dame: 'the queen', roi: 'the king' };
+  const possessif = (n) => n + (/s$/.test(n) ? '\'' : '\'s');
+  function listePiecesEn(types) {
+    const vus = {}; types.forEach(t => { vus[t] = (vus[t] || 0) + 1; });
+    const noms = ['k', 'q', 'r', 'b', 'n', 'p'].filter(t => vus[t]).map(t => (vus[t] > 1 ? BOTH[t] : THE_PIECE(t)));
+    return noms.length === 1 ? noms[0] : noms.slice(0, -1).join(', ') + ' and ' + noms[noms.length - 1];
+  }
+  function expliquerAutoEn(ply) {
+    const x = (jeu.partie.x || {})[ply] || {};
+    const type = jeu.moments.get(ply);
+    const N = echapper(nomCourt());
+    const pos = jeu.positions[ply], apres = jeu.positions[ply + 1];
+    const u = jeu.coups[ply];
+    const piece = pos[u.slice(0, 2)].piece;
+    const lettre = { pion: 'p', cavalier: 'n', fou: 'b', tour: 'r', dame: 'q', roi: 'k' };
+    const typeSur = (sq) => (apres[sq] ? lettre[apres[sq].piece] : (pos[sq] ? lettre[pos[sq].piece] : ''));
+    const mo = Object.fromEntries((x.mo || []).map(m => [m[0], m.slice(1)]));
+    const rapporte = (x.g >= 2) || !!x.me || !!x.mt;
+    for (const k of ['fourchette', 'decouverte', 'enfilade']) if (mo[k] && !rapporte) delete mo[k];
+    if (mo.clouage && !(rapporte || typeSurAvance(x, mo.clouage[2]))) delete mo.clouage;
+    const promo = u[4];
+    const fleches = [];
+    let principale = '', appui = '', dejaMenace = false;
+
+    if (type === 'mat') principale = 'Checkmate! The king is attacked and has no square left to escape to.';
+    else if (x.ec) principale = `${possessif(N)} king was in check: that had to be dealt with first. ${piece === 'roi' ? 'The king steps aside to a safe square.' : pos[u.slice(2, 4)] ? 'This move takes the piece giving check.' : 'This move blocks the check.'}`;
+    if (!principale && x.am && x.am[2] === 'mat' && x.am[3] !== 'contre') {
+      principale = `Careful: the opponent was threatening ${gras(x.am[0])}, ${(x.am[5] || 1) === 1 ? 'checkmate' : `with mate in ${x.am[5]}`}! ` +
+        ({ prend: 'This move takes the dangerous piece.', bloque: 'This move steps in the way to block the attack.', protege: 'This move guards the mating square.', roi: 'The king steps out of danger.', abri: 'This move puts the targeted piece out of reach.' }[x.am[3]] || 'This move stops the mate.');
+      fleches.push([x.am[1], 'danger']);
+    }
+    if (!principale && type === 'sacrifice') principale = `${N} gives up ${A_PIECE[piece]} on purpose: it's a sacrifice.` +
+      (x.g >= 1 ? ` At the end of the line, ${N} wins back even more material.` : x.g >= 0 ? ' At the end of the line, the material is won back.' : ' In return, the attack becomes very dangerous.');
+    if (!principale && mo['double-echec']) principale = 'Double check: two pieces give check at the same time, so the king has to move.';
+    if (!principale && mo.fourchette) {
+      const [de, ...cibles] = mo.fourchette;
+      principale = `It's a fork: ${THE[lettre[piece]]} attacks ${listePiecesEn(cibles.map(typeSur))} at the same time. The opponent can't save everything.`;
+      cibles.forEach(q => fleches.push([de + q, 'menace']));
+    }
+    if (!principale && mo.decouverte) {
+      const [de, cible] = mo.decouverte;
+      principale = `It's a discovered attack: by moving, ${THE[lettre[piece]]} opens the line for ${THE_PIECE(typeSur(de))}, which now attacks ${THE_PIECE(typeSur(cible))}.`;
+      fleches.push([de + cible, 'menace']);
+    }
+    if (!principale && mo.clouage) {
+      const [de, cloue, derriere] = mo.clouage;
+      principale = `${THE[lettre[piece]].replace(/^./, c => c.toUpperCase())} pins ${THE_PIECE(typeSur(cloue))}: it can't move without ${typeSur(derriere) === 'k' ? 'leaving the king in check' : `letting ${THE_PIECE(typeSur(derriere))} be taken`}.`;
+      fleches.push([de + derriere, 'menace']);
+    }
+    if (!principale && mo.enfilade) {
+      const [de, devant, derriere] = mo.enfilade;
+      principale = `It's a skewer: ${THE_PIECE(typeSur(devant))} is attacked and, when it moves, ${THE_PIECE(typeSur(derriere))} behind it will be taken.`;
+      fleches.push([de + derriere, 'menace']);
+    }
+    if (!principale && type === 'promotion') principale = `The pawn reaches the end of the board and becomes a ${promo === 'q' ? 'queen' : promo === 'n' ? 'knight' : promo === 'r' ? 'rook' : 'bishop'}!`;
+    if (!principale && x.am && x.am[2] !== 'mat') {
+      const vise = THE_PIECE(x.am[4]);
+      principale = `The opponent was threatening ${gras(x.am[0])}, to take ${vise}. ` + ({
+        abri: `${N} moves ${vise} to safety.`,
+        protege: `This move protects ${vise}.`,
+        prend: 'This move takes the threatening piece.',
+        bloque: 'This move steps in the way to block the threat.',
+        roi: 'The king steps out of danger.',
+        contre: 'But instead of defending, this move counterattacks even harder!',
+        pare: 'This move stops that threat.',
+      }[x.am[3]]);
+      fleches.push([x.am[1], 'danger']);
+    }
+    const prise = pos[u.slice(2, 4)];
+    if (!principale && x.g >= 1) principale = !prise ? 'At the end of the line, this move wins material.'
+      : prise.piece === 'pion' ? 'This move wins a pawn.' : `This move takes ${THE_PIECE(lettre[prise.piece])}, and the opponent can't win back as much.`;
+    if (!principale && mo.opposition) principale = 'The two kings face each other with one square between them: that\'s the opposition. The enemy king has to give way.';
+    if (!principale && mo['roi-actif']) { principale = 'In the endgame, the king becomes a strong piece: it steps forward to help its pawns and attack the opponent\'s.'; fleches.push([mo['roi-actif'][0], 'suite']); }
+    if (!principale && mo['pion-passe']) { principale = 'This pawn is passed: no enemy pawn can stop it any more, and it races towards promotion.'; fleches.push([mo['pion-passe'][0], 'suite']); }
+    if (!principale && mo['echange-avance']) principale = 'With extra material, trading pieces is a good idea: the fewer pieces left, the more the advantage counts.';
+    if (!principale && mo.septieme) principale = 'The rook reaches the opponent\'s second rank, where it attacks the pawns from the side.';
+    if (!principale && mo['colonne-ouverte']) principale = 'The rook settles on an open file, with no pawns on it: from there, it can break into the enemy camp.';
+    if (!principale && mo['colonne-semi']) principale = 'The rook moves to a file with none of its own pawns: it puts pressure on the enemy pawn at the end of it.';
+    if (!principale && mo['avant-poste']) principale = 'The knight settles on a strong square: protected by a pawn, no enemy pawn can chase it away.';
+    if (!principale && mo.roque) principale = `${N} castles: the king is safe and the rook comes into play.`;
+    if (!principale && mo.centre) principale = 'This pawn takes its place in the centre of the board, where the game is played.';
+    if (!principale && type === 'echec') principale = 'Check: the opponent has to deal with the king first.';
+    if (!principale && type === 'unique') principale = 'Here, it was the only good move.';
+
+    if (type !== 'mat') {
+      if (x.mt) {
+        appui = x.mt === 1 ? 'Now mate can no longer be avoided: it comes on the next move.' : `Now mate can no longer be avoided: it comes in ${x.mt} moves.`;
+        if (x.su && x.su.length >= 2 && fleches.length < 2) { appui += ` For example: ${gras(x.su[0][0])}, then ${gras(x.su[1][0])}.`; fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']); }
+      } else if (x.me && !mo.fourchette) {
+        dejaMenace = true;
+        appui = x.me[2] !== 'mat' ? `This move threatens ${gras(x.me[0])}, which would take ${THE_PIECE(x.me[2])}.`
+          : (x.me[3] || 1) === 1 ? `This move threatens ${gras(x.me[0])}, checkmate!`
+          : `This move prepares ${gras(x.me[0])}: if the opponent does nothing, the attack leads to mate in ${x.me[3]} moves.`;
+        fleches.push([x.me[1], 'menace']);
+      } else if (x.su && x.su.length >= 2 && fleches.length === 0) {
+        appui = `For example, if the opponent replies ${gras(x.su[0][0])}, ${N} continues with ${gras(x.su[1][0])}.`;
+        fleches.push([x.su[0][1], 'adversaire'], [x.su[1][1], 'suite']);
+      }
+    }
+
+    let autre = '';
+    if (mo['evite-echange'] && x.au) autre = `${gras(x.au[0])} would have traded pieces: here, it was better to keep them and keep up the pressure.`;
+    else if (x.au && dejaMenace && x.me && x.au[0] === x.me[0]) autre = `But playing ${gras(x.au[0])} right away would have been a mistake: it had to be prepared first.`;
+    else if (x.au) autre = x.au[1] === 'perd' ? `With another move, like ${gras(x.au[0])}, ${N} could even have lost the game!`
+      : x.au[1] === 'egal' ? (ply % 2 ? `With ${gras(x.au[0])} instead, the game would have been roughly equal again.` : `The move ${gras(x.au[0])}, for example, would have let the opponent back into the game.`)
+      : `${gras(x.au[0])} was weaker: the advantage would have been much smaller.`;
+
+    const phrases = [principale, appui, autre].filter(Boolean);
+    if (!phrases.length) phrases.push(`That's the move ${N} played.`);
+    return { html: phrases.join(' '), fleches: fleches.slice(0, 3) };
+  }
+  function expliquerFinEn() {
+    const f = jeu.partie.f;
+    const N = echapper(nomCourt()), A = echapper(court(nomAdversaire()));
+    if (!f || f.fin === 'mat') return { html: 'The king is attacked and can\'t escape any more: the game is over.', fleches: [] };
+    const phrases = [], fleches = [];
+    if (f.mt) phrases.push(`Whatever ${A} does, ${N} will deliver checkmate${f.mt === 1 ? ' on the next move' : ` in ${f.mt} moves`}.`);
+    else {
+      if (f.d >= 2) phrases.push(f.d >= 5 ? `${N} has much more material.` : `${N} has more material.`);
+      else if (f.d <= -2) phrases.push(f.cp >= 400 ? `${N} has given up material, but the attack can't be stopped.` : `${N} has given up material, but the position is much better.`);
+      if (f.pr) phrases.push('Soon, a pawn will become a queen.');
+      if (f.d > -2) phrases.push(f.cp >= 400 ? `${f.d >= 2 ? 'With this lead and the threats' : 'With the threats'}, there is no good defence left: ${possessif(A)} position is lost.` : `${possessif(A)} position has become very difficult.`);
+    }
+    if (f.su && f.su.length >= 2) {
+      phrases.push(`For example, if ${A} plays ${gras(f.su[0][0])}, ${N} replies ${gras(f.su[1][0])}.`);
       fleches.push([f.su[0][1], 'adversaire'], [f.su[1][1], 'suite']);
     }
     return { html: phrases.join(' '), fleches };
@@ -608,13 +763,15 @@
     const dernier = jeu.san[jeu.san.length - 1];
     const total = jeu.moments.size;
     const premiers = Object.values(jeu.resultats).filter(r => r === 'premier').length;
-    $('fin-titre').textContent = dernier.endsWith('#') ? `Échec et mat ! ${nomChampion()} gagne.` : `${nomAdversaire()} abandonne : ${nomChampion()} gagne !`;
-    $('fin-detail').textContent = `Tu as trouvé ${premiers} coup${premiers > 1 ? 's' : ''} sur ${total} du premier coup.`;
+    $('fin-titre').textContent = EN
+      ? (dernier.endsWith('#') ? `Checkmate! ${nomChampion()} wins.` : `${nomAdversaire()} resigns: ${nomChampion()} wins!`)
+      : dernier.endsWith('#') ? `Échec et mat ! ${nomChampion()} gagne.` : `${nomAdversaire()} abandonne : ${nomChampion()} gagne !`;
+    $('fin-detail').textContent = EN ? `You found ${premiers} move${premiers !== 1 ? 's' : ''} out of ${total} on the first try.` : `Tu as trouvé ${premiers} coup${premiers > 1 ? 's' : ''} sur ${total} du premier coup.`;
     const ex = expliquerFin();
     $('fin-explication').innerHTML = ex.html;
     jeu.fleches = ex.fleches;
     dessinerFleches();
-    $('btn-autre-texte').textContent = jeu.choixCle === 'hasard' ? 'Une autre partie au hasard' : jeu.cle === 'autres' ? 'Une autre partie' : `Une autre partie de ${nomCourt()}`;
+    $('btn-autre-texte').textContent = jeu.choixCle === 'hasard' ? t('Une autre partie au hasard', 'Another random game') : jeu.cle === 'autres' ? t('Une autre partie', 'Another game') : EN ? `Another game by ${nomCourt()}` : `Une autre partie de ${nomCourt()}`;
     $('fin').hidden = false;
     $('actions-joue').hidden = true;
     $('consigne').hidden = true;
@@ -639,10 +796,10 @@
     const pause = jeu.etat === 'pause';
     $('btn-lecture').disabled = moment || jeu.etat === 'anim';
     $('btn-lecture').classList.toggle('en-pause', pause);
-    $('btn-lecture-texte').textContent = pause ? 'Lecture' : 'Pause';
-    $('btn-lecture').setAttribute('aria-label', pause ? 'Reprendre la partie' : 'Mettre la partie en pause');
+    $('btn-lecture-texte').textContent = pause ? t('Lecture', 'Play') : 'Pause';
+    $('btn-lecture').setAttribute('aria-label', pause ? t('Reprendre la partie', 'Resume the game') : t('Mettre la partie en pause', 'Pause the game'));
     $('btn-suivant').disabled = moment || jeu.etat === 'anim' || jeu.etat === 'fin';
-    $('btn-suivant-texte').textContent = prochainMoment() < 0 ? 'Fin' : 'À moi !';
+    $('btn-suivant-texte').textContent = prochainMoment() < 0 ? t('Fin', 'End') : t('À moi !', 'My turn!');
     $('btn-indice').disabled = !moment || jeu.indice;
     $('btn-montrer').disabled = !moment || jeu.montre;
   }
@@ -652,8 +809,9 @@
     $('points-moments').innerHTML = [...jeu.moments.keys()].map((i, n) => {
       const r = jeu.resultats[i];
       const cls = r || (i === jeu.ply && jeu.etat === 'moment' ? 'en-cours' : '');
-      const lab = r === 'premier' ? 'trouvé du premier coup' : r === 'aide' ? 'trouvé avec de l\'aide' : r === 'montre' ? 'montré' : 'à venir';
-      return `<li class="${cls}" aria-label="Coup ${n + 1} : ${lab}">${r === 'premier' ? '<svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.7-4.4 4 1.2 5.9L12 16.6l-5.3 2.9 1.2-5.9-4.4-4 5.9-.7Z"/></svg>' : ''}</li>`;
+      const lab = EN ? (r === 'premier' ? 'found on the first try' : r === 'aide' ? 'found with help' : r === 'montre' ? 'shown' : 'coming up')
+        : r === 'premier' ? 'trouvé du premier coup' : r === 'aide' ? 'trouvé avec de l\'aide' : r === 'montre' ? 'montré' : 'à venir';
+      return `<li class="${cls}" aria-label="${t('Coup', 'Move')} ${n + 1}${t(' : ', ': ')}${lab}">${r === 'premier' ? '<svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.7-4.4 4 1.2 5.9L12 16.6l-5.3 2.9 1.2-5.9-4.4-4 5.9-.7Z"/></svg>' : ''}</li>`;
     }).join('');
   }
 
@@ -682,7 +840,7 @@
     if (document.body.dataset.ecran !== 'partie') return;
     n = Math.max(0, Math.min(jeu.ply, n));
     if (n === jeu.ply) { direct(); return; }
-    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne('Partie en pause', '', ''); majBoutons(); }
+    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne(t('Partie en pause', 'Game paused'), '', ''); majBoutons(); }
     jeu.anim++;
     deselectionner();
     jeu.vue = n;
@@ -710,7 +868,7 @@
     const n = jeu.vue === null ? jeu.ply : jeu.vue;
     $('nav-debut').disabled = $('nav-prec').disabled = n === 0;
     $('nav-suiv').disabled = $('nav-direct').disabled = jeu.vue === null;
-    $('nav-pos').textContent = jeu.vue === null ? '' : jeu.vue === 0 ? 'Début de la partie' : `Coup ${Math.ceil(jeu.vue / 2)}${jeu.vue % 2 ? '' : '…'} ${traduire(jeu.san[jeu.vue - 1])}`;
+    $('nav-pos').textContent = jeu.vue === null ? '' : jeu.vue === 0 ? t('Début de la partie', 'Start of the game') : `${t('Coup', 'Move')} ${Math.ceil(jeu.vue / 2)}${jeu.vue % 2 ? '' : '…'} ${traduire(jeu.san[jeu.vue - 1])}`;
     document.body.classList.toggle('en-arriere', jeu.vue !== null);
   }
   $('nav-debut').addEventListener('click', () => voir(0));
@@ -722,8 +880,8 @@
   // ---------- Boutons ----------
   $('btn-lecture').addEventListener('click', () => {
     if (jeu.vue !== null && jeu.etat === 'pause') direct();
-    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne('Partie en pause', '', ''); }
-    else if (jeu.etat === 'pause') { jeu.etat = 'lecture'; consigne('La partie continue…', '', ''); planifier(); }
+    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne(t('Partie en pause', 'Game paused'), '', ''); }
+    else if (jeu.etat === 'pause') { jeu.etat = 'lecture'; consigne(t('La partie continue…', 'The game goes on…'), '', ''); planifier(); }
     majBoutons();
   });
   // « À moi ! » : on avance directement jusqu'au prochain moment (ou jusqu'à la fin s'il n'y en a plus)
@@ -739,7 +897,7 @@
     jeu.etat = 'lecture';
     planifier();
   });
-  $('btn-indice').addEventListener('click', () => { donnerIndice(); if (reglages.niveau === 'difficile' && !jeu.montre) consigne('Un indice', '', 'La pièce qui doit bouger brille.'); });
+  $('btn-indice').addEventListener('click', () => { donnerIndice(); if (reglages.niveau === 'difficile' && !jeu.montre) consigne(t('Un indice', 'A hint'), '', t('La pièce qui doit bouger brille.', 'The piece that has to move is glowing.')); });
   $('btn-montrer').addEventListener('click', montrer);
   $('btn-continuer').addEventListener('click', continuer);
   $('btn-retourner').addEventListener('click', () => {
@@ -759,7 +917,7 @@
     arreter();
     jeu.etat = 'choix';
     document.body.dataset.ecran = 'choix';
-    $('titre').textContent = 'Joue le coup';
+    $('titre').textContent = t('Joue le coup', 'Play the move');
     window.scrollTo({ top: 0 });
   }
 
@@ -785,6 +943,7 @@
     reglages.niveau = v; ecrireTexte('echecs.joue.niveau', v);
     if (jeu.etat === 'moment') consigneMoment();
   });
+  if (EN) $('reg-langue').closest('.ligne-reglage-bloc').hidden = true;
   brancherSegments($('reg-langue'), 'langue', reglages.langue, (v) => {
     reglages.langue = v; ecrireTexte('echecs.joue.langue', v);
     dessinerFeuille();
@@ -806,8 +965,8 @@
   if (credits.length) {
     $('credits-photos').hidden = false;
     $('liste-credits').innerHTML = credits.map(([cle, ph]) =>
-      `<li><b>${echapper(CHAMPIONS[cle].nom)}</b> : <a href="${echapper(ph.url)}" target="_blank" rel="noopener">${echapper(ph.titre)}</a>` +
-      ` — ${echapper(ph.auteur)}, ${echapper(ph.licence)}</li>`).join('');
+      `<li><b>${echapper(affiche(CHAMPIONS[cle].nom))}</b>${t(' : ', ': ')}<a href="${echapper(ph.url)}" target="_blank" rel="noopener">${echapper(ph.titre)}</a>` +
+      ` — ${echapper(EN && ph.auteur === 'Auteur inconnu' ? 'Unknown author' : ph.auteur)}, ${echapper(ph.licence)}</li>`).join('');
   }
   if (somme(COACH)) {
     $('filtre-coach').hidden = false;

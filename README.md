@@ -97,7 +97,10 @@ Les pages anglaises (dossier `en/`) sont générées par `python3 outils/anglais
 françaises et du dictionnaire `outils/anglais/pages.json` : on ne les modifie pas à la main. Elles utilisent les mêmes
 fichiers CSS et JS que le site français ; le code des jeux choisit sa langue avec `document.documentElement.lang`
 (`Commun.t('texte français', 'English text')`). Un jeu est traduit quand sa page française a le bouton « EN » ; le
-script signale tout texte sans traduction.
+script signale tout texte sans traduction. Les textes générés ont aussi leur version anglaise : explications de « Mat ou pas mat ? »
+(`outils/positions-mat.js`), introductions des parties célèbres (`titre_en`, `texte_en` dans `jeux/joue/intros.js`) et
+commentaires du coach (`texte_en`, `fin_en` dans `outils/commentaires-coach.json`). Dans « Note le coup » et « Joue le
+coup », la version anglaise n'utilise que la notation anglaise.
 
 ## Organisation
 

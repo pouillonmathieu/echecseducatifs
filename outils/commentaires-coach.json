@@ -16,7 +16,8 @@
       "d5e3",
       "danger"
      ]
-    ]
+    ],
+    "texte_en": "The rook was under attack: it had to be moved to safety."
    },
    "80": {
     "brut": "double attaque sur le roi et le pion f7",
@@ -34,12 +35,14 @@
       "a7f7",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "Double attack: the king and the f7 pawn are attacked at the same time."
    },
    "82": {
     "joue": true,
     "brut": "Gukesh aurait pu prendre le pion f7, mais le roi est plus intéressant ! on continue à l'attaquer !",
-    "texte": "Gukesh aurait pu prendre le pion f7, mais le roi est une cible bien plus intéressante : on continue l'attaque !"
+    "texte": "Gukesh aurait pu prendre le pion f7, mais le roi est une cible bien plus intéressante : on continue l'attaque !",
+    "texte_en": "Gukesh could have taken the f7 pawn, but the king is a much more interesting target: let's keep attacking!"
    },
    "86": {
     "joue": true,
@@ -50,7 +53,8 @@
       "d3c2",
       "danger"
      ]
-    ]
+    ],
+    "texte_en": "The black king was attacking the rook: it has to move."
    },
    "92": {
     "brut": "la tour f3 et le cavalier sont attaqués, la seule façon de ne pas les perdre est d'échanger cette tour pour éloigner le roi noir de la tour f3 et permettre au cavalier de s'échapper au prochain coup",
@@ -68,7 +72,8 @@
       "e2d2",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "The f3 rook and the knight are both attacked. To lose nothing, the only solution is to trade this rook: that way, the black king is pulled away from the f3 rook, and the knight can escape on the next move."
    },
    "94": {
     "brut": "Le cavalier s'échappe de la menace du pion f6, et attaque 3 choses à la fois : le roi, le pion d6 et le pion f6",
@@ -90,7 +95,8 @@
       "e4f6",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "The knight escapes from the f6 pawn and attacks three targets at once: the king, the d6 pawn and the f6 pawn."
    },
    "96": {
     "brut": "le cavalier pourra capturer un pion, mais on doit d'abord protéger la tour qui est attaquée par le roi noir",
@@ -108,7 +114,8 @@
       "e4f6",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "The knight will soon be able to take a pawn, but first the rook, attacked by the black king, needs protecting."
    },
    "100": {
     "brut": "On appelle ça un coup intermédiaire. Le cavalier est attaqué, mais avant de le bouger, on donne un échec au roi adverse",
@@ -122,7 +129,8 @@
       "f2e2",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "This is an in-between move: the knight is attacked, but before moving it, we first give check to the enemy king."
    },
    "102": {
     "joue": true,
@@ -137,7 +145,8 @@
       "d7e5",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "It's a fork! The knight attacks the rook and the e5 pawn."
    },
    "104": {
     "brut": "On est en échec, mais on ne doit pas bouger le roi. On peut capturer le cavalier car la tour en f8 est toujours en prise",
@@ -147,7 +156,8 @@
       "d7f8",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "We're in check, but there's no need to move the king: we can take the knight, because the rook on f8 is still hanging."
    },
    "106": {
     "brut": "On se retrouve avec un cavalier en plus pour jouer cette finale. Maintenant, il faut arrêter les pions du centre d'avancer. Le cavalier sera-t-il assez rapide pour les rattraper ?",
@@ -169,7 +179,8 @@
       "d2d1",
       "danger"
      ]
-    ]
+    ],
+    "texte_en": "That's an extra knight to play this endgame. Now we have to stop the central pawns from advancing. Will the knight be fast enough to catch them?"
    },
    "112": {
     "brut": "Le pion d des noirs n'est plus qu'à deux cases de la promotion. Le cavalier doit revenir pour l'empêcher de faire une dame.",
@@ -191,7 +202,8 @@
       "b2d1",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "Black's d-pawn is only two squares from promotion: the knight has to come back to stop it from becoming a queen."
    },
    "120": {
     "brut": "Maintenant c'est le pion e qui est le plus menaçant. Mais grâce à cette fourchette, on oblige le roi noir à aller en e2 (sinon le pion est perdu). Et ça laisse le temps à notre roi de venir aider à défendre.",
@@ -229,7 +241,8 @@
       "b7b8",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "Now the e-pawn is the most dangerous one. Thanks to this fork, the black king has to go to e2, or the pawn is lost. And meanwhile, our king has time to come and help."
    },
    "122": {
     "fleches": [
@@ -245,7 +258,8 @@
    }
   },
   "fin_brut": "Avec l'aide du roi, le cavalier va pouvoir prendre le pion e3 au prochain coup, et est prêt à se sacrifier contre le pion d si il fait une promotion. Les pions blancs peuvent tranquillement avancer vers la promotion.",
-  "fin": "Avec l'aide de son roi, le cavalier va prendre le pion e3 au prochain coup, et il pourra se sacrifier pour arrêter le pion d si celui-ci file à la promotion. Pendant ce temps, les pions blancs avancent tranquillement vers la promotion."
+  "fin": "Avec l'aide de son roi, le cavalier va prendre le pion e3 au prochain coup, et il pourra se sacrifier pour arrêter le pion d si celui-ci file à la promotion. Pendant ce temps, les pions blancs avancent tranquillement vers la promotion.",
+  "fin_en": "With help from its king, the knight will take the e3 pawn on the next move, and it can sacrifice itself to stop the d-pawn if it runs for promotion. Meanwhile, the white pawns calmly march towards promotion."
  },
  "gukesh-imbc4i": {
   "partie": {
@@ -273,7 +287,8 @@
       "c4a2",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "In the Italian Game, Black often tries to attack the c4 bishop with a knight. Playing a4 prepares a retreat square for the bishop, on a2."
    },
    "22": {
     "brut": "Les noirs proposent un échange. Ici, c'est mieux d'échanger en e6 et \"doubler\" les pions des noirs, plutôt que de les laisser échanger en a2, ce qui amènerait notre tour sur une case où elle serait un peu bloquée",
@@ -287,7 +302,8 @@
       "a1a2",
       "adversaire"
      ]
-    ]
+    ],
+    "texte_en": "Black offers a trade. Here, it's better to take on e6 and \"double\" Black's pawns, rather than let them trade on a2: our rook would then land on a square where it would be a bit stuck."
    },
    "34": {
     "joue": true,
@@ -306,7 +322,8 @@
       "f3d4",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "The opponent was surely expecting a simple recapture on d4, but Gukesh chooses something else: attacking the d6 pawn."
    },
    "42": {
     "joue": true,
@@ -325,12 +342,14 @@
       "e5c4",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "Once again, Gukesh could recapture the pawn on c4, but he has a better idea. On e5, the knight threatens a fork on g6. Black will have to defend, and the knight can then take the c-pawn. That way, the rook stays on the d-file, where it is very strong."
    },
    "48": {
     "joue": true,
     "brut": "très souvent dans les parties, on essaye de mettre les deux tours sur la même colonne",
-    "texte": "Très souvent, on cherche à placer ses deux tours sur la même colonne."
+    "texte": "Très souvent, on cherche à placer ses deux tours sur la même colonne.",
+    "texte_en": "Very often, we try to put both rooks on the same file."
    },
    "58": {
     "brut": "fourchette dame et pion a7",
@@ -344,11 +363,13 @@
       "c6a7",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "Fork: the queen and the a7 pawn are attacked at the same time."
    },
    "62": {
     "brut": "le pion a7 n'était plus défendu, je peux le prendre maintenant",
-    "texte": "Le pion a7 n'est plus défendu : on peut le prendre maintenant."
+    "texte": "Le pion a7 n'est plus défendu : on peut le prendre maintenant.",
+    "texte_en": "The a7 pawn is no longer defended: we can take it now."
    },
    "72": {
     "joue": false
@@ -365,7 +386,8 @@
       "f7g8",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "You may have seen that the black queen is attacking the b5 pawn. No need to defend it: we attack the king! If the opponent takes the pawn, it's checkmate on the next move."
    },
    "80": {
     "brut": "Je pouvais faire échec en g2, mais je n'avais pas de bonne continuation après. Alors mangeons des pions, c'est bon pour la santé !",
@@ -375,7 +397,8 @@
       "f7g6",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "We could give check on g2, but with no good follow-up. So let's eat some pawns, they're good for you!"
    },
    "82": {
     "brut": "Aie Aie Aie, mon adversaire a craqué. Je peux faire cette fourchette.",
@@ -397,11 +420,13 @@
       "e7g6",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "Oh dear, the opponent cracked! Here's a fork."
    }
   },
   "fin_brut": "Après Rh2, les blancs vont d'abord sauver leur cavalier en jouant Cg2+, puis tranquillement capturer le cavalier en f2.",
-  "fin": "Après Rh2, les Blancs vont d'abord sauver leur cavalier avec Cg2+, puis prendre tranquillement le cavalier en f2."
+  "fin": "Après Rh2, les Blancs vont d'abord sauver leur cavalier avec Cg2+, puis prendre tranquillement le cavalier en f2.",
+  "fin_en": "After Kh2, White will first save the knight with Ng2+, then calmly take the knight on f2."
  },
  "divya-z9co8u": {
   "partie": {
@@ -424,7 +449,8 @@
       "f3d4",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "The capture frees the 5th rank for the queen. White can't recapture with the knight (or the queen takes the bishop on g5), nor with the c-pawn, which is pinned."
    },
    "23": {
     "brut": "Notre fou de cases blanches est bloqué, pour le sortir il faut bouger le pion b.",
@@ -434,7 +460,8 @@
       "c8b7",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "The light-squared bishop is stuck: to get it out, the b-pawn has to move."
    },
    "25": {
     "brut": "la tour était dans le viseur du fou, on a bien fait de la bouger !",
@@ -444,7 +471,8 @@
       "e4a8",
       "danger"
      ]
-    ]
+    ],
+    "texte_en": "The rook was in the bishop's sights: Divya was right to move it!"
    },
    "27": {
     "brut": "Oh non, notre tour n'a plus de cases ! Heureusement, on trouve une parade pour s'en sortir. Si jamais le fou prend la tour, on prend le fou en e4 avec une attaque sur la tour blanche en c2.",
@@ -466,12 +494,14 @@
       "d7b8",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "Oh no, the rook has no squares left! Luckily, there's a defence: if the bishop takes the rook, we take the bishop on e4, attacking the white rook on c2."
    },
    "47": {
     "joue": true,
     "brut": "L'adversaire nous donne un pion pour affiablir notre roi... mais je ne crois pas que son attaque va fonctionner.",
-    "texte": "L'adversaire donne un pion pour affaiblir le roi noir… mais son attaque ne devrait pas fonctionner."
+    "texte": "L'adversaire donne un pion pour affaiblir le roi noir… mais son attaque ne devrait pas fonctionner.",
+    "texte_en": "The opponent gives up a pawn to weaken the black king… but the attack shouldn't work."
    },
    "49": {
     "joue": false,
@@ -486,7 +516,8 @@
       "e5f7",
       "danger"
      ]
-    ]
+    ],
+    "texte_en": "White was threatening to attack the king along the g-file, which is now open. The knight comes back to defend. For now, the king is safe, but the attack is coming: the queen will have to help defend too…"
    },
    "55": {
     "brut": "La dame était attaquée, il fallait la bouger.",
@@ -496,12 +527,14 @@
       "c6b7",
       "danger"
      ]
-    ]
+    ],
+    "texte_en": "The queen was attacked: it had to move."
    },
    "65": {
     "joue": true,
     "brut": "Dans les parties de championnes, on voit souvent des coups qui se répètent vers le 30ème coup. Ca nous sert à gagner un peu de temps (au coup n°41, on gagne un bonus temps).",
-    "texte": "Dans les parties de championnes, on voit souvent des coups qui se répètent vers le 30e coup. Cela fait gagner un peu de temps : au 41e coup, chaque joueuse reçoit un bonus de temps."
+    "texte": "Dans les parties de championnes, on voit souvent des coups qui se répètent vers le 30e coup. Cela fait gagner un peu de temps : au 41e coup, chaque joueuse reçoit un bonus de temps.",
+    "texte_en": "In games between champions, you often see moves being repeated around move 30. It saves a little time: on move 41, each player gets extra time on the clock."
    },
    "77": {
     "brut": "L'adversaire a refusé d'échanger les dames. Ca me permet de gagner le pion. Ici, c'est important de voir que notre dame contrôle la case d8, ça empêche la dame blanche de venir nous embêter.",
@@ -515,7 +548,8 @@
       "g5d8",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "The opponent refused to trade queens, which lets Divya win a pawn. Here, it's important to see that the black queen controls d8: the white queen can't come there and cause trouble."
    },
    "79": {
     "brut": "Avec le dernier coup des blancs, notre dame ne controle plus la case d8 ! Les blancs menaçaient de faire échec et mat en un coup.",
@@ -525,7 +559,8 @@
       "d3d8",
       "danger"
      ]
-    ]
+    ],
+    "texte_en": "With their last move, White cut the black queen off from d8! They were threatening mate in one."
    },
    "81": {
     "joue": true,
@@ -548,7 +583,8 @@
       "g5g8",
       "suite"
      ]
-    ]
+    ],
+    "texte_en": "White is threatening mate on d8 again, by sacrificing the queen! To defend, the king frees g8, where the black queen can come back."
    },
    "83": {
     "joue": false
@@ -569,10 +605,12 @@
       "g8g3",
       "menace"
      ]
-    ]
+    ],
+    "texte_en": "The g3 pawn is pinned: it can't take the queen. And Divya threatens to take the rook on the next move."
    }
   },
   "fin_brut": "Même si les blancs reviennent défendre avec la dame, je peux tout échanger en g3. la finale de pions avec 2 pions de plus est gagnante pour les noirs.",
-  "fin": "Même si les Blancs reviennent défendre avec la dame, Divya peut tout échanger en g3 : la finale de pions, avec deux pions de plus, est gagnante pour les Noirs."
+  "fin": "Même si les Blancs reviennent défendre avec la dame, Divya peut tout échanger en g3 : la finale de pions, avec deux pions de plus, est gagnante pour les Noirs.",
+  "fin_en": "Even if White brings the queen back to defend, Divya can trade everything on g3: the pawn endgame, two pawns up, is winning for Black."
  }
 }
