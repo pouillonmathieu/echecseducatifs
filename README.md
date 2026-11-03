@@ -92,7 +92,8 @@ commenté mais pas « à jouer » est joué tout seul, puis la partie s'arrête 
 galerie, l'interrupteur « Commentées par le coach » ne montre que ces parties-là.
 Dans l'atelier comme dans le jeu, le clic droit dessine sur l'échiquier : glissé, une flèche ; sur une case, la case
 colorée. La touche tenue choisit la couleur (sans touche : vert, Maj : orange, Ctrl ou Cmd : rouge, Alt : gris) et
-refaire la même chose l'efface. Dans le jeu, ces dessins s'effacent quand la position change.
+refaire la même chose l'efface. Dans le jeu, ces dessins s'effacent quand la position change. Le labyrinthe a la même
+possibilité (code commun : `Echiquier.annotations` dans `js/echiquier.js`) ; les dessins s'effacent quand la pièce bouge.
 
 ## Version anglaise
 

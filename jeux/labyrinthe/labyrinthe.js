@@ -402,9 +402,12 @@
 
   // ---------- Affichage ----------
   const cellule = (c) => plateau.querySelector(`[data-case="${c}"]`);
+  // clic droit : flèches et cases colorées pour réfléchir au chemin (js/echiquier.js)
+  const annotations = Echiquier.annotations(plateau);
   function dessiner() {
     const L = jeu.laby;
     Echiquier.dessiner(plateau, '8/8/8/8/8/8/8/8');
+    annotations.effacer();
     for (const c of L.obstacles) {
       cellule(c).classList.add('bloquee');
       cellule(c).setAttribute('aria-label', `${c}${t(' : ', ': ')}obstacle`);
@@ -525,6 +528,7 @@
     const fin = () => {
       jeu.anim = false;
       jeu.parcours.push(c);
+      annotations.effacer(); // les dessins au clic droit s'effacent quand la pièce bouge
       if (jeu.solution && jeu.solution[jeu.parcours.length - 1] !== c) jeu.solution = null; // on a quitté la solution
       Sons.pose(3);
       poserPiece(c);
@@ -569,7 +573,7 @@
     return c ? c.dataset.case : null;
   };
   plateau.addEventListener('pointerdown', (e) => {
-    if (jeu.fini || jeu.anim || !e.target.closest('.piece-laby')) return;
+    if (e.button > 0 || jeu.fini || jeu.anim || !e.target.closest('.piece-laby')) return;
     e.preventDefault();
     Object.assign(glisse, { actif: true, parti: false, x: e.clientX, y: e.clientY, id: e.pointerId });
   });
@@ -644,6 +648,7 @@
   function annuler() {
     if (jeu.mode !== 'libre' || jeu.parcours.length < 2 || jeu.fini || jeu.anim) return;
     jeu.parcours.pop();
+    annotations.effacer();
     poserPiece(ici());
     Sons.retire();
     majMarques();
