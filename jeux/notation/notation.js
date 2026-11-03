@@ -19,7 +19,7 @@
   const DUREE = 20;
 
   const reglages = {
-    anglais: Prefs.lire('echecs.note.anglais', false),
+    anglais: EN || Prefs.lire('echecs.note.anglais', false), // en anglais : notation anglaise seulement
     difficile: Prefs.lire('echecs.note.difficile', false),
     toutPetits: Prefs.lire('echecs.note.tout-petits', false),
     coordonnees: Prefs.lire('echecs.note.coordonnees', true),
@@ -36,6 +36,8 @@
   const LETTRES = { fr: { K: 'R', Q: 'D', R: 'T', B: 'F', N: 'C' }, en: { K: 'K', Q: 'Q', R: 'R', B: 'B', N: 'N' } };
   const DEPUIS = { fr: Object.fromEntries(Object.entries(LETTRES.fr).map(([a, b]) => [b, a])), en: { K: 'K', Q: 'Q', R: 'R', B: 'B', N: 'N' } };
   const FEMININ = { dame: true, tour: true };
+  // noms des pièces à afficher (PIECES sert aussi aux dessins : #piece-roi-blanc…)
+  const NOM = EN ? { K: 'king', Q: 'queen', R: 'rook', B: 'bishop', N: 'knight' } : PIECES;
   const le = (p) => (FEMININ[p] ? 'la' : 'le');
   const un = (p) => (FEMININ[p] ? 'une' : 'un');
 
@@ -95,7 +97,7 @@
     jeu.jetons = [];
     animerCoup();
     $('roi-question').setAttribute('href', `#piece-roi-${coup.trait}`);
-    $('question-texte').textContent = coup.trait === 'blanc' ? 'Écris le coup des Blancs' : 'Écris le coup des Noirs';
+    $('question-texte').textContent = coup.trait === 'blanc' ? t('Écris le coup des Blancs', 'Write White\'s move') : t('Écris le coup des Noirs', 'Write Black\'s move');
     const q = $('question');
     q.classList.remove('nouvelle'); void q.offsetWidth; q.classList.add('nouvelle');
     dessinerFeuille();
@@ -195,8 +197,8 @@
   }
   // la case vide : ce qui a été tapé avec le clavier à l'écran, ou un champ texte (clavier de l'appareil)
   function champ() {
-    if (reglages.clavier) return `<span class="saisie-tp" id="saisie-tp" aria-live="polite" aria-label="Ta notation du dernier coup">${dessinerJetons()}</span>`;
-    return `<input id="saisie" class="champ" type="text" form="form-saisie" value="${echapper(traduire(jeu.jetons.join('')))}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="14" aria-label="Ta notation du dernier coup" placeholder="?">`;
+    if (reglages.clavier) return `<span class="saisie-tp" id="saisie-tp" aria-live="polite" aria-label="${t('Ta notation du dernier coup', 'Your notation of the last move')}">${dessinerJetons()}</span>`;
+    return `<input id="saisie" class="champ" type="text" form="form-saisie" value="${echapper(traduire(jeu.jetons.join('')))}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="14" aria-label="${t('Ta notation du dernier coup', 'Your notation of the last move')}" placeholder="?">`;
   }
   // texte du champ -> jetons en notation anglaise (seules les lettres des pièces changent)
   const lireChamp = (texte) => [...texte].map(ch => DEPUIS[langue()][ch] || ch);
@@ -215,17 +217,17 @@
       `<button type="button" class="touche ${classe}" data-val="${val}" aria-label="${label}">${contenu}</button>`;
     const pieces = ['K', 'Q', 'R', 'B', 'N'].map(l => touche(l, tp
       ? `<svg class="fig-touche" viewBox="0 0 100 100" aria-hidden="true"><use class="fig-camp" href="#piece-${PIECES[l]}-blanc"/></svg>`
-      : `<b>${LETTRES[langue()][l]}</b><small>${PIECES[l]}</small>`, PIECES[l], 'piece')).join('');
-    const colonnes = Object.keys(ANIMAUX).map(l => touche(l, tp ? `${animal(l)}<b>${l}</b>` : `<b>${l}</b>`, tp ? `${l} comme ${ANIMAUX[l].nom}` : l, 'lettre')).join('');
+      : `<b>${LETTRES[langue()][l]}</b><small>${NOM[l]}</small>`, NOM[l], 'piece')).join('');
+    const colonnes = Object.keys(ANIMAUX).map(l => touche(l, tp ? `${animal(l)}<b>${l}</b>` : `<b>${l}</b>`, tp ? `${l} ${t('comme', 'as in')} ${ANIMAUX[l].nom}` : l, 'lettre')).join('');
     const chiffres = [1, 2, 3, 4, 5, 6, 7, 8].map(n => touche(String(n), tp ? `${mains(n)}<b>${n}</b>` : `<b>${n}</b>`, String(n), 'chiffre')).join('');
     const symboles =
-      touche('x', '<b>x</b><small>prend</small>', 'x : prend', 'symbole') +
-      touche('+', '<b>+</b><small>échec</small>', '+ : échec', 'symbole seulement-difficile') +
-      touche('#', '<b>#</b><small>mat</small>', '# : échec et mat', 'symbole seulement-difficile') +
-      touche('O-O', '<b>O-O</b><small>petit roque</small>', 'petit roque', 'symbole seulement-difficile') +
-      touche('O-O-O', '<b>O-O-O</b><small>grand roque</small>', 'grand roque', 'symbole seulement-difficile') +
-      touche('=', '<b>=</b><small>promotion</small>', '= : promotion', 'symbole seulement-difficile');
-    const effacer = `<button type="button" class="touche effacer" data-val="effacer" aria-label="Effacer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11v14H9l-6-7Z"/><path d="M12 9.5l5 5M17 9.5l-5 5"/></svg></button>`;
+      touche('x', `<b>x</b><small>${t('prend', 'takes')}</small>`, t('x : prend', 'x: takes'), 'symbole') +
+      touche('+', `<b>+</b><small>${t('échec', 'check')}</small>`, t('+ : échec', '+: check'), 'symbole seulement-difficile') +
+      touche('#', `<b>#</b><small>${t('mat', 'mate')}</small>`, t('# : échec et mat', '#: checkmate'), 'symbole seulement-difficile') +
+      touche('O-O', `<b>O-O</b><small>${t('petit roque', 'short castling')}</small>`, t('petit roque', 'short castling'), 'symbole seulement-difficile') +
+      touche('O-O-O', `<b>O-O-O</b><small>${t('grand roque', 'long castling')}</small>`, t('grand roque', 'long castling'), 'symbole seulement-difficile') +
+      touche('=', '<b>=</b><small>promotion</small>', t('= : promotion', '=: promotion'), 'symbole seulement-difficile');
+    const effacer = `<button type="button" class="touche effacer" data-val="effacer" aria-label="${t('Effacer', 'Delete')}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11v14H9l-6-7Z"/><path d="M12 9.5l5 5M17 9.5l-5 5"/></svg></button>`;
     $('clavier').classList.toggle('dessins', tp);
     $('clavier').innerHTML =
       `<div class="rangee-touches pieces">${pieces}${effacer}</div>` +
@@ -269,7 +271,7 @@
     arreterChrono();
     defi.resultats.push({ ok: juste, san: c.san, trait: c.trait, temps: (performance.now() - defi.debut) / 1000 });
     majPoints();
-    if (defi.numero === NB_DEFIS - 1) $('btn-suivant').firstChild.textContent = 'Voir le résultat ';
+    if (defi.numero === NB_DEFIS - 1) $('btn-suivant').firstChild.textContent = t('Voir le résultat ', 'See the result ');
   }
   function secouer() {
     const el = $('cible');
@@ -289,10 +291,10 @@
     cible.className = `a-remplir ${juste ? 'juste' : 'faux'}`;
     cible.innerHTML = bonne;
     $('verdict').innerHTML = (juste ? ICONE_JUSTE : ICONE_FAUX) +
-      `<span>${tempsEcoule ? 'Temps écoulé !' : juste ? 'Bravo !' : 'Pas tout à fait…'}</span>`;
+      `<span>${tempsEcoule ? t('Temps écoulé !', 'Time\'s up!') : juste ? t('Bravo !', 'Well done!') : t('Pas tout à fait…', 'Not quite…')}</span>`;
     const ta = $('ta-reponse');
     ta.hidden = juste || !ecrit;
-    if (!ta.hidden) ta.innerHTML = `Tu as écrit <s>${formater(ecrit, c.trait)}</s>, il fallait <b>${bonne}</b>.`;
+    if (!ta.hidden) ta.innerHTML = t(`Tu as écrit <s>${formater(ecrit, c.trait)}</s>, il fallait <b>${bonne}</b>.`, `You wrote <s>${formater(ecrit, c.trait)}</s>, it should be <b>${bonne}</b>.`);
     const conseil = juste ? '' : trouverConseil(c, traduire(ecrit), langue());
     $('conseil').hidden = !conseil;
     $('conseil').textContent = conseil;
@@ -308,7 +310,7 @@
     $('clavier').hidden = true;
     if (document.activeElement && document.activeElement.id === 'saisie') document.activeElement.blur();
     $('retour').hidden = false;
-    $('btn-suivant').firstChild.textContent = 'Suivant ';
+    $('btn-suivant').firstChild.textContent = t('Suivant ', 'Next ');
     $('btn-suivant').focus({ preventScroll: true });
   }
 
@@ -319,26 +321,29 @@
     const lettre = (L) => (reglages.toutPetits ? figurine(PIECES[L], c.trait) : LETTRES[langue()][L]);
     const roque = san.match(/^(O-O(?:-O)?)([+#])?$/);
     if (roque) {
-      m.push({ html: roque[1], label: roque[1] === 'O-O' ? 'petit roque' : 'grand roque' });
+      m.push({ html: roque[1], label: roque[1] === 'O-O' ? t('petit roque', 'short castling') : t('grand roque', 'long castling') });
       if (roque[2]) m.push(signe(roque[2]));
       return m;
     }
     const [, piece, col, rang, prise, arrivee, promo, fin] = san.match(/^([KQRBN])?([a-h])?([1-8])?(x)?([a-h][1-8])(?:=([QRBN]))?([+#])?$/);
-    if (piece) m.push({ html: lettre(piece), label: PIECES[piece] });
-    else if (col) m.push({ html: col, label: 'le pion de la colonne ' + col });
-    else m.push({ html: figurine('pion', c.trait), label: 'pion : pas de lettre', classe: 'fantome' });
-    if (piece && (col || rang)) m.push({ html: (col || '') + (rang || ''), label: col && rang ? `celui de ${col}${rang}` : col ? `celui de la colonne ${col}` : `celui de la rangée ${rang}` });
-    if (prise) m.push({ html: 'x', label: 'prend' });
-    m.push({ html: arrivee, label: 'case d\'arrivée' });
-    if (promo) m.push({ html: '=' + lettre(promo), label: `devient ${un(PIECES[promo])} ${PIECES[promo]}` });
+    if (piece) m.push({ html: lettre(piece), label: NOM[piece] });
+    else if (col) m.push({ html: col, label: t('le pion de la colonne ', 'the pawn from the ') + col + t('', '-file') });
+    else m.push({ html: figurine('pion', c.trait), label: t('pion : pas de lettre', 'pawn: no letter'), classe: 'fantome' });
+    if (piece && (col || rang)) m.push({ html: (col || '') + (rang || ''), label: EN
+      ? (col && rang ? `the one on ${col}${rang}` : col ? `the one on the ${col}-file` : `the one on rank ${rang}`)
+      : col && rang ? `celui de ${col}${rang}` : col ? `celui de la colonne ${col}` : `celui de la rangée ${rang}` });
+    if (prise) m.push({ html: 'x', label: t('prend', 'takes') });
+    m.push({ html: arrivee, label: t('case d\'arrivée', 'arrival square') });
+    if (promo) m.push({ html: '=' + lettre(promo), label: EN ? `becomes a ${NOM[promo]}` : `devient ${un(PIECES[promo])} ${PIECES[promo]}` });
     if (fin) m.push(signe(fin));
-    if (c.tags.includes('passant')) m.push({ html: 'e.p.', label: 'en passant (facultatif)', classe: 'facultatif' });
+    if (c.tags.includes('passant')) m.push({ html: 'e.p.', label: t('en passant (facultatif)', 'en passant (optional)'), classe: 'facultatif' });
     return m;
   }
-  const signe = (s) => (s === '#' ? { html: '#', label: 'échec et mat' } : { html: '+', label: 'échec' });
+  const signe = (s) => (s === '#' ? { html: '#', label: t('échec et mat', 'checkmate') } : { html: '+', label: t('échec', 'check') });
 
   // Une phrase pour ce qui est particulier (rien pour un coup simple).
   function expliquer(c) {
+    if (EN) return expliquerEn(c);
     const camp = c.trait === 'blanc' ? 'blanc' : 'noir';
     if (c.tags.includes('roque')) {
       const petit = c.san.startsWith('O-O') && !c.san.startsWith('O-O-O');
@@ -354,9 +359,46 @@
     return '';
   }
 
+  function expliquerEn(c) {
+    const camp = c.trait === 'blanc' ? 'white' : 'black';
+    if (c.tags.includes('roque')) {
+      const petit = c.san.startsWith('O-O') && !c.san.startsWith('O-O-O');
+      return `The ${camp} king castles ${petit ? 'short (kingside)' : 'long (queenside)'}: it goes to ${c.a} and the rook jumps over it. We write ${petit ? 'O-O (two O\'s)' : 'O-O-O (three O\'s)'}.`;
+    }
+    if (c.tags.includes('passant')) return 'En passant capture: the pawn takes the pawn next to it that has just moved two squares. We write the square where it lands.';
+    if (c.tags.includes('precision') && c.autres) {
+      const autres = c.autres.join(' and ');
+      return `${c.autres.length > 1 ? 'Several' : 'Two'} ${NOM[c.san[0]]}s can go to ${c.a} (the other one is on ${autres}, circled in orange): you have to say which one moved.`;
+    }
+    if (c.tags.includes('promotion')) return 'The pawn reaches the end of the board: it turns into another piece. We write the square, then = and the new piece.';
+    return '';
+  }
+
+  function conseilEn(c, ecrit, bonne) {
+    const sans = (s, re) => s.replace(re, '');
+    const N = NOM[c.san[0]];
+    if (sans(ecrit, /[+#]/g) === sans(bonne, /[+#]/g)) {
+      if (bonne.endsWith('#')) return ecrit.endsWith('+') ? 'It\'s actually checkmate: we write # (not +).' : 'The king is checkmated: we add # at the end.';
+      if (bonne.endsWith('+')) return ecrit.endsWith('#') ? 'The king is in check, but it can get out of it: we write +, not #.' : 'The king is in check: we add + at the end.';
+      return 'There is no check: no + or #.';
+    }
+    if (sans(ecrit, /x/g) === sans(bonne, /x/g)) return bonne.includes('x') ? 'A piece is captured: we write x before the arrival square.' : 'Nothing is captured: no x.';
+    if (/^[a-h]x/.test(bonne) && (ecrit === bonne.slice(1) || ecrit === bonne.slice(2))) return `When a pawn captures, we first write the file it came from: ${bonne[0]}.`;
+    const sansPrecision = bonne.replace(/^([A-Z])[a-h1-8]{1,2}(x?[a-h][1-8])/, '$1$2');
+    if (c.tags.includes('precision') && ecrit === sansPrecision) return `Two ${N}s can go to ${c.a}: you have to write ${bonne.slice(1, bonne.length - sansPrecision.length + 1)} to say which one moved.`;
+    if (!c.tags.includes('precision') && ecrit.replace(/^([A-Z])[a-h1-8]{1,2}(x?[a-h][1-8])/, '$1$2') === bonne) return `Only one ${N} can go to ${c.a}: no need to say where it came from.`;
+    if (/^[a-h]/.test(bonne) && /^[PA-Z]/.test(ecrit) && ecrit.slice(1) === bonne) return 'Pawns have no letter: we only write the square.';
+    if (/^[a-h]/.test(bonne) && ecrit.replace(/^[A-Z]/, '') === bonne) return 'A pawn moved: no letter in front.';
+    if (/^[A-Z]/.test(bonne) && ecrit === bonne.slice(1)) return `The ${N} moved: we first write its letter, ${bonne[0]}.`;
+    if (/^[A-Z]/.test(bonne) && ecrit.slice(1) === bonne.slice(1) && /^[A-Z]/.test(ecrit)) return `That's not the right piece: the ${N} (${bonne[0]}) moved.`;
+    if (!ecrit.includes(c.a) && !c.tags.includes('roque')) return `Look carefully at the arrival square, in dark yellow: it's ${c.a}.`;
+    return '';
+  }
+
   // Un conseil ciblé quand la réponse est presque juste.
   function trouverConseil(c, ecrit, l) {
     if (!ecrit) return '';
+    if (EN) return conseilEn(c, ecrit, traduire(c.san, l));
     const bonne = traduire(c.san, l);
     const sans = (s, re) => s.replace(re, '');
     if (sans(ecrit, /[+#]/g) === sans(bonne, /[+#]/g)) {
@@ -387,7 +429,7 @@
 
   // ---------- Défis ----------
   function construirePoints() {
-    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="Coup ${i + 1}"></li>`).join('');
+    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="${t('Coup', 'Move')} ${i + 1}"></li>`).join('');
   }
   function majPoints() {
     $('points').querySelectorAll('li').forEach((li, i) => {
@@ -396,7 +438,7 @@
     });
   }
   function lancerCoup() {
-    $('titre').textContent = `Coup ${defi.numero + 1} sur ${NB_DEFIS}`;
+    $('titre').textContent = t(`Coup ${defi.numero + 1} sur ${NB_DEFIS}`, `Move ${defi.numero + 1} of ${NB_DEFIS}`);
     afficher(defi.liste[defi.numero]);
     majPoints();
     defi.debut = performance.now();
@@ -428,13 +470,13 @@
     arreterChrono();
     const score = defi.resultats.filter(r => r.ok).length;
     const etoiles = score === NB_DEFIS ? 3 : score >= 7 ? 2 : score >= 4 ? 1 : 0;
-    $('res-titre').textContent = score === NB_DEFIS ? 'Parfait !' : score >= 7 ? 'Bravo !' : score >= 4 ? 'Bien joué !' : 'Continue, tu progresses !';
+    $('res-titre').textContent = score === NB_DEFIS ? t('Parfait !', 'Perfect!') : score >= 7 ? t('Bravo !', 'Well done!') : score >= 4 ? t('Bien joué !', 'Nice work!') : t('Continue, tu progresses !', 'Keep going, you\'re getting better!');
     allumerEtoiles($('etoiles'), etoiles);
     $('res-liste').innerHTML = defi.resultats.map((r, i) =>
-      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="Coup ${i + 1} (${traduire(r.san)}) : ${r.ok ? 'réussi' : 'raté'}">` +
+      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms" aria-label="${t('Coup', 'Move')} ${i + 1} (${traduire(r.san)})${t(' : ', ': ')}${r.ok ? t('réussi', 'right') : t('raté', 'wrong')}">` +
       `<span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t res-coup">${formater(r.san, r.trait)}</span></li>`).join('');
     const total = defi.resultats.reduce((s, r) => s + r.temps, 0);
-    $('res-temps').textContent = `Temps total : ${formaterDuree(total)}`;
+    $('res-temps').textContent = t('Temps total : ', 'Total time: ') + formaterDuree(total);
     $('resultats').hidden = false;
     $('btn-rejouer').focus({ preventScroll: true });
     compterJusqua($('res-score'), score);
@@ -454,7 +496,7 @@
   function lancerLibre() {
     preparer('libre');
     document.body.dataset.chrono = 'non';
-    $('titre').textContent = 'Note le coup';
+    $('titre').textContent = t('Note le coup', 'Write the move');
     jeu.justes = 0; jeu.total = 0;
     $('score-libre').textContent = '0 / 0';
     afficher(piocher());
@@ -502,7 +544,7 @@
   });
 
   function ouvrirChoix() {
-    $('choix-niveau').textContent = reglages.difficile ? 'niveau difficile' : 'niveau facile';
+    $('choix-niveau').textContent = reglages.difficile ? t('niveau difficile', 'hard level') : t('niveau facile', 'easy level');
     $('choix-defi').hidden = false;
     $('mode-defi').focus({ preventScroll: true });
   }
@@ -533,6 +575,8 @@
     dessinerFeuille();
   }
 
+  // en anglais, pas de choix de notation : on cache le réglage
+  if (EN) $('reg-langue').closest('.ligne-reglage-bloc').hidden = true;
   const segLangue = [...$('reg-langue').querySelectorAll('button')];
   const majLangue = () => segLangue.forEach(b => b.setAttribute('aria-pressed', String((b.dataset.langue === 'en') === reglages.anglais)));
   segLangue.forEach(b => b.addEventListener('click', () => {

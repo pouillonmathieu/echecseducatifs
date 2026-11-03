@@ -34,7 +34,11 @@
   "Nouvelle partie": "New game",
   "Précédent": "Previous",
   "Les Blancs": "White",
-  "Les Noirs": "Black"
+  "Les Noirs": "Black",
+  "Tout-petits": "Little ones",
+  "Facile": "Easy",
+  "Difficile": "Hard",
+  "Niveau": "Level"
  },
  "index.html": {
   "Mini-jeux d'échecs": "Chess mini-games",
@@ -158,5 +162,32 @@
   "Partie": "Game",
   "Dés des Blancs": "White's dice",
   "Fermer les règles": "Close the rules"
+ },
+ "jeux/notation/index.html": {
+  "Note le coup": "Write the move",
+  "Notation": "Notation",
+  "Français": "French",
+  "R D T F C": "R D T F C",
+  "Anglais": "English",
+  "K Q R B N": "K Q R B N",
+  "Clavier à l'écran": "On-screen keyboard",
+  "Sinon, celui de l'appareil": "Otherwise, your device's keyboard",
+  "Clavier avec les pièces, les animaux et les doigts": "Keyboard with pieces, animals and fingers",
+  "Écris le coup des Blancs": "Write White's move",
+  "Coup": "Move",
+  "Valider": "Check",
+  "Écris le coup puis": "Write the move, then press",
+  "encore pour le suivant.": "again for the next one.",
+  "10 coups à écrire —": "10 moves to write —",
+  "niveau facile": "easy level",
+  "20 secondes par coup": "20 seconds per move",
+  "Langue de la notation": "Notation language",
+  "Coups simples": "Simple moves",
+  "Échec, mat, roque, promotion…": "Check, mate, castling, promotion…",
+  "Revoir le dernier coup": "Replay the last move",
+  "Revoir le coup": "Replay the move",
+  "Afficher ou masquer le clavier à l'écran": "Show or hide the on-screen keyboard",
+  "Clavier": "Keyboard",
+  "Détail des coups": "Move details"
  }
 }
