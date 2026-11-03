@@ -29,7 +29,12 @@
   "Côté des Blancs": "White's side",
   "Côté des Noirs": "Black's side",
   "Côté au hasard": "Random side",
-  "Orientation de l'échiquier": "Board orientation"
+  "Orientation de l'échiquier": "Board orientation",
+  "Annuler": "Undo",
+  "Nouvelle partie": "New game",
+  "Précédent": "Previous",
+  "Les Blancs": "White",
+  "Les Noirs": "Black"
  },
  "index.html": {
   "Mini-jeux d'échecs": "Chess mini-games",
@@ -124,5 +129,34 @@
   "10 cases à trouver": "10 squares to find",
   "Le plus de cases en 20 s": "As many squares as you can in 20 s",
   "Détail des cases": "Square details"
+ },
+ "jeux/des/index.html": {
+  "Dés par tour": "Dice per turn",
+  "1 dé": "1 die",
+  "classique": "classic",
+  "3 dés": "3 dice",
+  "moderne": "modern",
+  "Dés équilibrés": "Balanced dice",
+  "Pions 8/16, dame et roi 1/16": "Pawns 8/16, queen and king 1/16",
+  "Face à face": "Face to face",
+  "Dés des Noirs retournés": "Black's dice upside down",
+  "Chiffres sur les dés": "Numbers on the dice",
+  "Lancer les dés": "Roll the dice",
+  "Terminer mon tour": "End my turn",
+  "Tour 1": "Turn 1",
+  "Roi capturé": "King captured",
+  "Historique des lancers": "Roll history",
+  "Les échecs avec des dés : à chaque tour, les dés choisissent les pièces que tu vas jouer. Installe un vrai échiquier, et lance les dés ici.": "Chess with dice: every turn, the dice choose which pieces you'll move. Set up a real chessboard, and roll the dice here.",
+  "Apprendre les règles": "Learn the rules",
+  "Reprendre la partie": "Resume the game",
+  "Qui a capturé le roi ?": "Who captured the king?",
+  "La partie continue": "The game goes on",
+  "Victoire des Blancs !": "White wins!",
+  "Règles du jeu": "Rules of the game",
+  "Nombre de dés par tour": "Number of dice per turn",
+  "Dés des Noirs": "Black's dice",
+  "Partie": "Game",
+  "Dés des Blancs": "White's dice",
+  "Fermer les règles": "Close the rules"
  }
 }

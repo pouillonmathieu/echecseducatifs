@@ -10,8 +10,9 @@
   const $ = (id) => document.getElementById(id);
 
   const FACES = ['pion', 'cavalier', 'fou', 'tour', 'dame', 'roi'];
-  const NOMS = { pion: 'pion', cavalier: 'cavalier', fou: 'fou', tour: 'tour', dame: 'dame', roi: 'roi' };
-  const NOM_CAMP = { blanc: 'Blancs', noir: 'Noirs' };
+  const NOMS = EN ? { pion: 'pawn', cavalier: 'knight', fou: 'bishop', tour: 'rook', dame: 'queen', roi: 'king' }
+    : { pion: 'pion', cavalier: 'cavalier', fou: 'fou', tour: 'tour', dame: 'dame', roi: 'roi' };
+  const NOM_CAMP = EN ? { blanc: 'White', noir: 'Black' } : { blanc: 'Blancs', noir: 'Noirs' };
   const autre = (c) => (c === 'blanc' ? 'noir' : 'blanc');
   const CLE_PARTIE = 'echecs.des.partie';
 
@@ -66,7 +67,7 @@
   function htmlDe(valeur, cote, { balise = 'span', index = null, joue = false, perdu = false, classes = '' } = {}) {
     const piece = FACES[valeur - 1];
     const attrs = balise === 'button'
-      ? ` type="button" data-index="${index}" aria-pressed="${joue}" aria-label="Dé ${index + 1} : ${NOMS[piece]}${joue ? ', joué' : perdu ? ', perdu' : ''}"`
+      ? ` type="button" data-index="${index}" aria-pressed="${joue}" aria-label="${t('Dé', 'Die')} ${index + 1}${t(' : ', ': ')}${NOMS[piece]}${joue ? t(', joué', ', played') : perdu ? t(', perdu', ', lost') : ''}"`
       : ' aria-hidden="true"';
     return `<${balise} class="de ${cote}${joue ? ' joue' : ''}${perdu ? ' perdu' : ''} ${classes}"${attrs}>` +
       `<span class="chiffre">${valeur}</span>` +
@@ -84,7 +85,7 @@
       const enJeu = !partie.fini && partie.enJeu === cote;
       zone.classList.toggle('a-lancer', aLancer);
       zone.classList.toggle('en-jeu', enJeu);
-      $(`etat-${cote}`).textContent = enJeu ? 'À toi de jouer' : (aLancer ? 'À toi de lancer' : '');
+      $(`etat-${cote}`).textContent = enJeu ? t('À toi de jouer', 'Your move') : (aLancer ? t('À toi de lancer', 'Your roll') : '');
       $(`lancer-${cote}`).disabled = !aLancer;
       // le camp qui joue peut terminer son tour (dés restants perdus)
       $(`lancer-${cote}`).hidden = enJeu;
@@ -95,13 +96,13 @@
       const des = partie.des[cote];
       const conteneur = $(`des-${cote}`);
       if (!des.length) {
-        conteneur.innerHTML = `<span class="des-vide">${cote === 'blanc' ? 'Les Blancs commencent' : 'Pas encore lancé'}</span>`;
+        conteneur.innerHTML = `<span class="des-vide">${cote === 'blanc' ? t('Les Blancs commencent', 'White goes first') : t('Pas encore lancé', 'Not rolled yet')}</span>`;
       } else {
         conteneur.innerHTML = des.map((d, i) =>
           htmlDe(d.v, cote, { balise: 'button', index: i, joue: d.joue, perdu: d.perdu, classes: enJeu ? '' : 'ancien' })).join('');
       }
     }
-    $('numero-tour').textContent = `Tour ${partie.tour}`;
+    $('numero-tour').textContent = t('Tour ', 'Turn ') + partie.tour;
     $('btn-annuler').disabled = pile.length === 0;
     // une ligne par tour : les dés des Blancs, puis ceux des Noirs
     const tours = [];
@@ -111,7 +112,7 @@
     }
     const groupe = (valeurs, cote) => `<span class="h-des">${valeurs ? valeurs.map(v => miniDe(v, cote)).join('') : ''}</span>`;
     $('historique').innerHTML = tours.map(t =>
-      `<li><span class="h-tour">Tour ${t.tour}</span>${groupe(t.blanc, 'blanc')}${groupe(t.noir, 'noir')}</li>`).join('');
+      `<li><span class="h-tour">${EN ? 'Turn' : 'Tour'} ${t.tour}</span>${groupe(t.blanc, 'blanc')}${groupe(t.noir, 'noir')}</li>`).join('');
   }
 
   // ---------- Actions ----------
@@ -213,9 +214,11 @@
     partie.fini = true;
     sauver();
     $('fin-roi').setAttribute('href', `#piece-roi-${cote}`);
-    $('fin-message').textContent = `Victoire des ${NOM_CAMP[cote]} !`;
+    $('fin-message').textContent = EN ? `${NOM_CAMP[cote]} wins!` : `Victoire des ${NOM_CAMP[cote]} !`;
     const lancers = partie.historique.length;
-    $('fin-detail').textContent = `Le roi ${cote === 'blanc' ? 'noir' : 'blanc'} est tombé au tour ${partie.tour}, après ${lancers} lancer${lancers > 1 ? 's' : ''} de dés.`;
+    $('fin-detail').textContent = EN
+      ? `The ${cote === 'blanc' ? 'black' : 'white'} king fell on turn ${partie.tour}, after ${lancers} roll${lancers > 1 ? 's' : ''} of the dice.`
+      : `Le roi ${cote === 'blanc' ? 'noir' : 'blanc'} est tombé au tour ${partie.tour}, après ${lancers} lancer${lancers > 1 ? 's' : ''} de dés.`;
     $('fin-choix').hidden = true;
     $('fin-victoire').hidden = false;
     lancerPluie($('pluie'), 70);
@@ -266,6 +269,25 @@
               <p>Dans les réglages : le <strong>face à face</strong> retourne les dés des Noirs, la <strong>version classique</strong> se joue avec un seul dé, et les <strong>dés équilibrés</strong> font sortir chaque pièce aussi souvent qu'elle est présente sur l'échiquier (beaucoup de pions, peu de dames et de rois).</p>`,
     },
   ];
+  const RULES = [
+    `<p>Each face of the die shows a piece: <strong>1 pawn, 2 knight, 3 bishop, 4 rook, 5 queen, 6 king</strong>.</p>
+              <p>You play on a real board, from the usual starting position. White moves first.</p>`,
+    `<p>On your turn, roll the 3 dice. Each die lets you play <strong>one move with the piece it shows</strong>.</p>
+              <p>Here: two pawn moves and one knight move, in any order you like. The same piece can move more than once.</p>`,
+    `<p>If none of your pieces of that kind can move, that die is lost. For example, at the start of the game, the rooks are blocked in.</p>
+              <p>You play every die you can use. If no die can be played, your turn is over.</p>`,
+    `<p>Nobody says "check": the king is allowed to move into danger or stay there.</p>
+              <p>To win, you have to <strong>capture the enemy king</strong>. Careful: after your turn, your opponent can take your king if they roll the right piece!</p>`,
+    `<ul>
+                <li><strong>Promotion</strong>: with a pawn die, a pawn that reaches the far end of the board turns into a queen, rook, bishop or knight.</li>
+                <li><strong>Castling</strong>: it is played with a king die.</li>
+                <li><strong>En passant</strong>: with a pawn die, on the turn right after the enemy pawn's two-square move.</li>
+              </ul>`,
+    `<p>Press <strong>"Roll the dice"</strong> when it's your turn. <strong>Tap a die</strong> once you've played it: it turns grey. When all your dice are played, your turn ends by itself. If the remaining dice can't be used, press <strong>"End my turn"</strong>. Then your opponent rolls.</p>
+              <p>In the settings: <strong>face to face</strong> turns Black's dice upside down, the <strong>classic version</strong> is played with a single die, and <strong>balanced dice</strong> make each piece come up as often as it appears on the board (lots of pawns, few queens and kings).</p>`,
+  ];
+  const TITLES = ['One die, six pieces', 'Three dice, three moves', 'A useless die', 'No check, no mate', 'Special moves', 'On this site'];
+  if (EN) REGLES.forEach((r, i) => { r.titre = TITLES[i]; r.texte = RULES[i]; });
   let etape = 0;
   let reglesDepuisEntree = false;
 
@@ -276,7 +298,7 @@
     $('regle-titre').textContent = r.titre;
     $('regle-texte').innerHTML = r.texte;
     $('regle-prec').disabled = etape === 0;
-    $('regle-suiv').textContent = etape === REGLES.length - 1 ? 'Jouer !' : 'Suivant';
+    $('regle-suiv').textContent = etape === REGLES.length - 1 ? t('Jouer !', 'Play!') : t('Suivant', 'Next');
     $('regle-points').innerHTML = REGLES.map((_, i) => `<li class="${i < etape ? 'ok' : i === etape ? 'actuel' : ''}"></li>`).join('');
   }
   function ouvrirRegles(depuisEntree) {
@@ -299,7 +321,7 @@
     const sauvegarde = charger();
     const enCours = sauvegarde && sauvegarde.partie.historique.length > 0 && !sauvegarde.partie.fini;
     $('btn-reprendre').hidden = !enCours;
-    $('btn-commencer').textContent = enCours ? 'Nouvelle partie' : 'Commencer la partie';
+    $('btn-commencer').textContent = enCours ? t('Nouvelle partie', 'New game') : t('Commencer la partie', 'Start the game');
     $('btn-commencer').className = enCours ? 'bouton-secondaire' : 'bouton-principal';
     $('entree-des').innerHTML = htmlDe(2, 'blanc') + htmlDe(6, 'noir') + htmlDe(5, 'blanc');
     if (enCours) { partie = sauvegarde.partie; pile = sauvegarde.pile || []; }
