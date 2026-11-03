@@ -121,7 +121,7 @@ css/commun.css        couleurs (thèmes clair et sombre), typographie, boutons, 
 css/jeux.css          composants partagés des jeux : défis, progression, résultats, confettis
 css/accueil.css       page d'accueil
 js/commun.js          préférences, thème clair/sombre, panneau de réglages, interrupteurs
-js/pieces.js          pièces d'échecs : valeurs, noms, dessins SVG
+js/pieces.js          pièces : valeurs, noms, deux dessins au choix (classiques Cburnett ou simples)
 js/sons.js            petits sons synthétisés (aucun fichier audio)
 js/ui.js              confettis, compteur animé, durées, étoiles
 js/tout-petits.js     dessins des animaux (a à h) et des mains (1 à 8)
@@ -143,3 +143,9 @@ CC BY-SA), vérifiée photo par photo, et recadrées pour le site ; l'auteur, la
 d'origine de chacune sont dans `jeux/joue/photos.js` et affichés sur la page du jeu (« Crédits des photos »). Elles
 restent soumises à leur propre licence. La liste est tenue dans `outils/photos-champions.json`
 (`outils/photos-champions.py` copie les photos et écrit `photos.js`).
+
+Exception : les pièces « classiques » (`js/pieces.js`, réglage « Pièces » des jeux) sont le jeu de
+[Colin M. L. Burnett](https://en.wikipedia.org/wiki/User:Cburnett) publié sur Wikimedia Commons (fichiers
+`Chess_klt45.svg`, etc.), sous licence BSD (il est aussi diffusé sous GFDL et GPL) ; les tracés viennent des fichiers
+SVG de [lichess-org/lila](https://github.com/lichess-org/lila/tree/master/public/piece/cburnett), seules les couleurs
+ont été reliées au thème clair/sombre. Les pièces « simples » sont dessinées pour le site.
