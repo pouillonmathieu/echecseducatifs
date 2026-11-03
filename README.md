@@ -94,6 +94,7 @@ Dans l'atelier comme dans le jeu, le clic droit dessine sur l'échiquier : gliss
 colorée. La touche tenue choisit la couleur (sans touche : vert, Maj : orange, Ctrl ou Cmd : rouge, Alt : gris) et
 refaire la même chose l'efface. Dans le jeu, ces dessins s'effacent quand la position change. Le labyrinthe a la même
 possibilité (code commun : `Echiquier.annotations` dans `js/echiquier.js`) ; les dessins s'effacent quand la pièce bouge.
+« Mat ou pas mat ? » aussi ; les dessins s'effacent à chaque nouvelle position.
 
 ## Version anglaise
 
@@ -105,6 +106,12 @@ script signale tout texte sans traduction. Les textes générés ont aussi leur 
 (`outils/positions-mat.js`), introductions des parties célèbres (`titre_en`, `texte_en` dans `jeux/joue/intros.js`) et
 commentaires du coach (`texte_en`, `fin_en` dans `outils/commentaires-coach.json`). Dans « Note le coup » et « Joue le
 coup », la version anglaise n'utilise que la notation anglaise.
+
+## Cache des navigateurs
+
+Les fichiers CSS et JS sont appelés avec un numéro de version (`?v=AAAAMMJJHHMM`). Après une modification, lancer
+`python3 outils/version.py` puis `python3 outils/anglais/generer.py` : les navigateurs rechargent alors les fichiers
+modifiés au lieu de garder l'ancienne version.
 
 ## Organisation
 

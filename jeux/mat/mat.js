@@ -10,6 +10,8 @@
   const POSITIONS = window.POSITIONS_MAT;
   const $ = (id) => document.getElementById(id);
   const plateau = $('echiquier');
+  // clic droit : flèches et cases colorées pour réfléchir (js/echiquier.js) ; effacées à chaque nouvelle position
+  const annotations = Echiquier.annotations(plateau);
 
   const NB_DEFIS = 10;
   const DUREE = 20;
@@ -56,6 +58,7 @@
     jeu.position = position;
     jeu.repondu = false;
     Echiquier.dessiner(plateau, position.fen);
+    annotations.effacer();
     if (reglages.echec && position.echec) Echiquier.marquer(plateau, [position.roi], 'roi-attaque');
     const blancs = position.trait === 'blanc';
     // le roi de la question et des boutons est celui du camp concerné
