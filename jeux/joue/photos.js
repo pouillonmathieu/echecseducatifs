@@ -144,6 +144,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Steinitz,_William-4_-_DPLA_-_9eeab9ac335135c24b69ab7e36fc5354_(cropped).jpg"
  },
+ "tarrasch": {
+  "titre": "Tarrasch, Siegbert -2 - DPLA - 224f35dc323734bf355cc7c94d0ded68",
+  "auteur": "Auteur inconnu",
+  "licence": "Public domain",
+  "url": "https://commons.wikimedia.org/wiki/File:Tarrasch,_Siegbert_-2_-_DPLA_-_224f35dc323734bf355cc7c94d0ded68.jpg"
+ },
  "tchigorine": {
   "titre": "Mikhail Chigorin (cropped)",
   "auteur": "Auteur inconnu",
