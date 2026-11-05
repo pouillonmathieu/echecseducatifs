@@ -24,6 +24,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 3.0 NL",
   "url": "https://commons.wikimedia.org/wiki/File:Mikhail_Botvinnik_1962.jpg"
  },
+ "bronstein": {
+  "titre": "David Bronstein in 1954",
+  "auteur": "Joop van Bilsen / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:David_Bronstein_in_1954.jpg"
+ },
  "capablanca": {
   "titre": "[Jose R. Capablanca, Cuban chess champion]",
   "auteur": "Auteur inconnu (New York World-Telegram & Sun, Library of Congress)",
