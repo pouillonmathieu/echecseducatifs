@@ -1001,8 +1001,9 @@
   construireChoix();
   // crédits des photos (auteur, licence avec son lien, page d'origine)
   function lienLicence(l) {
-    const m = l.match(/^CC (BY(?:-SA)?) ([\d.]+)/);
-    return m ? `<a href="https://creativecommons.org/licenses/${m[1].toLowerCase()}/${m[2]}/" target="_blank" rel="noopener">${echapper(l)}</a>` : echapper(l);
+    // « CC BY-SA 3.0 NL » : version adaptée à un pays -> …/by-sa/3.0/nl/
+    const m = l.match(/^CC (BY(?:-SA)?) ([\d.]+)(?: ([A-Z]{2}))?/);
+    return m ? `<a href="https://creativecommons.org/licenses/${m[1].toLowerCase()}/${m[2]}/${m[3] ? m[3].toLowerCase() + '/' : ''}" target="_blank" rel="noopener">${echapper(l)}</a>` : echapper(l);
   }
   const credits = Object.entries(PHOTOS).sort((a, b) => CHAMPIONS[a[0]].nom.localeCompare(CHAMPIONS[b[0]].nom));
   if (credits.length) {

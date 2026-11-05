@@ -201,5 +201,12 @@
   "auteur": "Auteur inconnu",
   "licence": "Public domain",
   "url": ""
+ },
+ "euwe": {
+  "source": "recadrages-perso/euwe.jpg",
+  "titre": "Max Euwe (1945)",
+  "auteur": "Theo van Haren Noman / Anefo",
+  "licence": "CC BY-SA 3.0 NL",
+  "url": "https://commons.wikimedia.org/wiki/File:Max_Euwe_(1945).jpg"
  }
 }

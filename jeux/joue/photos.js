@@ -54,6 +54,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY 2.0",
   "url": "https://www.flickr.com/photos/8022405@N02/1806182652"
  },
+ "euwe": {
+  "titre": "Max Euwe (1945)",
+  "auteur": "Theo van Haren Noman / Anefo",
+  "licence": "CC BY-SA 3.0 NL",
+  "url": "https://commons.wikimedia.org/wiki/File:Max_Euwe_(1945).jpg"
+ },
  "gukesh": {
   "titre": "NZ9_3600",
   "auteur": "Frans Peeters Photography",
