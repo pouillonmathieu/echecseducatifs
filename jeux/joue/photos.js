@@ -84,6 +84,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY 2.0",
   "url": "https://www.flickr.com/photos/9472417@N03/14631721698"
  },
+ "lasker": {
+  "titre": "Lasker, Emanuel \"-8\" - DPLA - aa442dc47950f347989fadd72f31d04c",
+  "auteur": "Auteur inconnu",
+  "licence": "Public domain",
+  "url": "https://commons.wikimedia.org/wiki/File:Lasker,_Emanuel_%22-8%22_-_DPLA_-_aa442dc47950f347989fadd72f31d04c.jpg"
+ },
  "morphy": {
   "titre": "Morphy, Paul 1855 (Est. Date) - DPLA",
   "auteur": "Auteur inconnu",
