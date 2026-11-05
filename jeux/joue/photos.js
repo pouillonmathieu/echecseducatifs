@@ -72,6 +72,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 3.0 NL",
   "url": "https://commons.wikimedia.org/wiki/File:Max_Euwe_(1945).jpg"
  },
+ "gligoric": {
+  "titre": "Svetozar Gligoric, Chess Olympiad Luzern, Switzerland, 1982",
+  "auteur": "Krtschil",
+  "licence": "CC BY-SA 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Svetozar_Gligoric,_Chess_Olympiad_Luzern,_Switzerland,_1982.jpg"
+ },
  "gukesh": {
   "titre": "NZ9_3600",
   "auteur": "Frans Peeters Photography",
