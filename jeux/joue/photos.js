@@ -162,6 +162,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Schlechter,_Carl_1896_-_DPLA_-_832da5245429c37f5e2ffcdf1fa3b902_(cropped).jpg"
  },
+ "smyslov": {
+  "titre": "Interpolisschaaktoernooi Tilburg 1819 Smyslov aan zet, Bestanddeelnr 929-3630",
+  "auteur": "Koen Suyk / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Interpolisschaaktoernooi_Tilburg_1819_Smyslov_aan_zet,_Bestanddeelnr_929-3630.jpg"
+ },
  "spassky": {
   "titre": "El gran *Boris Spassky*, campeón mundial de ajedrez, firmando autógrafos, luego de un Abierto en Los Angeles, USA.",
   "auteur": "Utilisateur Flickr",
