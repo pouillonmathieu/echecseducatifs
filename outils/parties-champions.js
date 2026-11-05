@@ -26,7 +26,7 @@ const CHAMPIONS = {
   'Paul Morphy': 'morphy', 'Wilhelm Steinitz': 'steinitz', 'Mikhaïl Tchigorine': 'tchigorine', 'Siegbert Tarrasch': 'tarrasch',
   'Emanuel Lasker': 'lasker', 'Carl Schlechter': 'schlechter', 'Akiba Rubinstein': 'rubinstein', 'Aron Nimzowitsch': 'nimzowitsch',
   'José Raúl Capablanca': 'capablanca', 'Richard Réti': 'reti', 'Alexandre Alekhine': 'alekhine', 'Max Euwe': 'euwe',
-  'Mikhaïl Botvinnik': 'botvinnik', 'Paul Keres': 'keres', 'Vassily Smyslov': 'smyslov', 'Isaac Boleslavski': 'boleslavski',
+  'Mikhaïl Botvinnik': 'botvinnik', 'Paul Keres': 'keres', 'Vassily Smyslov': 'smyslov',
   'David Bronstein': 'bronstein', 'Miguel Najdorf': 'najdorf', 'Svetozar Gligorić': 'gligoric', 'Tigran Petrossian': 'petrossian',
   'Mikhaïl Tal': 'tal', 'Leonid Stein': 'stein', 'Lev Polougaïevski': 'polougaievski', 'Boris Spassky': 'spassky',
   'Bent Larsen': 'larsen', 'Bobby Fischer': 'fischer', 'Ulf Andersson': 'andersson', 'Anatoli Karpov': 'karpov', 'Garry Kasparov': 'kasparov',
