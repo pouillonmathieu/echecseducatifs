@@ -159,5 +159,26 @@
   "auteur": "Frans Peeters Photography",
   "licence": "CC BY-SA 2.0",
   "url": "https://www.flickr.com/photos/40058780@N08/54275362068"
+ },
+ "steinitz": {
+  "source": "recadrages-perso/steinitz.jpg",
+  "titre": "Steinitz, William-4 - DPLA - 9eeab9ac335135c24b69ab7e36fc5354 (cropped)",
+  "auteur": "Auteur inconnu",
+  "licence": "Public domain",
+  "url": "https://commons.wikimedia.org/wiki/File:Steinitz,_William-4_-_DPLA_-_9eeab9ac335135c24b69ab7e36fc5354_(cropped).jpg"
+ },
+ "tchigorine": {
+  "source": "recadrages-perso/tchigorine.jpg",
+  "titre": "Mikhail Chigorin (cropped)",
+  "auteur": "Auteur inconnu",
+  "licence": "Public domain",
+  "url": "https://commons.wikimedia.org/wiki/File:Mikhail_Chigorin_(cropped).jpg"
+ },
+ "gukesh": {
+  "source": "recadrages-libres/gukesh-3.jpg",
+  "titre": "NZ9_3600",
+  "auteur": "Frans Peeters Photography",
+  "licence": "CC BY-SA 2.0",
+  "url": "https://www.flickr.com/photos/40058780@N08/52637348811"
  }
 }
