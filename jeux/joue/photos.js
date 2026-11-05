@@ -114,6 +114,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Morphy,_Paul_1855_(Est._Date)_-_DPLA_-_192f43dd2a7c3fe3d2604a28829946e8.jpg"
  },
+ "najdorf": {
+  "titre": "Miguel Najdorf (1973)",
+  "auteur": "Bert Verhoeff / Anefo",
+  "licence": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Miguel_Najdorf_(1973).jpg"
+ },
  "nakamura": {
   "titre": "Hikaru Nakamura",
   "auteur": "karpidis",
