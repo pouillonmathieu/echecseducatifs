@@ -84,6 +84,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 2.0",
   "url": "https://www.flickr.com/photos/61838152@N06/6150381903"
  },
+ "keres": {
+  "titre": "Paul Keres 1939 (cropped)",
+  "auteur": "El Gráfico",
+  "licence": "Public domain",
+  "url": "https://commons.wikimedia.org/wiki/File:Paul_Keres_1939_(cropped).jpg"
+ },
  "kosteniuk": {
   "titre": "GM Alexandra Kosteniuk",
   "auteur": "karpidis",
