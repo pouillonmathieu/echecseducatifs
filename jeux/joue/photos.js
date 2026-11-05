@@ -18,6 +18,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 2.0",
   "url": "https://www.flickr.com/photos/40058780@N08/52638550448"
  },
+ "botvinnik": {
+  "titre": "Mikhail Botvinnik 1962",
+  "auteur": "Harry Pot / Anefo",
+  "licence": "CC BY-SA 3.0 NL",
+  "url": "https://commons.wikimedia.org/wiki/File:Mikhail_Botvinnik_1962.jpg"
+ },
  "capablanca": {
   "titre": "[Jose R. Capablanca, Cuban chess champion]",
   "auteur": "Auteur inconnu (New York World-Telegram & Sun, Library of Congress)",
