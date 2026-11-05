@@ -1008,7 +1008,7 @@
   if (credits.length) {
     $('credits-photos').hidden = false;
     $('liste-credits').innerHTML = credits.map(([cle, ph]) =>
-      `<li><b>${echapper(affiche(CHAMPIONS[cle].nom))}</b>${t(' : ', ': ')}<a href="${echapper(ph.url)}" target="_blank" rel="noopener">${echapper(ph.titre)}</a>` +
+      `<li><b>${echapper(affiche(CHAMPIONS[cle].nom))}</b>${t(' : ', ': ')}${ph.url ? `<a href="${echapper(ph.url)}" target="_blank" rel="noopener">${echapper(ph.titre)}</a>` : echapper(ph.titre)}` +
       ` — ${echapper(EN ? ph.auteur.replace(/^Auteur inconnu/, 'Unknown author').replace(/^Utilisateur Flickr/, 'Flickr user') : ph.auteur)}, ${lienLicence(ph.licence)}</li>`).join('');
   }
   if (somme(COACH)) {

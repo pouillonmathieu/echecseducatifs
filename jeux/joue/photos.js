@@ -108,6 +108,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 2.0",
   "url": "https://www.flickr.com/photos/40058780@N08/53468260869"
  },
+ "nimzowitsch": {
+  "titre": "Aron Nimzowitsch",
+  "auteur": "Auteur inconnu",
+  "licence": "Public domain",
+  "url": ""
+ },
  "polgar": {
   "titre": "IMG_9475 GM judit polgar",
   "auteur": "Utilisateur Flickr",
