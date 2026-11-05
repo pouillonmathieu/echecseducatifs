@@ -156,6 +156,7 @@ restent soumises à leur propre licence. La liste est tenue dans `outils/photos-
 
 Exception : les pièces « classiques » (`js/pieces.js`, réglage « Pièces » de la page d'accueil) sont le jeu de
 [Colin M. L. Burnett](https://en.wikipedia.org/wiki/User:Cburnett) publié sur Wikimedia Commons (fichiers
-`Chess_klt45.svg`, etc.), sous licence BSD (il est aussi diffusé sous GFDL et GPL) ; les tracés viennent des fichiers
+`Chess_klt45.svg`, etc.), sous licence [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) (relevé sur Commons
+via Openverse ; lichess le diffuse sous GPL v2+) ; le crédit est affiché au bas de la page d'accueil. Les tracés viennent des fichiers
 SVG de [lichess-org/lila](https://github.com/lichess-org/lila/tree/master/public/piece/cburnett), seules les couleurs
 ont été reliées au thème clair/sombre. Les pièces « simples » sont dessinées pour le site.

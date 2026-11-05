@@ -109,9 +109,13 @@
   "Vert": "Green",
   "Bleu": "Blue",
   "Rouge": "Red",
-  "Bois": "Wood"
+  "Bois": "Wood",
+  "Pièces classiques :": "Classic pieces:",
+  ", licence": ", license"
  },
  "identiques": [
+  "CC BY-SA 3.0",
+  "Colin M. L. Burnett",
   "Dice chess",
   "EN",
   "English",

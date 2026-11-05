@@ -1,7 +1,7 @@
 /* Pièces d'échecs partagées par tous les jeux : valeurs, noms et dessins.
    Deux dessins au choix (réglage « Pièces » du menu de la page d'accueil, retenu pour tout le site) :
-   - « classiques » : le jeu de Colin M. L. Burnett (Cburnett, Wikimedia Commons), sous licence BSD
-     (il est aussi publié sous GFDL et GPL) ; copie des fichiers SVG de lichess-org/lila, couleurs reliées au thème ;
+   - « classiques » : le jeu de Colin M. L. Burnett (Cburnett, Wikimedia Commons), sous licence CC BY-SA 3.0
+     (lichess le diffuse sous GPL v2+) ; copie des fichiers SVG de lichess-org/lila, couleurs reliées au thème ;
    - « simples » : les pièces dessinées pour le site.
    Script classique (pas de module) pour que le site marche aussi en ouvrant
    les fichiers directement depuis le disque.
