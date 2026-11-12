@@ -204,6 +204,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Steinitz,_William-4_-_DPLA_-_9eeab9ac335135c24b69ab7e36fc5354_(cropped).jpg"
  },
+ "tal": {
+  "titre": "Hoogovenschaaktoernooi 1976 Talj, kop, Bestanddeelnr 928-3651",
+  "auteur": "Rob Mieremet / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Hoogovenschaaktoernooi_1976_Talj,_kop,_Bestanddeelnr_928-3651.jpg"
+ },
  "tarrasch": {
   "titre": "Tarrasch, Siegbert -2 - DPLA - 224f35dc323734bf355cc7c94d0ded68",
   "auteur": "Auteur inconnu",
