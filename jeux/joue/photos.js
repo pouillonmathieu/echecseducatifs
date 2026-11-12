@@ -108,6 +108,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 2.0",
   "url": "https://commons.wikimedia.org/wiki/File:Gukesh_in_2024_(cropped).jpg"
  },
+ "humpy": {
+  "titre": "HumpyKoneru",
+  "auteur": "Seshudak",
+  "licence": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:HumpyKoneru.jpg"
+ },
  "ju": {
   "titre": "Ju Wenjun",
   "auteur": "karpidis",
@@ -161,6 +167,12 @@ window.PHOTOS_CHAMPIONS = {
   "auteur": "Auteur inconnu",
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Lasker,_Emanuel_%22-8%22_-_DPLA_-_aa442dc47950f347989fadd72f31d04c.jpg"
+ },
+ "mmuzychuk": {
+  "titre": "2022-Mariya-Muzychuk",
+  "auteur": "Krzysztof Szeląg / Wikimedia Commons",
+  "licence": "CC BY-SA 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:2022-Mariya-Muzychuk.JPG"
  },
  "morphy": {
   "titre": "Morphy, Paul 1855 (Est. Date) - DPLA",
