@@ -150,6 +150,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "Public domain",
   "url": ""
  },
+ "petrossian": {
+  "titre": "Tigran Petrosian 1962",
+  "auteur": "Harry Pot / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Tigran_Petrosian_1962.jpg"
+ },
  "polgar": {
   "titre": "IMG_9475 GM judit polgar",
   "auteur": "Utilisateur Flickr",
