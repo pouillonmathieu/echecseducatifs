@@ -1,0 +1,374 @@
+/* Comment ça s'appelle ?
+   Une illustration s'affiche (une pièce, un échiquier, un coup…) : on écrit son nom, lettre par lettre,
+   dans la langue choisie (9 langues, chacune avec son clavier). Le déterminant est déjà écrit.
+   - une lettre fausse n'est pas posée (la case tremble) ; après 3 erreurs sur la même lettre, elle apparaît en pâle ;
+   - « Indice » ne garde sur le clavier que les lettres du mot ;
+   - « Solution » montre le mot.
+   Niveau facile : les pièces, l'échiquier, la case, échec, mat, les camps ; difficile : en plus, les coups et
+   les idées (roque, fourchette, clouage…), chacun avec un exemple sur l'échiquier. Les termes sont dans termes.js. */
+(function () {
+  const { EN, t, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
+  const { lancerPluie, compterJusqua, allumerEtoiles } = window.UI;
+  const Sons = window.Sons;
+  const TERMES = window.TERMES_MOTS;
+  const LANGUES = window.LANGUES_MOTS;
+  const $ = (id) => document.getElementById(id);
+  const LETTRE = /[\p{L}\p{M}]/u; // ce qui se tape ; le reste (espace, tiret, « ! »…) est déjà écrit
+  const NFC = (s) => s.normalize('NFC');
+
+  // nom de la langue dans la phrase de consigne (langue de l'interface)
+  const EN_LANGUE = {
+    fr: ['en français', 'in French'], en: ['en anglais', 'in English'], es: ['en espagnol', 'in Spanish'],
+    pt: ['en portugais', 'in Portuguese'], nl: ['en néerlandais', 'in Dutch'], ru: ['en russe', 'in Russian'],
+    ar: ['en arabe', 'in Arabic'], hi: ['en hindi', 'in Hindi'], zh: ['en chinois (mandarin)', 'in Chinese (Mandarin)'],
+  };
+
+  const lire = (cle, defaut) => { try { return localStorage.getItem(cle) || defaut; } catch (e) { return defaut; } };
+  const ecrire = (cle, v) => { try { localStorage.setItem(cle, v); } catch (e) { /* stockage indisponible */ } };
+  const reglages = {
+    langue: LANGUES[lire('echecs.mots.langue', '')] ? lire('echecs.mots.langue', '') : (EN ? 'en' : 'fr'),
+    niveau: lire('echecs.mots.niveau', 'facile') === 'difficile' ? 'difficile' : 'facile',
+  };
+
+  const jeu = {
+    serie: [], numero: 0, terme: null, cars: [], pos: 0, fini: false, indice: false, erreursIci: 0, erreursMot: 0,
+    // bilan de la série : du premier coup, trouvés avec de l'aide (erreurs ou indice), solutions montrées
+    parfaits: 0, aides: 0, solutions: 0,
+  };
+
+  function melanger(tab) {
+    const a = [...tab];
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+  const pool = () => TERMES.filter(x => reglages.niveau === 'difficile' || x.niveau === 'facile');
+  const egal = (a, b) => a.toLocaleLowerCase(reglages.langue) === b.toLocaleLowerCase(reglages.langue);
+
+  // ---------- Illustration ----------
+  const illus = $('illus');
+  let annotEnCours = null;
+  function dessinerIllus(il) {
+    annotEnCours = null;
+    illus.replaceChildren();
+    const badge = $('badge');
+    badge.hidden = !il.badge;
+    badge.textContent = il.badge || '';
+    if (il.piece) {
+      illus.className = 'illus-mots illus-piece';
+      illus.innerHTML = `<svg viewBox="0 0 100 100"><use href="#piece-${il.piece}-${il.couleur}"/></svg>`;
+      return;
+    }
+    if (il.camp) {
+      illus.className = `illus-mots illus-camp camp-${il.camp}`;
+      illus.innerHTML = ['roi', 'dame', 'tour', 'fou', 'cavalier', 'pion']
+        .map(p => `<svg viewBox="0 0 100 100"><use href="#piece-${p}-${il.camp}"/></svg>`).join('');
+      return;
+    }
+    illus.className = 'illus-mots illus-plateau';
+    const plateau = document.createElement('div');
+    plateau.className = 'plateau-mots';
+    illus.appendChild(plateau);
+    Echiquier.dessiner(plateau, il.fen);
+    if (il.roi) Echiquier.marquer(plateau, [il.roi], 'roi-attaque');
+    if (il.cadre) Echiquier.marquer(plateau, il.cadre, 'case-montree');
+    if (il.annot) {
+      annotEnCours = () => Echiquier.dessinerAnnotations(plateau, il.annot);
+      requestAnimationFrame(annotEnCours);
+    }
+  }
+  window.addEventListener('resize', () => { if (annotEnCours) annotEnCours(); });
+
+  // ---------- Le mot à écrire ----------
+  function afficherMot() {
+    const L = LANGUES[reglages.langue];
+    const [det, mot] = jeu.terme[reglages.langue];
+    const zone = $('mot');
+    zone.lang = reglages.langue;
+    zone.dir = L.rtl ? 'rtl' : 'ltr';
+    zone.replaceChildren();
+    if (det) {
+      const d = document.createElement('span');
+      d.className = 'det' + (/'$/.test(det) || L.rtl ? ' colle' : '');
+      d.textContent = det;
+      zone.appendChild(d);
+    }
+    // les lettres, groupées par mot pour que les retours à la ligne se fassent entre les mots
+    const lettres = document.createElement('span');
+    lettres.className = 'lettres';
+    let groupe = null;
+    jeu.cars.forEach((c, i) => {
+      if (c.c === ' ') { groupe = null; return; }
+      if (!groupe) { groupe = document.createElement('span'); groupe.className = 'groupe'; lettres.appendChild(groupe); }
+      const b = document.createElement('span');
+      b.className = c.tape ? 'boite' : 'fixe';
+      b.dataset.i = i;
+      if (!c.tape) b.textContent = c.c;
+      groupe.appendChild(b);
+    });
+    zone.appendChild(lettres);
+    const n = jeu.cars.filter(c => c.tape).length;
+    zone.style.setProperty('--n', n);
+    zone.classList.toggle('long', n > 11);
+    zone.classList.toggle('tres-long', n > 17);
+    zone.classList.toggle('ideogrammes', reglages.langue === 'zh');
+    marquerCourante();
+  }
+  const boite = (i) => $('mot').querySelector(`[data-i="${i}"]`);
+  function marquerCourante() {
+    $('mot').querySelectorAll('.boite.courante').forEach(b => b.classList.remove('courante'));
+    if (!jeu.fini && jeu.pos < jeu.cars.length) boite(jeu.pos).classList.add('courante');
+  }
+  // arabe et hindi : les lettres se lient entre elles ; on montre le mot tel qu'il s'écrit vraiment
+  function majApercu() {
+    const a = $('apercu');
+    const L = reglages.langue;
+    if (L === 'zh') {
+      a.hidden = !jeu.fini;
+      a.textContent = jeu.terme.zh[2];
+      a.lang = 'zh-Latn-pinyin';
+      a.dir = 'ltr';
+      return;
+    }
+    if (L !== 'ar' && L !== 'hi') { a.hidden = true; return; }
+    const [det] = jeu.terme[L];
+    const ecrit = jeu.cars.slice(0, jeu.fini ? jeu.cars.length : jeu.pos).map(c => c.c).join('');
+    a.hidden = false;
+    a.lang = L;
+    a.dir = L === 'ar' ? 'rtl' : 'ltr';
+    a.textContent = (det && L === 'ar' ? det : det ? det + ' ' : '') + ecrit;
+  }
+
+  // ---------- Le clavier ----------
+  function construireClavier() {
+    const L = LANGUES[reglages.langue];
+    const clavier = $('clavier');
+    clavier.lang = reglages.langue;
+    clavier.dir = L.rtl ? 'rtl' : 'ltr';
+    clavier.classList.toggle('tuiles', !!L.tuiles);
+    clavier.classList.toggle('devanagari', reglages.langue === 'hi');
+    let rangees;
+    if (L.tuiles) {
+      // mandarin : les caractères du mot, mélangés avec des caractères d'autres mots
+      const besoin = [...new Set(jeu.cars.filter(c => c.tape).map(c => c.c))];
+      const autres = melanger([...new Set(pool().flatMap(x => [...x.zh[1]]).filter(c => LETTRE.test(c) && !besoin.includes(c)))]);
+      const tuiles = melanger([...besoin, ...autres.slice(0, Math.max(6, 12 - besoin.length))]);
+      rangees = [tuiles.slice(0, Math.ceil(tuiles.length / 2)), tuiles.slice(Math.ceil(tuiles.length / 2))];
+    } else {
+      rangees = L.clavier.map(r => [...NFC(r)]);
+      // sécurité : une lettre du mot absente du clavier est ajoutée à la dernière rangée
+      const presentes = new Set(rangees.flat().map(c => c.toLocaleLowerCase(reglages.langue)));
+      for (const c of jeu.cars) {
+        const m = c.c.toLocaleLowerCase(reglages.langue);
+        if (c.tape && !presentes.has(m)) { rangees[rangees.length - 1].push(m); presentes.add(m); }
+      }
+    }
+    clavier.replaceChildren(...rangees.map(r => {
+      const div = document.createElement('div');
+      div.className = 'rangee-touches';
+      for (const c of r) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'touche';
+        b.dataset.car = c;
+        // signes du hindi (voyelles accrochées, virama…) : posés sur un cercle pointillé pour être lisibles
+        b.textContent = /\p{M}/u.test(c) ? '◌' + c : c;
+        div.appendChild(b);
+      }
+      return div;
+    }));
+  }
+  $('clavier').addEventListener('click', (e) => {
+    const b = e.target.closest('.touche');
+    if (b && !b.disabled) taper(b.dataset.car, b);
+  });
+  function appliquerIndice() {
+    const utiles = new Set(jeu.cars.filter(c => c.tape).map(c => c.c.toLocaleLowerCase(reglages.langue)));
+    $('clavier').querySelectorAll('.touche').forEach(b => {
+      const inutile = jeu.indice && !utiles.has(b.dataset.car.toLocaleLowerCase(reglages.langue));
+      b.disabled = inutile;
+      b.classList.toggle('inutile', inutile);
+    });
+  }
+
+  // ---------- Partie ----------
+  function nouvelleSerie() {
+    jeu.serie = melanger(pool());
+    jeu.numero = 0;
+    jeu.parfaits = 0; jeu.aides = 0; jeu.solutions = 0;
+    $('resultats').hidden = true;
+    $('pluie').innerHTML = '';
+    afficher();
+  }
+  function afficher() {
+    const terme = jeu.serie[jeu.numero];
+    jeu.terme = terme;
+    jeu.cars = [...NFC(terme[reglages.langue][1])].map(c => ({ c, tape: LETTRE.test(c) }));
+    jeu.pos = jeu.cars.findIndex(c => c.tape);
+    jeu.fini = false;
+    jeu.indice = false;
+    jeu.erreursIci = 0;
+    jeu.erreursMot = 0;
+    dessinerIllus(terme.illus);
+    afficherMot();
+    construireClavier();
+    appliquerIndice();
+    majApercu();
+    $('consigne').textContent = t(`Comment ça s'appelle ${EN_LANGUE[reglages.langue][0]} ?`, `What's it called ${EN_LANGUE[reglages.langue][1]}?`);
+    $('progres').textContent = `${jeu.numero + 1} / ${jeu.serie.length}`;
+    const r = $('retour');
+    r.textContent = '';
+    r.className = 'retour-mot';
+    $('btn-indice').hidden = false;
+    $('btn-indice').disabled = false;
+    $('btn-solution').hidden = false;
+    $('btn-suivant').hidden = true;
+  }
+
+  function taper(car, touche) {
+    if (jeu.fini) return;
+    car = NFC(car);
+    const attendu = jeu.cars[jeu.pos];
+    if (!touche) touche = [...$('clavier').querySelectorAll('.touche')].find(b => egal(b.dataset.car, car));
+    if (touche && touche.disabled) return;
+    if (egal(car, attendu.c)) {
+      const b = boite(jeu.pos);
+      b.textContent = attendu.c;
+      b.classList.remove('fantome');
+      b.classList.add('pleine');
+      if (touche) { touche.classList.remove('bonne'); void touche.offsetWidth; touche.classList.add('bonne'); }
+      Sons.pose(1);
+      jeu.erreursIci = 0;
+      do jeu.pos++; while (jeu.pos < jeu.cars.length && !jeu.cars[jeu.pos].tape);
+      majApercu();
+      if (jeu.pos >= jeu.cars.length) reussir();
+      else marquerCourante();
+      return;
+    }
+    // lettre fausse : elle n'est pas posée
+    jeu.erreursMot++;
+    jeu.erreursIci++;
+    const b = boite(jeu.pos);
+    b.classList.remove('faux'); void b.offsetWidth; b.classList.add('faux');
+    if (touche) { touche.classList.remove('mauvaise'); void touche.offsetWidth; touche.classList.add('mauvaise'); }
+    Sons.refus();
+    if (jeu.erreursIci >= 3) { b.textContent = attendu.c; b.classList.add('fantome'); }
+  }
+
+  function terminer() {
+    jeu.fini = true;
+    marquerCourante();
+    majApercu();
+    $('btn-indice').hidden = true;
+    $('btn-solution').hidden = true;
+    $('btn-suivant').hidden = false;
+    $('btn-suivant').firstChild.textContent = jeu.numero === jeu.serie.length - 1 ? t('Voir le résultat ', 'See the result ') : t('Suivant ', 'Next ');
+    $('btn-suivant').focus({ preventScroll: true });
+  }
+  function reussir() {
+    const parfait = !jeu.erreursMot && !jeu.indice;
+    if (parfait) jeu.parfaits++; else jeu.aides++;
+    const r = $('retour');
+    r.className = 'retour-mot juste';
+    r.textContent = parfait ? t('Bravo, du premier coup !', 'Well done, first try!') : t('Bravo, tu l\'as trouvé !', 'Well done, you found it!');
+    $('mot').classList.add('trouve');
+    Sons.juste();
+    terminer();
+  }
+  function montrerSolution() {
+    if (jeu.fini) return;
+    jeu.solutions++;
+    jeu.cars.forEach((c, i) => {
+      if (!c.tape || i < jeu.pos) return;
+      const b = boite(i);
+      b.textContent = c.c;
+      b.classList.remove('fantome');
+      b.classList.add('donnee');
+    });
+    jeu.pos = jeu.cars.length;
+    const r = $('retour');
+    r.className = 'retour-mot solution';
+    r.textContent = t('Voici le mot. Tu le retrouveras plus tard !', "Here's the word. You'll get it next time!");
+    terminer();
+  }
+  function suivant() {
+    if (!jeu.fini) return;
+    $('mot').classList.remove('trouve');
+    if (jeu.numero < jeu.serie.length - 1) { jeu.numero++; afficher(); return; }
+    finSerie();
+  }
+  function finSerie() {
+    const total = jeu.serie.length;
+    const trouves = jeu.parfaits + jeu.aides;
+    const part = jeu.parfaits / total;
+    const etoiles = jeu.solutions === 0 && part >= 0.8 ? 3 : part >= 0.5 ? 2 : trouves >= total / 2 ? 1 : 0;
+    $('res-titre').textContent = etoiles === 3 ? t('Champion !', 'Champion!') : etoiles >= 1 ? t('Bravo !', 'Well done!') : t('Continue !', 'Keep going!');
+    $('res-sur').textContent = `/ ${total}`;
+    compterJusqua($('res-score'), trouves);
+    $('res-detail').textContent = t(
+      `${jeu.parfaits} du premier coup, ${jeu.aides} avec un peu d'aide, ${jeu.solutions} solution${jeu.solutions > 1 ? 's' : ''} montrée${jeu.solutions > 1 ? 's' : ''}.`,
+      `${jeu.parfaits} on the first try, ${jeu.aides} with a little help, ${jeu.solutions} answer${jeu.solutions === 1 ? '' : 's'} shown.`);
+    allumerEtoiles($('etoiles'), etoiles);
+    $('resultats').hidden = false;
+    if (etoiles >= 2) { lancerPluie($('pluie'), 60); Sons.victoire(); }
+    $('btn-rejouer').focus({ preventScroll: true });
+  }
+
+  // ---------- Branchements ----------
+  $('btn-indice').addEventListener('click', () => {
+    if (jeu.fini || jeu.indice) return;
+    jeu.indice = true;
+    $('btn-indice').disabled = true;
+    appliquerIndice();
+  });
+  $('btn-solution').addEventListener('click', montrerSolution);
+  $('btn-suivant').addEventListener('click', suivant);
+  $('btn-rejouer').addEventListener('click', nouvelleSerie);
+  document.addEventListener('keydown', (e) => {
+    if (e.target.closest('select, input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!$('resultats').hidden) return;
+    if (e.key === 'Enter') {
+      if (jeu.fini && !e.target.closest('button')) { e.preventDefault(); suivant(); }
+      return;
+    }
+    if ([...e.key].length === 1 && LETTRE.test(e.key)) { e.preventDefault(); taper(e.key); }
+  });
+
+  // langue du mot
+  const choixLangue = $('reg-langue');
+  for (const [code, L] of Object.entries(LANGUES)) {
+    const o = document.createElement('option');
+    o.value = code;
+    o.lang = code;
+    o.textContent = L.nom;
+    choixLangue.appendChild(o);
+  }
+  choixLangue.value = reglages.langue;
+  choixLangue.addEventListener('change', () => {
+    reglages.langue = choixLangue.value;
+    ecrire('echecs.mots.langue', reglages.langue);
+    nouvelleSerie();
+    choixLangue.blur();
+  });
+  // niveau
+  const boutonsNiveau = document.querySelectorAll('#reg-niveau button');
+  const majNiveau = () => boutonsNiveau.forEach(b => b.setAttribute('aria-pressed', b.dataset.niveau === reglages.niveau ? 'true' : 'false'));
+  boutonsNiveau.forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.niveau === reglages.niveau) return;
+    reglages.niveau = b.dataset.niveau;
+    ecrire('echecs.mots.niveau', reglages.niveau);
+    majNiveau();
+    nouvelleSerie();
+  }));
+
+  brancherBoutonTheme($('btn-theme'));
+  brancherReglages($('btn-reglages'), $('panneau-reglages'));
+  brancherInterrupteur($('reg-son'), Sons.actif, (v) => { Sons.actif = v; });
+
+  // pour les tests : l'état de la partie
+  window.Mots = { etat: () => jeu };
+
+  // ---------- Démarrage ----------
+  window.Echecs.injecterSprite();
+  majNiveau();
+  nouvelleSerie();
+})();

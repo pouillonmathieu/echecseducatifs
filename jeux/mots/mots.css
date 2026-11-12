@@ -1,0 +1,204 @@
+/* Jeu : comment ça s'appelle ?
+   Mise en page : l'illustration à gauche, le mot à écrire et le clavier à droite
+   (l'un sous l'autre sur téléphone). */
+.ecran-mots { max-width: 1080px; }
+
+.jeu-mots {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 460px);
+  align-items: center;
+  gap: 28px;
+}
+.colonne-illus { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
+
+/* choix de la langue (liste) et du niveau */
+.choix-langue { align-items: center; gap: 6px; padding: 4px 8px 4px 10px; color: var(--encre); }
+.choix-langue > svg { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--encre-douce); stroke-width: 1.8; stroke-linecap: round; }
+.choix-langue select {
+  height: 46px;
+  padding: 0 28px 0 8px;
+  border: none;
+  border-radius: 12px;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 6px center / 18px;
+  color: var(--encre);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+}
+.choix-langue select:hover { background-color: var(--surface-2); }
+.choix-langue option { color: #1A1E27; background: #FFFFFF; }
+
+/* illustration */
+.cadre-illus { position: relative; width: min(100%, 520px, calc(100dvh - 230px)); min-width: min(100%, 260px); }
+.illus-mots { width: 100%; aspect-ratio: 1; }
+.illus-piece, .illus-camp {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .08);
+  /* les pièces gardent les couleurs du mode clair, posées sur un fond clair */
+  --piece-blanc: #FFFFFF; --piece-blanc-trait: #1A1E27; --piece-noir: #2B303B; --piece-noir-trait: #1A1E27; --piece-noir-detail: #FFFFFF;
+  background: radial-gradient(circle at 50% 40%, #FBFBF8, #E4E7EC);
+  animation: apparition .45s cubic-bezier(.2, 1.3, .4, 1);
+}
+.illus-piece svg { width: 74%; height: 74%; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .18)); }
+.illus-camp { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); padding: 8%; gap: 4%; }
+.illus-camp svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 6px rgba(0, 0, 0, .16)); }
+.illus-camp.camp-noir { background: radial-gradient(circle at 50% 40%, #FBFBF8, #D9DDE3); }
+.illus-plateau { animation: apparition .45s cubic-bezier(.2, 1.3, .4, 1); }
+.plateau-mots { width: 100%; }
+@keyframes apparition { from { transform: scale(.94); opacity: .3; } }
+/* la case montrée (mot « case ») : un cadre qui pulse */
+.case-e.case-montree::after { opacity: 1; box-shadow: inset 0 0 0 5px #2FA36B; animation: pulse-case 1.4s ease-in-out infinite; }
+@keyframes pulse-case { 50% { box-shadow: inset 0 0 0 9px rgba(47, 163, 107, .55); } }
+/* « + » (échec) ou « # » (échec et mat) dans un coin */
+.badge-illus {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--alerte);
+  color: #FFFFFF;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 0 0 4px var(--surface), 0 6px 14px rgba(0, 0, 0, .2);
+}
+
+/* panneau de droite */
+.panneau-mots { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.consigne {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.progres { flex: none; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--encre-douce); font-size: 14px; font-weight: 600; }
+
+.carte-mot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 14px 14px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+}
+.mot {
+  --taille: 44px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 12px;
+  font-size: calc(var(--taille) * .62);
+  font-weight: 600;
+}
+.mot.long { --taille: 36px; }
+.mot.tres-long { --taille: 30px; }
+.mot.ideogrammes { --taille: 58px; }
+.det { color: var(--encre-douce); font-weight: 600; }
+.det.colle { margin-inline-end: -8px; }
+.lettres { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 16px; }
+.groupe { display: inline-flex; gap: 4px; white-space: nowrap; }
+.boite, .fixe {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--taille);
+  height: calc(var(--taille) * 1.18);
+  line-height: 1;
+}
+.boite {
+  border: 2px solid var(--ligne);
+  border-radius: 10px;
+  background: var(--fond);
+  transition: border-color .15s, background .15s;
+}
+.fixe { min-width: auto; padding: 0 2px; color: var(--encre-douce); }
+.boite.courante { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-doux); }
+.boite.pleine { border-color: var(--accent); background: var(--accent-doux); color: var(--encre); animation: pose .25s cubic-bezier(.2, 1.5, .4, 1); }
+.boite.fantome { color: var(--encre-douce); opacity: .55; }
+.boite.donnee { border-style: dashed; border-color: var(--or); background: color-mix(in srgb, var(--or) 16%, transparent); }
+.boite.faux { animation: tremble .35s; border-color: var(--alerte); }
+.mot.trouve .boite.pleine { animation: saute .5s cubic-bezier(.2, 1.5, .4, 1) both; }
+.mot.trouve .boite.pleine:nth-child(2n) { animation-delay: .05s; }
+.mot.trouve .boite.pleine:nth-child(3n) { animation-delay: .1s; }
+@keyframes pose { from { transform: scale(.7); } }
+@keyframes saute { 40% { transform: translateY(-8px); } }
+@keyframes tremble { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+.apercu { margin: 0; font-size: 26px; font-weight: 600; color: var(--encre); }
+.retour-mot { min-height: 1.3em; margin: 0; font-weight: 600; text-align: center; }
+.retour-mot.juste { color: var(--accent); }
+.retour-mot.solution { color: var(--encre-douce); }
+
+/* clavier */
+.clavier { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.rangee-touches { display: flex; justify-content: center; gap: 5px; width: 100%; }
+.touche {
+  flex: 0 1 44px;
+  min-width: 0;
+  height: 44px;
+  padding: 0 6px;
+  border: 1px solid var(--ligne);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--encre);
+  font: inherit;
+  font-size: 19px;
+  font-weight: 600;
+  box-shadow: 0 2px 0 var(--ligne);
+  cursor: pointer;
+  transition: background .12s, opacity .2s, transform .08s;
+}
+.touche:hover { background: var(--surface-2); }
+.touche:active { transform: translateY(2px); box-shadow: none; }
+.touche.bonne { animation: touche-bonne .4s; }
+.touche.mauvaise { animation: touche-mauvaise .4s; }
+@keyframes touche-bonne { from { background: var(--accent); color: var(--sur-accent); } }
+@keyframes touche-mauvaise { from { background: var(--alerte); color: #FFFFFF; } }
+.touche.inutile, .touche:disabled { opacity: .22; cursor: default; box-shadow: none; transform: none; }
+.clavier.tuiles .touche { flex-basis: 56px; height: 56px; font-size: 28px; font-weight: 500; }
+.clavier.devanagari .touche { font-size: 20px; font-weight: 500; }
+
+.actions-mot { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.actions-mot button { flex: 1 1 0; min-width: 130px; }
+.actions-mot button[hidden] { display: none; }
+.actions-mot svg, .res-actions svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+#btn-indice:disabled { opacity: .5; cursor: default; }
+
+.astuce { margin: 0; font-size: 13px; color: var(--encre-douce); text-align: center; }
+.astuce kbd { padding: 1px 6px; border: 1px solid var(--ligne); border-radius: 6px; background: var(--surface); font: inherit; font-weight: 600; }
+@media (hover: none) { .astuce { display: none; } }
+
+@media (max-width: 860px) {
+  .jeu-mots { grid-template-columns: 1fr; gap: 14px; align-content: start; }
+  .cadre-illus { width: min(100%, 360px, calc(100dvh - 520px)); min-width: min(100%, 220px); }
+  .panneau-mots { width: min(100%, 560px); justify-self: center; }
+  .consigne { font-size: 18px; }
+  .badge-illus { width: 42px; height: 42px; font-size: 26px; right: -6px; top: -6px; }
+}
+@media (max-width: 420px) {
+  .mot { --taille: 36px; }
+  .mot.long { --taille: 28px; }
+  .mot.tres-long { --taille: 24px; }
+  .touche { height: 42px; padding: 0 2px; font-size: 17px; }
+  .rangee-touches { gap: 4px; }
+}

@@ -111,7 +111,14 @@
   "Rouge": "Red",
   "Bois": "Wood",
   "Pièces classiques :": "Classic pieces:",
-  ", licence": ", license"
+  ", licence": ", license",
+  "le": "the",
+  "i": "a",
+  "Comment ça s'appelle ?": "What's it called?",
+  "Regarde le dessin et écris son nom, lettre par lettre : les pièces, l'échiquier, le roque… en 9 langues.": "Look at the picture and write its name, letter by letter: the pieces, the board, castling… in 9 languages.",
+  "Vocabulaire": "Vocabulary",
+  "Orthographe": "Spelling",
+  "9 langues": "9 languages"
  },
  "identiques": [
   "CC BY-SA 3.0",
@@ -122,7 +129,8 @@
   "English version",
   "Lexend",
   "M",
-  "Mathieu Pouillon"
+  "Mathieu Pouillon",
+  "p"
  ],
  "jeux/balance/index.html": {
   "La balance des pièces": "The piece scales",
@@ -290,5 +298,26 @@
   "Les coups à jouer dans cette partie": "The moves to play in this game",
   "Les coups de la partie": "The moves of the game",
   "Photos de Wikimedia Commons, de Flickr (via Openverse) et de la Library of Congress, sous licence libre ou dans le domaine public, recadrées pour ce site. Les autres portraits sont dessinés pour ce site.": "Photos from Wikimedia Commons, Flickr (via Openverse) and the Library of Congress, under a free licence or in the public domain, cropped for this site. The other portraits are drawn for this site."
+ },
+ "jeux/mots/index.html": {
+  "Comment ça s'appelle ?": "What's it called?",
+  "Langue du mot à écrire": "Language of the word to write",
+  "Niveau": "Level",
+  "Facile": "Easy",
+  "Difficile": "Hard",
+  "Les pièces, l'échiquier, échec et mat": "The pieces, the board, check and mate",
+  "En plus : roque, fourchette, clouage, ouverture…": "Plus: castling, fork, pin, opening…",
+  "Clavier": "Keyboard",
+  "Ne garder que les lettres du mot sur le clavier": "Keep only the word's letters on the keyboard",
+  "Indice": "Hint",
+  "Voir le mot et passer au suivant": "Show the word and move on",
+  "Solution": "Answer",
+  "Suivant": "Next",
+  "Tu peux aussi taper les lettres sur ton clavier.": "You can also type the letters on your keyboard.",
+  "Entrée": "Enter",
+  ": mot suivant.": ": next word.",
+  "Bravo !": "Well done!",
+  "Rejouer": "Play again",
+  "/ 12": "/ 12"
  }
 }

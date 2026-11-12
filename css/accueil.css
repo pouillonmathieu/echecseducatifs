@@ -134,6 +134,14 @@
 .vignette .fleche { fill: none; stroke: var(--encre); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0; }
 
 .vignette .sur-de-blanc { --piece-blanc: #FFFFFF; --piece-blanc-trait: #2A2E38; }
+.vignette .tuile-mots { fill: #F3F4F6; stroke: #2A2E38; stroke-opacity: .18; }
+.vignette .det-mots { font-family: var(--police); font-size: 15px; font-weight: 600; fill: var(--encre-douce); text-anchor: middle; }
+.vignette .boite-mots { fill: var(--surface); stroke: var(--ligne); stroke-width: 1.6; }
+.vignette .boite-mots.pleine { fill: var(--accent-doux); stroke: var(--accent); }
+.vignette .boite-mots.courante { stroke: var(--accent); stroke-width: 2.2; }
+.vignette .lettre-mots { font-family: var(--police); font-size: 15px; font-weight: 600; fill: var(--encre); text-anchor: middle; }
+.vignette .touche-mots { fill: var(--surface); stroke: var(--ligne); stroke-width: 1; }
+.vignette .touche-mots.allumee { fill: var(--accent); stroke: var(--accent); }
 .vignette .sur-de-noir { --piece-noir: #2B303B; --piece-noir-trait: #14171E; --piece-noir-detail: #F1F2F4; }
 
 .vignette .bulle-mat { fill: color-mix(in srgb, var(--alerte) 16%, var(--surface)); }
