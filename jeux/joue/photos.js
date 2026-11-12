@@ -311,5 +311,11 @@ window.PHOTOS_CHAMPIONS = {
   "auteur": "Frans Peeters Photography",
   "licence": "CC BY-SA 2.0",
   "url": "https://www.flickr.com/photos/40058780@N08/52654670058"
+ },
+ "zhu": {
+  "titre": "Zhu Jiner 2026 Norway Chess (cropped)",
+  "auteur": "Ahmed0112",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Zhu_Jiner_2026_Norway_Chess_(cropped).jpg"
  }
 };
