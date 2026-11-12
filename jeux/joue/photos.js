@@ -91,10 +91,10 @@ window.PHOTOS_CHAMPIONS = {
   "url": "https://commons.wikimedia.org/wiki/File:Svetozar_Gligoric,_Chess_Olympiad_Luzern,_Switzerland,_1982.jpg"
  },
  "gukesh": {
-  "titre": "NZ9_3600",
-  "auteur": "Frans Peeters Photography",
+  "titre": "Gukesh in 2024 (cropped)",
+  "auteur": "Frans Peeters",
   "licence": "CC BY-SA 2.0",
-  "url": "https://www.flickr.com/photos/40058780@N08/52637348811"
+  "url": "https://commons.wikimedia.org/wiki/File:Gukesh_in_2024_(cropped).jpg"
  },
  "ju": {
   "titre": "Ju Wenjun",
