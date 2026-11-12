@@ -114,6 +114,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY 2.0",
   "url": "https://www.flickr.com/photos/9472417@N03/14631721698"
  },
+ "larsen": {
+  "titre": "BentLarsen",
+  "auteur": "Harry Pot / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:BentLarsen.jpg"
+ },
  "lasker": {
   "titre": "Lasker, Emanuel \"-8\" - DPLA - aa442dc47950f347989fadd72f31d04c",
   "auteur": "Auteur inconnu",
