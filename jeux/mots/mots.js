@@ -8,7 +8,7 @@
    les idées (roque, fourchette, clouage…), chacun avec un exemple sur l'échiquier. Les termes sont dans termes.js. */
 (function () {
   const { EN, t, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
-  const { lancerPluie, compterJusqua, allumerEtoiles } = window.UI;
+  const { lancerPluie, compterJusqua, allumerEtoiles, formaterDuree, ICONES } = window.UI;
   const Sons = window.Sons;
   const TERMES = window.TERMES_MOTS;
   const LANGUES = window.LANGUES_MOTS;
@@ -30,7 +30,13 @@
     niveau: lire('echecs.mots.niveau', 'facile') === 'difficile' ? 'difficile' : 'facile',
   };
 
+  // défis : 10 mots du niveau choisi ; chrono : 30 secondes par mot
+  const NB_DEFIS = 10;
+  const DUREE = 30;
+  const defi = { chrono: false, resultats: [], debut: 0, fin: 0, raf: 0, dernierTic: 0 };
+
   const jeu = {
+    mode: 'libre', partie: 0,
     serie: [], numero: 0, terme: null, cars: [], pos: 0, fini: false, indice: false, erreursIci: 0, erreursMot: 0,
     // bilan de la série : du premier coup, trouvés avec de l'aide (erreurs ou indice), solutions montrées
     parfaits: 0, aides: 0, solutions: 0,
@@ -276,13 +282,70 @@
   }
 
   // ---------- Partie ----------
-  function nouvelleSerie() {
-    jeu.serie = melanger(pool());
+  function preparer(mode) {
+    jeu.partie++;
+    arreterChrono();
+    jeu.mode = mode;
+    document.body.dataset.mode = mode;
     jeu.numero = 0;
     jeu.parfaits = 0; jeu.aides = 0; jeu.solutions = 0;
     $('resultats').hidden = true;
     $('pluie').innerHTML = '';
+  }
+  // mode libre : tous les mots du niveau, dans le désordre
+  function nouvelleSerie() {
+    preparer('libre');
+    document.body.dataset.chrono = 'non';
+    $('titre').textContent = t('Comment ça s\'appelle ?', 'What\'s it called?');
+    jeu.serie = melanger(pool());
     afficher();
+  }
+  function lancerDefi(chrono) {
+    fermerChoix();
+    preparer('defi');
+    defi.chrono = chrono;
+    defi.resultats = [];
+    document.body.dataset.chrono = chrono ? 'oui' : 'non';
+    jeu.serie = melanger(pool()).slice(0, NB_DEFIS);
+    $('minuteur-barre').style.transform = 'scaleX(1)';
+    $('points').innerHTML = jeu.serie.map((_, i) => `<li aria-label="${t('Mot', 'Word')} ${i + 1}"></li>`).join('');
+    afficher();
+  }
+  function majPoints() {
+    $('points').querySelectorAll('li').forEach((li, i) => {
+      const r = defi.resultats[i];
+      li.className = r ? (r.ok ? 'ok' : 'rate') : (i === jeu.numero ? 'actuel' : '');
+    });
+  }
+  function noterDefi(ok) {
+    if (jeu.mode !== 'defi') return;
+    arreterChrono();
+    defi.resultats.push({ ok, mot: texteALire(), temps: (performance.now() - defi.debut) / 1000 });
+    majPoints();
+  }
+
+  // ---------- Chrono ----------
+  function demarrerChrono() {
+    arreterChrono();
+    const barre = $('minuteur-barre');
+    defi.fin = performance.now() + DUREE * 1000;
+    defi.dernierTic = 0;
+    const p = jeu.partie, n = jeu.numero;
+    const boucle = (temps) => {
+      if (p !== jeu.partie || n !== jeu.numero || jeu.fini) return;
+      const reste = Math.max(0, defi.fin - temps) / 1000;
+      barre.style.transform = `scaleX(${(reste / DUREE).toFixed(4)})`;
+      document.body.classList.toggle('presse', reste <= 5);
+      const sec = Math.ceil(reste);
+      if (reste <= 5 && sec > 0 && sec !== defi.dernierTic) { defi.dernierTic = sec; Sons.tic(); }
+      if (reste <= 0) { montrerSolution(true); return; }
+      defi.raf = requestAnimationFrame(boucle);
+    };
+    defi.raf = requestAnimationFrame(boucle);
+  }
+  function arreterChrono() {
+    cancelAnimationFrame(defi.raf);
+    document.body.classList.remove('presse');
   }
   function afficher() {
     const terme = jeu.serie[jeu.numero];
@@ -305,10 +368,18 @@
     const r = $('retour');
     r.textContent = '';
     r.className = 'retour-mot';
-    $('btn-indice').hidden = false;
+    // en défi, pas d'indice : « Solution » fait passer le mot (il compte comme raté)
+    $('btn-indice').hidden = jeu.mode === 'defi';
     $('btn-indice').disabled = false;
     $('btn-solution').hidden = false;
     $('btn-suivant').hidden = true;
+    $('btn-solution').lastChild.textContent = jeu.mode === 'defi' ? t(' Passer', ' Skip') : t(' Solution', ' Answer');
+    if (jeu.mode === 'defi') {
+      $('titre').textContent = t(`Mot ${jeu.numero + 1} sur ${jeu.serie.length}`, `Word ${jeu.numero + 1} of ${jeu.serie.length}`);
+      majPoints();
+      defi.debut = performance.now();
+      if (defi.chrono) demarrerChrono();
+    }
   }
 
   function taper(car, touche) {
@@ -354,6 +425,7 @@
   function reussir() {
     const parfait = !jeu.erreursMot && !jeu.indice;
     if (parfait) jeu.parfaits++; else jeu.aides++;
+    noterDefi(true);
     const r = $('retour');
     r.className = 'retour-mot juste';
     r.textContent = parfait ? t('Bravo, du premier coup !', 'Well done, first try!') : t('Bravo, tu l\'as trouvé !', 'Well done, you found it!');
@@ -363,9 +435,11 @@
     // le mot est lu juste après le son de réussite (sauf si le son est coupé)
     if (Sons.actif) { const n = jeu.numero; setTimeout(() => { if (jeu.numero === n && jeu.fini) lireMot(); }, 450); }
   }
-  function montrerSolution() {
+  // tempsEcoule : appelé par le chrono du défi
+  function montrerSolution(tempsEcoule) {
     if (jeu.fini) return;
     jeu.solutions++;
+    noterDefi(false);
     jeu.cars.forEach((c, i) => {
       if (!c.tape || i < jeu.pos) return;
       const b = boite(i);
@@ -376,14 +450,16 @@
     jeu.pos = jeu.cars.length;
     const r = $('retour');
     r.className = 'retour-mot solution';
-    r.textContent = t('Voici le mot. Tu le retrouveras plus tard !', "Here's the word. You'll get it next time!");
+    r.textContent = tempsEcoule === true ? t('Temps écoulé ! Voici le mot.', "Time's up! Here's the word.")
+      : t('Voici le mot. Tu le retrouveras plus tard !', "Here's the word. You'll get it next time!");
+    if (tempsEcoule === true) Sons.echec();
     terminer();
   }
   function suivant() {
     if (!jeu.fini) return;
     $('mot').classList.remove('trouve');
     if (jeu.numero < jeu.serie.length - 1) { jeu.numero++; afficher(); return; }
-    finSerie();
+    if (jeu.mode === 'defi') resultatsDefi(); else finSerie();
   }
   function finSerie() {
     const total = jeu.serie.length;
@@ -396,11 +472,49 @@
     $('res-detail').textContent = t(
       `${jeu.parfaits} du premier coup, ${jeu.aides} avec un peu d'aide, ${jeu.solutions} solution${jeu.solutions > 1 ? 's' : ''} montrée${jeu.solutions > 1 ? 's' : ''}.`,
       `${jeu.parfaits} on the first try, ${jeu.aides} with a little help, ${jeu.solutions} answer${jeu.solutions === 1 ? '' : 's'} shown.`);
+    $('res-detail').hidden = false;
+    $('res-liste').hidden = true;
+    $('res-temps').hidden = true;
     allumerEtoiles($('etoiles'), etoiles);
     $('resultats').hidden = false;
     if (etoiles >= 2) { lancerPluie($('pluie'), 60); Sons.victoire(); }
     $('btn-rejouer').focus({ preventScroll: true });
   }
+  // fin d'un défi : 10 mots, un point par mot trouvé (les erreurs de lettres sont permises)
+  function resultatsDefi() {
+    arreterChrono();
+    const score = defi.resultats.filter(r => r.ok).length;
+    const etoiles = score === NB_DEFIS ? 3 : score >= 7 ? 2 : score >= 4 ? 1 : 0;
+    $('res-titre').textContent = score === NB_DEFIS ? t('Parfait !', 'Perfect!') : score >= 7 ? t('Bravo !', 'Well done!') : score >= 4 ? t('Bien joué !', 'Nice work!') : t('Continue, tu progresses !', 'Keep going, you\'re getting better!');
+    $('res-sur').textContent = `/ ${NB_DEFIS}`;
+    compterJusqua($('res-score'), score);
+    allumerEtoiles($('etoiles'), etoiles);
+    $('res-detail').hidden = true;
+    const liste = $('res-liste');
+    liste.hidden = false;
+    liste.lang = reglages.langue;
+    liste.innerHTML = defi.resultats.map((r, i) =>
+      `<li class="${r.ok ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms"><span class="res-rond">${r.ok ? ICONES.ok : ICONES.rate}</span><span class="res-t"></span></li>`).join('');
+    liste.querySelectorAll('.res-t').forEach((el, i) => { el.textContent = defi.resultats[i].mot; });
+    const total = defi.resultats.reduce((somme, r) => somme + r.temps, 0);
+    $('res-temps').hidden = false;
+    $('res-temps').textContent = t('Temps total : ', 'Total time: ') + formaterDuree(total);
+    $('resultats').hidden = false;
+    lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
+    Sons.victoire();
+    $('btn-rejouer').focus({ preventScroll: true });
+  }
+
+  // ---------- Fenêtre des défis ----------
+  function ouvrirChoix() { $('choix-defi').hidden = false; $('mode-defi').focus({ preventScroll: true }); }
+  function fermerChoix() { $('choix-defi').hidden = true; }
+  $('btn-defis').addEventListener('click', ouvrirChoix);
+  $('btn-fermer-choix').addEventListener('click', () => { fermerChoix(); $('btn-defis').focus(); });
+  $('choix-defi').addEventListener('click', (e) => { if (e.target === e.currentTarget) fermerChoix(); });
+  $('mode-defi').addEventListener('click', () => lancerDefi(false));
+  $('mode-chrono').addEventListener('click', () => lancerDefi(true));
+  $('btn-retour').addEventListener('click', nouvelleSerie);
+  $('btn-menu').addEventListener('click', nouvelleSerie);
 
   // ---------- Branchements ----------
   $('btn-indice').addEventListener('click', () => {
@@ -409,11 +523,12 @@
     $('btn-indice').disabled = true;
     appliquerIndice();
   });
-  $('btn-solution').addEventListener('click', montrerSolution);
+  $('btn-solution').addEventListener('click', () => montrerSolution(false));
   $('btn-suivant').addEventListener('click', suivant);
-  $('btn-rejouer').addEventListener('click', nouvelleSerie);
+  $('btn-rejouer').addEventListener('click', () => (jeu.mode === 'defi' ? lancerDefi(defi.chrono) : nouvelleSerie()));
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('select, input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!$('choix-defi').hidden) { if (e.key === 'Escape') fermerChoix(); return; }
     if (!$('resultats').hidden) return;
     if (e.key === 'Enter') {
       if (jeu.fini && !e.target.closest('button')) { e.preventDefault(); suivant(); }

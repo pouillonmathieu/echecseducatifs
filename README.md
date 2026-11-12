@@ -56,7 +56,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   lettres. 9 langues avec leur clavier à l'écran : français, anglais, espagnol, portugais, néerlandais, arabe (de droite
   à gauche), russe, hindi (avec les signes des voyelles) et mandarin (tuiles de caractères, pinyin montré à la fin).
   Une lettre fausse n'est pas posée ; après 3 erreurs elle apparaît en pâle. « Indice » ne garde sur le clavier que les
-  lettres du mot ; « Solution » montre le mot. Une série = tous les mots du niveau, avec un bilan à la fin.
+  lettres du mot ; « Solution » montre le mot. Mode libre : une série = tous les mots du niveau, avec un bilan à la
+  fin ; défi (10 mots, sans indice, « Passer » compte comme raté) et défi chrono (30 s par mot).
   Le mot est lu à voix haute juste après le son de réussite (synthèse vocale du navigateur, si le son est activé) ;
   le bouton haut-parleur le lit à tout moment (grisé si l'appareil n'a pas de voix pour la langue).
   Les termes sont dans `jeux/mots/termes.js` (les termes difficiles en arabe, hindi et mandarin sont à faire relire).

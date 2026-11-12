@@ -12,6 +12,16 @@
 }
 .colonne-illus { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
 
+body[data-chrono="oui"] .seulement-sans-chrono,
+body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
+/* minuteur (défi chrono) */
+.minuteur { flex: 1; height: 14px; border: 1px solid var(--ligne); border-radius: 7px; background: var(--surface-2); overflow: hidden; }
+#minuteur-barre { height: 100%; border-radius: 7px; background: var(--accent); transform-origin: left center; transition: background .3s; }
+body.presse #minuteur-barre { background: var(--alerte); }
+.bandeau-defi .points { flex: none; }
+/* résultats d'un défi : le mot écrit à côté de chaque rond */
+.res-liste .res-t { font-weight: 600; }
+
 /* choix de la langue (liste) et du niveau */
 .choix-langue { align-items: center; gap: 6px; padding: 4px 8px 4px 10px; color: var(--encre); }
 .choix-langue > svg { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--encre-douce); stroke-width: 1.8; stroke-linecap: round; }
@@ -200,11 +210,18 @@
 @media (hover: none) { .astuce { display: none; } }
 
 @media (max-width: 860px) {
+  /* langue et niveau sur une seule ligne ; le niveau ne garde que ses barres */
+  .choix-jeu { flex-wrap: nowrap; }
   .jeu-mots { grid-template-columns: 1fr; gap: 14px; align-content: start; }
   .cadre-illus { width: min(100%, 360px, calc(100dvh - 520px)); min-width: min(100%, 220px); }
   .panneau-mots { width: min(100%, 560px); justify-self: center; }
   .consigne { font-size: 18px; }
   .badge-illus { width: 42px; height: 42px; font-size: 26px; right: -6px; top: -6px; }
+}
+@media (max-width: 560px) {
+  .choix-niveau .texte-niveau { display: none; }
+  .choix-niveau button.avec-texte { width: 46px; padding: 5px; justify-content: center; }
+  .choix-langue select { font-size: 15px; padding-right: 24px; }
 }
 @media (max-width: 420px) {
   .ecran-mots .titre { font-size: 20px; }
