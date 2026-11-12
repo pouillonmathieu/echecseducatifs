@@ -162,6 +162,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC0",
   "url": "https://www.flickr.com/photos/14529759@N03/10620503204"
  },
+ "polougaievski": {
+  "titre": "Lev Polugaevsky 1972",
+  "auteur": "Rob Croes / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Lev_Polugaevsky_1972.jpg"
+ },
  "pragg": {
   "titre": "NZ9_3576",
   "auteur": "Frans Peeters Photography",
