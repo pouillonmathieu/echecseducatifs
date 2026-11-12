@@ -717,8 +717,9 @@
     ]
    },
    "70": {
-    "brut": "Lorsqu'il n'y a plus de tour sur la première rangée, c'est ",
-    "incomplet": true
+    "brut": "Lorsqu'il n'y a plus de tour sur la première rangée, c'est souvent une bonne idée de mettre son roi à l'abri.",
+    "texte": "Quand il n'y a plus de tour sur la première rangée, c'est souvent une bonne idée de mettre son roi à l'abri.",
+    "texte_en": "When there's no rook left on the back rank, it's often a good idea to tuck your king away to safety."
    },
    "76": {
     "fleches": [
