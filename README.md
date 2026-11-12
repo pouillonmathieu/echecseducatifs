@@ -116,8 +116,12 @@ Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé da
   les petits pions des icônes (symbole `#mini-pion`) suivent le même choix ;
 - **Échiquier** : vert, bleu, rouge ou bois (`js/commun.js`, clé `echecs.plateau`, attribut `data-plateau` de `<html>`).
   Les couleurs sont les variables `--plateau-claire` et `--plateau-foncee` de `css/commun.css` (avec leur version
-  pour le mode sombre) ; tous les échiquiers et toutes les icônes d'échiquier s'en servent. L'image du labyrinthe de
-  l'accueil (`img/vignette-labyrinthe.webp`) n'a que les buissons, sur fond transparent.
+  pour le mode sombre) ; tous les échiquiers et toutes les icônes d'échiquier s'en servent.
+
+## Page d'accueil
+
+Une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans faire défiler : 4 colonnes sur
+ordinateur (icônes plus petites sur un écran peu haut), 2 colonnes sur téléphone (icône à gauche du nom, sans la phrase).
 
 ## Version anglaise
 

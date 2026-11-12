@@ -118,7 +118,15 @@
   "Regarde le dessin et écris son nom, lettre par lettre : les pièces, l'échiquier, le roque… en 9 langues.": "Look at the picture and write its name, letter by letter: the pieces, the board, castling… in 9 languages.",
   "Vocabulaire": "Vocabulary",
   "Orthographe": "Spelling",
-  "9 langues": "9 languages"
+  "9 langues": "9 languages",
+  "Ramène la pièce à sa maison par le chemin le plus court.": "Bring the piece home by the shortest route.",
+  "Le roi est-il échec et mat ?": "Is the king checkmated?",
+  "Touche la case demandée sur l'échiquier.": "Tap the square you're asked for on the board.",
+  "Écris le coup joué, comme un vrai joueur.": "Write down the move played, like a real player.",
+  "Joue les meilleurs coups d'un champion.": "Play a champion's best moves.",
+  "Écris le nom de ce que tu vois, en 9 langues.": "Write the name of what you see, in 9 languages.",
+  "Équilibre la balance avec la valeur des pièces.": "Balance the scales using the pieces' values.",
+  "Les échecs avec des dés, sur un vrai échiquier.": "Chess with dice, on a real board."
  },
  "identiques": [
   "CC BY-SA 3.0",

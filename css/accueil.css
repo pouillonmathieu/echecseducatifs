@@ -1,210 +1,85 @@
 /* Page d'accueil du site.
-   Mise en page : en-tête, introduction avec la rangée des pièces et leur valeur,
-   puis une grande carte illustrée par jeu. */
-.accueil { gap: 28px; max-width: 1040px; }
+   Mise en page : en-tête, puis une carte par jeu (icône, nom, une phrase), toutes visibles sans faire défiler :
+   4 colonnes sur ordinateur, 2 colonnes de cartes en ligne (icône à gauche, nom à droite) sur téléphone. */
+.accueil { gap: 18px; max-width: 1040px; }
 
 .logo { flex: none; display: grid; place-items: center; width: 40px; height: 40px; }
 .logo svg { width: 36px; height: 36px; }
 .logo rect:first-child { fill: var(--accent); }
 .logo path { fill: var(--sur-accent); }
 
-/* ---------- Introduction ---------- */
-.intro {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 24px 40px;
-  padding: 28px 32px;
-  border: 1px solid var(--ligne);
-  border-radius: 24px;
-  background: var(--surface);
-}
-.intro-texte { min-width: 0; }
-.intro h2 {
-  margin: 0 0 10px;
-  font-size: clamp(28px, 4.4vw, 44px);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-.intro p { margin: 0; max-width: 46ch; color: var(--encre-douce); font-size: 17px; line-height: 1.55; }
-
-.rangee-pieces {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  margin: 0;
-  padding: 14px 16px 12px;
-  list-style: none;
-  border-radius: 18px;
-  background: var(--surface-2);
-}
-.rangee-pieces li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  animation: monte .5s cubic-bezier(.2, 1.3, .4, 1) both;
-}
-@keyframes monte { from { opacity: 0; transform: translateY(12px); } }
-.rangee-pieces .piece { width: 64px; height: 64px; }
-.valeur-piece {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--surface);
-  font-weight: 600;
-  font-size: 14px;
-  font-variant-numeric: tabular-nums;
-}
-.valeur-piece svg { width: 13px; height: 13px; fill: var(--encre-douce); }
+.cache-visuel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* ---------- Cartes des jeux ---------- */
-.titre-section { margin: 0 0 14px; font-size: 20px; font-weight: 600; }
-.grille-jeux {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-  gap: 18px;
-}
+.jeux { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
+.grille-jeux { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .carte-jeu {
-  position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 14px 20px;
   border: 1px solid var(--ligne);
   border-radius: 22px;
   background: var(--surface);
   color: var(--encre);
+  text-align: center;
   text-decoration: none;
   transition: border-color .15s, transform .15s, box-shadow .2s;
 }
 .carte-jeu:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0, 0, 0, .08); }
-.carte-jeu:active { transform: scale(.99); }
-.vignette {
+.carte-jeu:active { transform: scale(.98); }
+.carte-jeu:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.icone-jeu {
   display: grid;
   place-items: center;
-  padding: 18px 18px 10px;
+  width: min(100%, 120px);
+  aspect-ratio: 1;
+  border-radius: 24px;
   background: var(--surface-2);
 }
-.vignette svg { width: 100%; max-width: 360px; height: auto; }
-.carte-corps { display: flex; flex-direction: column; gap: 8px; padding: 18px 22px 22px; padding-right: 76px; }
-.carte-corps h3 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
-.carte-corps p { margin: 0; color: var(--encre-douce); line-height: 1.5; }
-.etiquettes-jeu { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; padding: 0; list-style: none; }
-.etiquettes-jeu li {
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--ligne);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--encre-douce);
-}
-.etiquettes-jeu li.matiere { border-color: transparent; background: var(--accent-doux); color: var(--accent); font-weight: 600; }
-.jouer {
-  position: absolute;
-  right: 20px;
-  bottom: 22px;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--sur-accent);
-  transition: transform .15s;
-}
-.jouer svg { width: 22px; height: 22px; fill: currentColor; margin-left: 2px; }
-.carte-jeu:hover .jouer { transform: scale(1.08); }
+.icone-jeu svg { width: 80%; height: 80%; overflow: visible; }
+.carte-texte { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.carte-texte h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; text-wrap: balance; }
+.carte-texte p { margin: 0; color: var(--encre-douce); font-size: 14px; line-height: 1.4; text-wrap: balance; }
 
-/* détails des vignettes */
-/* les petits échiquiers restent clairs : pièces aux couleurs du mode clair, même en mode sombre */
-.vignette svg { --piece-blanc: #FFFFFF; --piece-blanc-trait: #1A1E27; --piece-noir: #2B303B; --piece-noir-trait: #1A1E27; --piece-noir-detail: #FFFFFF; }
-.vignette .ombre { fill: var(--ombre-sol); opacity: .14; }
-.vignette .chaine { fill: none; stroke: var(--laiton-fonce); stroke-width: 1.8; stroke-linecap: round; stroke-dasharray: .1 3.6; }
-.vignette .trait-laiton { stroke: var(--laiton-trait); stroke-width: .8; stroke-opacity: .7; }
-.vignette .grave { fill: var(--grave); }
-.vignette .grave-trait { fill: none; stroke: var(--grave); stroke-width: 1.5; }
-.vignette .signe { font-family: var(--police); font-weight: 600; font-size: 22px; text-anchor: middle; fill: var(--encre); }
-.vignette .cadre-mini { stroke: #2A2E38; stroke-opacity: .25; stroke-width: 1; }
-.vignette .lettres-mini text { font-family: var(--police); font-size: 7.5px; font-weight: 600; fill: #2A2E38; text-anchor: middle; }
-.vignette .consigne-mini { font-family: var(--police); font-size: 24px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; }
-.vignette .fleche { fill: none; stroke: var(--encre); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0; }
+/* détails des icônes ; les pièces gardent les couleurs du mode clair, même en mode sombre */
+.icone-jeu svg { --piece-blanc: #FFFFFF; --piece-blanc-trait: #1A1E27; --piece-noir: #2B303B; --piece-noir-trait: #1A1E27; --piece-noir-detail: #FFFFFF; }
+.icone-jeu .saut { fill: none; stroke: #2A2E38; stroke-width: 1.8; stroke-linecap: round; stroke-dasharray: 2.5 3; }
+.icone-jeu .fleche-icone { fill: none; stroke: #2FA36B; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.icone-jeu .signe-icone { font-family: var(--police); font-size: 15px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; }
+.icone-jeu .texte-icone { font-family: var(--police); font-size: 10.5px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; }
+.icone-jeu .texte-icone.sombre { fill: #2A2E38; }
+.icone-jeu .lettre-icone { font-family: var(--police); font-size: 13px; font-weight: 700; fill: #1A1E27; text-anchor: middle; }
 
-.vignette .sur-de-blanc { --piece-blanc: #FFFFFF; --piece-blanc-trait: #2A2E38; }
-.vignette .tuile-mots { fill: #F3F4F6; stroke: #2A2E38; stroke-opacity: .18; }
-.vignette .det-mots { font-family: var(--police); font-size: 15px; font-weight: 600; fill: var(--encre-douce); text-anchor: middle; }
-.vignette .boite-mots { fill: var(--surface); stroke: var(--ligne); stroke-width: 1.6; }
-.vignette .boite-mots.pleine { fill: var(--accent-doux); stroke: var(--accent); }
-.vignette .boite-mots.courante { stroke: var(--accent); stroke-width: 2.2; }
-.vignette .lettre-mots { font-family: var(--police); font-size: 15px; font-weight: 600; fill: var(--encre); text-anchor: middle; }
-.vignette .touche-mots { fill: var(--surface); stroke: var(--ligne); stroke-width: 1; }
-.vignette .touche-mots.allumee { fill: var(--accent); stroke: var(--accent); }
-.vignette .sur-de-noir { --piece-noir: #2B303B; --piece-noir-trait: #14171E; --piece-noir-detail: #F1F2F4; }
-
-.vignette .bulle-mat { fill: color-mix(in srgb, var(--alerte) 16%, var(--surface)); }
-.vignette .bulle-pas-mat { fill: var(--accent-doux); }
-.vignette .texte-mat, .vignette .texte-pas-mat { font-family: var(--police); font-size: 13px; font-weight: 700; text-anchor: middle; }
-.vignette .texte-mat { fill: var(--alerte); }
-.vignette .texte-pas-mat { fill: var(--accent); }
-.vignette .feuille-mini { fill: var(--surface); stroke: var(--ligne); stroke-width: 1.5; }
-.vignette .texte-feuille { font-family: var(--police); font-size: 13px; font-weight: 600; fill: var(--encre); }
-.vignette .num-feuille { fill: var(--encre-douce); }
-.vignette .ligne-feuille { stroke: var(--ligne); stroke-width: 1.2; }
-.vignette .case-vide-mini { fill: var(--accent-doux); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 2; }
-.vignette .texte-reponse { fill: var(--accent); text-anchor: middle; }
-
-.pied { padding: 8px 0 4px; color: var(--encre-douce); font-size: 14px; text-align: center; }
+.pied { padding: 4px 0 0; color: var(--encre-douce); font-size: 13px; text-align: center; }
 .pied p { margin: 0; }
-.pied .auteur { margin-bottom: 4px; font-size: 15px; color: var(--encre); }
+.pied .auteur { margin-bottom: 2px; font-size: 14px; color: var(--encre); }
 .pied .auteur strong { font-weight: 600; }
-.pied .credit-pieces { margin-top: 4px; font-size: 12px; }
+.pied .credit-pieces { margin-top: 2px; font-size: 12px; }
 .pied .credit-pieces a { color: inherit; }
 
+/* écran peu haut (ordinateur portable) : icônes plus petites */
+@media (min-width: 761px) and (max-height: 720px) {
+  .icone-jeu { width: min(100%, 92px); border-radius: 20px; }
+  .carte-jeu { gap: 8px; padding: 14px 12px 16px; }
+  .carte-texte h3 { font-size: 17px; }
+  .carte-texte p { font-size: 13px; }
+}
+/* téléphone et petite tablette : 2 colonnes, l'icône à gauche du nom, sans la phrase */
 @media (max-width: 760px) {
-  .intro { grid-template-columns: 1fr; padding: 22px 20px; }
-  .rangee-pieces { justify-content: space-between; }
-  .rangee-pieces .piece { width: clamp(40px, 13vw, 64px); height: clamp(40px, 13vw, 64px); }
+  .accueil { gap: 12px; }
+  .jeux { justify-content: flex-start; }
+  .grille-jeux { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .carte-jeu { flex-direction: row; align-items: center; gap: 10px; padding: 10px; border-radius: 18px; text-align: left; }
+  .icone-jeu { flex: none; width: 60px; border-radius: 14px; }
+  .icone-jeu svg { width: 84%; height: 84%; }
+  .carte-texte h3 { font-size: 15.5px; }
+  .carte-texte p { display: none; }
 }
-@media (max-width: 420px) {
-  .rangee-pieces { gap: 2px; padding: 10px 8px; }
-  .valeur-piece { padding: 2px 6px; font-size: 13px; }
-  .valeur-piece svg { display: none; }
+@media (max-width: 360px) {
+  .grille-jeux { gap: 8px; }
+  .carte-jeu { gap: 8px; padding: 8px; }
+  .icone-jeu { width: 50px; }
+  .carte-texte h3 { font-size: 14px; }
 }
-/* labyrinthe : sauts du cavalier en pointillés */
-.vignette .saut-laby path { fill: none; stroke: #1F2A22; stroke-opacity: .6; stroke-width: 5.4; stroke-linecap: round; stroke-dasharray: 0 6.5; }
-.vignette .saut-laby.clair path { stroke: #FFFFFF; stroke-opacity: 1; stroke-width: 3.2; }
-.vignette .pointe-laby { fill: #FFFFFF; stroke: #1F2A22; stroke-opacity: .6; stroke-width: 1.1; stroke-linejoin: round; }
-.vignette .atterrissage { fill: #FFFFFF; stroke: #1F2A22; stroke-opacity: .6; stroke-width: 1.2; }
-
-/* mat ou pas mat : icônes des réponses */
-.vignette .icone-mat { fill: #F7DAD4; }
-.vignette .icone-pas-mat { fill: #D3ECDF; }
-.vignette .badge-mat { fill: var(--alerte); stroke: var(--surface); stroke-width: 1.4; }
-.vignette .badge-pas-mat { fill: var(--accent); stroke: var(--surface); stroke-width: 1.4; }
-.vignette .diese-mini { font-family: var(--police); font-size: 9px; font-weight: 700; text-anchor: middle; fill: #FFFFFF; }
-.vignette .barre-mini { stroke: #FFFFFF; stroke-width: 1.3; stroke-linecap: round; }
-
-/* note le coup : le crayon */
-.vignette .crayon .contour-crayon { fill: none; stroke: #2A2E38; stroke-opacity: .55; stroke-width: .7; stroke-linejoin: round; }
-.vignette .crayon .bague { fill: none; stroke: #8E949E; stroke-width: .6; }
-.vignette .crayon path[fill], .vignette .crayon rect { stroke: #2A2E38; stroke-opacity: .55; stroke-width: .7; stroke-linejoin: round; }
-
-/* dice chess : dés en relief (dessus clair, côtés ombrés) */
-.vignette .de3d .corps { stroke-width: 4; stroke-linejoin: round; }
-.vignette .de3d.blanc .corps { fill: #D2C8B5; stroke: #D2C8B5; }
-.vignette .de3d.noir .corps { fill: #A3A9B4; stroke: #A3A9B4; }
-.vignette .de3d.blanc .face { fill: #FFFDF8; }
-.vignette .de3d.noir .face { fill: #EEF0F4; }
-.vignette .de3d .ombre-gauche { fill: #3A2E1A; opacity: .09; }
-.vignette .de3d .ombre-droite { fill: #3A2E1A; opacity: .2; }
-.vignette .de3d.noir .ombre-gauche, .vignette .de3d.noir .ombre-droite { fill: #1A2030; }
-.vignette .de3d .reflet { fill: none; stroke: #FFFFFF; stroke-opacity: .8; stroke-width: .035; stroke-linecap: round; }
-
-/* joue le coup : le coup à jouer et le champion */
-.vignette .fleche-joue { fill: none; stroke: #2FA36B; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.vignette .cadre-portrait { fill: var(--surface); stroke: var(--ligne); stroke-width: 1.5; }
-.vignette .bulle-a-toi { fill: var(--or); }
-.vignette .texte-a-toi { font-family: var(--police); font-size: 14px; font-weight: 700; text-anchor: middle; fill: #2A2E38; }
