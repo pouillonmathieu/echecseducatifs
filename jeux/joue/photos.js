@@ -12,6 +12,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY 2.0",
   "url": "https://www.flickr.com/photos/8022405@N02/1800637994"
  },
+ "andersson": {
+  "titre": "Hoogovenschaaktoernooi 1976 16, 17 Sosonko 14, 15 Andersson, kop, Bestanddeelnr 928-3654",
+  "auteur": "Rob Mieremet / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Hoogovenschaaktoernooi_1976_16,_17_Sosonko_14,_15_Andersson,_kop,_Bestanddeelnr_928-3654.jpg"
+ },
  "arjun": {
   "titre": "NZ9_3904_t",
   "auteur": "Frans Peeters Photography",
