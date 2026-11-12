@@ -163,10 +163,10 @@ window.PHOTOS_CHAMPIONS = {
   "url": "https://commons.wikimedia.org/wiki/File:Krush_Irina_(30073356050)_(cropped).jpg"
  },
  "lagno": {
-  "titre": "Kateryna Lagno (RUS)",
-  "auteur": "Federació d'Escacs Valls d'Andorra",
-  "licence": "CC BY 2.0",
-  "url": "https://www.flickr.com/photos/9472417@N03/14631721698"
+  "titre": "Kateryna Lagno in 2019 picture 2 (v2)",
+  "auteur": "Министерство спорта Республики Татарстан",
+  "licence": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Kateryna_Lagno_in_2019_picture_2_(v2).jpg"
  },
  "larsen": {
   "titre": "BentLarsen",
