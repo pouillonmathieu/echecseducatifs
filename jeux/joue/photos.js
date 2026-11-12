@@ -102,6 +102,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 4.0",
   "url": "https://commons.wikimedia.org/wiki/File:Svetozar_Gligoric,_Chess_Olympiad_Luzern,_Switzerland,_1982.jpg"
  },
+ "goryachkina": {
+  "titre": "Aleksandra Goryachkina Russian Superfinal 2024 01 (cropped)",
+  "auteur": "Eteri Kublashvili",
+  "licence": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Aleksandra_Goryachkina_Russian_Superfinal_2024_01_(cropped).jpg"
+ },
  "gukesh": {
   "titre": "Gukesh in 2024 (cropped)",
   "auteur": "Frans Peeters",
