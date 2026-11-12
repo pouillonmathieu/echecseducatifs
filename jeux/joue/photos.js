@@ -138,6 +138,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY 2.0",
   "url": "https://www.flickr.com/photos/8022405@N02/1800743068"
  },
+ "krush": {
+  "titre": "Krush Irina (30073356050) (cropped)",
+  "auteur": "Andreas Kontokanis",
+  "licence": "CC BY-SA 2.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Krush_Irina_(30073356050)_(cropped).jpg"
+ },
  "lagno": {
   "titre": "Kateryna Lagno (RUS)",
   "auteur": "Federació d'Escacs Valls d'Andorra",
