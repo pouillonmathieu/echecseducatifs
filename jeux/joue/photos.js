@@ -25,10 +25,10 @@ window.PHOTOS_CHAMPIONS = {
   "url": "https://commons.wikimedia.org/wiki/File:Hoogovenschaaktoernooi_1976_16,_17_Sosonko_14,_15_Andersson,_kop,_Bestanddeelnr_928-3654.jpg"
  },
  "arjun": {
-  "titre": "NZ9_3904_t",
-  "auteur": "Frans Peeters Photography",
+  "titre": "Arjun Erigaisi in 2025",
+  "auteur": "Frans Peeters",
   "licence": "CC BY-SA 2.0",
-  "url": "https://www.flickr.com/photos/40058780@N08/52638550448"
+  "url": "https://commons.wikimedia.org/wiki/File:Arjun_Erigaisi_in_2025.jpg"
  },
  "assaubayeva": {
   "titre": "Bibissara Assaubayeva photo (cropped)",
