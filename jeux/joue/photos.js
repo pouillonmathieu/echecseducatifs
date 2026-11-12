@@ -55,10 +55,10 @@ window.PHOTOS_CHAMPIONS = {
   "url": "https://www.loc.gov/item/2020630083/"
  },
  "carlsen": {
-  "titre": "Magnus Carlsen (NOR)",
-  "auteur": "Federació d'Escacs Valls d'Andorra",
-  "licence": "CC BY 2.0",
-  "url": "https://www.flickr.com/photos/9472417@N03/14795362996"
+  "titre": "FIDE World FR Chess Championship 2019 - Magnus Carlsen (cropped)",
+  "auteur": "Lennart Ootes",
+  "licence": "CC BY-SA 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:FIDE_World_FR_Chess_Championship_2019_-_Magnus_Carlsen_(cropped).jpg"
  },
  "caruana": {
   "titre": "Fabiano Caruana",
