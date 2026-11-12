@@ -67,10 +67,10 @@ window.PHOTOS_CHAMPIONS = {
   "url": "https://www.flickr.com/photos/8022405@N02/30218058631"
  },
  "ding": {
-  "titre": "NZ9_3610",
-  "auteur": "Frans Peeters Photography",
+  "titre": "Ding Liren in 2024 (cropped)",
+  "auteur": "Frans Peeters",
   "licence": "CC BY-SA 2.0",
-  "url": "https://www.flickr.com/photos/40058780@N08/52637826468"
+  "url": "https://commons.wikimedia.org/wiki/File:Ding_Liren_in_2024_(cropped).jpg"
  },
  "divya": {
   "titre": "NZ9_0074_t",
