@@ -168,6 +168,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "Public domain",
   "url": "https://commons.wikimedia.org/wiki/File:Lasker,_Emanuel_%22-8%22_-_DPLA_-_aa442dc47950f347989fadd72f31d04c.jpg"
  },
+ "lei": {
+  "titre": "Lei Tingjie 2014",
+  "auteur": "Przemysław Jahr / Wikimedia Commons",
+  "licence": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Lei_Tingjie_2014.jpg"
+ },
  "mmuzychuk": {
   "titre": "2022-Mariya-Muzychuk",
   "auteur": "Krzysztof Szeląg / Wikimedia Commons",
