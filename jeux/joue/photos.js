@@ -72,6 +72,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 3.0 NL",
   "url": "https://commons.wikimedia.org/wiki/File:Max_Euwe_(1945).jpg"
  },
+ "fischer": {
+  "titre": "Bobby Fischer 1966 portrait",
+  "auteur": "John Lent (Associated Press)",
+  "licence": "Public domain",
+  "url": "https://commons.wikimedia.org/wiki/File:Bobby_Fischer_1966_portrait.jpg"
+ },
  "gligoric": {
   "titre": "Svetozar Gligoric, Chess Olympiad Luzern, Switzerland, 1982",
   "auteur": "Krtschil",
