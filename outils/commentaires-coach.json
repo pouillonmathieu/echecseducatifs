@@ -612,5 +612,475 @@
   "fin_brut": "Même si les blancs reviennent défendre avec la dame, je peux tout échanger en g3. la finale de pions avec 2 pions de plus est gagnante pour les noirs.",
   "fin": "Même si les Blancs reviennent défendre avec la dame, Divya peut tout échanger en g3 : la finale de pions, avec deux pions de plus, est gagnante pour les Noirs.",
   "fin_en": "Even if White brings the queen back to defend, Divya can trade everything on g3: the pawn endgame, two pawns up, is winning for Black."
+ },
+ "abdusattorov-g8ombs": {
+  "partie": {
+   "annee": 2025,
+   "blancs": "Nodirbek Abdusattorov",
+   "champion": "abdusattorov",
+   "debut": "d4 d5 Nf3 Nf6 e3 e6 Bd3 c5 b3 cxd4 exd4 b6",
+   "noirs": "Jan-Krzysztof Duda"
+  },
+  "moments": {
+   "38": {
+    "brut": "Lorsque toutes les pièces sont développées, et surtout quand on a réussi à mettre une tour devant le roi adverse, c'est souvent une idée intéressante de pousser les pions latéraux (a ou h) pour attaquer le roi.",
+    "texte": "Quand toutes les pièces sont développées, et surtout quand une tour est déjà placée face au roi adverse, c'est souvent une bonne idée de pousser un pion du bord (a ou h) pour attaquer le roi.",
+    "texte_en": "Once all the pieces are developed, and especially when a rook is already facing the enemy king, it's often a good idea to push an edge pawn (a or h) to attack the king.",
+    "fleches": [
+     [
+      "g3g7",
+      "menace"
+     ],
+     [
+      "h4h5",
+      "menace"
+     ],
+     [
+      "h5h6",
+      "menace"
+     ]
+    ]
+   },
+   "42": {
+    "brut": "Comme le pion g7 de Duda est cloué, je menace de capturer en h7.",
+    "texte": "Comme le pion g7 de Duda est cloué, Abdusattorov menace de prendre en h6.",
+    "texte_en": "Since Duda's g7 pawn is pinned, Abdusattorov threatens to capture on h6.",
+    "fleches": [
+     [
+      "g7",
+      "menace"
+     ],
+     [
+      "c1h6",
+      "menace"
+     ]
+    ]
+   },
+   "44": {
+    "brut": "J'ai repéré que les deux tours de mon adversaire sont sur la même diagonale. Je place mon fou sur cette diagonale. Je menace de simplement bouger mon cavalier pour ouvrir cette diagonale.",
+    "texte": "Abdusattorov a repéré que les deux tours de son adversaire sont sur la même diagonale. Il y place son fou : il menace maintenant de simplement bouger son cavalier pour ouvrir cette diagonale.",
+    "texte_en": "Abdusattorov has spotted that both of his opponent's rooks are on the same diagonal. He puts his bishop on it: now he threatens to simply move his knight to open that diagonal.",
+    "fleches": [
+     [
+      "d6",
+      "menace"
+     ],
+     [
+      "c7",
+      "menace"
+     ]
+    ]
+   },
+   "46": {
+    "brut": "Ce coup est très difficile à voir. On aurait très envie de laisser notre tour en g3, mais en fait elle ne nous sert plus à grand chose là. Maintenant que la tour noire a reculé, le fou en e7 n'est plus défendu qu'une seule fois (par la dame). Lorsque la colonne e sera ouverte, j'ai besoin de toutes mes forces sur cette colonne.",
+    "texte": "Ce coup est très difficile à voir. On aurait bien envie de laisser la tour en g3, mais elle n'y sert plus à grand-chose. Maintenant que la tour noire a reculé, le fou e7 n'est plus défendu qu'une fois (par la dame). Quand la colonne e s'ouvrira, il faudra toutes les forces blanches sur cette colonne.",
+    "texte_en": "This move is very hard to see. You'd really like to leave the rook on g3, but it isn't doing much there any more. Now that the black rook has stepped back, the e7 bishop is defended only once (by the queen). When the e-file opens, White will need every piece on that file.",
+    "fleches": [
+     [
+      "d4d5",
+      "menace"
+     ],
+     [
+      "e7",
+      "menace"
+     ]
+    ]
+   },
+   "60": {
+    "joue": true,
+    "brut": "Le fou noir a abandonné la défense du cavalier en f6, laissant le pion g7 \"surchargé\" : il ne peut pas défendre à la fois le pion h7 et le cavalier f7. Je gagne un pion !",
+    "texte": "Le fou noir a abandonné la défense du cavalier f6 : le pion g7 est maintenant « surchargé », il ne peut pas défendre à la fois le pion h6 et le cavalier f6. Abdusattorov gagne un pion !",
+    "texte_en": "The black bishop has stopped defending the f6 knight: the g7 pawn is now “overloaded” and can't defend both the h6 pawn and the f6 knight. Abdusattorov wins a pawn!",
+    "fleches": [
+     [
+      "g7f6",
+      "adversaire"
+     ],
+     [
+      "g7h6",
+      "adversaire"
+     ]
+    ]
+   },
+   "64": {
+    "joue": false
+   },
+   "66": {
+    "brut": "Ma dernière pièce veut aussi participer à la fête ! ",
+    "texte": "La dernière pièce blanche veut aussi participer à la fête !",
+    "texte_en": "White's last piece wants to join the party too!",
+    "fleches": [
+     [
+      "e3g3",
+      "menace"
+     ]
+    ]
+   },
+   "70": {
+    "brut": "Lorsqu'il n'y a plus de tour sur la première rangée, c'est ",
+    "incomplet": true
+   },
+   "76": {
+    "fleches": [
+     [
+      "f5h7",
+      "menace"
+     ]
+    ]
+   },
+   "82": {
+    "joue": true,
+    "brut": "L'idée derrière ce coup n'est pas juste d'embêter la tour noire en d7. Ce que je veux, c'est venir mettre une tour en e8 pour gagner la dame !",
+    "texte": "Ce coup ne sert pas seulement à embêter la tour noire en d7 : l'idée, c'est d'amener une tour en e8 pour gagner la dame !",
+    "texte_en": "This move isn't just about bothering the black rook on d7: the idea is to bring a rook to e8 and win the queen!",
+    "fleches": [
+     [
+      "g3e3",
+      "menace"
+     ],
+     [
+      "e3e8",
+      "menace"
+     ],
+     [
+      "b5e8",
+      "menace"
+     ]
+    ]
+   },
+   "84": {
+    "joue": false
+   },
+   "86": {
+    "brut": "Encore une fois, c'est sur la colonne e que je rassemble mes forces pour attaquer !",
+    "texte": "Encore une fois, c'est sur la colonne e qu'Abdusattorov rassemble ses forces pour attaquer !",
+    "texte_en": "Once again, Abdusattorov gathers his forces on the e-file to attack!",
+    "fleches": [
+     [
+      "e5e8",
+      "menace"
+     ]
+    ]
+   },
+   "88": {
+    "joue": false
+   },
+   "92": {
+    "brut": "Le cavalier est cloué en g5. Lorsqu'une pièce est clouée, il faut toujours regarder si on peut l'attaquer avec un pion. Ici, le pion f peut venir attaquer le cavalier. Pour ça je dois juste écarte ma dame du chemin.",
+    "texte": "Le cavalier g5 est cloué. Quand une pièce est clouée, il faut toujours regarder si on peut l'attaquer avec un pion. Ici, le pion f peut venir attaquer le cavalier : il suffit d'écarter la dame de son chemin.",
+    "texte_en": "The g5 knight is pinned. When a piece is pinned, always check whether you can attack it with a pawn. Here the f-pawn can come and attack the knight: the queen just has to get out of its way.",
+    "fleches": [
+     [
+      "g3g7",
+      "adversaire"
+     ],
+     [
+      "f2f4",
+      "menace"
+     ],
+     [
+      "f4g5",
+      "menace"
+     ]
+    ]
+   },
+   "94": {
+    "joue": false
+   }
+  },
+  "fin_brut": "Quoi que fassent les noirs, au prochain coup je capture le cavalier. J'ai une pièce de plus et un pion très fort en d5. Les noirs n'ont aucune échappatoire.",
+  "fin": "Quoi que fassent les Noirs, le cavalier sera pris au coup suivant. Les Blancs auront une pièce de plus et un pion très fort en d5 : les Noirs n'ont aucune échappatoire.",
+  "fin_en": "Whatever Black does, the knight will be taken next move. White will be a piece up with a very strong pawn on d5: Black has no way out."
+ },
+ "pragg-82wxqf": {
+  "partie": {
+   "annee": 2024,
+   "blancs": "Rameshbabu Praggnanandhaa",
+   "champion": "pragg",
+   "debut": "e4 c5 Nf3 e6 d4 cxd4 Nxd4 a6 Bd3 Qc7 O-O Nf6",
+   "noirs": "Magnus Carlsen"
+  },
+  "moments": {
+   "26": {
+    "brut": "développe la dernière pièce et connecte les tours. menace de prendre le cavalier pour doubler les pions des noirs",
+    "texte": "Pragg développe sa dernière pièce et relie ses tours. Il menace aussi de prendre le cavalier pour doubler les pions noirs.",
+    "texte_en": "Pragg develops his last piece and connects his rooks. He also threatens to take the knight and double Black's pawns.",
+    "fleches": [
+     [
+      "g5f6",
+      "menace"
+     ],
+     [
+      "g7f6",
+      "menace"
+     ]
+    ]
+   },
+   "28": {
+    "brut": "les noirs ont paré notre menace de prendre en f6, ils se préparent à roquer.\nnos tours peuvent maintenant jouer. C'est souvent une bonne idée de placer une tour sur une colonne semi-ouverte (sans pion blanc), et encore plus quand la dame de l'adversaire est sur cette colonne.",
+    "texte": "Les Noirs ont paré la menace de prise en f6 et se préparent à roquer. Les tours blanches peuvent maintenant entrer en jeu : c'est souvent une bonne idée de placer une tour sur une colonne semi-ouverte (sans pion blanc), surtout quand la dame adverse s'y trouve.",
+    "texte_en": "Black has parried the threat to take on f6 and is getting ready to castle. White's rooks can now come into play: it's often a good idea to put a rook on a half-open file (with no white pawn), especially when the opponent's queen is on it.",
+    "fleches": [
+     [
+      "d1",
+      "menace"
+     ],
+     [
+      "d2",
+      "menace"
+     ],
+     [
+      "d3",
+      "menace"
+     ],
+     [
+      "d4",
+      "menace"
+     ],
+     [
+      "d5",
+      "menace"
+     ],
+     [
+      "d6",
+      "menace"
+     ],
+     [
+      "d7",
+      "menace"
+     ],
+     [
+      "d8",
+      "menace"
+     ]
+    ]
+   },
+   "30": {
+    "joue": false
+   },
+   "34": {
+    "brut": "Les coups de retrait du cavalier sont souvent les plus difficiles à trouver. Ici, c'est beaucoup mieux de le ramener en c2, d'où il pourra rebondir vers d5 ou vers g4.\nSi on l'avait reculé en f3, il bloquerait le jeu.",
+    "texte": "Les retraits du cavalier sont souvent les coups les plus difficiles à trouver. Ici, il vaut bien mieux le ramener en c2, d'où il pourra rebondir vers d5 ou vers g4. Reculé en f3, il aurait bloqué le jeu.",
+    "texte_en": "Knight retreats are often the hardest moves to find. Here it's much better to bring it back to c2, from where it can bounce towards d5 or g4. Retreating to f3 would have blocked the position.",
+    "fleches": [
+     [
+      "c2e3",
+      "menace"
+     ],
+     [
+      "e3d5",
+      "menace"
+     ],
+     [
+      "e3g4",
+      "menace"
+     ]
+    ]
+   },
+   "44": {
+    "brut": "la case d5 est un avant-poste. Ici, le cavalier occupe une très belle case centrale 'où il ne pourra pas être chassé. Regarde le nombre de cases qu'il peut contrôler d'ici !",
+    "texte": "La case d5 est un avant-poste : le cavalier y occupe une très belle case centrale, d'où il ne pourra pas être chassé. Regarde le nombre de cases qu'il contrôle d'ici !",
+    "texte_en": "d5 is an outpost: the knight sits on a beautiful central square from which it can't be driven away. Look how many squares it controls from there!",
+    "fleches": [
+     [
+      "b6",
+      "danger"
+     ],
+     [
+      "c7",
+      "danger"
+     ],
+     [
+      "e7",
+      "danger"
+     ],
+     [
+      "f6",
+      "danger"
+     ],
+     [
+      "b4",
+      "danger"
+     ],
+     [
+      "c3",
+      "danger"
+     ],
+     [
+      "e3",
+      "danger"
+     ],
+     [
+      "f4",
+      "danger"
+     ]
+    ]
+   },
+   "46": {
+    "brut": "Magnus me propose d'échanger les dames. Mais ma position est meilleure (mon roi est en sécurité et mes deux tours sont en jeu, contrairement à lui). Je préfère laisser les dames sur l'échiquier pour accentuer la pression, même si ça me fait perdre le pion c4.",
+    "texte": "Magnus propose d'échanger les dames. Mais la position de Pragg est meilleure : son roi est en sécurité et ses deux tours sont en jeu, contrairement à celles de Magnus. Il préfère garder les dames pour accentuer la pression, même si cela lui coûte le pion c4.",
+    "texte_en": "Magnus offers a queen trade. But Pragg's position is better: his king is safe and both his rooks are in play, unlike Magnus's. He prefers to keep the queens on to increase the pressure, even if it costs him the c4 pawn.",
+    "fleches": [
+     [
+      "f3h5",
+      "menace"
+     ],
+     [
+      "b5c4",
+      "danger"
+     ],
+     [
+      "c5c4",
+      "danger"
+     ],
+     [
+      "c8c4",
+      "danger"
+     ]
+    ]
+   },
+   "48": {
+    "joue": true,
+    "brut": "J'oblige le roi à aller en f8. Il ne peut pas bloquer avec pion g6 car je pourrais simplement le capturer (le pion h7 est \"cloué\"). La tour noire en h8 est maintenant complètement bloquée. Magnus va avoir toutes les peines du monde à activer cette pauvre tour. à partir de maintenant, c'est comme si je jouais avec une pièce en plus que lui.",
+    "texte": "Pragg oblige le roi à aller en f8. Magnus ne peut pas s'interposer avec le pion g6, car la dame le prendrait simplement : le pion h7 est « cloué ». La tour noire h8 est maintenant complètement enfermée, et Magnus va avoir toutes les peines du monde à l'activer. À partir de maintenant, c'est comme si Pragg jouait avec une pièce de plus.",
+    "texte_en": "Pragg forces the king to go to f8. Magnus can't block with the g6 pawn, because the queen would simply take it: the h7 pawn is “pinned”. The black rook on h8 is now completely shut in, and Magnus will have a very hard time activating it. From now on, it's as if Pragg were playing with an extra piece.",
+    "fleches": [
+     [
+      "h8",
+      "danger"
+     ],
+     [
+      "e8f8",
+      "adversaire"
+     ],
+     [
+      "f8",
+      "adversaire"
+     ]
+    ]
+   },
+   "50": {
+    "brut": "Je veux pouvoir reprendre avec ma tour si Magnus capture en b3. ",
+    "texte": "Pragg veut pouvoir reprendre avec la tour si Magnus prend en b3.",
+    "texte_en": "Pragg wants to be able to recapture with the rook if Magnus takes on b3.",
+    "fleches": [
+     [
+      "c4b3",
+      "danger"
+     ],
+     [
+      "f3b3",
+      "suite"
+     ]
+    ]
+   },
+   "60": {
+    "joue": true,
+    "brut": "Magnus a réussi à m'échanger plusieurs pièces pour diminuer la pression. Mais... sa tour en h8 est toujours bien bloquée !",
+    "texte": "Magnus a réussi à échanger plusieurs pièces pour diminuer la pression. Mais… sa tour h8 est toujours bien enfermée !",
+    "texte_en": "Magnus has managed to trade several pieces to ease the pressure. But… his rook on h8 is still well and truly locked in!",
+    "fleches": [
+     [
+      "h8",
+      "danger"
+     ]
+    ]
+   },
+   "62": {
+    "brut": "Attention ! Les noirs pourraient obtenir une partie nulle par échecs répétés. C'est le moment pour ramener ma dame de l'autre côté de l'échiquier. ",
+    "texte": "Attention ! Les Noirs pourraient obtenir la nulle par des échecs répétés. C'est le moment de ramener la dame de l'autre côté de l'échiquier.",
+    "texte_en": "Careful! Black could get a draw by repeated checks. It's time to bring the queen back to the other side of the board.",
+    "fleches": [
+     [
+      "c7c1",
+      "danger"
+     ],
+     [
+      "c1f4",
+      "danger"
+     ],
+     [
+      "f4f1",
+      "danger"
+     ]
+    ]
+   },
+   "64": {
+    "brut": "Je menace Tb8+, qui oblige son roi à remonter, puis Tb7 avec l'enfilade Dame-Roi qui gagne la dame contre la tour.",
+    "texte": "Pragg menace Tb8+, qui oblige le roi noir à remonter, puis Tb7 : l'enfilade sur la dame et le roi gagnerait la dame contre la tour.",
+    "texte_en": "Pragg threatens Rb8+, forcing the black king back up, then Rb7: the skewer on the queen and king would win the queen for the rook.",
+    "fleches": [
+     [
+      "b3b8",
+      "menace"
+     ],
+     [
+      "b8b7",
+      "menace"
+     ],
+     [
+      "f8g7",
+      "adversaire"
+     ]
+    ]
+   },
+   "66": {
+    "brut": "Ma tour arrive sur la 7eme rangée. Les tours sur la 7eme rangée sont extrêmement puissantes.",
+    "texte": "La tour arrive sur la 7e rangée : une tour sur la 7e rangée est extrêmement puissante.",
+    "texte_en": "The rook reaches the 7th rank: a rook on the 7th rank is extremely powerful."
+   },
+   "68": {
+    "brut": "Je pouvais simplement recapturer le pion, mais ce que je veux, c'est attaquer son roi. Mon idée, c'est de le mater en amenant ma dame en f7. Mais je ne peux pas jouer Db3 directement, car ça laisserait Magnus jouer Dc1+ avec une séquence semblable à ce qu'on a vu juste avant. Rh2! est le seul coup qui me permet de garder mes menaces.",
+    "texte": "Pragg pouvait simplement reprendre le pion, mais il veut attaquer le roi. Son idée : le mater en amenant la dame en f7. Il ne peut pas jouer Db3 tout de suite, car Magnus répondrait Dc1+, avec une suite semblable à celle d'avant. Rh2 ! est le seul coup qui garde toutes ses menaces.",
+    "texte_en": "Pragg could simply have taken back the pawn, but he wants to attack the king. His idea: mate it by bringing the queen to f7. He can't play Qb3 straight away, because Magnus would answer Qc1+, with a sequence like the one before. Kh2! is the only move that keeps all his threats.",
+    "fleches": [
+     [
+      "b1b3",
+      "menace"
+     ],
+     [
+      "b3f7",
+      "menace"
+     ],
+     [
+      "c5c1",
+      "danger"
+     ],
+     [
+      "c1f4",
+      "danger"
+     ]
+    ]
+   },
+   "70": {
+    "joue": false
+   },
+   "72": {
+    "fleches": [
+     [
+      "b3b8",
+      "menace"
+     ],
+     [
+      "c5c8",
+      "adversaire"
+     ],
+     [
+      "b3d5",
+      "menace"
+     ],
+     [
+      "g8g7",
+      "adversaire"
+     ]
+    ]
+   }
+  },
+  "fin_brut": "Je menace Db8# si Magnus ne fait rien pour défendre. Les rares coups qu'il peut essayer pour défendre ne fonctionnent pas : mes menaces sont trop nombreuses.",
+  "fin": "Pragg menace Db8#. Les rares coups de défense que Magnus peut essayer ne suffisent pas : les menaces sont trop nombreuses.",
+  "fin_en": "Pragg threatens Qb8#. The few defensive moves Magnus can try don't work: there are too many threats.",
+  "intro_brut": "Le 30 mai 2024 (lors de la 3e ronde de Norway Chess 2024), Praggnanandhaa a battu Magnus Carlsen en parties classiques pour la première fois de sa carrière, prenant ainsi la tête du tournoi. La partie s'est jouée sur une Défense sicilienne ouverte (variante Kahn) où le jeune grand-maître indien de 18 ans a exercé une pression positionnelle décisive.",
+  "intro": "Le 30 mai 2024, à la 3e ronde du tournoi Norway Chess, Praggnanandhaa bat Magnus Carlsen en partie classique pour la première fois de sa carrière et prend la tête du tournoi. Sur une défense sicilienne (variante Kan), le jeune grand maître indien de 18 ans exerce une pression qui finit par être décisive.",
+  "intro_en": "On 30 May 2024, in round 3 of Norway Chess, Praggnanandhaa beat Magnus Carlsen in a classical game for the first time in his career and took the lead in the tournament. In a Sicilian Defence (Kan Variation), the 18-year-old Indian grandmaster built up pressure that proved decisive."
  }
 }
