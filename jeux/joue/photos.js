@@ -264,6 +264,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC0",
   "url": "https://commons.wikimedia.org/wiki/File:Hoogovenschaaktoernooi_1976_Talj,_kop,_Bestanddeelnr_928-3651.jpg"
  },
+ "tan": {
+  "titre": "Tan Zhongyi in 2019 - 02 (cropped)",
+  "auteur": "Министерство спорта Республики Татарстан",
+  "licence": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Tan_Zhongyi_in_2019_-_02_(cropped).jpg"
+ },
  "tarrasch": {
   "titre": "Tarrasch, Siegbert -2 - DPLA - 224f35dc323734bf355cc7c94d0ded68",
   "auteur": "Auteur inconnu",
