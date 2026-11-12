@@ -1,5 +1,11 @@
 /* Généré par outils/photos-champions.py — photos de Wikimedia Commons (licences libres) et leurs crédits. */
 window.PHOTOS_CHAMPIONS = {
+ "abdusattorov": {
+  "titre": "Nodirbek Abdusattorov chess player (cropped)",
+  "auteur": "Husniddin Ato",
+  "licence": "CC BY-SA 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Nodirbek_Abdusattorov_chess_player_(cropped).jpg"
+ },
  "alekhine": {
   "titre": "Alexander Alekhine in 1913",
   "auteur": "Auteur inconnu",
