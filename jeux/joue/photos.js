@@ -102,6 +102,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 2.0",
   "url": "https://www.flickr.com/photos/8022405@N02/30656211404"
  },
+ "karpov": {
+  "titre": "Max Euwe Schaakvierkamp in Amsterdam Karpov (close), Bestanddeelnr 933-9736",
+  "auteur": "Bart Molendijk / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Max_Euwe_Schaakvierkamp_in_Amsterdam_Karpov_(close),_Bestanddeelnr_933-9736.jpg"
+ },
  "kasparov": {
   "titre": "Garry Kasparov no Fronteiras do Pensamento Porto Alegre 2011",
   "auteur": "fronteirasweb",
