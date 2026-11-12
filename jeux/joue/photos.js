@@ -198,6 +198,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC0",
   "url": "https://www.flickr.com/photos/14529759@N03/48906557041"
  },
+ "stein": {
+  "titre": "Interfide schaaktoernooi in GAK gebouw, Stein, Bestanddeelnr 916-4589",
+  "auteur": "F.N. Broers / Anefo",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Interfide_schaaktoernooi_in_GAK_gebouw,_Stein,_Bestanddeelnr_916-4589.jpg"
+ },
  "steinitz": {
   "titre": "Steinitz, William-4 - DPLA - 9eeab9ac335135c24b69ab7e36fc5354 (cropped)",
   "auteur": "Auteur inconnu",
