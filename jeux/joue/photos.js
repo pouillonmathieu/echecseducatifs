@@ -78,6 +78,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 3.0 NL",
   "url": "https://commons.wikimedia.org/wiki/File:Max_Euwe_(1945).jpg"
  },
+ "firouzja": {
+  "titre": "Alireza Firouzja in 2024 (cropped)",
+  "auteur": "Frans Peeters",
+  "licence": "CC BY-SA 2.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Alireza_Firouzja_in_2024_(cropped).jpg"
+ },
  "fischer": {
   "titre": "Bobby Fischer 1966 portrait",
   "auteur": "John Lent (Associated Press)",
