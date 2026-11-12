@@ -241,10 +241,10 @@ window.PHOTOS_CHAMPIONS = {
   "url": "https://commons.wikimedia.org/wiki/File:Lev_Polugaevsky_1972.jpg"
  },
  "pragg": {
-  "titre": "NZ9_3576",
-  "auteur": "Frans Peeters Photography",
+  "titre": "Praggnanandhaa R, Tata Steel chess tournament 2025, Round 1 (02) (cropped v2)",
+  "auteur": "Frans Peeters",
   "licence": "CC BY-SA 2.0",
-  "url": "https://www.flickr.com/photos/40058780@N08/52637827218"
+  "url": "https://commons.wikimedia.org/wiki/File:Praggnanandhaa_R,_Tata_Steel_chess_tournament_2025,_Round_1_(02)_(cropped_v2).jpg"
  },
  "reti": {
   "titre": "Richard Reti",
