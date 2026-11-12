@@ -30,6 +30,12 @@ window.PHOTOS_CHAMPIONS = {
   "licence": "CC BY-SA 2.0",
   "url": "https://www.flickr.com/photos/40058780@N08/52638550448"
  },
+ "assaubayeva": {
+  "titre": "Bibissara Assaubayeva photo (cropped)",
+  "auteur": "Auteur inconnu",
+  "licence": "CC0",
+  "url": "https://commons.wikimedia.org/wiki/File:Bibissara_Assaubayeva_photo_(cropped).jpg"
+ },
  "botvinnik": {
   "titre": "Mikhail Botvinnik 1962",
   "auteur": "Harry Pot / Anefo",
