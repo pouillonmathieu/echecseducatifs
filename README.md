@@ -49,13 +49,16 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   l'échiquier, flèches du clavier, ou clic sur un coup de la feuille). Parties classiques de Steinitz à Kasparov, et parties
   récentes des champions et championnes d'aujourd'hui ; vitesse réglable, notation française ou anglaise.
 - **Comment ça s'appelle ?** (`jeux/mots/`) : une illustration s'affiche (une pièce, l'échiquier, une case, un échec,
-  les camps… et au niveau difficile un coup ou une idée montrés sur l'échiquier avec des flèches : roque, prise en
-  passant, colonne, rangée, fourchette, enfilade, clouage, ouverture, finale, fianchetto, avant-poste, opposition,
-  découverte) et il faut écrire son nom lettre par lettre. Le déterminant est déjà écrit, des cases vides attendent les
+  les camps, la pendule… et au niveau difficile un coup ou une idée montrés sur l'échiquier avec des flèches : petit et
+  grand roque, prise en passant, colonne, rangée, diagonale, centre, fourchette, enfilade, clouage, découverte,
+  ouverture, gambit, sacrifice, échange, finale, fianchetto, avant-poste, opposition, pion passé, promotion, pat,
+  partie nulle, zugzwang ; 37 termes en tout) et il faut écrire son nom lettre par lettre. Le déterminant est déjà écrit, des cases vides attendent les
   lettres. 9 langues avec leur clavier à l'écran : français, anglais, espagnol, portugais, néerlandais, arabe (de droite
   à gauche), russe, hindi (avec les signes des voyelles) et mandarin (tuiles de caractères, pinyin montré à la fin).
   Une lettre fausse n'est pas posée ; après 3 erreurs elle apparaît en pâle. « Indice » ne garde sur le clavier que les
   lettres du mot ; « Solution » montre le mot. Une série = tous les mots du niveau, avec un bilan à la fin.
+  Le mot est lu à voix haute juste après le son de réussite (synthèse vocale du navigateur, si le son est activé) ;
+  le bouton haut-parleur le lit à tout moment (grisé si l'appareil n'a pas de voix pour la langue).
   Les termes sont dans `jeux/mots/termes.js` (les termes difficiles en arabe, hindi et mandarin sont à faire relire).
 - **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
   (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).

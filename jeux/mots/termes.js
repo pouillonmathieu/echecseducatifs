@@ -4,10 +4,11 @@
    - le déterminant est affiché ; seules les lettres du mot sont à taper (espaces, tirets, « ! », « ¡ »… sont déjà écrits) ;
    - arabe : l'article ال s'écrit collé au mot ; français : l' aussi (apostrophe à la fin du déterminant).
    Illustrations :
-   - { piece: 'roi', couleur: 'blanc' } : une pièce en grand ;
+   - { piece: 'roi', couleur: 'blanc' } : une pièce en grand ; { dessin: 'pendule' } : un dessin (la pendule) ;
    - { camp: 'blanc' } : les pièces d'un camp ;
    - { fen, annot: [['e2e4', 'suite'], ['e4', 'danger'], …], roi: 'e8', badge: '+' } : un échiquier avec flèches
-     et cases colorées (couleurs de js/echiquier.js), le roi attaqué entouré de rouge, un badge « + » ou « # ».
+     et cases colorées (couleurs de js/echiquier.js), le roi attaqué entouré de rouge, un badge « + », « # », « = »…
+     ou une pièce dans le badge (badgePiece: 'dame-blanc').
    Les termes difficiles en arabe, en hindi et en mandarin sont à faire relire par quelqu'un qui joue dans cette langue. */
 window.TERMES_MOTS = [
   // ---------- niveau facile ----------
@@ -78,13 +79,26 @@ window.TERMES_MOTS = [
     ru: ['', 'чёрные'], ar: ['ال', 'أسود'], hi: ['', 'काला'], zh: ['', '黑方', 'hēifāng'],
   },
 
+  {
+    id: 'pendule', niveau: 'facile', illus: { dessin: 'pendule' },
+    fr: ['la', 'pendule'], en: ['the', 'chess clock'], es: ['el', 'reloj'], pt: ['o', 'relógio'], nl: ['de', 'schaakklok'],
+    ru: ['', 'шахматные часы'], ar: ['ال', 'ساعة'], hi: ['', 'घड़ी'], zh: ['', '棋钟', 'qízhōng'],
+  },
+
   // ---------- niveau difficile (un exemple sur un échiquier complet) ----------
   {
-    id: 'roque', niveau: 'difficile',
-    // le roi va de e1 à g1 et la tour de h1 à f1
-    illus: { fen: 'r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', annot: [['e1g1', 'suite'], ['h1f1', 'suite']] },
-    fr: ['le', 'roque'], en: ['', 'castling'], es: ['el', 'enroque'], pt: ['o', 'roque'], nl: ['de', 'rokade'],
-    ru: ['', 'рокировка'], ar: ['ال', 'تبييت'], hi: ['', 'कैसलिंग'], zh: ['', '王车易位', 'wáng chē yìwèi'],
+    id: 'petitroque', niveau: 'difficile',
+    // côté roi : le roi va de e1 à g1 (flèche verte) et la tour de h1 à f1 (flèche orange)
+    illus: { fen: 'r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', annot: [['e1g1', 'suite'], ['h1f1', 'menace']] },
+    fr: ['le', 'petit roque'], en: ['', 'kingside castling'], es: ['el', 'enroque corto'], pt: ['o', 'roque pequeno'], nl: ['de', 'korte rokade'],
+    ru: ['', 'короткая рокировка'], ar: ['ال', 'تبييت القصير'], hi: ['', 'शॉर्ट कैसलिंग'], zh: ['', '短易位', 'duǎn yìwèi'],
+  },
+  {
+    id: 'grandroque', niveau: 'difficile',
+    // côté dame : le roi va de e1 à c1 (flèche verte) et la tour de a1 à d1 (flèche orange)
+    illus: { fen: 'r3kbnr/pppqpppp/2n5/3p1b2/3P1B2/2N5/PPPQPPPP/R3KBNR w KQkq - 6 5', annot: [['e1c1', 'suite'], ['a1d1', 'menace']] },
+    fr: ['le', 'grand roque'], en: ['', 'queenside castling'], es: ['el', 'enroque largo'], pt: ['o', 'roque grande'], nl: ['de', 'lange rokade'],
+    ru: ['', 'длинная рокировка'], ar: ['ال', 'تبييت الطويل'], hi: ['', 'लॉन्ग कैसलिंग'], zh: ['', '长易位', 'cháng yìwèi'],
   },
   {
     id: 'passant', niveau: 'difficile',
@@ -168,6 +182,74 @@ window.TERMES_MOTS = [
     fr: ['une', 'découverte'], en: ['a', 'discovered attack'], es: ['un', 'ataque a la descubierta'], pt: ['um', 'ataque descoberto'], nl: ['een', 'aftrekaanval'],
     ru: ['', 'вскрытое нападение'], ar: ['', 'هجوم مكشوف'], hi: ['', 'खुला हमला'], zh: ['', '闪击', 'shǎnjī'],
   },
+  {
+    id: 'diagonale', niveau: 'difficile',
+    illus: { fen: '8/8/8/8/8/8/8/8', annot: ['a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8'].map(c => [c, 'suite']) },
+    fr: ['la', 'diagonale'], en: ['the', 'diagonal'], es: ['la', 'diagonal'], pt: ['a', 'diagonal'], nl: ['de', 'diagonaal'],
+    ru: ['', 'диагональ'], ar: ['ال', 'قطر'], hi: ['', 'विकर्ण'], zh: ['', '斜线', 'xiéxiàn'],
+  },
+  {
+    id: 'centre', niveau: 'difficile',
+    illus: { fen: '8/8/8/8/8/8/8/8', annot: ['d4', 'e4', 'd5', 'e5'].map(c => [c, 'suite']) },
+    fr: ['le', 'centre'], en: ['the', 'centre'], es: ['el', 'centro'], pt: ['o', 'centro'], nl: ['het', 'centrum'],
+    ru: ['', 'центр'], ar: ['ال', 'مركز'], hi: ['', 'केंद्र'], zh: ['', '中心', 'zhōngxīn'],
+  },
+  {
+    id: 'pat', niveau: 'difficile',
+    // les Noirs doivent jouer : leur roi n'est pas attaqué, mais toutes ses cases le sont
+    illus: { fen: 'k7/2Q5/1K6/8/8/8/8/8 b - - 0 1', annot: [['a7', 'danger'], ['b7', 'danger'], ['b8', 'danger']], badge: '=' },
+    fr: ['le', 'pat'], en: ['', 'stalemate'], es: ['el', 'ahogado'], pt: ['o', 'afogamento'], nl: ['', 'pat'],
+    ru: ['', 'пат'], ar: ['ال', 'جمود'], hi: ['', 'स्टेलमेट'], zh: ['', '逼和', 'bīhé'],
+  },
+  {
+    id: 'nulle', niveau: 'difficile',
+    // il ne reste que les deux rois : personne ne peut gagner
+    illus: { fen: '8/8/4k3/8/8/3K4/8/8 w - - 0 1', badge: '½' },
+    fr: ['la', 'partie nulle'], en: ['a', 'draw'], es: ['las', 'tablas'], pt: ['o', 'empate'], nl: ['', 'remise'],
+    ru: ['', 'ничья'], ar: ['ال', 'تعادل'], hi: ['', 'ड्रॉ'], zh: ['', '和棋', 'héqí'],
+  },
+  {
+    id: 'promotion', niveau: 'difficile',
+    // le pion arrive au bout de l'échiquier et devient une dame
+    illus: { fen: '6k1/1P3ppp/8/8/8/8/5PPP/6K1 w - - 0 1', annot: [['b7b8', 'suite'], ['b8', 'suite']], badgePiece: 'dame-blanc' },
+    fr: ['la', 'promotion'], en: ['', 'promotion'], es: ['la', 'coronación'], pt: ['a', 'promoção'], nl: ['de', 'promotie'],
+    ru: ['', 'превращение'], ar: ['ال', 'ترقية'], hi: ['', 'प्रमोशन'], zh: ['', '升变', 'shēngbiàn'],
+  },
+  {
+    id: 'gambit', niveau: 'difficile',
+    // gambit du roi : 1.e4 e5 2.f4, les Blancs offrent le pion f4
+    illus: { fen: 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2', annot: [['f2f4', 'suite'], ['e5f4', 'adversaire'], ['f4', 'menace']] },
+    fr: ['un', 'gambit'], en: ['a', 'gambit'], es: ['un', 'gambito'], pt: ['um', 'gambito'], nl: ['een', 'gambiet'],
+    ru: ['', 'гамбит'], ar: ['', 'غامبيت'], hi: ['', 'गैम्बिट'], zh: ['', '弃兵局', 'qìbīngjú'],
+  },
+  {
+    id: 'sacrifice', niveau: 'difficile',
+    // le fou se donne en h7 pour ouvrir le roi noir
+    illus: { fen: 'r1bq1rk1/pppn1ppp/4p3/3pP3/1b1P4/2NB1N2/PPP2PPP/R2QK2R w KQ - 0 8', annot: [['d3h7', 'suite'], ['g8h7', 'adversaire']] },
+    fr: ['un', 'sacrifice'], en: ['a', 'sacrifice'], es: ['un', 'sacrificio'], pt: ['um', 'sacrifício'], nl: ['een', 'offer'],
+    ru: ['', 'жертва'], ar: ['', 'تضحية'], hi: ['', 'बलिदान'], zh: ['', '弃子', 'qìzǐ'],
+  },
+  {
+    id: 'pionpasse', niveau: 'difficile',
+    // aucun pion noir ne peut arrêter le pion d5 sur son chemin
+    illus: { fen: '6k1/pp3ppp/8/3P4/8/8/PP3PPP/6K1 w - - 0 1', annot: [['d5', 'suite'], ['d5d8', 'suite']] },
+    fr: ['un', 'pion passé'], en: ['a', 'passed pawn'], es: ['un', 'peón pasado'], pt: ['um', 'peão passado'], nl: ['een', 'vrijpion'],
+    ru: ['', 'проходная пешка'], ar: ['', 'بيدق حر'], hi: ['', 'पास्ड पॉन'], zh: ['', '通路兵', 'tōnglùbīng'],
+  },
+  {
+    id: 'echange', niveau: 'difficile',
+    // le fou prend le cavalier, le pion reprend le fou : chacun perd une pièce de même valeur
+    illus: { fen: 'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 3 3', annot: [['b5c6', 'suite'], ['d7c6', 'adversaire']] },
+    fr: ['un', 'échange'], en: ['an', 'exchange'], es: ['un', 'cambio'], pt: ['uma', 'troca'], nl: ['een', 'ruil'],
+    ru: ['', 'размен'], ar: ['', 'تبادل'], hi: ['', 'अदला-बदली'], zh: ['', '兑子', 'duìzǐ'],
+  },
+  {
+    id: 'zugzwang', niveau: 'difficile',
+    // les Noirs doivent jouer et chaque coup les fait perdre : leur roi doit lâcher le pion d5
+    illus: { fen: '8/8/8/2Kp4/3Pk3/8/8/8 b - - 0 1', annot: [['c5d5', 'menace'], ['e4d4', 'adversaire'], ['d5', 'danger']] },
+    fr: ['le', 'zugzwang'], en: ['', 'zugzwang'], es: ['el', 'zugzwang'], pt: ['o', 'zugzwang'], nl: ['de', 'zetdwang'],
+    ru: ['', 'цугцванг'], ar: ['', 'تسوغتسفانغ'], hi: ['', 'ज़ुगज़्वांग'], zh: ['', '楚茨文格', 'chǔcíwéngé'],
+  },
 ];
 
 // Les langues : nom affiché, sens d'écriture, clavier (rangées de touches ; mandarin : tuiles de caractères tirées du mot).
@@ -179,6 +261,6 @@ window.LANGUES_MOTS = {
   nl: { nom: 'Nederlands', clavier: ['qwertyuiop', 'asdfghjkl', 'zxcvbnm', 'ëéïèö'] },
   ru: { nom: 'Русский', clavier: ['йцукенгшщзхъ', 'фывапролджэ', 'ячсмитьбюё'] },
   ar: { nom: 'العربية', rtl: true, clavier: ['ضصثقفغعهخحج', 'شسيبلاتنمكط', 'ءؤرىةوزظدذ', 'أإآئ'] },
-  hi: { nom: 'हिन्दी', clavier: ['अआइईउऊएऐओऔऋ', 'ािीुूृेैोौ', 'ंँः़्', 'कखगघङचछजझञ', 'टठडढणतथदधन', 'पफबभमयरल', 'वशषसह'] },
+  hi: { nom: 'हिन्दी', clavier: ['अआइईउऊएऐओऔऋ', 'ािीुूृेैोौॉ', 'ंँः़्', 'कखगघङचछजझञ', 'टठडढणतथदधन', 'पफबभमयरल', 'वशषसह'] },
   zh: { nom: '中文', tuiles: true },
 };

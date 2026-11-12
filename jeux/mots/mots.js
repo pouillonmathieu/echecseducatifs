@@ -45,14 +45,41 @@
   const egal = (a, b) => a.toLocaleLowerCase(reglages.langue) === b.toLocaleLowerCase(reglages.langue);
 
   // ---------- Illustration ----------
+  // la pendule d'échecs : deux cadrans, deux boutons (celui des Blancs enfoncé), un drapeau
+  const DESSINS = {
+    pendule: `<svg viewBox="0 0 100 100" class="pendule">
+      <ellipse cx="50" cy="86" rx="40" ry="4" fill="#000" opacity=".12"/>
+      <rect x="31" y="22" width="12" height="6" rx="2" fill="#5A6474"/>
+      <rect x="57" y="18" width="12" height="10" rx="2" fill="#5A6474"/>
+      <path d="M12 30Q12 26 16 26H84Q88 26 88 30L91 80Q91 84 87 84H13Q9 84 9 80Z" fill="#8B5A33" stroke="#4A2E18" stroke-width="2"/>
+      <path d="M14 30H86L88 78H12Z" fill="#A86E40" opacity=".55"/>
+      <circle cx="31" cy="55" r="16" fill="#FBFBF8" stroke="#2A2E38" stroke-width="2.5"/>
+      <circle cx="69" cy="55" r="16" fill="#FBFBF8" stroke="#2A2E38" stroke-width="2.5"/>
+      <g stroke="#2A2E38" stroke-width="1.6" stroke-linecap="round">
+        <path d="M31 42v2M31 66v2M18 55h2M42 55h2M69 42v2M69 66v2M56 55h2M80 55h2"/>
+        <path d="M31 55V45.5M31 55l6 3" stroke-width="2.2"/>
+        <path d="M69 55l-4-8M69 55l7 1" stroke-width="2.2"/>
+      </g>
+      <path d="M74 44.5l5-6 1.2 4z" fill="#C8323C"/>
+      <circle cx="31" cy="55" r="1.8" fill="#2A2E38"/><circle cx="69" cy="55" r="1.8" fill="#2A2E38"/>
+    </svg>`,
+  };
+
   const illus = $('illus');
   let annotEnCours = null;
   function dessinerIllus(il) {
     annotEnCours = null;
     illus.replaceChildren();
     const badge = $('badge');
-    badge.hidden = !il.badge;
-    badge.textContent = il.badge || '';
+    badge.hidden = !il.badge && !il.badgePiece;
+    badge.classList.toggle('avec-piece', !!il.badgePiece);
+    badge.innerHTML = il.badgePiece ? `<svg viewBox="0 0 100 100"><use href="#piece-${il.badgePiece}"/></svg>` : '';
+    if (il.badge) badge.textContent = il.badge;
+    if (il.dessin) {
+      illus.className = 'illus-mots illus-piece';
+      illus.innerHTML = DESSINS[il.dessin];
+      return;
+    }
     if (il.piece) {
       illus.className = 'illus-mots illus-piece';
       illus.innerHTML = `<svg viewBox="0 0 100 100"><use href="#piece-${il.piece}-${il.couleur}"/></svg>`;
@@ -86,19 +113,23 @@
     zone.lang = reglages.langue;
     zone.dir = L.rtl ? 'rtl' : 'ltr';
     zone.replaceChildren();
-    if (det) {
-      const d = document.createElement('span');
-      d.className = 'det' + (/'$/.test(det) || L.rtl ? ' colle' : '');
-      d.textContent = det;
-      zone.appendChild(d);
-    }
-    // les lettres, groupées par mot pour que les retours à la ligne se fassent entre les mots
+    // les lettres, groupées par mot pour que les retours à la ligne se fassent entre les mots ;
+    // le déterminant reste collé au premier mot
     const lettres = document.createElement('span');
     lettres.className = 'lettres';
-    let groupe = null;
+    let groupe = null, premier = true;
     jeu.cars.forEach((c, i) => {
       if (c.c === ' ') { groupe = null; return; }
-      if (!groupe) { groupe = document.createElement('span'); groupe.className = 'groupe'; lettres.appendChild(groupe); }
+      if (!groupe) {
+        groupe = document.createElement('span'); groupe.className = 'groupe'; lettres.appendChild(groupe);
+        if (premier && det) {
+          const d = document.createElement('span');
+          d.className = 'det' + (/'$/.test(det) || L.rtl ? ' colle' : '');
+          d.textContent = det;
+          groupe.appendChild(d);
+        }
+        premier = false;
+      }
       const b = document.createElement('span');
       b.className = c.tape ? 'boite' : 'fixe';
       b.dataset.i = i;
@@ -111,8 +142,23 @@
     zone.classList.toggle('long', n > 11);
     zone.classList.toggle('tres-long', n > 17);
     zone.classList.toggle('ideogrammes', reglages.langue === 'zh');
+    ajusterTaille();
     marquerCourante();
   }
+  // taille des cases : le mot le plus long (avec le déterminant) doit tenir sur une ligne de la carte
+  function ajusterTaille() {
+    const zone = $('mot');
+    zone.style.removeProperty('--taille');
+    const dispo = zone.clientWidth;
+    const besoin = () => Math.max(0, ...[...zone.querySelectorAll('.groupe')].map(g => g.scrollWidth));
+    let taille = parseFloat(getComputedStyle(zone).getPropertyValue('--taille')) || 44;
+    // on réduit pas à pas (les écarts entre les cases ne rétrécissent pas avec elles)
+    for (let k = 0; k < 8 && dispo && besoin() > dispo && taille > 15; k++) {
+      taille = Math.max(15, Math.floor(taille * Math.min(0.95, dispo / besoin())));
+      zone.style.setProperty('--taille', `${taille}px`);
+    }
+  }
+  window.addEventListener('resize', () => { if (jeu.terme) ajusterTaille(); });
   const boite = (i) => $('mot').querySelector(`[data-i="${i}"]`);
   function marquerCourante() {
     $('mot').querySelectorAll('.boite.courante').forEach(b => b.classList.remove('courante'));
@@ -137,6 +183,45 @@
     a.dir = L === 'ar' ? 'rtl' : 'ltr';
     a.textContent = (det && L === 'ar' ? det : det ? det + ' ' : '') + ecrit;
   }
+
+  // ---------- Lecture du mot (synthèse vocale du navigateur) ----------
+  const VOIX = { fr: 'fr-FR', en: 'en-GB', es: 'es-ES', pt: 'pt-PT', nl: 'nl-NL', ru: 'ru-RU', ar: 'ar-SA', hi: 'hi-IN', zh: 'zh-CN' };
+  const parole = 'speechSynthesis' in window ? window.speechSynthesis : null;
+  // la voix de la langue : d'abord le bon pays (fr-FR), sinon la même langue (fr-CA…)
+  function voixPour(l) {
+    const voix = parole ? parole.getVoices() : [];
+    const nom = (v) => v.lang.replace('_', '-').toLowerCase();
+    return voix.find(v => nom(v) === VOIX[l].toLowerCase()) || voix.find(v => nom(v).split('-')[0] === l) || null;
+  }
+  const texteALire = () => {
+    const [det, mot] = jeu.terme[reglages.langue];
+    return !det ? mot : /'$/.test(det) || reglages.langue === 'ar' ? det + mot : `${det} ${mot}`;
+  };
+  function lireMot() {
+    if (!parole || !jeu.terme) return;
+    parole.cancel();
+    const u = new SpeechSynthesisUtterance(texteALire());
+    u.lang = VOIX[reglages.langue];
+    const v = voixPour(reglages.langue);
+    if (v) u.voice = v;
+    u.rate = 0.85;
+    const b = $('btn-lire');
+    u.onstart = () => b.classList.add('parle');
+    u.onend = u.onerror = () => b.classList.remove('parle');
+    parole.speak(u);
+  }
+  // le bouton : caché sans synthèse vocale ; grisé si l'appareil n'a pas de voix pour cette langue
+  function majBoutonLire() {
+    const b = $('btn-lire');
+    b.hidden = !parole;
+    if (!parole) return;
+    const voix = parole.getVoices();
+    const aucune = voix.length > 0 && !voixPour(reglages.langue);
+    b.disabled = aucune;
+    b.title = aucune ? t('Pas de voix pour cette langue sur cet appareil', 'No voice for this language on this device') : t('Écouter le mot', 'Listen to the word');
+  }
+  if (parole) parole.addEventListener?.('voiceschanged', majBoutonLire);
+  $('btn-lire').addEventListener('click', lireMot);
 
   // ---------- Le clavier ----------
   function construireClavier() {
@@ -208,6 +293,8 @@
     jeu.indice = false;
     jeu.erreursIci = 0;
     jeu.erreursMot = 0;
+    if (parole) parole.cancel();
+    majBoutonLire();
     dessinerIllus(terme.illus);
     afficherMot();
     construireClavier();
@@ -273,6 +360,8 @@
     $('mot').classList.add('trouve');
     Sons.juste();
     terminer();
+    // le mot est lu juste après le son de réussite (sauf si le son est coupé)
+    if (Sons.actif) { const n = jeu.numero; setTimeout(() => { if (jeu.numero === n && jeu.fini) lireMot(); }, 450); }
   }
   function montrerSolution() {
     if (jeu.fini) return;
