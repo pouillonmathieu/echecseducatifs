@@ -61,6 +61,16 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Le mot est lu à voix haute juste après le son de réussite (synthèse vocale du navigateur, si le son est activé) ;
   le bouton haut-parleur le lit à tout moment (grisé si l'appareil n'a pas de voix pour la langue).
   Les termes sont dans `jeux/mots/termes.js` (les termes difficiles en arabe, hindi et mandarin sont à faire relire).
+- **Le cheval de la reine** (`jeux/cheval/`) : une dame et un cavalier seuls sur l'échiquier, posés au hasard (aucun
+  des deux n'attaque l'autre au départ). Au-dessus de l'échiquier, on choisit sa pièce. Avec la dame (blanche), il faut
+  attraper le cavalier noir en le moins de coups possible (★★★ en 5 coups ou moins, ★★ de 6 à 8, ★ au-delà) ; le
+  cavalier prend la dame si elle se pose sur une case qu'il attaque. Avec le cavalier (blanc), il faut échapper à la
+  dame noire le plus longtemps possible (facile : ★ pris en 5 coups ou moins, ★★ de 6 à 8, ★★★ 9 ou plus ; difficile :
+  ★★★ si on tient aussi longtemps que possible face à une dame parfaite) ; prendre la dame ou tenir 30 coups, c'est
+  gagné. L'ordinateur a deux niveaux : difficile, il joue parfaitement grâce à une table de toutes les positions
+  calculée au chargement (analyse rétrograde : avec un jeu parfait, la dame attrape toujours le cavalier en 5 coups au
+  plus) ; facile, le cavalier fuit au hasard vers une case sûre et la dame ne joue le meilleur coup qu'une fois sur deux.
+  Réglage « Cases dangereuses » : les coups où l'adversaire peut te prendre sont marqués en rouge.
 - **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
   (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
 - **Dice chess** (`jeux/des/`) : compagnon pour jouer aux échecs avec des dés sur un vrai échiquier.

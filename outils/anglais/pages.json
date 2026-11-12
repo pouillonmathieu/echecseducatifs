@@ -126,7 +126,9 @@
   "Joue les meilleurs coups d'un champion.": "Play a champion's best moves.",
   "Écris le nom de ce que tu vois, en 9 langues.": "Write the name of what you see, in 9 languages.",
   "Équilibre la balance avec la valeur des pièces.": "Balance the scales using the pieces' values.",
-  "Les échecs avec des dés, sur un vrai échiquier.": "Chess with dice, on a real board."
+  "Les échecs avec des dés, sur un vrai échiquier.": "Chess with dice, on a real board.",
+  "Le cheval de la reine": "The queen's horse",
+  "Attrape le cavalier avec la dame, ou échappe-lui.": "Catch the knight with the queen, or escape from her."
  },
  "identiques": [
   "CC BY-SA 3.0",
@@ -339,5 +341,31 @@
   "Chrono": "Timer",
   "30 secondes par mot": "30 seconds per word",
   "Détail des mots": "Words in detail"
+ },
+ "jeux/cheval/index.html": {
+  "Le cheval de la reine": "The queen's horse",
+  "Cases dangereuses": "Dangerous squares",
+  "Aide : les cases où l'adversaire peut te prendre sont en rouge": "Help: the squares where the opponent can take you are red",
+  "Lettres et chiffres": "Letters and numbers",
+  "Son": "Sound",
+  "Pièce jouée": "Piece you play",
+  "Tu joues la dame : attrape le cavalier": "You play the queen: catch the knight",
+  "Dame": "Queen",
+  "Tu joues le cavalier : échappe à la dame": "You play the knight: escape from the queen",
+  "Cavalier": "Knight",
+  "Niveau": "Level",
+  "L'adversaire fait des erreurs": "The opponent makes mistakes",
+  "Facile": "Easy",
+  "L'adversaire joue parfaitement": "The opponent plays perfectly",
+  "Difficile": "Hard",
+  "Attrape le cavalier !": "Catch the knight!",
+  "Son cheval s'est enfui : aide la reine à le rattraper, en le moins de coups possible.": "Her horse has run away: help the queen catch it in as few moves as possible.",
+  "coup": "move",
+  "À toi de jouer.": "Your move.",
+  "Nouvelle partie": "New game",
+  "Bravo !": "Well done!",
+  "coups": "moves",
+  "Rejouer": "Play again",
+  "Voir l'échiquier": "See the board"
  }
 }

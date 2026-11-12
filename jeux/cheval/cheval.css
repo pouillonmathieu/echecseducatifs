@@ -1,0 +1,65 @@
+/* Jeu : le cheval de la reine
+   Mise en page : l'échiquier à gauche (avec le choix dame / cavalier et le niveau au-dessus),
+   la consigne et le compteur de coups à droite (l'un sous l'autre sur téléphone). */
+.ecran-cheval { max-width: 1040px; }
+
+.jeu-cheval {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  align-items: center;
+  gap: 28px;
+}
+.plateau-cheval {
+  width: min(100%, 580px, calc(100vh - 220px));
+  width: min(100%, 580px, calc(100dvh - 220px));
+}
+.choix-ligne button.avec-texte > svg { width: 32px; height: 32px; }
+
+/* les coups possibles */
+.plateau-cheval .case-e { cursor: default; }
+.plateau-cheval .case-e.possible, .plateau-cheval .case-e.possible-prise { cursor: pointer; }
+.case-e.possible::after { opacity: 1; background: radial-gradient(circle, rgba(24, 30, 40, .35) 0 15%, transparent 17%); }
+.case-e.possible-prise::after { opacity: 1; background: radial-gradient(circle, transparent 0 60%, rgba(47, 163, 107, .85) 62% 76%, transparent 78%); }
+.case-e.possible.dangereuse::after { background: radial-gradient(circle, rgba(200, 50, 60, .85) 0 17%, transparent 19%); }
+.case-e.possible:hover::after { background: radial-gradient(circle, rgba(24, 30, 40, .5) 0 19%, transparent 21%), rgba(47, 163, 107, .18); }
+.case-e.possible.dangereuse:hover::after { background: radial-gradient(circle, rgba(200, 50, 60, .95) 0 20%, transparent 22%), rgba(200, 50, 60, .15); }
+.case-e.ma-piece::after { opacity: 1; box-shadow: inset 0 0 0 4px rgba(47, 163, 107, .9); }
+
+/* panneau de droite */
+.panneau-cheval { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.question {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+}
+.piece-question { flex: none; width: 52px; height: 52px; padding: 5px; border-radius: 14px; background: var(--surface-2); }
+.question-titre { margin: 0 0 4px; font-size: 21px; font-weight: 700; line-height: 1.2; }
+.question-texte { margin: 0; color: var(--encre-douce); line-height: 1.45; }
+.compteur { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 4px; }
+.compteur-nombre { margin: 0; font-size: 20px; font-weight: 600; color: var(--encre-douce); }
+#coups { font-size: 44px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.etat { margin: 0; font-weight: 600; text-align: right; }
+.bareme { margin: 0; padding: 10px 14px; border-radius: 14px; background: var(--surface-2); color: var(--encre-douce); font-size: 14px; line-height: 1.45; }
+.panneau-cheval .bouton-secondaire svg, .res-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 860px) {
+  .jeu-cheval { grid-template-columns: 1fr; gap: 14px; align-content: start; }
+  .plateau-cheval { width: min(100%, 520px, calc(100dvh - 330px)); min-width: min(100%, 280px); }
+  .panneau-cheval { gap: 10px; width: min(100%, 520px); justify-self: center; }
+  .question { padding: 10px 12px; }
+  .piece-question { width: 40px; height: 40px; }
+  .question-titre { font-size: 18px; }
+  .question-texte { font-size: 14px; }
+  #coups { font-size: 34px; }
+}
+@media (max-width: 560px) {
+  .choix-jeu { flex-wrap: nowrap; }
+  .choix-jeu .texte-choix { display: none; }
+  .choix-ligne button.avec-texte { width: 46px; padding: 5px; justify-content: center; }
+  .choix-ligne button.avec-texte > svg { width: 32px; height: 32px; }
+}

@@ -1,6 +1,6 @@
 /* Page d'accueil du site.
    Mise en page : en-tête, puis une carte par jeu (icône, nom, une phrase), toutes visibles sans faire défiler :
-   4 colonnes sur ordinateur, 2 colonnes de cartes en ligne (icône à gauche, nom à droite) sur téléphone. */
+   5 colonnes sur ordinateur, 2 colonnes de cartes en ligne (icône à gauche, nom à droite) sur téléphone. */
 .accueil { gap: 18px; max-width: 1040px; }
 
 .logo { flex: none; display: grid; place-items: center; width: 40px; height: 40px; }
@@ -12,7 +12,7 @@
 
 /* ---------- Cartes des jeux ---------- */
 .jeux { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
-.grille-jeux { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.grille-jeux { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
 .carte-jeu {
   display: flex;
   flex-direction: column;
