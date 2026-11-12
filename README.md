@@ -122,9 +122,6 @@ Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé da
 
 Une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans faire défiler : 4 colonnes sur
 ordinateur (icônes plus petites sur un écran peu haut), 2 colonnes sur téléphone (icône à gauche du nom, sans la phrase).
-Les illustrations du labyrinthe, de « Mat ou pas mat ? », de « Trouve la case », de « Note le coup » et de « Joue le
-coup » (des pièces avec des yeux, et Magnus Carlsen en dessin) sont dessinées en SVG par `outils/illustrations-accueil.py`,
-qui les remplace dans `index.html` (lancer ensuite `outils/anglais/generer.py`).
 
 ## Version anglaise
 
@@ -159,7 +156,6 @@ js/echiquier.js       échiquier partagé : affichage d'une position (FEN) et su
 css/echiquier.css     style de cet échiquier
 outils/positions-mat.js  génère jeux/mat/positions.js en vérifiant chaque position avec chess.js
 outils/coups-notation.js génère jeux/notation/coups.js (ouvertures et problèmes Lichess rejoués avec chess.js)
-outils/illustrations-accueil.py dessine les illustrations des cartes de l'accueil (SVG)
 outils/parties-champions.js génère jeux/joue/parties.js (parties de outils/parties-champions.pgn et moments à jouer)
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js)
 ```
