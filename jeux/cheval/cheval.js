@@ -2,7 +2,9 @@
    Une dame et un cavalier, seuls sur l'échiquier.
    - Mode « dame » : tu joues la dame blanche et tu dois attraper le cavalier noir en le moins de coups possible.
    - Mode « cavalier » : tu joues le cavalier blanc et tu dois échapper à la dame noire le plus longtemps possible.
-   Le joueur commence. Le cavalier peut prendre la dame si elle se pose sur une case qu'il attaque.
+   - Mode « 2 joueurs » : l'un joue la dame blanche, l'autre le cavalier noir, sur le même écran.
+   Le joueur commence (la dame en mode 2 joueurs). Le cavalier peut prendre la dame si elle se pose sur une case qu'il attaque.
+   Défis (dame ou cavalier) : 5 parties d'affilée, jusqu'à 15 étoiles ; défi chrono : 10 secondes par coup.
    L'adversaire est joué par l'ordinateur, avec deux niveaux :
    - difficile : il joue parfaitement, grâce à une table calculée au chargement (toutes les positions dame/cavalier,
      coup par coup en partant des prises : c'est une « analyse rétrograde ») ;
@@ -11,7 +13,7 @@
    Bon à savoir : avec un jeu parfait des deux côtés, la dame attrape toujours le cavalier en 5 coups au plus. */
 (function () {
   const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
-  const { lancerPluie, compterJusqua, allumerEtoiles } = window.UI;
+  const { lancerPluie, compterJusqua, allumerEtoiles, formaterDuree, ICONES } = window.UI;
   const Sons = window.Sons;
   const $ = (id) => document.getElementById(id);
   const plateau = $('echiquier');
@@ -101,17 +103,27 @@
   // ---------- Réglages ----------
   const lire = (cle, defaut) => { try { return localStorage.getItem(cle) || defaut; } catch (e) { return defaut; } };
   const ecrire = (cle, v) => { try { localStorage.setItem(cle, v); } catch (e) { /* stockage indisponible */ } };
+  const CAMPS = ['reine', 'cavalier', 'deux'];
   const reglages = {
-    camp: lire('echecs.cheval.camp', 'reine') === 'cavalier' ? 'cavalier' : 'reine',
+    camp: CAMPS.includes(lire('echecs.cheval.camp', 'reine')) ? lire('echecs.cheval.camp', 'reine') : 'reine',
     niveau: lire('echecs.cheval.niveau', 'facile') === 'difficile' ? 'difficile' : 'facile',
     danger: Prefs.lire('echecs.cheval.danger', true),
     coordonnees: Prefs.lire('echecs.cheval.coordonnees', true),
   };
-  const LIMITE = 30; // le cavalier qui tient 30 coups a gagné : la dame abandonne
+  const LIMITE = 30;   // le cavalier qui tient 30 coups a gagné : la dame abandonne
+  const NB_DEFIS = 5;  // parties par défi
+  const DUREE = 10;    // secondes par coup en défi chrono
 
   // ---------- La partie ----------
-  const jeu = { q: 0, n: 0, coups: 0, aMoi: true, fini: false, partie: 0, meilleur: 0, dernier: null };
-  const dameJoueur = () => reglages.camp === 'reine';
+  // trait : 'dame' ou 'cavalier' (qui doit jouer) ; coupsDame / coupsCavalier : coups joués par chacun
+  const jeu = { mode: 'libre', q: 0, n: 0, trait: 'dame', coupsDame: 0, coupsCavalier: 0, fini: false, partie: 0, meilleur: 0, dernier: null, issue: null };
+  const defi = { chrono: false, numero: 0, resultats: [], debut: 0, fin: 0, raf: 0, dernierTic: 0 };
+  const deux = () => reglages.camp === 'deux';
+  // les blancs : la dame (modes dame et 2 joueurs) ou le cavalier (mode cavalier)
+  const dameBlanche = () => reglages.camp !== 'cavalier';
+  const humain = (cote) => deux() || (cote === 'dame') === (reglages.camp === 'reine');
+  // le nombre de coups qui compte pour le joueur
+  const mesCoupsJoues = () => (reglages.camp === 'cavalier' ? jeu.coupsCavalier : jeu.coupsDame);
 
   function placer() {
     // la dame n'attaque pas le cavalier au départ, et le cavalier n'attaque pas la dame ;
@@ -119,30 +131,41 @@
     for (;;) {
       const q = Math.floor(Math.random() * 64), n = Math.floor(Math.random() * 64);
       if (q === n || dameAttaque(q, n) || cavalierAttaque(n, q)) continue;
-      if (!dameJoueur() && AVEC_CAVALIER[q * 64 + n] < 3) continue;
+      if (reglages.camp === 'cavalier' && AVEC_CAVALIER[q * 64 + n] < 3) continue;
       return [q, n];
     }
   }
   function nouvellePartie() {
     jeu.partie++;
+    arreterChrono();
     [jeu.q, jeu.n] = placer();
-    jeu.coups = 0;
-    jeu.aMoi = true;
+    jeu.coupsDame = 0;
+    jeu.coupsCavalier = 0;
+    jeu.trait = reglages.camp === 'cavalier' ? 'cavalier' : 'dame';
     jeu.fini = false;
+    jeu.issue = null;
     jeu.dernier = null;
     // le meilleur résultat possible depuis ce départ, face à un adversaire parfait
-    jeu.meilleur = dameJoueur() ? AVEC_DAME[jeu.q * 64 + jeu.n] : AVEC_CAVALIER[jeu.q * 64 + jeu.n];
+    jeu.meilleur = reglages.camp === 'cavalier' ? AVEC_CAVALIER[jeu.q * 64 + jeu.n] : AVEC_DAME[jeu.q * 64 + jeu.n];
     $('resultats').hidden = true;
     $('pluie').innerHTML = '';
+    $('btn-suivante').hidden = true;
+    $('etoiles-partie').textContent = '';
     annotations.effacer();
     majTextes();
     afficher();
+    if (jeu.mode === 'defi') {
+      $('titre').textContent = t(`Partie ${defi.numero + 1} sur ${NB_DEFIS}`, `Game ${defi.numero + 1} of ${NB_DEFIS}`);
+      majPoints();
+      defi.debut = performance.now();
+    }
+    tour();
   }
 
   function fen() {
     const pieces = {};
-    pieces[jeu.q] = dameJoueur() ? 'Q' : 'q';
-    pieces[jeu.n] = dameJoueur() ? 'n' : 'N';
+    if (jeu.q >= 0) pieces[jeu.q] = dameBlanche() ? 'Q' : 'q';
+    if (jeu.n >= 0) pieces[jeu.n] = dameBlanche() ? 'n' : 'N';
     let f = '';
     for (let r = 7; r >= 0; r--) {
       let vide = 0;
@@ -155,160 +178,276 @@
     }
     return f;
   }
-  // les coups possibles du joueur
-  function mesCoups() {
-    return dameJoueur() ? coupsDame(jeu.q, jeu.n) : CAVALIER[jeu.n];
-  }
-  // une case est dangereuse si l'adversaire pourra y prendre ma pièce au coup suivant
-  function dangereuse(c) {
-    return dameJoueur() ? c !== jeu.n && cavalierAttaque(jeu.n, c) : c !== jeu.q && dameAttaque(jeu.q, c);
-  }
+  const coupsDuTrait = () => (jeu.trait === 'dame' ? coupsDame(jeu.q, jeu.n) : CAVALIER[jeu.n]);
+  // une case est dangereuse si l'adversaire pourra y prendre la pièce qui joue, au coup suivant
+  const dangereuse = (c) => (jeu.trait === 'dame' ? c !== jeu.n && cavalierAttaque(jeu.n, c) : c !== jeu.q && dameAttaque(jeu.q, c));
+  const aMoi = () => !jeu.fini && humain(jeu.trait);
 
   function afficher() {
     Echiquier.dessiner(plateau, fen());
-    const moi = dameJoueur() ? jeu.q : jeu.n;
-    if (moi >= 0) Echiquier.marquer(plateau, [nom(moi)], 'ma-piece');
     if (jeu.dernier) {
       Echiquier.marquer(plateau, [nom(jeu.dernier[0])], 'depart');
       Echiquier.marquer(plateau, [nom(jeu.dernier[1])], 'arrivee');
     }
-    if (jeu.aMoi && !jeu.fini) {
-      const cible = dameJoueur() ? jeu.n : jeu.q;
-      for (const c of mesCoups()) {
+    if (aMoi()) {
+      const moi = jeu.trait === 'dame' ? jeu.q : jeu.n;
+      const cible = jeu.trait === 'dame' ? jeu.n : jeu.q;
+      Echiquier.marquer(plateau, [nom(moi)], 'ma-piece');
+      for (const c of coupsDuTrait()) {
         const el = plateau.querySelector(`[data-case="${nom(c)}"]`);
         el.classList.add(c === cible ? 'possible-prise' : 'possible');
         if (reglages.danger && c !== cible && dangereuse(c)) el.classList.add('dangereuse');
       }
     }
-    $('coups').textContent = jeu.coups;
-    $('coups-mot').textContent = jeu.coups > 1 ? t('coups', 'moves') : t('coup', 'move');
+    const n = mesCoupsJoues();
+    $('coups').textContent = n;
+    $('coups-mot').textContent = deux() ? (n > 1 ? t('coups de la dame', 'queen moves') : t('coup de la dame', 'queen move'))
+      : n > 1 ? t('coups', 'moves') : t('coup', 'move');
   }
 
   function majTextes() {
-    const dame = dameJoueur();
-    $('piece-question').setAttribute('href', dame ? '#piece-dame-blanc' : '#piece-cavalier-blanc');
-    $('question-titre').textContent = dame ? t('Attrape le cavalier !', 'Catch the knight!') : t('Échappe à la dame !', 'Escape from the queen!');
-    $('question-texte').textContent = dame
+    const camp = reglages.camp;
+    $('piece-question').setAttribute('href', camp === 'cavalier' ? '#piece-cavalier-blanc' : '#piece-dame-blanc');
+    $('question-titre').textContent = camp === 'reine' ? t('Attrape le cavalier !', 'Catch the knight!')
+      : camp === 'cavalier' ? t('Échappe à la dame !', 'Escape from the queen!') : t('À deux : la dame contre le cavalier', 'Two players: queen against knight');
+    $('question-texte').textContent = camp === 'reine'
       ? t('Le cheval de la reine s\'est enfui : aide la dame à le rattraper en le moins de coups possible. Attention, le cavalier peut prendre ta dame !',
         'The queen\'s horse has run away: help the queen catch it in as few moves as possible. Careful, the knight can take your queen!')
-      : t('Tu es le cheval de la reine et tu t\'es enfui : échappe-lui le plus longtemps possible. Si elle se pose trop près de toi, tu peux même la prendre !',
-        'You\'re the queen\'s horse and you\'ve run away: escape from her for as long as you can. If she lands too close, you can even take her!');
+      : camp === 'cavalier'
+        ? t('Tu es le cheval de la reine et tu t\'es enfui : échappe-lui le plus longtemps possible. Si elle se pose trop près de toi, tu peux même la prendre !',
+          'You\'re the queen\'s horse and you\'ve run away: escape from her for as long as you can. If she lands too close, you can even take her!')
+        : t(`L'un joue la dame blanche, l'autre le cavalier noir. La dame commence et doit attraper le cavalier ; le cavalier gagne s'il prend la dame ou s'il tient ${LIMITE} coups.`,
+          `One player has the white queen, the other the black knight. The queen starts and must catch the knight; the knight wins if it takes the queen or lasts ${LIMITE} moves.`);
     let bareme;
-    if (dame) bareme = t('★★★ en 5 coups ou moins · ★★ en 6 à 8 coups · ★ en 9 coups ou plus', '★★★ in 5 moves or fewer · ★★ in 6 to 8 · ★ in 9 or more');
+    if (camp === 'deux') bareme = t('Chacun joue à son tour sur le même écran.', 'Take turns on the same screen.');
+    else if (camp === 'reine') bareme = t('★★★ en 5 coups ou moins · ★★ en 6 à 8 coups · ★ en 9 coups ou plus', '★★★ in 5 moves or fewer · ★★ in 6 to 8 · ★ in 9 or more');
     else if (reglages.niveau === 'facile') bareme = t('★ pris en 5 coups ou moins · ★★ en 6 à 8 coups · ★★★ 9 coups ou plus', '★ caught within 5 moves · ★★ 6 to 8 · ★★★ 9 or more');
     else bareme = t(`La dame joue parfaitement : ici, on peut tenir au plus ${jeu.meilleur} coups. ★★★ si tu y arrives.`,
       `The queen plays perfectly: from here you can last at most ${jeu.meilleur} moves. ★★★ if you manage it.`);
     $('bareme').textContent = bareme;
-    $('etat').textContent = t('À toi de jouer.', 'Your move.');
+  }
+  function majEtat() {
+    if (jeu.fini) return;
+    let e;
+    if (deux()) e = jeu.trait === 'dame' ? t('Au tour de la dame.', 'Queen to move.') : t('Au tour du cavalier.', 'Knight to move.');
+    else if (humain(jeu.trait)) e = t('À toi de jouer.', 'Your move.');
+    else e = jeu.trait === 'dame' ? t('La dame réfléchit…', 'The queen is thinking…') : t('Le cavalier réfléchit…', 'The knight is thinking…');
+    $('etat').textContent = e;
   }
 
   // ---------- Coups ----------
   plateau.addEventListener('click', (e) => {
     const el = e.target.closest('.case-e');
-    if (!el || !jeu.aMoi || jeu.fini) return;
+    if (!el || !aMoi()) return;
     const c = numero(el.dataset.case);
-    if (!mesCoups().includes(c)) return;
-    jouer(c);
+    if (coupsDuTrait().includes(c)) jouer(c);
   });
 
+  // à qui de jouer : le joueur (on attend son clic, avec le chrono en défi) ou l'ordinateur
+  function tour() {
+    majEtat();
+    if (jeu.fini) return;
+    if (humain(jeu.trait)) {
+      if (jeu.mode === 'defi' && defi.chrono) demarrerChrono();
+      return;
+    }
+    const p = jeu.partie;
+    setTimeout(() => {
+      if (p !== jeu.partie || jeu.fini) return;
+      const difficile = reglages.niveau === 'difficile';
+      jouer(jeu.trait === 'dame' ? coupDame(jeu.q, jeu.n, difficile) : coupCavalier(jeu.q, jeu.n, difficile));
+    }, 650);
+  }
+
   function jouer(c) {
-    const dame = dameJoueur();
+    arreterChrono();
+    const dame = jeu.trait === 'dame';
     const de = dame ? jeu.q : jeu.n;
-    jeu.coups++;
     jeu.dernier = [de, c];
-    if (dame) jeu.q = c; else jeu.n = c;
-    const prise = jeu.q === jeu.n;
+    if (dame) { jeu.q = c; jeu.coupsDame++; } else { jeu.n = c; jeu.coupsCavalier++; }
     Sons.pose(dame ? 9 : 3);
-    jeu.aMoi = false;
-    if (prise) {
-      // la dame attrape le cavalier, ou le cavalier prend la dame
+    if (jeu.q === jeu.n) {
+      // une prise : la dame attrape le cavalier, ou le cavalier prend la dame
       if (dame) jeu.n = -1; else jeu.q = -1;
       jeu.fini = true;
       afficher();
-      return finir(dame ? 'attrape' : 'dame-prise');
+      return finir(dame ? 'dame-gagne' : 'cavalier-prend');
     }
-    if (!dame && jeu.coups >= LIMITE) { jeu.fini = true; afficher(); return finir('tient'); }
+    if (!dame && jeu.coupsCavalier >= LIMITE) { jeu.fini = true; afficher(); return finir('tient'); }
+    jeu.trait = dame ? 'cavalier' : 'dame';
     afficher();
-    $('etat').textContent = dame ? t('Le cavalier réfléchit…', 'The knight is thinking…') : t('La dame réfléchit…', 'The queen is thinking…');
-    const p = jeu.partie;
-    setTimeout(() => { if (p === jeu.partie) repondre(); }, 650);
+    tour();
   }
 
-  function repondre() {
-    const dame = dameJoueur();
-    const difficile = reglages.niveau === 'difficile';
-    if (dame) {
-      const de = jeu.n;
-      jeu.n = coupCavalier(jeu.q, jeu.n, difficile);
-      jeu.dernier = [de, jeu.n];
-      Sons.pose(3);
-      if (jeu.n === jeu.q) { jeu.q = -1; jeu.fini = true; afficher(); return finir('perdue'); }
-    } else {
-      const de = jeu.q;
-      jeu.q = coupDame(jeu.q, jeu.n, difficile);
-      jeu.dernier = [de, jeu.q];
-      Sons.pose(9);
-      if (jeu.q === jeu.n) { jeu.n = -1; jeu.fini = true; afficher(); return finir('pris'); }
-    }
-    jeu.aMoi = true;
-    $('etat').textContent = t('À toi de jouer.', 'Your move.');
-    afficher();
+  // ---------- Chrono (défi) ----------
+  function demarrerChrono() {
+    arreterChrono();
+    const barre = $('minuteur-barre');
+    defi.fin = performance.now() + DUREE * 1000;
+    defi.dernierTic = 0;
+    const p = jeu.partie, coup = jeu.coupsDame + jeu.coupsCavalier;
+    const boucle = (temps) => {
+      if (p !== jeu.partie || jeu.fini || coup !== jeu.coupsDame + jeu.coupsCavalier) return;
+      const reste = Math.max(0, defi.fin - temps) / 1000;
+      barre.style.transform = `scaleX(${(reste / DUREE).toFixed(4)})`;
+      document.body.classList.toggle('presse', reste <= 3);
+      const s = Math.ceil(reste);
+      if (reste <= 3 && s > 0 && s !== defi.dernierTic) { defi.dernierTic = s; Sons.tic(); }
+      if (reste <= 0) { jeu.fini = true; afficher(); finir('temps'); return; }
+      defi.raf = requestAnimationFrame(boucle);
+    };
+    defi.raf = requestAnimationFrame(boucle);
+  }
+  function arreterChrono() {
+    cancelAnimationFrame(defi.raf);
+    document.body.classList.remove('presse');
   }
 
   // ---------- Fin de partie ----------
   function etoilesPour(issue) {
-    const c = jeu.coups;
-    if (issue === 'perdue') return 0;
-    if (issue === 'attrape') return c <= 5 ? 3 : c <= 8 ? 2 : 1;
-    if (issue === 'dame-prise' || issue === 'tient') return 3;
+    const camp = reglages.camp;
+    if (issue === 'temps') return 0;
+    if (camp === 'reine') {
+      if (issue !== 'dame-gagne') return 0;
+      const c = jeu.coupsDame;
+      return c <= 5 ? 3 : c <= 8 ? 2 : 1;
+    }
+    if (issue === 'cavalier-prend' || issue === 'tient') return 3;
+    const c = jeu.coupsCavalier;
     if (reglages.niveau === 'facile') return c <= 5 ? 1 : c <= 8 ? 2 : 3;
     return c >= jeu.meilleur ? 3 : c === jeu.meilleur - 1 ? 2 : 1;
   }
-  function finir(issue) {
-    const etoiles = etoilesPour(issue);
-    const c = jeu.coups;
-    const coupsTexte = (n) => (EN ? `${n} move${n > 1 ? 's' : ''}` : `${n} coup${n > 1 ? 's' : ''}`);
-    let titre, detail;
-    if (issue === 'attrape') {
-      titre = etoiles === 3 ? t('Bravo, quelle chasse !', 'Well done, what a chase!') : t('Attrapé !', 'Caught!');
-      detail = t(`Tu as rattrapé le cheval en ${coupsTexte(c)}.`, `You caught the horse in ${coupsTexte(c)}.`);
-      if (reglages.niveau === 'difficile') detail += ' ' + t(`Le plus court possible depuis le départ : ${coupsTexte(jeu.meilleur)}.`, `The shortest possible from the start: ${coupsTexte(jeu.meilleur)}.`);
-    } else if (issue === 'perdue') {
-      titre = t('Oh non !', 'Oh no!');
-      detail = t('Le cavalier a pris ta dame. Avant de bouger, regarde bien les cases qu\'il attaque !', 'The knight took your queen. Before you move, look carefully at the squares it attacks!');
-    } else if (issue === 'dame-prise') {
-      titre = t('Incroyable !', 'Amazing!');
-      detail = t('Le cheval a pris la dame !', 'The horse took the queen!');
-    } else if (issue === 'tient') {
-      titre = t('La dame abandonne !', 'The queen gives up!');
-      detail = t(`Tu as tenu ${coupsTexte(c)} : elle n'a pas réussi à t'attraper.`, `You lasted ${coupsTexte(c)}: she couldn't catch you.`);
-    } else {
-      titre = etoiles === 3 ? t('Bravo, tu as tenu bon !', 'Well done, you held out!') : t('Attrapé !', 'Caught!');
-      detail = t(`Tu as tenu ${coupsTexte(c)} avant d'être attrapé.`, `You lasted ${coupsTexte(c)} before being caught.`);
-      if (reglages.niveau === 'difficile') detail += ' ' + t(`Face à cette dame parfaite, le maximum ici était ${coupsTexte(jeu.meilleur)}.`, `Against this perfect queen, the most possible here was ${coupsTexte(jeu.meilleur)}.`);
+  const coupsTexte = (n) => (EN ? `${n} move${n > 1 ? 's' : ''}` : `${n} coup${n > 1 ? 's' : ''}`);
+  function textesFin(issue, etoiles) {
+    const camp = reglages.camp, dif = reglages.niveau === 'difficile';
+    if (issue === 'temps') return [t('Temps écoulé !', 'Time\'s up!'), t('Il faut jouer en moins de 10 secondes.', 'You have to move within 10 seconds.')];
+    if (camp === 'deux') {
+      if (issue === 'dame-gagne') return [t('La dame a gagné !', 'The queen wins!'), t(`Elle a attrapé le cavalier en ${coupsTexte(jeu.coupsDame)}.`, `She caught the knight in ${coupsTexte(jeu.coupsDame)}.`)];
+      if (issue === 'cavalier-prend') return [t('Le cavalier a gagné !', 'The knight wins!'), t('Il a pris la dame.', 'It took the queen.')];
+      return [t('Le cavalier a gagné !', 'The knight wins!'), t(`Il a tenu ${coupsTexte(jeu.coupsCavalier)} sans être attrapé.`, `It lasted ${coupsTexte(jeu.coupsCavalier)} without being caught.`)];
     }
+    if (camp === 'reine') {
+      if (issue === 'cavalier-prend') return [t('Oh non !', 'Oh no!'), t('Le cavalier a pris ta dame. Avant de bouger, regarde bien les cases qu\'il attaque !', 'The knight took your queen. Before you move, look carefully at the squares it attacks!')];
+      let d = t(`Tu as rattrapé le cheval en ${coupsTexte(jeu.coupsDame)}.`, `You caught the horse in ${coupsTexte(jeu.coupsDame)}.`);
+      if (dif) d += ' ' + t(`Le plus court possible depuis le départ : ${coupsTexte(jeu.meilleur)}.`, `The shortest possible from the start: ${coupsTexte(jeu.meilleur)}.`);
+      return [etoiles === 3 ? t('Bravo, quelle chasse !', 'Well done, what a chase!') : t('Attrapé !', 'Caught!'), d];
+    }
+    if (issue === 'cavalier-prend') return [t('Incroyable !', 'Amazing!'), t('Le cheval a pris la dame !', 'The horse took the queen!')];
+    if (issue === 'tient') return [t('La dame abandonne !', 'The queen gives up!'), t(`Tu as tenu ${coupsTexte(jeu.coupsCavalier)} : elle n'a pas réussi à t'attraper.`, `You lasted ${coupsTexte(jeu.coupsCavalier)}: she couldn't catch you.`)];
+    let d = t(`Tu as tenu ${coupsTexte(jeu.coupsCavalier)} avant d'être attrapé.`, `You lasted ${coupsTexte(jeu.coupsCavalier)} before being caught.`);
+    if (dif) d += ' ' + t(`Face à cette dame parfaite, le maximum ici était ${coupsTexte(jeu.meilleur)}.`, `Against this perfect queen, the most possible here was ${coupsTexte(jeu.meilleur)}.`);
+    return [etoiles === 3 ? t('Bravo, tu as tenu bon !', 'Well done, you held out!') : t('Attrapé !', 'Caught!'), d];
+  }
+  function finir(issue) {
+    arreterChrono();
+    jeu.issue = issue;
+    const etoiles = deux() ? 0 : etoilesPour(issue);
+    const [titre, detail] = textesFin(issue, etoiles);
     $('etat').textContent = titre;
-    if (issue === 'perdue' || issue === 'pris') Sons.echec(); else Sons.bravo();
+    const rate = issue === 'temps' || (reglages.camp === 'reine' && issue !== 'dame-gagne') || (reglages.camp === 'cavalier' && issue === 'dame-gagne' && etoiles < 2);
+    if (rate) Sons.echec(); else Sons.bravo();
+    // défi : on note la partie et on passe à la suivante
+    if (jeu.mode === 'defi') {
+      defi.resultats.push({ etoiles, coups: mesCoupsJoues(), temps: (performance.now() - defi.debut) / 1000 });
+      majPoints();
+      $('etoiles-partie').textContent = '★'.repeat(etoiles) + '☆'.repeat(3 - etoiles) + ' · ' + detail;
+      const derniere = defi.numero === NB_DEFIS - 1;
+      $('btn-suivante').firstChild.textContent = derniere ? t('Voir le résultat ', 'See the result ') : t('Partie suivante ', 'Next game ');
+      $('btn-suivante').hidden = false;
+      $('btn-suivante').focus({ preventScroll: true });
+      return;
+    }
     const p = jeu.partie;
     setTimeout(() => {
       if (p !== jeu.partie) return;
       $('res-titre').textContent = titre;
       $('res-detail').textContent = detail;
+      $('res-detail').hidden = false;
+      $('res-liste').hidden = true;
+      $('res-temps').hidden = true;
+      const c = mesCoupsJoues();
       $('res-sur').textContent = c > 1 ? t('coups', 'moves') : t('coup', 'move');
       compterJusqua($('res-score'), c);
+      document.querySelector('.carte-resultats .etoiles').hidden = deux();
       allumerEtoiles($('etoiles'), etoiles);
       $('resultats').hidden = false;
-      if (etoiles >= 2) { lancerPluie($('pluie'), etoiles === 3 ? 70 : 40); Sons.victoire(); }
+      if (deux() || etoiles >= 2) { lancerPluie($('pluie'), etoiles === 3 || deux() ? 70 : 40); Sons.victoire(); }
       $('btn-rejouer').focus({ preventScroll: true });
     }, 900);
   }
 
+  // ---------- Défis ----------
+  function majPoints() {
+    $('points').querySelectorAll('li').forEach((li, i) => {
+      const r = defi.resultats[i];
+      li.className = r ? (r.etoiles >= 2 ? 'ok' : 'rate') : (i === defi.numero ? 'actuel' : '');
+    });
+  }
+  function lancerDefi(chrono) {
+    fermerChoix();
+    jeu.mode = 'defi';
+    document.body.dataset.mode = 'defi';
+    document.body.dataset.chrono = chrono ? 'oui' : 'non';
+    defi.chrono = chrono;
+    defi.numero = 0;
+    defi.resultats = [];
+    $('minuteur-barre').style.transform = 'scaleX(1)';
+    $('points').innerHTML = Array.from({ length: NB_DEFIS }, (_, i) => `<li aria-label="${t('Partie', 'Game')} ${i + 1}"></li>`).join('');
+    nouvellePartie();
+  }
+  function lancerLibre() {
+    jeu.mode = 'libre';
+    document.body.dataset.mode = 'libre';
+    document.body.dataset.chrono = 'non';
+    $('titre').textContent = t('Le cheval de la reine', 'The queen\'s horse');
+    nouvellePartie();
+  }
+  function partieSuivante() {
+    if (!jeu.fini || jeu.mode !== 'defi') return;
+    if (defi.numero < NB_DEFIS - 1) { defi.numero++; nouvellePartie(); return; }
+    resultatsDefi();
+  }
+  function resultatsDefi() {
+    const total = defi.resultats.reduce((s, r) => s + r.etoiles, 0);
+    const max = NB_DEFIS * 3;
+    const etoiles = total >= 13 ? 3 : total >= 9 ? 2 : total >= 5 ? 1 : 0;
+    $('res-titre').textContent = total === max ? t('Parfait !', 'Perfect!') : etoiles >= 2 ? t('Bravo !', 'Well done!') : etoiles === 1 ? t('Bien joué !', 'Nice work!') : t('Continue, tu progresses !', 'Keep going, you\'re getting better!');
+    $('res-sur').textContent = `/ ${max} ★`;
+    compterJusqua($('res-score'), total);
+    document.querySelector('.carte-resultats .etoiles').hidden = false;
+    allumerEtoiles($('etoiles'), etoiles);
+    $('res-detail').hidden = true;
+    const liste = $('res-liste');
+    liste.hidden = false;
+    liste.innerHTML = defi.resultats.map((r, i) =>
+      `<li class="${r.etoiles >= 2 ? 'ok' : 'rate'}" style="animation-delay:${700 + i * 70}ms"><span class="res-rond">${r.etoiles >= 2 ? ICONES.ok : ICONES.rate}</span>` +
+      `<span class="res-t">${'★'.repeat(r.etoiles)}${'☆'.repeat(3 - r.etoiles)}<br>${coupsTexte(r.coups)}</span></li>`).join('');
+    $('res-temps').hidden = false;
+    $('res-temps').textContent = t('Temps total : ', 'Total time: ') + formaterDuree(defi.resultats.reduce((s, r) => s + r.temps, 0));
+    $('resultats').hidden = false;
+    lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
+    Sons.victoire();
+    $('btn-rejouer').focus({ preventScroll: true });
+  }
+  function ouvrirChoix() { $('choix-defi').hidden = false; $('mode-defi').focus({ preventScroll: true }); }
+  function fermerChoix() { $('choix-defi').hidden = true; }
+
   // ---------- Branchements ----------
   $('btn-nouvelle').addEventListener('click', nouvellePartie);
-  $('btn-rejouer').addEventListener('click', nouvellePartie);
-  $('btn-revoir').addEventListener('click', () => { $('resultats').hidden = true; $('btn-nouvelle').focus({ preventScroll: true }); });
+  $('btn-suivante').addEventListener('click', partieSuivante);
+  $('btn-rejouer').addEventListener('click', () => (jeu.mode === 'defi' ? lancerDefi(defi.chrono) : nouvellePartie()));
+  $('btn-revoir').addEventListener('click', () => { $('resultats').hidden = true; });
+  $('btn-menu').addEventListener('click', lancerLibre);
+  $('btn-retour').addEventListener('click', lancerLibre);
+  $('btn-defis').addEventListener('click', ouvrirChoix);
+  $('btn-fermer-choix').addEventListener('click', () => { fermerChoix(); $('btn-defis').focus(); });
+  $('choix-defi').addEventListener('click', (e) => { if (e.target === e.currentTarget) fermerChoix(); });
+  $('mode-defi').addEventListener('click', () => lancerDefi(false));
+  $('mode-chrono').addEventListener('click', () => lancerDefi(true));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !$('resultats').hidden) $('resultats').hidden = true;
+    if (e.key !== 'Escape') return;
+    if (!$('choix-defi').hidden) fermerChoix();
+    else if (!$('resultats').hidden) $('resultats').hidden = true;
   });
 
   const choix = (groupe, cle, quand) => {
@@ -323,7 +462,9 @@
     }));
     maj();
   };
-  choix('reg-camp', 'camp', nouvellePartie);
+  // en mode 2 joueurs : pas de niveau ni de défis
+  const appliquerCamp = () => document.body.classList.toggle('deux-joueurs', deux());
+  choix('reg-camp', 'camp', () => { appliquerCamp(); nouvellePartie(); });
   choix('reg-niveau', 'niveau', nouvellePartie);
 
   brancherBoutonTheme($('btn-theme'));
@@ -334,10 +475,11 @@
   brancherInterrupteur($('reg-son'), Sons.actif, (v) => { Sons.actif = v; });
 
   // pour les tests
-  window.Cheval = { etat: () => jeu, AVEC_DAME, AVEC_CAVALIER, jouer: (c) => jouer(typeof c === 'string' ? numero(c) : c), coupsDame, CAVALIER };
+  window.Cheval = { etat: () => jeu, defi: () => defi, AVEC_DAME, AVEC_CAVALIER, coupsDame, CAVALIER, jouer: (c) => jouer(typeof c === 'string' ? numero(c) : c) };
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
-  nouvellePartie();
+  appliquerCamp();
+  lancerLibre();
 })();

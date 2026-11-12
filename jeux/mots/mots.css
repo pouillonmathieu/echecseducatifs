@@ -224,7 +224,7 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .choix-langue select { font-size: 15px; padding-right: 24px; }
 }
 @media (max-width: 420px) {
-  .ecran-mots .titre { font-size: 20px; }
+
   .groupe { gap: 3px; }
   .boite { border-radius: 7px; }
   .mot { --taille: 36px; }
@@ -232,4 +232,10 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .mot.tres-long { --taille: 24px; }
   .touche { height: 42px; padding: 0 2px; font-size: 17px; }
   .rangee-touches { gap: 4px; }
+}
+/* petit téléphone : le titre passe sous les boutons pour ne pas être écrasé */
+@media (max-width: 420px) {
+  .barre { flex-wrap: wrap; row-gap: 6px; }
+  .barre .titre { order: 9; flex: 1 0 100%; margin: 0 2px; font-size: 20px; }
+  .barre .bouton-defis { margin-left: auto; }
 }

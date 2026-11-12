@@ -366,6 +366,20 @@
   "Bravo !": "Well done!",
   "coups": "moves",
   "Rejouer": "Play again",
-  "Voir l'échiquier": "See the board"
+  "Voir l'échiquier": "See the board",
+  "Quitter le défi et revenir au mode libre": "Leave the challenge and go back to free play",
+  "Mode libre": "Free play",
+  "Défis": "Challenges",
+  "Progression des défis": "Challenge progress",
+  "Deux joueurs : l'un joue la dame, l'autre le cavalier": "Two players: one plays the queen, the other the knight",
+  "2 joueurs": "2 players",
+  "Partie suivante": "Next game",
+  "Fermer": "Close",
+  "5 parties d'affilée, avec la pièce et le niveau choisis : jusqu'à 15 étoiles.": "5 games in a row, with the chosen piece and level: up to 15 stars.",
+  "Sans chrono": "No timer",
+  "Prends ton temps": "Take your time",
+  "Chrono": "Timer",
+  "10 secondes par coup": "10 seconds per move",
+  "Détail des parties": "Games in detail"
  }
 }
