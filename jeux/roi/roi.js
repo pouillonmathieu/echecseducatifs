@@ -243,6 +243,17 @@
     if (i >= 0) { jeu.selection = i === jeu.selection && jeu.pieces.length > 1 ? -1 : i; afficher(); return; }
     if (jeu.selection >= 0 && coupsPiece(jeu.selection).includes(c)) jouer(jeu.selection, c);
   });
+  // ou on fait glisser une pièce blanche jusqu'à la case voulue
+  const peutJouer = () => !jeu.fini && jeu.trait === 'blanc' && revoir.enDirect();
+  window.Glisser({
+    plateau,
+    prendre: (n) => peutJouer() && occupant(numero(n)) >= 0,
+    demarrer: (n) => { const i = occupant(numero(n)); if (i !== jeu.selection) { jeu.selection = i; afficher(); } },
+    lacher: (de, vers) => {
+      const i = occupant(numero(de)), d = numero(vers);
+      if (peutJouer() && i >= 0 && coupsPiece(i).includes(d)) jouer(i, d);
+    },
+  });
 
   function jouer(i, d) {
     arreterChrono();

@@ -103,7 +103,7 @@ body.presse #minuteur-barre { background: var(--alerte); }
 /* les pièces qu'on peut jouer */
 .case-e.jouable { cursor: pointer; }
 .case-e.jouable::after { opacity: 1; box-shadow: inset 0 0 0 3px rgba(47, 163, 107, .45); }
-.plateau-roi .case-e.ma-piece { cursor: pointer; }
+.plateau-roi .case-e.ma-piece { cursor: grab; }
 .chargement .carte-choix { width: auto; text-align: center; }
 .chargement .carte-choix-intro { margin: 0; font-weight: 600; }
 @media (max-width: 560px) {

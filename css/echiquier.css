@@ -66,3 +66,11 @@
 .case-e.arrivee::after { opacity: 1; background: rgba(242, 184, 39, .62); box-shadow: inset 0 0 0 4px var(--e-coup); }
 .case-e.arrivee { animation: clignote 1s ease-in-out 2; }
 @keyframes clignote { 50% { filter: brightness(1.15); } }
+
+/* glisser-déposer (js/glisser.js) : la pièce suit le doigt ou la souris, la case visée s'éclaire */
+.plateau-glisser .case-e .piece-e { touch-action: none; }
+.plateau-glisser .case-e.ma-piece, .plateau-glisser .case-e.jouable { cursor: grab; }
+.plateau-glisser .piece-e.en-main { opacity: .3; }
+.piece-glissee { position: fixed; top: 0; left: 0; z-index: 1000; pointer-events: none; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .35)); }
+.plateau-glisser .case-e.visee::after { opacity: 1; box-shadow: inset 0 0 0 4px rgba(242, 184, 39, .95); }
+body.glisse-en-cours, body.glisse-en-cours * { cursor: grabbing !important; }

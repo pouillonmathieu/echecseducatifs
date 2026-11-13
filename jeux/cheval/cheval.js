@@ -251,6 +251,13 @@
     const c = numero(el.dataset.case);
     if (coupsDuTrait().includes(c)) jouer(c);
   });
+  // ou on fait glisser sa pièce jusqu'à la case voulue
+  const maPiece = () => (jeu.trait === 'dame' ? jeu.q : jeu.n);
+  window.Glisser({
+    plateau,
+    prendre: (n) => aMoi() && revoir.enDirect() && numero(n) === maPiece(),
+    lacher: (de, vers) => { if (aMoi() && revoir.enDirect() && coupsDuTrait().includes(numero(vers))) jouer(numero(vers)); },
+  });
 
   // à qui de jouer : le joueur (on attend son clic, avec le chrono en défi) ou l'ordinateur
   function tour() {
