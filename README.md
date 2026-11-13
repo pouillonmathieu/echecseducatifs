@@ -70,7 +70,9 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   gagné. L'ordinateur a deux niveaux : difficile, il joue parfaitement grâce à une table de toutes les positions
   calculée au chargement (analyse rétrograde : avec un jeu parfait, la dame attrape toujours le cavalier en 5 coups au
   plus) ; facile, le cavalier fuit au hasard vers une case sûre et la dame ne joue le meilleur coup qu'une fois sur deux.
-  Réglage « Cases dangereuses » : les coups où l'adversaire peut te prendre sont marqués en rouge.
+  Réglage « Cases dangereuses » : les coups où l'adversaire peut te prendre sont marqués en rouge. Sous l'échiquier,
+  des boutons font revoir les coups (`js/revoir.js`) ; « Recommencer » reprend la même position ; « Solution » (difficile)
+  déroule une partie parfaite des deux côtés. Le panneau rappelle le meilleur nombre de coups possible pour la position.
   Mode 2 joueurs (sur le même écran, la dame blanche commence ; le cavalier gagne s'il prend la dame ou tient 30 coups).
   Défis (avec la dame ou le cavalier, au niveau choisi) : 5 parties d'affilée, jusqu'à 15 étoiles ; défi chrono : 10 s
   par coup (temps écoulé : partie à 0 étoile).
@@ -80,8 +82,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Le roi noir doit bouger à chaque coup (mat ou pat : il est pris au coup suivant) et peut prendre une pièce non
   protégée ; si ce qui reste ne suffit plus, il s'échappe. Départ au hasard, jamais gagnable en un ou deux coups.
   L'ordinateur joue le roi : difficile, parfaitement ; facile, une fois sur deux une case sûre au hasard. Les étoiles
-  comparent le nombre de coups au minimum théorique (★★★ jusqu'au minimum + 25 %, ★★ jusqu'au minimum + 75 %).
-  Défis : 5 parties (jusqu'à 15 étoiles), défi chrono à 15 s par coup. Le minimum et le jeu parfait viennent de
+  comparent le nombre de coups au minimum théorique (★★★ jusqu'au minimum + 25 %, ★★ jusqu'au minimum + 75 %) ;
+  le panneau n'affiche que ce minimum.
+  Défis : 5 parties (jusqu'à 15 étoiles), défi chrono à 15 s par coup. Comme dans « Le cheval de la reine » : revoir les
+  coups, « Recommencer » (même position) et « Solution » (difficile : une partie parfaite au minimum de coups). Le minimum et le jeu parfait viennent de
   tables de toutes les positions (analyse rétrograde, avec les 8 symétries de l'échiquier), calculées par
   `outils/tables-roi.js` avec `jeux/roi/tables.js` et rangées compressées dans `jeux/roi/tables/` (1,8 Mo en tout ;
   le jeu ne charge que celles de l'équipe choisie, et les recalcule si elles ne se chargent pas).

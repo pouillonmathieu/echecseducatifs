@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../css/commun.css?v=202611131218">
-<link rel="stylesheet" href="../../css/jeux.css?v=202611131218">
-<link rel="stylesheet" href="../../css/echiquier.css?v=202611131218">
-<link rel="stylesheet" href="cheval.css?v=202611131218">
-<script src="../../js/commun.js?v=202611131218"></script>
+<link rel="stylesheet" href="../../css/commun.css?v=202611131237">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611131237">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611131237">
+<link rel="stylesheet" href="cheval.css?v=202611131237">
+<script src="../../js/commun.js?v=202611131237"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- illustrations des boutons : la dame et le cavalier sur un petit échiquier -->
@@ -97,6 +97,13 @@
         </div>
       </div>
       <div id="echiquier" class="plateau-cheval"></div>
+      <div class="navigation-coups" id="navigation" role="group" aria-label="Revoir les coups">
+        <button type="button" class="bouton-icone" data-nav="debut" aria-label="Position de départ" title="Départ"><svg viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6Z"/></svg></button>
+        <button type="button" class="bouton-icone" data-nav="prec" aria-label="Coup précédent" title="Coup précédent"><svg viewBox="0 0 24 24"><path d="M15 6l-7 6 7 6"/></svg></button>
+        <span class="nav-numero" aria-live="polite">Départ</span>
+        <button type="button" class="bouton-icone" data-nav="suiv" aria-label="Coup suivant" title="Coup suivant"><svg viewBox="0 0 24 24"><path d="M9 6l7 6-7 6"/></svg></button>
+        <button type="button" class="bouton-icone" data-nav="fin" aria-label="Dernier coup" title="Dernier coup"><svg viewBox="0 0 24 24"><path d="M18 5v14M6 6l8 6-8 6Z"/></svg></button>
+      </div>
     </div>
 
     <div class="panneau-cheval">
@@ -117,10 +124,20 @@
         Partie suivante
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
       </button>
-      <button id="btn-nouvelle" class="bouton-secondaire seulement-libre" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
-        Nouvelle partie
-      </button>
+      <div class="actions-partie seulement-libre">
+        <button id="btn-recommencer" class="bouton-secondaire" type="button" title="Reprendre la même position de départ">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
+          Recommencer
+        </button>
+        <button id="btn-nouvelle" class="bouton-secondaire" type="button" title="Une nouvelle position au hasard">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Nouvelle partie
+        </button>
+        <button id="btn-solution" class="bouton-secondaire" type="button" title="Voir une partie parfaite depuis le départ" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          Solution
+        </button>
+      </div>
     </div>
   </section>
 
@@ -171,6 +188,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
         Rejouer
       </button>
+      <button id="btn-nouvelle-res" class="bouton-secondaire seulement-libre" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Nouvelle partie
+      </button>
       <button id="btn-revoir" class="bouton-secondaire" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
         Voir l'échiquier
@@ -183,10 +204,11 @@
   </div>
 </div>
 
-<script src="../../js/pieces.js?v=202611131218"></script>
-<script src="../../js/sons.js?v=202611131218"></script>
-<script src="../../js/ui.js?v=202611131218"></script>
-<script src="../../js/echiquier.js?v=202611131218"></script>
-<script src="cheval.js?v=202611131218"></script>
+<script src="../../js/pieces.js?v=202611131237"></script>
+<script src="../../js/sons.js?v=202611131237"></script>
+<script src="../../js/ui.js?v=202611131237"></script>
+<script src="../../js/echiquier.js?v=202611131237"></script>
+<script src="../../js/revoir.js?v=202611131237"></script>
+<script src="cheval.js?v=202611131237"></script>
 </body>
 </html>

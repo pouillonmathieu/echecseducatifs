@@ -8,7 +8,9 @@
      outils/tables-roi.js avec jeux/roi/tables.js ; si elles ne se chargent pas, elles sont recalculées ici) ;
    - facile : une fois sur deux le meilleur coup, sinon une case au hasard où il n'est pas pris tout de suite.
    Les tables donnent aussi le minimum théorique de coups depuis le départ : plus on s'en approche, plus on a d'étoiles.
-   Défis : 5 parties d'affilée (jusqu'à 15 étoiles) ; défi chrono : 15 secondes par coup. */
+   Défis : 5 parties d'affilée (jusqu'à 15 étoiles) ; défi chrono : 15 secondes par coup.
+   Mode libre : « Recommencer » reprend la même position de départ ; les boutons sous l'échiquier font revoir les coups
+   (js/revoir.js) ; « Solution » (niveau difficile) déroule une partie parfaite des deux côtés depuis le départ. */
 (function () {
   const { EN, t, Prefs, brancherBoutonTheme, brancherReglages, brancherInterrupteur } = window.Commun;
   const { lancerPluie, compterJusqua, allumerEtoiles, formaterDuree, ICONES } = window.UI;
@@ -81,11 +83,11 @@
   };
 
   // ---------- La partie ----------
-  const jeu = { mode: 'libre', equipe: 'roi-dame', pieces: [], kb: 0, trait: 'blanc', coups: 0, fini: true, partie: 0, min: 0, selection: -1, dernier: null, issue: null };
+  const jeu = { mode: 'libre', equipe: 'roi-dame', pieces: [], kb: 0, trait: 'blanc', coups: 0, fini: true, partie: 0, min: 0, selection: -1, dernier: null, issue: null, initial: null };
   const defi = { chrono: false, numero: 0, resultats: [], debut: 0, fin: 0, raf: 0, dernierTic: 0 };
 
-  const occupant = (c) => jeu.pieces.findIndex(p => p.c === c);
-  const roiBlanc = () => jeu.pieces.find(p => p.t === 'K');
+  const occupant = (c, pieces = jeu.pieces) => pieces.findIndex(p => p.c === c);
+  const roiBlanc = (pieces = jeu.pieces) => pieces.find(p => p.t === 'K');
   const occ = new Uint8Array(64);
   function remplirOcc(pieces = jeu.pieces, kb = jeu.kb) {
     occ.fill(0);
@@ -94,10 +96,10 @@
   }
   const liste = [];
   // les cases où la pièce i peut aller (elle peut prendre le roi noir, pas une pièce blanche)
-  function coupsPiece(i) {
-    const p = jeu.pieces[i];
-    remplirOcc();
-    return T.cibles(p.t, p.c, occ, liste).filter(d => occupant(d) < 0 && (p.t !== 'K' || (d !== jeu.kb && !T.voisins(d, jeu.kb))));
+  function coupsPiece(i, pieces = jeu.pieces, kb = jeu.kb) {
+    const p = pieces[i];
+    remplirOcc(pieces, kb);
+    return T.cibles(p.t, p.c, occ, liste).filter(d => occupant(d, pieces) < 0 && (p.t !== 'K' || (d !== kb && !T.voisins(d, kb))));
   }
   // une pièce blanche attaque-t-elle la case c (sans compter la pièce « sauf ») ?
   function protegee(c, pieces, sauf) {
@@ -136,11 +138,15 @@
     return null;
   }
 
-  async function nouvellePartie() {
+  // la position du moment (pour revoir les coups)
+  const photo = () => ({ pieces: jeu.pieces.map(p => ({ t: p.t, c: p.c })), kb: jeu.kb, dernier: jeu.dernier, coups: jeu.coups });
+  // memePosition : « Recommencer » reprend le même départ
+  async function nouvellePartie(memePosition = false) {
     const numeroPartie = ++jeu.partie;
     arreterChrono();
     jeu.fini = true;
-    const id = reglages.equipe === 'hasard' ? Object.keys(EQUIPES)[Math.floor(Math.random() * 8)] : reglages.equipe;
+    const reprendre = memePosition === true && jeu.initial;
+    const id = reprendre ? jeu.initial.equipe : reglages.equipe === 'hasard' ? Object.keys(EQUIPES)[Math.floor(Math.random() * 8)] : reglages.equipe;
     jeu.equipe = id;
     $('resultats').hidden = true;
     $('pluie').innerHTML = '';
@@ -153,8 +159,9 @@
       $('chargement').hidden = true;
       if (numeroPartie !== jeu.partie) return;
     }
-    const pos = tirerPosition(EQUIPES[id]);
-    jeu.pieces = pos.pieces;
+    if (!reprendre) jeu.initial = { equipe: id, ...tirerPosition(EQUIPES[id]) };
+    const pos = jeu.initial;
+    jeu.pieces = pos.pieces.map(p => ({ t: p.t, c: p.c }));
     jeu.kb = pos.kb;
     jeu.min = pos.v;
     jeu.trait = 'blanc';
@@ -164,6 +171,7 @@
     jeu.selection = jeu.pieces.length === 1 ? 0 : -1;
     jeu.dernier = null;
     annotations.effacer();
+    revoir.depart(photo());
     majTextes();
     afficher();
     if (jeu.mode === 'defi') {
@@ -175,10 +183,10 @@
     $('etat').textContent = t('À toi de jouer : choisis une pièce.', 'Your move: pick a piece.');
   }
 
-  function fen() {
+  function fen(ph) {
     const pos = {};
-    for (const p of jeu.pieces) pos[p.c] = p.t;
-    if (jeu.kb >= 0) pos[jeu.kb] = 'k';
+    for (const p of ph.pieces) pos[p.c] = p.t;
+    if (ph.kb >= 0) pos[ph.kb] = 'k';
     let f = '';
     for (let r = 7; r >= 0; r--) {
       let vide = 0;
@@ -192,13 +200,14 @@
     return f;
   }
 
-  function afficher() {
-    Echiquier.dessiner(plateau, fen());
-    if (jeu.dernier) {
-      Echiquier.marquer(plateau, [nom(jeu.dernier[0])], 'depart');
-      Echiquier.marquer(plateau, [nom(jeu.dernier[1])], 'arrivee');
+  // dessine une position : le direct (on peut jouer) ou un coup passé qu'on revoit
+  function dessinerPhoto(ph, direct) {
+    Echiquier.dessiner(plateau, fen(ph));
+    if (ph.dernier) {
+      Echiquier.marquer(plateau, [nom(ph.dernier[0])], 'depart');
+      Echiquier.marquer(plateau, [nom(ph.dernier[1])], 'arrivee');
     }
-    if (!jeu.fini && jeu.trait === 'blanc') {
+    if (direct && !jeu.fini && jeu.trait === 'blanc') {
       jeu.pieces.forEach((p, i) => plateau.querySelector(`[data-case="${nom(p.c)}"]`).classList.add(i === jeu.selection ? 'ma-piece' : 'jouable'));
       if (jeu.selection >= 0) {
         for (const d of coupsPiece(jeu.selection)) {
@@ -208,26 +217,27 @@
         }
       }
     }
-    $('coups').textContent = jeu.coups;
-    $('coups-mot').textContent = jeu.coups > 1 ? t('coups', 'moves') : t('coup', 'move');
+    $('coups').textContent = ph.coups;
+    $('coups-mot').textContent = ph.coups > 1 ? t('coups', 'moves') : t('coup', 'move');
   }
+  const afficher = () => { if (revoir.enDirect()) dessinerPhoto(photo(), true); };
+  const revoir = window.Revoir({ barre: $('navigation'), dessiner: dessinerPhoto });
 
   // étoiles : plus on est proche du minimum théorique, mieux c'est
   const marges = () => [Math.max(1, Math.round(jeu.min * 0.25)), Math.max(3, Math.round(jeu.min * 0.75))];
   function majTextes() {
-    const [m3, m2] = marges();
     $('question-titre').textContent = t('Capture le roi !', 'Capture the king!');
     $('question-texte').textContent = t(`Avec ${NOMS_EQUIPES[jeu.equipe][0]}, attrape le roi noir. Il doit bouger à chaque coup : coince-le, puis prends-le. Attention, il peut prendre une pièce qui n'est pas protégée !`,
       `With ${NOMS_EQUIPES[jeu.equipe][1]}, catch the black king. It has to move every turn: trap it, then take it. Careful, it can take a piece that isn't protected!`);
-    $('bareme').textContent = t(`Le plus court possible : ${jeu.min} coups. ★★★ en ${jeu.min + m3} coups ou moins · ★★ en ${jeu.min + m2} coups ou moins · ★ au-delà`,
-      `The shortest possible: ${jeu.min} moves. ★★★ in ${jeu.min + m3} moves or fewer · ★★ in ${jeu.min + m2} or fewer · ★ beyond`);
+    $('bareme').textContent = t(`Le plus court possible : ${coupsTexte(jeu.min)}.`, `The shortest possible: ${coupsTexte(jeu.min)}.`);
+    $('btn-solution').hidden = reglages.niveau !== 'difficile';
     document.querySelectorAll('.equipe-question').forEach(e => { e.innerHTML = EQUIPES[jeu.equipe].map(tp => `<svg viewBox="0 0 100 100"><use href="#piece-${NOMS[tp]}-blanc"/></svg>`).join(''); });
   }
 
   // ---------- Coups du joueur ----------
   plateau.addEventListener('click', (e) => {
     const el = e.target.closest('.case-e');
-    if (!el || jeu.fini || jeu.trait !== 'blanc') return;
+    if (!el || jeu.fini || jeu.trait !== 'blanc' || !revoir.enDirect()) return;
     const c = numero(el.dataset.case);
     const i = occupant(c);
     if (i >= 0) { jeu.selection = i === jeu.selection && jeu.pieces.length > 1 ? -1 : i; afficher(); return; }
@@ -245,11 +255,13 @@
       jeu.kb = -1;
       jeu.fini = true;
       jeu.selection = -1;
+      revoir.ajouter(photo());
       afficher();
       return finir('capture');
     }
-    if (jeu.coups >= LIMITE) { jeu.fini = true; afficher(); return finir('long'); }
+    if (jeu.coups >= LIMITE) { jeu.fini = true; revoir.ajouter(photo()); afficher(); return finir('long'); }
     jeu.trait = 'noir';
+    revoir.ajouter(photo());
     afficher();
     $('etat').textContent = t('Le roi noir réfléchit…', 'The black king is thinking…');
     const n = jeu.partie;
@@ -257,17 +269,16 @@
   }
 
   // ---------- Le roi noir ----------
-  function coupsNoirs() {
-    const roi = roiBlanc();
-    const tous = T.ROI[jeu.kb].filter(m => !roi || m !== roi.c);
+  function coupsNoirs(pieces = jeu.pieces, kb = jeu.kb) {
+    const roi = roiBlanc(pieces);
+    const tous = T.ROI[kb].filter(m => !roi || m !== roi.c);
     const surs = tous.filter(m => !roi || !T.voisins(m, roi.c));
     return surs.length ? surs : tous;
   }
   // ce que vaut le coup m pour le roi noir : nombre de coups blancs ensuite pour le capturer (255 = il s'échappe)
-  function valeurNoire(m) {
-    const j = occupant(m);
-    const pieces = j >= 0 ? jeu.pieces.filter((_, k) => k !== j) : jeu.pieces;
-    return valeur(pieces, m);
+  function valeurNoire(m, pieces = jeu.pieces) {
+    const j = occupant(m, pieces);
+    return valeur(j >= 0 ? pieces.filter((_, k) => k !== j) : pieces, m);
   }
   function repondre() {
     const coups = coupsNoirs();
@@ -289,11 +300,56 @@
     Sons.pose(j >= 0 ? 6 : 2);
     if (jeu.selection >= jeu.pieces.length || j >= 0) jeu.selection = jeu.pieces.length === 1 ? 0 : -1;
     // le roi a pris une pièce : l'équipe peut-elle encore le capturer ?
-    if (j >= 0 && valeur(jeu.pieces, jeu.kb) === T.INF) { jeu.fini = true; afficher(); return finir('echappe'); }
+    if (j >= 0 && valeur(jeu.pieces, jeu.kb) === T.INF) { jeu.fini = true; revoir.ajouter(photo()); afficher(); return finir('echappe'); }
     jeu.trait = 'blanc';
+    revoir.ajouter(photo());
     afficher();
     $('etat').textContent = j >= 0 ? t('Aïe, le roi a pris une pièce ! À toi.', 'Ouch, the king took a piece! Your move.') : t('À toi de jouer.', 'Your move.');
     if (jeu.mode === 'defi' && defi.chrono) demarrerChrono();
+  }
+
+  // ---------- Solution (niveau difficile) ----------
+  // une partie parfaite des deux côtés depuis le départ : les Blancs prennent le chemin le plus court,
+  // le roi noir tient le plus longtemps possible
+  function solution() {
+    if (jeu.mode !== 'libre' || reglages.niveau !== 'difficile' || !jeu.initial) return;
+    jeu.partie++;
+    arreterChrono();
+    let pieces = jeu.initial.pieces.map(p => ({ t: p.t, c: p.c })), kb = jeu.initial.kb, coups = 0;
+    const copie = () => pieces.map(p => ({ t: p.t, c: p.c }));
+    const liste = [{ pieces: copie(), kb, dernier: null, coups: 0 }];
+    for (let k = 0; k < 60 && kb >= 0; k++) {
+      // coup blanc : celui qui laisse au roi noir la pire de ses meilleures réponses
+      let meilleur = null;
+      pieces.forEach((p, i) => {
+        for (const d of coupsPiece(i, pieces, kb)) {
+          if (d === kb) { if (!meilleur || meilleur.v > -1) meilleur = { i, d, v: -1 }; continue; }
+          const apres = pieces.map((q, j) => (j === i ? { t: q.t, c: d } : q));
+          const v = Math.max(...coupsNoirs(apres, kb).map(m => valeurNoire(m, apres)));
+          if (!meilleur || v < meilleur.v) meilleur = { i, d, v };
+        }
+      });
+      const de = pieces[meilleur.i].c;
+      pieces[meilleur.i].c = meilleur.d;
+      coups++;
+      if (meilleur.d === kb) { kb = -1; liste.push({ pieces: copie(), kb, dernier: [de, meilleur.d], coups }); break; }
+      liste.push({ pieces: copie(), kb, dernier: [de, meilleur.d], coups });
+      // le roi noir : sa meilleure case
+      const notes = coupsNoirs(pieces, kb).map(m => ({ m, v: valeurNoire(m, pieces) }));
+      const best = Math.max(...notes.map(x => x.v));
+      const m = notes.find(x => x.v === best).m;
+      const j = occupant(m, pieces);
+      if (j >= 0) pieces.splice(j, 1);
+      liste.push({ pieces: copie(), kb: m, dernier: [kb, m], coups });
+      kb = m;
+    }
+    jeu.fini = true;
+    jeu.issue = 'solution';
+    jeu.selection = -1;
+    $('resultats').hidden = true;
+    $('etat').textContent = t(`Solution : le roi est capturé en ${coupsTexte(coups)}.`, `Solution: the king is captured in ${coupsTexte(coups)}.`);
+    revoir.photos(liste);
+    revoir.lire(900);
   }
 
   // ---------- Chrono (défi) ----------
@@ -430,9 +486,13 @@
   function fermerChoix() { $('choix-defi').hidden = true; }
 
   // ---------- Branchements ----------
-  $('btn-nouvelle').addEventListener('click', nouvellePartie);
+  $('btn-nouvelle').addEventListener('click', () => nouvellePartie());
+  $('btn-recommencer').addEventListener('click', () => nouvellePartie(true));
+  $('btn-solution').addEventListener('click', solution);
+  $('btn-nouvelle-res').addEventListener('click', () => nouvellePartie());
   $('btn-suivante').addEventListener('click', partieSuivante);
-  $('btn-rejouer').addEventListener('click', () => (jeu.mode === 'defi' ? lancerDefi(defi.chrono) : nouvellePartie()));
+  // « Rejouer » : la même position (mode libre) ou un nouveau défi
+  $('btn-rejouer').addEventListener('click', () => (jeu.mode === 'defi' ? lancerDefi(defi.chrono) : nouvellePartie(true)));
   $('btn-revoir').addEventListener('click', () => { $('resultats').hidden = true; });
   $('btn-menu').addEventListener('click', lancerLibre);
   $('btn-retour').addEventListener('click', lancerLibre);
@@ -456,6 +516,7 @@
       reglages[cle] = b.dataset[cle];
       ecrire(`echecs.roi.${cle}`, reglages[cle]);
       maj();
+      if (cle === 'niveau') $('btn-solution').hidden = reglages.niveau !== 'difficile';
       nouvellePartie();
     }));
     maj();
@@ -471,7 +532,7 @@
   brancherInterrupteur($('reg-son'), Sons.actif, (v) => { Sons.actif = v; });
 
   // pour les tests
-  window.CaptureRoi = { etat: () => jeu, defi: () => defi, valeur, coupsPiece, valeurNoire, jouer, EQUIPES };
+  window.CaptureRoi = { etat: () => jeu, defi: () => defi, valeur, coupsPiece, valeurNoire, coupsNoirs, jouer, EQUIPES };
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();

@@ -5,6 +5,8 @@
    - Mode « 2 joueurs » : l'un joue la dame blanche, l'autre le cavalier noir, sur le même écran.
    Le joueur commence (la dame en mode 2 joueurs). Le cavalier peut prendre la dame si elle se pose sur une case qu'il attaque.
    Défis (dame ou cavalier) : 5 parties d'affilée, jusqu'à 15 étoiles ; défi chrono : 10 secondes par coup.
+   Mode libre : « Recommencer » reprend la même position de départ ; les boutons sous l'échiquier font revoir les coups
+   (js/revoir.js) ; « Solution » (niveau difficile) déroule une partie parfaite des deux côtés depuis le départ.
    L'adversaire est joué par l'ordinateur, avec deux niveaux :
    - difficile : il joue parfaitement, grâce à une table calculée au chargement (toutes les positions dame/cavalier,
      coup par coup en partant des prises : c'est une « analyse rétrograde ») ;
@@ -116,7 +118,7 @@
 
   // ---------- La partie ----------
   // trait : 'dame' ou 'cavalier' (qui doit jouer) ; coupsDame / coupsCavalier : coups joués par chacun
-  const jeu = { mode: 'libre', q: 0, n: 0, trait: 'dame', coupsDame: 0, coupsCavalier: 0, fini: false, partie: 0, meilleur: 0, dernier: null, issue: null };
+  const jeu = { mode: 'libre', q: 0, n: 0, trait: 'dame', coupsDame: 0, coupsCavalier: 0, fini: false, partie: 0, meilleur: 0, dernier: null, issue: null, initial: null };
   const defi = { chrono: false, numero: 0, resultats: [], debut: 0, fin: 0, raf: 0, dernierTic: 0 };
   const deux = () => reglages.camp === 'deux';
   // les blancs : la dame (modes dame et 2 joueurs) ou le cavalier (mode cavalier)
@@ -135,10 +137,14 @@
       return [q, n];
     }
   }
-  function nouvellePartie() {
+  // la position du moment (pour revoir les coups)
+  const photo = () => ({ q: jeu.q, n: jeu.n, dernier: jeu.dernier, trait: jeu.trait, coupsDame: jeu.coupsDame, coupsCavalier: jeu.coupsCavalier });
+  // memePosition : « Recommencer » reprend le même départ
+  function nouvellePartie(memePosition = false) {
     jeu.partie++;
     arreterChrono();
-    [jeu.q, jeu.n] = placer();
+    if (memePosition !== true || !jeu.initial) jeu.initial = placer();
+    [jeu.q, jeu.n] = jeu.initial;
     jeu.coupsDame = 0;
     jeu.coupsCavalier = 0;
     jeu.trait = reglages.camp === 'cavalier' ? 'cavalier' : 'dame';
@@ -152,6 +158,7 @@
     $('btn-suivante').hidden = true;
     $('etoiles-partie').textContent = '';
     annotations.effacer();
+    revoir.depart(photo());
     majTextes();
     afficher();
     if (jeu.mode === 'defi') {
@@ -162,10 +169,10 @@
     tour();
   }
 
-  function fen() {
+  function fen(ph) {
     const pieces = {};
-    if (jeu.q >= 0) pieces[jeu.q] = dameBlanche() ? 'Q' : 'q';
-    if (jeu.n >= 0) pieces[jeu.n] = dameBlanche() ? 'n' : 'N';
+    if (ph.q >= 0) pieces[ph.q] = dameBlanche() ? 'Q' : 'q';
+    if (ph.n >= 0) pieces[ph.n] = dameBlanche() ? 'n' : 'N';
     let f = '';
     for (let r = 7; r >= 0; r--) {
       let vide = 0;
@@ -183,13 +190,14 @@
   const dangereuse = (c) => (jeu.trait === 'dame' ? c !== jeu.n && cavalierAttaque(jeu.n, c) : c !== jeu.q && dameAttaque(jeu.q, c));
   const aMoi = () => !jeu.fini && humain(jeu.trait);
 
-  function afficher() {
-    Echiquier.dessiner(plateau, fen());
-    if (jeu.dernier) {
-      Echiquier.marquer(plateau, [nom(jeu.dernier[0])], 'depart');
-      Echiquier.marquer(plateau, [nom(jeu.dernier[1])], 'arrivee');
+  // dessine une position : le direct (on peut jouer) ou un coup passé qu'on revoit
+  function dessinerPhoto(ph, direct) {
+    Echiquier.dessiner(plateau, fen(ph));
+    if (ph.dernier) {
+      Echiquier.marquer(plateau, [nom(ph.dernier[0])], 'depart');
+      Echiquier.marquer(plateau, [nom(ph.dernier[1])], 'arrivee');
     }
-    if (aMoi()) {
+    if (direct && aMoi()) {
       const moi = jeu.trait === 'dame' ? jeu.q : jeu.n;
       const cible = jeu.trait === 'dame' ? jeu.n : jeu.q;
       Echiquier.marquer(plateau, [nom(moi)], 'ma-piece');
@@ -199,11 +207,13 @@
         if (reglages.danger && c !== cible && dangereuse(c)) el.classList.add('dangereuse');
       }
     }
-    const n = mesCoupsJoues();
+    const n = reglages.camp === 'cavalier' ? ph.coupsCavalier : ph.coupsDame;
     $('coups').textContent = n;
     $('coups-mot').textContent = deux() ? (n > 1 ? t('coups de la dame', 'queen moves') : t('coup de la dame', 'queen move'))
       : n > 1 ? t('coups', 'moves') : t('coup', 'move');
   }
+  const afficher = () => { if (revoir.enDirect()) dessinerPhoto(photo(), true); };
+  const revoir = window.Revoir({ barre: $('navigation'), dessiner: dessinerPhoto });
 
   function majTextes() {
     const camp = reglages.camp;
@@ -218,13 +228,12 @@
           'You\'re the queen\'s horse and you\'ve run away: escape from her for as long as you can. If she lands too close, you can even take her!')
         : t(`L'un joue la dame blanche, l'autre le cavalier noir. La dame commence et doit attraper le cavalier ; le cavalier gagne s'il prend la dame ou s'il tient ${LIMITE} coups.`,
           `One player has the white queen, the other the black knight. The queen starts and must catch the knight; the knight wins if it takes the queen or lasts ${LIMITE} moves.`);
-    let bareme;
-    if (camp === 'deux') bareme = t('Chacun joue à son tour sur le même écran.', 'Take turns on the same screen.');
-    else if (camp === 'reine') bareme = t('★★★ en 5 coups ou moins · ★★ en 6 à 8 coups · ★ en 9 coups ou plus', '★★★ in 5 moves or fewer · ★★ in 6 to 8 · ★ in 9 or more');
-    else if (reglages.niveau === 'facile') bareme = t('★ pris en 5 coups ou moins · ★★ en 6 à 8 coups · ★★★ 9 coups ou plus', '★ caught within 5 moves · ★★ 6 to 8 · ★★★ 9 or more');
-    else bareme = t(`La dame joue parfaitement : ici, on peut tenir au plus ${jeu.meilleur} coups. ★★★ si tu y arrives.`,
-      `The queen plays perfectly: from here you can last at most ${jeu.meilleur} moves. ★★★ if you manage it.`);
-    $('bareme').textContent = bareme;
+    // le nombre de coups de référence pour cette position (jeu parfait des deux côtés)
+    const m = jeu.meilleur;
+    $('bareme').textContent = camp === 'cavalier'
+      ? t(`Le plus long possible : ${coupsTexte(m)}.`, `The longest possible: ${coupsTexte(m)}.`)
+      : t(`Le plus court possible : ${coupsTexte(m)}.`, `The shortest possible: ${coupsTexte(m)}.`);
+    $('btn-solution').hidden = deux() || reglages.niveau !== 'difficile';
   }
   function majEtat() {
     if (jeu.fini) return;
@@ -238,7 +247,7 @@
   // ---------- Coups ----------
   plateau.addEventListener('click', (e) => {
     const el = e.target.closest('.case-e');
-    if (!el || !aMoi()) return;
+    if (!el || !aMoi() || !revoir.enDirect()) return;
     const c = numero(el.dataset.case);
     if (coupsDuTrait().includes(c)) jouer(c);
   });
@@ -270,13 +279,61 @@
       // une prise : la dame attrape le cavalier, ou le cavalier prend la dame
       if (dame) jeu.n = -1; else jeu.q = -1;
       jeu.fini = true;
+      revoir.ajouter(photo());
       afficher();
       return finir(dame ? 'dame-gagne' : 'cavalier-prend');
     }
-    if (!dame && jeu.coupsCavalier >= LIMITE) { jeu.fini = true; afficher(); return finir('tient'); }
+    if (!dame && jeu.coupsCavalier >= LIMITE) { jeu.fini = true; revoir.ajouter(photo()); afficher(); return finir('tient'); }
     jeu.trait = dame ? 'cavalier' : 'dame';
+    revoir.ajouter(photo());
     afficher();
     tour();
+  }
+
+  // ---------- Solution (niveau difficile) ----------
+  // une partie parfaite des deux côtés depuis le départ : la dame prend le plus court chemin, le cavalier tient le
+  // plus longtemps possible (et prend la dame s'il le peut)
+  function solution() {
+    if (jeu.mode !== 'libre' || deux() || reglages.niveau !== 'difficile') return;
+    jeu.partie++;
+    arreterChrono();
+    let [q, n] = jeu.initial;
+    let trait = reglages.camp === 'cavalier' ? 'cavalier' : 'dame', cd = 0, cc = 0;
+    const liste = [{ q, n, dernier: null, trait, coupsDame: 0, coupsCavalier: 0 }];
+    for (let k = 0; k < 2 * LIMITE; k++) {
+      let de, vers;
+      if (trait === 'dame') {
+        de = q;
+        if (dameAttaque(q, n)) vers = n;
+        else {
+          const coups = coupsDame(q, n).filter(c => c !== n && !cavalierAttaque(n, c));
+          const best = Math.min(...coups.map(c => AVEC_CAVALIER[c * 64 + n]));
+          vers = coups.find(c => AVEC_CAVALIER[c * 64 + n] === best);
+        }
+        q = vers; cd++;
+      } else {
+        de = n;
+        if (cavalierAttaque(n, q)) vers = q;
+        else {
+          const best = Math.max(...CAVALIER[n].map(m => AVEC_DAME[q * 64 + m]));
+          vers = CAVALIER[n].find(m => AVEC_DAME[q * 64 + m] === best);
+        }
+        n = vers; cc++;
+      }
+      const prise = q === n;
+      if (prise) { if (trait === 'dame') n = -1; else q = -1; }
+      trait = trait === 'dame' ? 'cavalier' : 'dame';
+      liste.push({ q, n, dernier: [de, vers], trait, coupsDame: cd, coupsCavalier: cc });
+      if (prise) break;
+    }
+    jeu.fini = true;
+    jeu.issue = 'solution';
+    $('resultats').hidden = true;
+    $('etat').textContent = reglages.camp === 'cavalier'
+      ? t(`Solution : le cavalier tient ${coupsTexte(cc)}.`, `Solution: the knight lasts ${coupsTexte(cc)}.`)
+      : t(`Solution : la dame attrape le cavalier en ${coupsTexte(cd)}.`, `Solution: the queen catches the knight in ${coupsTexte(cd)}.`);
+    revoir.photos(liste);
+    revoir.lire(900);
   }
 
   // ---------- Chrono (défi) ----------
@@ -433,9 +490,13 @@
   function fermerChoix() { $('choix-defi').hidden = true; }
 
   // ---------- Branchements ----------
-  $('btn-nouvelle').addEventListener('click', nouvellePartie);
+  $('btn-nouvelle').addEventListener('click', () => nouvellePartie());
+  $('btn-recommencer').addEventListener('click', () => nouvellePartie(true));
+  $('btn-solution').addEventListener('click', solution);
+  $('btn-nouvelle-res').addEventListener('click', () => nouvellePartie());
   $('btn-suivante').addEventListener('click', partieSuivante);
-  $('btn-rejouer').addEventListener('click', () => (jeu.mode === 'defi' ? lancerDefi(defi.chrono) : nouvellePartie()));
+  // « Rejouer » : la même position (mode libre) ou un nouveau défi
+  $('btn-rejouer').addEventListener('click', () => (jeu.mode === 'defi' ? lancerDefi(defi.chrono) : nouvellePartie(true)));
   $('btn-revoir').addEventListener('click', () => { $('resultats').hidden = true; });
   $('btn-menu').addEventListener('click', lancerLibre);
   $('btn-retour').addEventListener('click', lancerLibre);

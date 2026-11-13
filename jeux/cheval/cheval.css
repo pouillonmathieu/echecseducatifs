@@ -11,8 +11,8 @@
   gap: 28px;
 }
 .plateau-cheval {
-  width: min(100%, 580px, calc(100vh - 220px));
-  width: min(100%, 580px, calc(100dvh - 220px));
+  width: min(100%, 580px, calc(100vh - 270px));
+  width: min(100%, 580px, calc(100dvh - 270px));
 }
 .choix-ligne button.avec-texte > svg { width: 32px; height: 32px; }
 /* bouton « 2 joueurs » : la dame et le cavalier côte à côte */
@@ -68,7 +68,7 @@ body.presse #minuteur-barre { background: var(--alerte); }
 
 @media (max-width: 860px) {
   .jeu-cheval { grid-template-columns: 1fr; gap: 14px; align-content: start; }
-  .plateau-cheval { width: min(100%, 520px, calc(100dvh - 330px)); min-width: min(100%, 280px); }
+  .plateau-cheval { width: min(100%, 520px, calc(100dvh - 380px)); min-width: min(100%, 280px); }
   .panneau-cheval { gap: 10px; width: min(100%, 520px); justify-self: center; }
   .question { padding: 10px 12px; }
   .piece-question { width: 40px; height: 40px; }
@@ -89,3 +89,18 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .barre .titre { order: 9; flex: 1 0 100%; margin: 0 2px; font-size: 20px; }
   .barre .bouton-defis { margin-left: auto; }
 }
+
+/* revoir les coups : sous l'échiquier */
+.navigation-coups { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.navigation-coups .bouton-icone { width: 42px; height: 42px; }
+.navigation-coups .bouton-icone:disabled { opacity: .35; cursor: default; }
+.navigation-coups svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.navigation-coups [data-nav="debut"] svg path:last-child, .navigation-coups [data-nav="fin"] svg path:last-child { fill: currentColor; }
+.nav-numero { min-width: 76px; text-align: center; font-weight: 600; color: var(--encre-douce); font-variant-numeric: tabular-nums; }
+.navigation-coups.en-arriere .nav-numero { color: var(--accent); }
+.navigation-coups.en-arriere::after { content: ""; }
+/* boutons de la partie */
+.actions-partie { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions-partie button { flex: 1 1 140px; }
+.actions-partie button[hidden] { display: none; }
+.actions-partie svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }

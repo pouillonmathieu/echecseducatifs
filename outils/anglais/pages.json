@@ -382,7 +382,18 @@
   "Prends ton temps": "Take your time",
   "Chrono": "Timer",
   "10 secondes par coup": "10 seconds per move",
-  "Détail des parties": "Games in detail"
+  "Détail des parties": "Games in detail",
+  "Revoir les coups": "Review the moves",
+  "Position de départ": "Starting position",
+  "Départ": "Start",
+  "Coup précédent": "Previous move",
+  "Coup suivant": "Next move",
+  "Dernier coup": "Last move",
+  "Reprendre la même position de départ": "Start again from the same position",
+  "Recommencer": "Restart",
+  "Une nouvelle position au hasard": "A new random position",
+  "Voir une partie parfaite depuis le départ": "Watch a perfect game from the start",
+  "Solution": "Solution"
  },
  "jeux/roi/index.html": {
   "Capture le roi": "Capture the king",
@@ -426,6 +437,17 @@
   "coups": "moves",
   "Détail des parties": "Games in detail",
   "Rejouer": "Play again",
-  "Voir l'échiquier": "See the board"
+  "Voir l'échiquier": "See the board",
+  "Revoir les coups": "Review the moves",
+  "Position de départ": "Starting position",
+  "Départ": "Start",
+  "Coup précédent": "Previous move",
+  "Coup suivant": "Next move",
+  "Dernier coup": "Last move",
+  "Reprendre la même position de départ": "Start again from the same position",
+  "Recommencer": "Restart",
+  "Une nouvelle position au hasard": "A new random position",
+  "Voir une partie parfaite depuis le départ": "Watch a perfect game from the start",
+  "Solution": "Solution"
  }
 }

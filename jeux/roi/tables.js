@@ -142,7 +142,7 @@
     // 1. positions de départ : les Blancs prennent tout de suite (W = 1) ; les coups noirs à résoudre
     const seauW = [], seauB = [];               // positions classées par valeur, traitées dans l'ordre croissant
     const ranger = (seau, v, i) => { (seau[v] || (seau[v] = [])).push(i); };
-    const p2 = [];
+    const p2 = [], vus = [];
     for (let i = 0; i < taille; i++) {
       decoder(i, sq);
       if (!valide(sq) || indexDe(sq) !== i) { W[i] = 0; reste[i] = -2; continue; }
@@ -151,7 +151,10 @@
       for (let j = 1; j <= n && !prend; j++) prend = attaque(types[j - 1], sq[j], sq[0], occ);
       if (prend) { W[i] = 1; ranger(seauW, 1, i); }
       // Noirs au trait
+      // les coups noirs ordinaires sont comptés par position d'arrivée distincte : quand la position est symétrique,
+      // deux coups peuvent mener à la même position (après symétrie), qui ne sera résolue qu'une fois
       let compte = 0, max = 0, sauve = false;
+      vus.length = 0;
       for (const m of ROI[sq[0]]) {
         const j = occ[m] ? occ[m] - 1 : 0;
         if (j && types[j - 1] === 'K') continue;
@@ -161,7 +164,11 @@
           for (let p = 1; p <= n; p++) if (p !== j) p2.push(sq[p]);
           const val = sous[j - 1].valeur(m, p2);
           if (val === INF) sauve = true; else if (val > max) max = val;
-        } else compte++;
+        } else {
+          tmp.set(sq); tmp[0] = m;
+          const s = indexDe(tmp);
+          if (!vus.includes(s)) { vus.push(s); compte++; }
+        }
       }
       lever(sq);
       pire[i] = max;
@@ -180,11 +187,14 @@
       for (const i of seauW[v] || []) {
         decoder(i, sq);
         poser(sq);
+        vus.length = 0;
         for (const de of ROI[sq[0]]) {                    // le roi noir venait d'une case voisine libre
           if (occ[de]) continue;
           tmp.set(sq); tmp[0] = de;
           if (!valide(tmp)) continue;
           const p = indexDe(tmp);
+          if (vus.includes(p)) continue;                  // chaque position noire n'est comptée qu'une fois
+          vus.push(p);
           if (reste[p] <= 0) continue;
           if (v > pire[p]) pire[p] = v;
           if (--reste[p] === 0) ranger(seauB, pire[p], p);
