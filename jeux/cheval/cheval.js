@@ -436,7 +436,7 @@
       allumerEtoiles($('etoiles'), etoiles);
       $('resultats').hidden = false;
       if (deux() || etoiles >= 2) { lancerPluie($('pluie'), etoiles === 3 || deux() ? 70 : 40); Sons.victoire(); }
-      $('btn-rejouer').focus({ preventScroll: true });
+      boutonsFin(false);
     }, 900);
   }
 
@@ -491,7 +491,13 @@
     $('resultats').hidden = false;
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
-    $('btn-rejouer').focus({ preventScroll: true });
+    boutonsFin(true);
+  }
+  // fin de partie : « Nouvelle partie » en vert ; en défi, c'est « Rejouer » (le défi) qui l'est
+  function boutonsFin(enDefi) {
+    $('btn-rejouer').classList.toggle('bouton-principal', enDefi);
+    $('btn-rejouer').classList.toggle('bouton-secondaire', !enDefi);
+    (enDefi ? $('btn-rejouer') : $('btn-nouvelle-res')).focus({ preventScroll: true });
   }
   function ouvrirChoix() { $('choix-defi').hidden = false; $('mode-defi').focus({ preventScroll: true }); }
   function fermerChoix() { $('choix-defi').hidden = true; }

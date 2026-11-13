@@ -20,6 +20,20 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   obligatoire. Les obstacles voisins se rejoignent (murs, mares, coulées, haies) et leur matière se change en cours
   de partie. On joue en touchant une case ou en faisant glisser la pièce. Mode libre (annuler, recommencer,
   solution), défi (10 labyrinthes à faire par le chemin le plus court) et défi chrono (30 s par labyrinthe).
+- **Capture le roi** (`jeux/roi/`) : le roi noir est seul sur l'échiquier ; avec une équipe blanche choisie par des
+  icônes (deux tours ; une tour et deux fous ; une tour et deux cavaliers ; trois fous ; roi et dame ; roi et tour ;
+  roi et deux fous ; roi, fou et cavalier ; ou une au hasard), il faut le capturer en le moins de coups possible.
+  Le roi noir doit bouger à chaque coup (mat ou pat : il est pris au coup suivant) et peut prendre une pièce non
+  protégée ; si ce qui reste ne suffit plus, il s'échappe. Départ au hasard, jamais gagnable en un ou deux coups.
+  L'ordinateur joue le roi : difficile, parfaitement ; facile, une fois sur deux une case sûre au hasard. Les étoiles
+  comparent le nombre de coups au minimum théorique (★★★ jusqu'au minimum + 25 %, ★★ jusqu'au minimum + 75 %) ;
+  le panneau n'affiche que ce minimum.
+  Défis : 5 parties (jusqu'à 15 étoiles), défi chrono à 15 s par coup. Comme dans « Le cheval de la reine » : glisser
+  les pièces ou clic-clic (choisir la pièce, puis la case ; un 2e clic sur la pièce la lâche), revoir les
+  coups, « Recommencer » (même position) et « Solution » (difficile : une partie parfaite au minimum de coups). Le minimum et le jeu parfait viennent de
+  tables de toutes les positions (analyse rétrograde, avec les 8 symétries de l'échiquier), calculées par
+  `outils/tables-roi.js` avec `jeux/roi/tables.js` et rangées compressées dans `jeux/roi/tables/` (1,8 Mo en tout ;
+  le jeu ne charge que celles de l'équipe choisie, et les recalcule si elles ne se chargent pas).
 - **Mat ou pas mat ?** (`jeux/mat/`) : une position s'affiche, il faut dire si le camp qui a le trait est échec et mat.
   112 positions : mats classiques pour débutants (couloir, berger, lion, étouffée, Légal, Anastasie, Arabie,
   Boden, Damiano, épaulette…), fins de parties célèbres du domaine public (Morphy, Anderssen, Réti…),
@@ -61,6 +75,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Le mot est lu à voix haute juste après le son de réussite (synthèse vocale du navigateur, si le son est activé) ;
   le bouton haut-parleur le lit à tout moment (grisé si l'appareil n'a pas de voix pour la langue).
   Les termes sont dans `jeux/mots/termes.js` (les termes difficiles en arabe, hindi et mandarin sont à faire relire).
+- **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
+  (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
 - **Le cheval de la reine** (`jeux/cheval/`) : une dame et un cavalier seuls sur l'échiquier, posés au hasard (aucun
   des deux n'attaque l'autre au départ). Au-dessus de l'échiquier, on choisit sa pièce. Avec la dame (blanche), il faut
   attraper le cavalier noir en le moins de coups possible (★★★ en 5 coups ou moins, ★★ de 6 à 8, ★ au-delà) ; le
@@ -77,22 +93,6 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Mode 2 joueurs (sur le même écran, la dame blanche commence ; le cavalier gagne s'il prend la dame ou tient 30 coups).
   Défis (avec la dame ou le cavalier, au niveau choisi) : 5 parties d'affilée, jusqu'à 15 étoiles ; défi chrono : 10 s
   par coup (temps écoulé : partie à 0 étoile).
-- **Capture le roi** (`jeux/roi/`) : le roi noir est seul sur l'échiquier ; avec une équipe blanche choisie par des
-  icônes (deux tours ; une tour et deux fous ; une tour et deux cavaliers ; trois fous ; roi et dame ; roi et tour ;
-  roi et deux fous ; roi, fou et cavalier ; ou une au hasard), il faut le capturer en le moins de coups possible.
-  Le roi noir doit bouger à chaque coup (mat ou pat : il est pris au coup suivant) et peut prendre une pièce non
-  protégée ; si ce qui reste ne suffit plus, il s'échappe. Départ au hasard, jamais gagnable en un ou deux coups.
-  L'ordinateur joue le roi : difficile, parfaitement ; facile, une fois sur deux une case sûre au hasard. Les étoiles
-  comparent le nombre de coups au minimum théorique (★★★ jusqu'au minimum + 25 %, ★★ jusqu'au minimum + 75 %) ;
-  le panneau n'affiche que ce minimum.
-  Défis : 5 parties (jusqu'à 15 étoiles), défi chrono à 15 s par coup. Comme dans « Le cheval de la reine » : glisser
-  les pièces ou clic-clic (choisir la pièce, puis la case ; un 2e clic sur la pièce la lâche), revoir les
-  coups, « Recommencer » (même position) et « Solution » (difficile : une partie parfaite au minimum de coups). Le minimum et le jeu parfait viennent de
-  tables de toutes les positions (analyse rétrograde, avec les 8 symétries de l'échiquier), calculées par
-  `outils/tables-roi.js` avec `jeux/roi/tables.js` et rangées compressées dans `jeux/roi/tables/` (1,8 Mo en tout ;
-  le jeu ne charge que celles de l'équipe choisie, et les recalcule si elles ne se chargent pas).
-- **La balance** (`jeux/balance/`) : poser des pièces de chaque côté d'une balance qui penche selon leur valeur
-  (pion 1, cavalier 3, fou 3, tour 5, dame 9). Mode libre, défis (10 balances à équilibrer) et défis chrono (20 s par balance).
 - **Dice chess** (`jeux/des/`) : compagnon pour jouer aux échecs avec des dés sur un vrai échiquier.
   Les Blancs puis les Noirs lancent 3 dés (ou 1 en version classique) ; chaque face montre une pièce
   (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
@@ -150,7 +150,7 @@ Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé da
 
 ## Page d'accueil
 
-Une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans faire défiler : 4 colonnes sur
+Une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans faire défiler : 5 colonnes sur
 ordinateur (icônes plus petites sur un écran peu haut), 2 colonnes sur téléphone (icône à gauche du nom, sans la phrase).
 
 ## Version anglaise

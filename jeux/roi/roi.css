@@ -129,3 +129,6 @@ body.presse #minuteur-barre { background: var(--alerte); }
 .actions-partie button { flex: 1 1 140px; }
 .actions-partie button[hidden] { display: none; }
 .actions-partie svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* fin de partie : « Nouvelle partie » (en vert) tient sur une ligne */
+.res-actions > button { white-space: nowrap; }
