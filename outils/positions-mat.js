@@ -23,7 +23,8 @@ const path = require('path');
 const { Chess } = require('chess.js');
 
 // attendu : true = mat, false = pas mat (contrôlé par le script)
-// raison  : explication à privilégier quand plusieurs défenses existent (fuite, prise, parade)
+// raison  : défense citée en premier (et montrée sur l'échiquier) quand il y en a plusieurs : fuite, prise ou parade ;
+//           toutes les défenses sont ensuite citées (par défaut, la prise de l'attaquant en premier)
 const SOURCES = [
   // ---------- Mats ----------
   { motif: 'Mat du couloir', fen: '3R2k1/5ppp/8/8/8/8/5PPP/6K1 b - - 0 1', attendu: true,
@@ -244,26 +245,80 @@ function analyser(src) {
     explication = `${majuscule(nomPiece(pieceRoi))} n'est même pas en échec : ${camp(trait)} peuvent jouer normalement.`;
     en = `${majuscule(nomPieceEn(pieceRoi))} isn't even in check: ${campEn(trait)} can play normally.`;
   } else {
-    const coups = jeu.moves({ verbose: true });
-    const fuites = coups.filter(m => m.piece === 'k' && !attaquants.includes(m.to));
-    const prisesRoi = coups.filter(m => m.piece === 'k' && m.captured && attaquants.includes(m.to));
-    const prises = coups.filter(m => m.piece !== 'k' && attaquants.includes(m.to));
-    const parades = coups.filter(m => m.piece !== 'k' && !attaquants.includes(m.to));
-    const ordre = { fuite: [fuites, prisesRoi, prises, parades], prise: [prisesRoi, prises, fuites, parades], parade: [parades, prises, prisesRoi, fuites] }[src.raison || 'fuite'];
-    const m = ordre.find(l => l.length)[0];
-    coup = [m.from, m.to];
-    const piece = { type: m.piece, color: trait };
-    const prise = m.captured && { type: m.captured, color: adversaire };
-    if (m.piece === 'k' && !attaquants.includes(m.to)) {
-      explication = `${majuscule(nomPiece(piece))} peut s'enfuir en ${m.to}${m.captured ? ` en prenant ${nomPiece(prise)}` : ''}.`;
-      en = `${majuscule(nomPieceEn(piece))} can escape to ${m.to}${m.captured ? ` by taking ${nomPieceEn(prise)}` : ''}.`;
-    } else if (m.captured) {
-      explication = `${majuscule(nomPiece(piece))} peut prendre ${nomPiece(prise)} en ${m.to}.`;
-      en = `${majuscule(nomPieceEn(piece))} can take ${nomPieceEn(prise)} on ${m.to}.`;
-    } else {
-      explication = `${majuscule(nomPiece(piece))} peut se placer en ${m.to} pour bloquer l'échec.`;
-      en = `${majuscule(nomPieceEn(piece))} can move to ${m.to} to block the check.`;
-    }
+    // toutes les défenses, regroupées : la fuite du roi, la prise de l'attaquant (par le roi ou une autre pièce),
+    // le blocage ; la « raison » de la source choisit celle qu'on cite (et qu'on montre sur l'échiquier) en premier
+    const coups = jeu.moves({ verbose: true }).filter((m, i, l) => l.findIndex(x => x.from === m.from && x.to === m.to) === i);
+    const groupes = {
+      fuite: coups.filter(m => m.piece === 'k' && !attaquants.includes(m.to)),
+      // la prise de l'attaquant : par le roi d'abord, puis par les autres pièces
+      prise: coups.filter(m => attaquants.includes(m.to)).sort((x, y) => (y.piece === 'k') - (x.piece === 'k')),
+      parade: coups.filter(m => m.piece !== 'k' && !attaquants.includes(m.to)),
+    };
+    const ordre = {
+      fuite: ['fuite', 'prise', 'parade'],
+      prise: ['prise', 'fuite', 'parade'],
+      parade: ['parade', 'prise', 'fuite'],
+    }[src.raison || 'prise'].filter(g => groupes[g].length);
+    const m0 = groupes[ordre[0]][0];
+    coup = [m0.from, m0.to];
+    const fr = [], an = [];
+    let sujet = null; // le roi déjà nommé : « Il peut aussi… »
+    const ou = (l, mot) => (l.length < 2 ? l[0] : `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}`);
+    const pieceDe = (m) => ({ type: m.piece, color: trait });
+    const prisDe = (m) => ({ type: m.captured, color: adversaire });
+    // plusieurs pièces du même nom : on précise leur case
+    const nomme = (liste, m, nomFn) => {
+      const memes = liste.filter(x => x.piece === m.piece && x.from !== m.from).length;
+      return nomFn(pieceDe(m)) + (memes ? (nomFn === nomPiece ? ` de ${m.from}` : ` on ${m.from}`) : '');
+    };
+    ordre.forEach((g, k) => {
+      const l = groupes[g];
+      const aussi = k > 0;
+      if (g === 'fuite') {
+        const cases = l.map(m => m.to + (m.captured ? ` (en prenant ${nomPiece(prisDe(m))})` : ''));
+        const casesEn = l.map(m => m.to + (m.captured ? ` (taking ${nomPieceEn(prisDe(m))})` : ''));
+        fr.push(`${sujet === 'k' ? 'Il' : majuscule(nomPiece(pieceRoi))} peut ${aussi ? 'aussi ' : ''}s'enfuir en ${ou(cases, 'ou')}.`);
+        an.push(`${sujet === 'k' ? 'It' : majuscule(nomPieceEn(pieceRoi))} can ${aussi ? 'also ' : ''}escape to ${ou(casesEn, 'or')}.`);
+        sujet = 'k';
+      } else if (g === 'prise') {
+        // deux attaquants (échec double) : seul le roi peut prendre, et il ne peut en prendre qu'un à la fois
+        const cibles = [...new Set(l.map(m => m.to))];
+        const seulRoi = l.length === 1 && l[0].piece === 'k';
+        const ce = (c) => nomPiece(jeu.get(c)) + ` en ${c}`, ceEn = (c) => nomPieceEn(jeu.get(c)) + ` on ${c}`;
+        const qui = seulRoi && sujet === 'k' ? 'il' : ou(l.filter((m, i) => l.findIndex(x => x.from === m.from) === i).map(x => nomme(l, x, nomPiece)), 'ou');
+        const quiEn = seulRoi && sujet === 'k' ? 'it' : ou(l.filter((m, i) => l.findIndex(x => x.from === m.from) === i).map(x => nomme(l, x, nomPieceEn)), 'or');
+        fr.push(`${majuscule(qui)} peut ${aussi ? 'aussi ' : ''}prendre ${ou(cibles.map(ce), 'ou')}.`);
+        an.push(`${majuscule(quiEn)} can ${aussi ? 'also ' : ''}take ${ou(cibles.map(ceEn), 'or')}.`);
+        sujet = l.every(m => m.piece === 'k') ? 'k' : null;
+      } else {
+        const pieces = [...new Set(l.map(m => m.from))].map(de => l.filter(m => m.from === de));
+        if (pieces.length === 1) {
+          const m = pieces[0][0], cases = pieces[0].map(x => x.to);
+          fr.push(`${majuscule(nomPiece(pieceDe(m)))} peut ${aussi ? 'aussi ' : ''}se placer en ${ou(cases, 'ou')} pour bloquer l'échec.`);
+          an.push(`${majuscule(nomPieceEn(pieceDe(m)))} can ${aussi ? 'also ' : ''}move to ${ou(cases, 'or')} to block the check.`);
+        } else {
+          // regroupées par case : « le cavalier blanc de f3 ou de b1 en d2 »
+          const parCase = [...new Set(l.map(m => m.to))].map(c => l.filter(m => m.to === c));
+          const tous = parCase.length > 3;
+          const cite = tous ? parCase.slice(0, 3) : parCase;
+          const decrire = (ms, nomFn, de, mot, en) => {
+            const types = [...new Set(ms.map(m => m.piece))];
+            return ou(types.map(ty => {
+              const meme = ms.filter(m => m.piece === ty);
+              const autres = l.some(x => x.piece === ty && x.from !== meme[0].from);
+              return nomFn(pieceDe(meme[0])) + (autres ? ` ${de} ` + meme.map(m => m.from).join(` ${mot} ${de} `) : '');
+            }), mot) + ` ${en} ${ms[0].to}`;
+          };
+          const liste = ou(cite.map(ms => decrire(ms, nomPiece, 'de', 'ou', 'en')), 'ou');
+          const listeEn = ou(cite.map(ms => decrire(ms, nomPieceEn, 'from', 'or', 'to')), 'or');
+          fr.push(`On peut ${aussi ? 'aussi ' : ''}bloquer l'échec en plaçant une pièce entre les deux : ${liste}${tous ? ', entre autres' : ''}.`);
+          an.push(`You can ${aussi ? 'also ' : ''}block the check by putting a piece in between: ${listeEn}${tous ? ', among others' : ''}.`);
+        }
+        sujet = null;
+      }
+    });
+    explication = fr.join(' ');
+    en = an.join(' ');
   }
   if (src.idee) explication += ` ${src.idee}`;
   if (src.idea) en += ` ${src.idea}`;
@@ -301,7 +356,6 @@ function presqueMat(src) {
     motif: `Presque : ${src.motif}`,
     fen: jeu.fen(),
     attendu: false,
-    raison: 'fuite',
     idee: `Dans la partie, c'est ${nomMat} en ${mat.to} qui a donné mat.`,
     idea: `In the game, ${nomPieceEn({ type: mat.piece, color: mat.color })} on ${mat.to} gave mate.`,
     lien: src.lien,

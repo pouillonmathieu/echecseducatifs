@@ -608,9 +608,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque un mat du berger",
-  "explication": "La dame noire peut prendre la dame blanche en f7. La dame noire en e7 défend la case f7.",
+  "explication": "La dame noire peut prendre la dame blanche en f7. Le roi noir peut aussi s'enfuir en d8. La dame noire en e7 défend la case f7.",
   "motif_en": "Almost Scholar's mate",
-  "explication_en": "The black queen can take the white queen on f7. The black queen on e7 defends f7.",
+  "explication_en": "The black queen can take the white queen on f7. The black king can also escape to d8. The black queen on e7 defends f7.",
   "roi": "e8",
   "attaquants": [
    "f7"
@@ -646,9 +646,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque un mat du lion",
-  "explication": "Le pion blanc peut se placer en g3 pour bloquer l'échec.",
+  "explication": "Le pion blanc peut se placer en g3 pour bloquer l'échec. Le roi blanc peut aussi s'enfuir en e2.",
   "motif_en": "Almost Fool's mate",
-  "explication_en": "The white pawn can move to g3 to block the check.",
+  "explication_en": "The white pawn can move to g3 to block the check. The white king can also escape to e2.",
   "roi": "e1",
   "attaquants": [
    "h4"
@@ -684,9 +684,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque un mat d'Anastasie",
-  "explication": "Le roi noir peut s'enfuir en g8. Sans le cavalier en e7, rien ne garde g6 ni g8.",
+  "explication": "Le roi noir peut s'enfuir en g8 ou g6. Sans le cavalier en e7, rien ne garde g6 ni g8.",
   "motif_en": "Almost Anastasia's mate",
-  "explication_en": "The black king can escape to g8. Without the knight on e7, nothing covers g6 or g8.",
+  "explication_en": "The black king can escape to g8 or g6. Without the knight on e7, nothing covers g6 or g8.",
   "roi": "h7",
   "attaquants": [
    "h1"
@@ -703,9 +703,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque un mat d'Arabie",
-  "explication": "Le roi noir peut prendre la tour blanche en h7. Le cavalier est mal placé : il ne protège pas la tour.",
+  "explication": "Le roi noir peut prendre la tour blanche en h7. Il peut aussi s'enfuir en g8. Le cavalier est mal placé : il ne protège pas la tour.",
   "motif_en": "Almost an Arabian mate",
-  "explication_en": "The black king can take the white rook on h7. The knight is in the wrong place: it doesn't protect the rook.",
+  "explication_en": "The black king can take the white rook on h7. It can also escape to g8. The knight is in the wrong place: it doesn't protect the rook.",
   "roi": "h8",
   "attaquants": [
    "h7"
@@ -798,9 +798,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque un mat de l'escalier",
-  "explication": "Le roi noir peut s'enfuir en h7 en prenant la tour blanche. La tour en h7 est trop près du roi et n'est pas protégée.",
+  "explication": "Le roi noir peut s'enfuir en h7 (en prenant la tour blanche). La tour en h7 est trop près du roi et n'est pas protégée.",
   "motif_en": "Almost a staircase mate",
-  "explication_en": "The black king can escape to h7 by taking the white rook. The rook on h7 is too close to the king and isn't protected.",
+  "explication_en": "The black king can escape to h7 (taking the white rook). The rook on h7 is too close to the king and isn't protected.",
   "roi": "g8",
   "attaquants": [
    "a8"
@@ -817,9 +817,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque un mat roi et tour",
-  "explication": "Le roi noir peut s'enfuir en h7. Le roi blanc est trop loin pour garder les cases de fuite.",
+  "explication": "Le roi noir peut s'enfuir en h7, g7 ou f7. Le roi blanc est trop loin pour garder les cases de fuite.",
   "motif_en": "Almost a king and rook mate",
-  "explication_en": "The black king can escape to h7. The white king is too far away to cover the escape squares.",
+  "explication_en": "The black king can escape to h7, g7 or f7. The white king is too far away to cover the escape squares.",
   "roi": "g8",
   "attaquants": [
    "a8"
@@ -1506,16 +1506,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Réti contre Tartakower (Vienne, 1910)",
-  "explication": "Le roi noir peut s'enfuir en b6. Dans la partie, c'est le fou blanc en d8 qui a donné mat.",
+  "explication": "Le roi noir, le cavalier noir ou le fou noir peut prendre la tour blanche en d7. Le roi noir peut aussi s'enfuir en b6. Dans la partie, c'est le fou blanc en d8 qui a donné mat.",
   "motif_en": "Almost: Réti vs Tartakower (Vienna, 1910)",
-  "explication_en": "The black king can escape to b6. In the game, the white bishop on d8 gave mate.",
+  "explication_en": "The black king, the black knight or the black bishop can take the white rook on d7. The black king can also escape to b6. In the game, the white bishop on d8 gave mate.",
   "roi": "c7",
   "attaquants": [
    "d7"
   ],
   "coup": [
    "c7",
-   "b6"
+   "d7"
   ]
  },
  {
@@ -1563,16 +1563,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Edward Lasker contre Thomas (Londres, 1912)",
-  "explication": "Le roi noir peut s'enfuir en g2. Dans la partie, c'est le roi blanc en d2 qui a donné mat.",
+  "explication": "Le roi noir ou le fou noir peut prendre la tour blanche en h1. Le roi noir peut aussi s'enfuir en g2. Dans la partie, c'est le roi blanc en d2 qui a donné mat.",
   "motif_en": "Almost: Edward Lasker vs Thomas (London, 1912)",
-  "explication_en": "The black king can escape to g2. In the game, the white king on d2 gave mate.",
+  "explication_en": "The black king or the black bishop can take the white rook on h1. The black king can also escape to g2. In the game, the white king on d2 gave mate.",
   "roi": "g1",
   "attaquants": [
    "h1"
   ],
   "coup": [
    "g1",
-   "g2"
+   "h1"
   ]
  },
  {
@@ -1582,9 +1582,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Piège de Greco (1620)",
-  "explication": "Le roi noir peut s'enfuir en h7. Dans la partie, c'est la tour blanche en h5 qui a donné mat.",
+  "explication": "Le roi noir peut s'enfuir en h7 ou g6. Dans la partie, c'est la tour blanche en h5 qui a donné mat.",
   "motif_en": "Almost: Greco's trap (1620)",
-  "explication_en": "The black king can escape to h7. In the game, the white rook on h5 gave mate.",
+  "explication_en": "The black king can escape to h7 or g6. In the game, the white rook on h5 gave mate.",
   "roi": "h6",
   "attaquants": [
    "f8"
@@ -1620,16 +1620,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Piège de l'Englund",
-  "explication": "Le roi blanc peut s'enfuir en d1. Dans la partie, c'est la dame noire en c1 qui a donné mat.",
+  "explication": "Le cavalier blanc peut prendre la dame noire en c3. Le roi blanc peut aussi s'enfuir en d1. On peut aussi bloquer l'échec en plaçant une pièce entre les deux : le cavalier blanc de f3 ou de b1 en d2. Dans la partie, c'est la dame noire en c1 qui a donné mat.",
   "motif_en": "Almost: Englund Gambit trap",
-  "explication_en": "The white king can escape to d1. In the game, the black queen on c1 gave mate.",
+  "explication_en": "The white knight can take the black queen on c3. The white king can also escape to d1. You can also block the check by putting a piece in between: the white knight from f3 or from b1 to d2. In the game, the black queen on c1 gave mate.",
   "roi": "e1",
   "attaquants": [
    "c3"
   ],
   "coup": [
-   "e1",
-   "d1"
+   "b1",
+   "c3"
   ]
  },
  {
@@ -1639,9 +1639,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Mat du crochet (partie Lichess)",
-  "explication": "Le roi blanc peut s'enfuir en d3. Dans la partie, c'est la tour noire en b3 qui a donné mat.",
+  "explication": "Le roi blanc peut s'enfuir en d3, c2 ou b2. Dans la partie, c'est la tour noire en b3 qui a donné mat.",
   "motif_en": "Almost: Hook mate (Lichess game)",
-  "explication_en": "The white king can escape to d3. In the game, the black rook on b3 gave mate.",
+  "explication_en": "The white king can escape to d3, c2 or b2. In the game, the black rook on b3 gave mate.",
   "roi": "c3",
   "attaquants": [
    "b5"
@@ -1659,16 +1659,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi blanc peut s'enfuir en f1. Dans la partie, c'est la dame noire en g2 qui a donné mat.",
+  "explication": "Le roi blanc ou la tour blanche peut prendre la dame noire en h2. Le roi blanc peut aussi s'enfuir en f1. Dans la partie, c'est la dame noire en g2 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The white king can escape to f1. In the game, the black queen on g2 gave mate.",
+  "explication_en": "The white king or the white rook can take the black queen on h2. The white king can also escape to f1. In the game, the black queen on g2 gave mate.",
   "roi": "g1",
   "attaquants": [
    "h2"
   ],
   "coup": [
    "g1",
-   "f1"
+   "h2"
   ],
   "lien": "https://lichess.org/training/AVgvb"
  },
@@ -1679,9 +1679,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi noir peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en h6 qui a donné mat.",
+  "explication": "Le roi noir ou la dame noire peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en h6 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The black king can take the white queen on g7. In the game, the white queen on h6 gave mate.",
+  "explication_en": "The black king or the black queen can take the white queen on g7. In the game, the white queen on h6 gave mate.",
   "roi": "h8",
   "attaquants": [
    "g7"
@@ -1699,9 +1699,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi blanc peut s'enfuir en e3. Dans la partie, c'est la dame noire en d3 qui a donné mat.",
+  "explication": "Le roi blanc peut s'enfuir en e3. On peut aussi bloquer l'échec en plaçant une pièce entre les deux : la tour blanche de f7 ou de f2 en f3. Dans la partie, c'est la dame noire en d3 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The white king can escape to e3. In the game, the black queen on d3 gave mate.",
+  "explication_en": "The white king can escape to e3. You can also block the check by putting a piece in between: the white rook from f7 or from f2 to f3. In the game, the black queen on d3 gave mate.",
   "roi": "e2",
   "attaquants": [
    "g4"
@@ -1719,16 +1719,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi blanc peut s'enfuir en h1. Dans la partie, c'est la tour noire en f2 qui a donné mat.",
+  "explication": "La dame blanche peut prendre la tour noire en e2. Le roi blanc peut aussi s'enfuir en h1 ou g1. Dans la partie, c'est la tour noire en f2 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The white king can escape to h1. In the game, the black rook on f2 gave mate.",
+  "explication_en": "The white queen can take the black rook on e2. The white king can also escape to h1 or g1. In the game, the black rook on f2 gave mate.",
   "roi": "h2",
   "attaquants": [
    "e2"
   ],
   "coup": [
-   "h2",
-   "h1"
+   "h5",
+   "e2"
   ],
   "lien": "https://lichess.org/training/0j3nL"
  },
@@ -1759,16 +1759,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi noir peut s'enfuir en h7. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
+  "explication": "Le roi noir, la tour noire ou le fou noir peut prendre la dame blanche en f8. Le roi noir peut aussi s'enfuir en h7. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The black king can escape to h7. In the game, the white queen on g7 gave mate.",
+  "explication_en": "The black king, the black rook or the black bishop can take the white queen on f8. The black king can also escape to h7. In the game, the white queen on g7 gave mate.",
   "roi": "g8",
   "attaquants": [
    "f8"
   ],
   "coup": [
    "g8",
-   "h7"
+   "f8"
   ],
   "lien": "https://lichess.org/training/2bft7"
  },
@@ -1799,16 +1799,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi blanc peut s'enfuir en c1. Dans la partie, c'est la tour noire en e1 qui a donné mat.",
+  "explication": "La dame blanche peut prendre le fou noir en b3. Le roi blanc peut aussi s'enfuir en c1. La tour blanche peut aussi se placer en c2 pour bloquer l'échec. Dans la partie, c'est la tour noire en e1 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The white king can escape to c1. In the game, the black rook on e1 gave mate.",
+  "explication_en": "The white queen can take the black bishop on b3. The white king can also escape to c1. The white rook can also move to c2 to block the check. In the game, the black rook on e1 gave mate.",
   "roi": "d1",
   "attaquants": [
    "b3"
   ],
   "coup": [
-   "d1",
-   "c1"
+   "b8",
+   "b3"
   ],
   "lien": "https://lichess.org/training/8qzHP"
  },
@@ -1819,9 +1819,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "La dame noire peut prendre la dame blanche en e8. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
+  "explication": "La dame noire peut prendre la dame blanche en e8. Le fou noir peut aussi se placer en f8 pour bloquer l'échec. Dans la partie, c'est la dame blanche en g7 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The black queen can take the white queen on e8. In the game, the white queen on g7 gave mate.",
+  "explication_en": "The black queen can take the white queen on e8. The black bishop can also move to f8 to block the check. In the game, the white queen on g7 gave mate.",
   "roi": "h8",
   "attaquants": [
    "e8"
@@ -1839,9 +1839,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi blanc peut prendre la dame noire en g2. Dans la partie, c'est la dame noire en e1 qui a donné mat.",
+  "explication": "Le roi blanc ou le fou blanc peut prendre la dame noire en g2. Dans la partie, c'est la dame noire en e1 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The white king can take the black queen on g2. In the game, the black queen on e1 gave mate.",
+  "explication_en": "The white king or the white bishop can take the black queen on g2. In the game, the black queen on e1 gave mate.",
   "roi": "f2",
   "attaquants": [
    "g2"
@@ -1859,16 +1859,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Mat du couloir (partie Lichess)",
-  "explication": "Le roi noir peut s'enfuir en g8. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
+  "explication": "Le pion noir peut prendre le cavalier blanc en g6. Le roi noir peut aussi s'enfuir en g8. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
   "motif_en": "Almost: Back-rank mate (Lichess game)",
-  "explication_en": "The black king can escape to g8. In the game, the white rook on f8 gave mate.",
+  "explication_en": "The black pawn can take the white knight on g6. The black king can also escape to g8. In the game, the white rook on f8 gave mate.",
   "roi": "h8",
   "attaquants": [
    "g6"
   ],
   "coup": [
-   "h8",
-   "g8"
+   "h7",
+   "g6"
   ],
   "lien": "https://lichess.org/training/7v80N"
  },
@@ -1879,9 +1879,9 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi noir peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en f8 qui a donné mat.",
+  "explication": "Le roi noir ou la dame noire peut prendre la dame blanche en g7. Dans la partie, c'est la dame blanche en f8 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The black king can take the white queen on g7. In the game, the white queen on f8 gave mate.",
+  "explication_en": "The black king or the black queen can take the white queen on g7. In the game, the white queen on f8 gave mate.",
   "roi": "h8",
   "attaquants": [
    "g7"
@@ -1899,16 +1899,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi noir peut s'enfuir en a8. Dans la partie, c'est la dame blanche en b7 qui a donné mat.",
+  "explication": "Le roi noir peut prendre la dame blanche en b6. Il peut aussi s'enfuir en a8 ou b8. Dans la partie, c'est la dame blanche en b7 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The black king can escape to a8. In the game, the white queen on b7 gave mate.",
+  "explication_en": "The black king can take the white queen on b6. It can also escape to a8 or b8. In the game, the white queen on b7 gave mate.",
   "roi": "a7",
   "attaquants": [
    "b6"
   ],
   "coup": [
    "a7",
-   "a8"
+   "b6"
   ],
   "lien": "https://lichess.org/training/A1cta"
  },
@@ -1919,16 +1919,16 @@ window.POSITIONS_MAT = [
   "pat": false,
   "echec": true,
   "motif": "Presque : Partie jouée sur Lichess",
-  "explication": "Le roi noir peut s'enfuir en f7. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
+  "explication": "Le roi noir peut prendre la dame blanche en h7. Il peut aussi s'enfuir en f7. Dans la partie, c'est la tour blanche en f8 qui a donné mat.",
   "motif_en": "Almost: Game played on Lichess",
-  "explication_en": "The black king can escape to f7. In the game, the white rook on f8 gave mate.",
+  "explication_en": "The black king can take the white queen on h7. It can also escape to f7. In the game, the white rook on f8 gave mate.",
   "roi": "g8",
   "attaquants": [
    "h7"
   ],
   "coup": [
    "g8",
-   "f7"
+   "h7"
   ],
   "lien": "https://lichess.org/training/909qG"
  }
