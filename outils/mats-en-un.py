@@ -17,7 +17,7 @@ import chess, chess.engine
 ICI = os.path.dirname(os.path.abspath(__file__))
 SELECTION = os.path.join(ICI, 'mats-en-un.json')
 SORTIE = os.path.join(ICI, '..', 'jeux', 'mat1', 'problemes.js')
-MAX = 160
+MAX = 200
 
 # ---------------------------------------------------------------- sélection
 def cadence(h):
@@ -33,6 +33,13 @@ def cadence(h):
     if minutes <= 10: return 'blitz'
     if minutes <= 60: return 'rapide'
     return 'classique'
+
+
+def annee(h):
+    for k in ('Date', 'UTCDate'):
+        a = (h.get(k) or '')[:4]
+        if a.isdigit(): return a
+    return ''
 
 
 def pov(e, blanc):
@@ -68,6 +75,8 @@ def choisir(dossier):
         blanc = d['joueur'] == 'w'
         titre_gaffeur = h['WhiteTitle'] if blanc else h['BlackTitle']
         if titre_gaffeur != 'GM' or not d['evite']: continue
+        # de vrais noms (pas des pseudos de sites en ligne)
+        if any(' ' not in n.strip() and ',' not in n for n in (h['White'], h['Black'])): continue
         cad = cadence(h)
         if cad is None: continue
         cle = ' '.join(d['apres'].split()[:4])
@@ -85,7 +94,7 @@ def choisir(dossier):
     # priorité : blitz et rapide d'abord, puis le reste ; au plus 3 problèmes par joueur qui gaffe
     random.seed(7)
     random.shuffle(bons)
-    bons.sort(key=lambda d: (d['cadence'] == 'classique', -int(d['h']['Date'][:4] or 0)))
+    bons.sort(key=lambda d: (d['cadence'] == 'classique', -int(annee(d['h']) or 0)))
     par_joueur, garde = {}, []
     for d in bons:
         g = d['h']['White'] if d['joueur'] == 'w' else d['h']['Black']
@@ -268,7 +277,7 @@ def raison(b0, mv):
 
 def nom_joueur(n):
     """« Rapport, Richard » -> « Richard Rapport »"""
-    n = re.sub(r'\s+', ' ', n).strip()
+    n = re.sub(r'\s+', ' ', re.sub(r'\(.*?\)', '', n)).strip()
     if ',' in n:
         nom, prenom = [x.strip() for x in n.split(',', 1)]
         return f'{prenom} {nom}'.strip()
@@ -279,7 +288,10 @@ def evenement(h):
     e = h.get('BroadcastName') or h.get('Event') or ''
     if e.startswith('Round') or re.match(r'^(Game|Finals?)\b', e): e = h.get('BroadcastName') or e
     e = re.sub(r'\s*\|.*$', '', e)
-    e = re.sub(r'[\u3000-\u9fff\uac00-\ud7af]+', '', e)  # pas de caractères chinois, japonais ou coréens
+    # en lettres latines seulement (pas de grec, de cyrillique, de chinois…)
+    e = re.sub(r'\([^)]*[\u0370-\u04ff\u3000-\u9fff\uac00-\ud7af][^)]*\)', '', e)
+    e = re.sub(r'[\u0370-\u04ff\u3000-\u9fff\uac00-\ud7af]+', '', e)
+    e = re.sub(r'\s+', ' ', e)
     return e.strip()
 
 
@@ -321,7 +333,7 @@ def construire(d, i):
             # Elo FIDE seulement : les classements des sites en ligne (au-delà de 2900) ne veulent pas dire la même chose
             'eloB': h['WhiteElo'] if h['WhiteElo'].isdigit() and int(h['WhiteElo']) < 2900 else '',
             'eloN': h['BlackElo'] if h['BlackElo'].isdigit() and int(h['BlackElo']) < 2900 else '',
-            'evenement': evenement(h), 'annee': h['Date'][:4], 'cadence': d['cadence'],
+            'evenement': evenement(h), 'annee': annee(h), 'cadence': d['cadence'],
             'resultat': h['Result'], 'lien': h.get('GameURL', ''),
         },
         'gaffeur': 'blanc' if gaffeur_blanc else 'noir',

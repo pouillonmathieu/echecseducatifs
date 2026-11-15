@@ -318,8 +318,11 @@
       const type = tok[0], de = tok.slice(1, 3), vers = tok.slice(3, 5);
       const piece = cases[de];
       fleches.push([de + vers, 'danger']);
-      if (type === 'f') morceaux.push(t(`le roi peut s'enfuir en ${vers}`, `the king can escape to ${vers}`));
+      // le roi peut prendre… ou s'enfuir : une seule phrase pour le roi
+      if (type === 'f' && morceaux.roiPrend) morceaux[morceaux.length - 1] += t(` ou s'enfuir en ${vers}`, ` or escape to ${vers}`);
+      else if (type === 'f') morceaux.push(t(`le roi peut s'enfuir en ${vers}`, `the king can escape to ${vers}`));
       else if (type === 'p') {
+        morceaux.roiPrend = !!(piece && piece.piece === 'roi');
         morceaux.push(piece && piece.piece === 'roi'
           ? t(`le roi peut prendre ${nomDe(cases[vers], false)} en ${vers}`, `the king can take ${nomDe(cases[vers], false)} on ${vers}`)
           : t(`${nomDe(piece)} de ${de} peut prendre ${nomDe(cases[vers], false)} en ${vers}`, `${nomDe(piece)} on ${de} can take ${nomDe(cases[vers], false)} on ${vers}`));

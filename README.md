@@ -136,7 +136,7 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Mode libre (plusieurs essais, « Indice » éclaire la pièce qui mate, puis « Solution » montre le coup ; le score compte
   les mats trouvés du premier coup), défi (10 positions, un seul essai) et défi chrono (30 s par position, à partir de
   la fin de l'animation).
-  Les positions viennent de la base des retransmissions Lichess (2020 à octobre 2026) : `outils/mats-en-un-recherche.py`
+  Les positions viennent de la base des retransmissions Lichess (janvier 2020 à octobre 2026 ; 200 positions, surtout en blitz et en rapide) : `outils/mats-en-un-recherche.py`
   y cherche, mois par mois, chaque coup d'un grand maître après lequel l'adversaire a un mat en un ;
   `outils/mats-en-un.py` ne garde que les vraies gaffes (un autre coup évitait le mat, et la position n'était pas déjà
   perdue d'après l'évaluation Lichess ou Stockfish), au plus 3 par joueur, les parties de blitz et de rapide en premier
