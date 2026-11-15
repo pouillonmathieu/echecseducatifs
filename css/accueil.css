@@ -1,7 +1,7 @@
 /* Page d'accueil du site.
    Mise en page : en-tête, puis une carte par jeu (icône, nom, une phrase), toutes visibles sans faire défiler :
-   5 colonnes sur ordinateur, 2 colonnes de cartes en ligne (icône à gauche, nom à droite) sur téléphone. */
-.accueil { gap: 18px; max-width: 1040px; }
+   6 colonnes sur ordinateur, 4 sur tablette, 2 colonnes de cartes en ligne (icône à gauche, nom à droite) sur téléphone. */
+.accueil { gap: 18px; max-width: 1120px; }
 
 .logo { flex: none; display: grid; place-items: center; width: 40px; height: 40px; }
 .logo svg { width: 36px; height: 36px; }
@@ -12,13 +12,14 @@
 
 /* ---------- Cartes des jeux ---------- */
 .jeux { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
-.grille-jeux { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.grille-jeux { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+@media (min-width: 761px) and (max-width: 999px) { .grille-jeux { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .carte-jeu {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 18px 14px 20px;
+  padding: 16px 12px 18px;
   border: 1px solid var(--ligne);
   border-radius: 22px;
   background: var(--surface);
@@ -40,7 +41,7 @@
 }
 .icone-jeu svg { width: 80%; height: 80%; overflow: visible; }
 .carte-texte { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.carte-texte h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; text-wrap: balance; }
+.carte-texte h3 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; text-wrap: balance; }
 .carte-texte p { margin: 0; color: var(--encre-douce); font-size: 14px; line-height: 1.4; text-wrap: balance; }
 
 /* détails des icônes ; les pièces gardent les couleurs du mode clair, même en mode sombre */

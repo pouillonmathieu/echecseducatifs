@@ -3,11 +3,12 @@
    ⏮ ◀ ▶ ⏭ (et les flèches du clavier) font défiler ces positions. Pendant qu'on revoit un coup passé, l'échiquier
    ne se joue pas ; on revient au direct avec ⏭. lire() déroule les positions toutes seules (pour la solution).
      const revoir = Revoir({ barre, dessiner: (photo, enDirect) => …, quandChange: () => … });
-     revoir.depart(photo); revoir.ajouter(photo); revoir.enDirect(); revoir.lire(900); revoir.photos(liste) */
+     revoir.depart(photo); revoir.ajouter(photo); revoir.enDirect(); revoir.lire(900, fin); revoir.photos(liste);
+     revoir.aller(i) */
 (function () {
   const { t } = window.Commun;
   window.Revoir = function ({ barre, dessiner, quandChange = () => {} }) {
-    let photos = [], vue = 0, minuterie = 0;
+    let photos = [], vue = 0, minuterie = 0, apresLecture = null;
     const boutons = {};
     barre.querySelectorAll('[data-nav]').forEach(b => { boutons[b.dataset.nav] = b; });
     const numero = barre.querySelector('.nav-numero');
@@ -27,7 +28,12 @@
       dessiner(photos[vue], enDirect());
       quandChange();
     }
-    function arreter() { clearInterval(minuterie); minuterie = 0; barre.classList.remove('lecture'); }
+    // arrêter la lecture (au bout, ou quand on touche aux boutons) : prévient celui qui l'a lancée
+    function arreter() {
+      const etaitLue = minuterie !== 0, fin = apresLecture;
+      clearInterval(minuterie); minuterie = 0; apresLecture = null; barre.classList.remove('lecture');
+      if (etaitLue && fin) fin();
+    }
 
     boutons.debut.addEventListener('click', () => aller(0));
     boutons.prec.addEventListener('click', () => aller(vue - 1));
@@ -48,13 +54,18 @@
       ajouter(photo) { const suivre = enDirect(); photos.push(photo); if (suivre) vue = dernier(); maj(); },
       // toute une suite de positions (la solution), qu'on regarde depuis le départ
       photos(liste) { arreter(); photos = liste.slice(); vue = 0; maj(); dessiner(photos[0], enDirect()); },
-      // déroule les positions une à une
-      lire(ms = 900) {
+      // déroule les positions une à une ; fin() est appelée quand la lecture s'arrête (au bout ou interrompue)
+      lire(ms = 900, fin = null) {
         arreter();
+        apresLecture = fin;
         barre.classList.add('lecture');
         minuterie = setInterval(() => { if (vue >= dernier()) arreter(); else aller(vue + 1, { garderLecture: true }); }, ms);
       },
       arreter,
+      // aller à une position précise (liste des coups cliquable)
+      aller: (i) => aller(i),
+      lecture: () => minuterie !== 0,
+      vue: () => vue,
       enDirect,
       photoVue: () => photos[vue],
     };

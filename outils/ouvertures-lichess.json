@@ -1,0 +1,297 @@
+{
+ "italienne": {
+  "eco": "C50",
+  "nom": "Italian Game",
+  "plis": 5
+ },
+ "espagnole": {
+  "eco": "C60",
+  "nom": "Ruy Lopez",
+  "plis": 5
+ },
+ "ecossaise": {
+  "eco": "C44",
+  "nom": "Scotch Game",
+  "plis": 5
+ },
+ "sicilienne": {
+  "eco": "B50",
+  "nom": "Sicilian Defense: Modern Variations",
+  "plis": 4
+ },
+ "francaise": {
+  "eco": "C00",
+  "nom": "French Defense",
+  "plis": 4
+ },
+ "caro-kann": {
+  "eco": "B12",
+  "nom": "Caro-Kann Defense",
+  "plis": 4
+ },
+ "scandinave": {
+  "eco": "B01",
+  "nom": "Scandinavian Defense: Mieses-Kotrč Variation",
+  "plis": 4
+ },
+ "alekhine": {
+  "eco": "B02",
+  "nom": "Alekhine Defense: Normal Variation",
+  "plis": 4
+ },
+ "petrov": {
+  "eco": "C42",
+  "nom": "Petrov's Defense",
+  "plis": 4
+ },
+ "gambit-roi": {
+  "eco": "C30",
+  "nom": "King's Gambit",
+  "plis": 3
+ },
+ "gambit-dame": {
+  "eco": "D06",
+  "nom": "Queen's Gambit",
+  "plis": 3
+ },
+ "anglaise": {
+  "eco": "A22",
+  "nom": "English Opening: King's English Variation, Two Knights Variation",
+  "plis": 4
+ },
+ "hollandaise": {
+  "eco": "A84",
+  "nom": "Dutch Defense: Normal Variation",
+  "plis": 4
+ },
+ "est-indienne": {
+  "eco": "E61",
+  "nom": "King's Indian Defense",
+  "plis": 5
+ },
+ "londres": {
+  "eco": "D02",
+  "nom": "Queen's Pawn Game: London System",
+  "plis": 5
+ },
+ "philidor": {
+  "eco": "C41",
+  "nom": "Philidor Defense",
+  "plis": 4
+ },
+ "viennoise": {
+  "eco": "C25",
+  "nom": "Vienna Game",
+  "plis": 3
+ },
+ "pirc": {
+  "eco": "B07",
+  "nom": "Pirc Defense",
+  "plis": 6
+ },
+ "nimzo-indienne": {
+  "eco": "E20",
+  "nom": "Nimzo-Indian Defense",
+  "plis": 6
+ },
+ "reti": {
+  "eco": "A09",
+  "nom": "Réti Opening",
+  "plis": 3
+ },
+ "giuoco-piano": {
+  "eco": "C54",
+  "nom": "Italian Game: Classical Variation, Center Attack",
+  "plis": 9
+ },
+ "deux-cavaliers": {
+  "eco": "C58",
+  "nom": "Italian Game: Two Knights Defense, Polerio Defense",
+  "plis": 10
+ },
+ "evans": {
+  "eco": "C51",
+  "nom": "Italian Game: Evans Gambit",
+  "plis": 7
+ },
+ "berlinoise": {
+  "eco": "C67",
+  "nom": "Ruy Lopez: Berlin Defense, Rio Gambit Accepted",
+  "plis": 8
+ },
+ "espagnole-echange": {
+  "eco": "C68",
+  "nom": "Ruy Lopez: Exchange Variation",
+  "plis": 7
+ },
+ "espagnole-fermee": {
+  "eco": "C84",
+  "nom": "Ruy Lopez: Closed",
+  "plis": 10
+ },
+ "najdorf": {
+  "eco": "B90",
+  "nom": "Sicilian Defense: Najdorf Variation",
+  "plis": 10
+ },
+ "dragon": {
+  "eco": "B70",
+  "nom": "Sicilian Defense: Dragon Variation",
+  "plis": 10
+ },
+ "alapin": {
+  "eco": "B22",
+  "nom": "Sicilian Defense: Alapin Variation, Smith-Morra Declined",
+  "plis": 8
+ },
+ "sicilienne-fermee": {
+  "eco": "B25",
+  "nom": "Sicilian Defense: Closed",
+  "plis": 10
+ },
+ "francaise-avance": {
+  "eco": "C02",
+  "nom": "French Defense: Advance Variation, Paulsen Attack",
+  "plis": 9
+ },
+ "winawer": {
+  "eco": "C18",
+  "nom": "French Defense: Winawer Variation, Advance Variation",
+  "plis": 11
+ },
+ "tarrasch": {
+  "eco": "C09",
+  "nom": "French Defense: Tarrasch Variation, Open System, Main Line",
+  "plis": 10
+ },
+ "caro-kann-avance": {
+  "eco": "B12",
+  "nom": "Caro-Kann Defense: Advance Variation, Short Variation",
+  "plis": 7
+ },
+ "caro-kann-classique": {
+  "eco": "B15",
+  "nom": "Caro-Kann Defense",
+  "plis": 6
+ },
+ "gd-refuse": {
+  "eco": "D53",
+  "nom": "Queen's Gambit Declined",
+  "plis": 8
+ },
+ "gd-accepte": {
+  "eco": "D26",
+  "nom": "Queen's Gambit Accepted: Classical Defense",
+  "plis": 10
+ },
+ "slave": {
+  "eco": "D17",
+  "nom": "Slav Defense: Czech Variation",
+  "plis": 10
+ },
+ "est-indienne-classique": {
+  "eco": "E92",
+  "nom": "King's Indian Defense: Orthodox Variation",
+  "plis": 12
+ },
+ "nimzo-rubinstein": {
+  "eco": "E53",
+  "nom": "Nimzo-Indian Defense: Normal Variation, Gligoric System",
+  "plis": 12
+ },
+ "gambit-roi-accepte": {
+  "eco": "C36",
+  "nom": "King's Gambit Accepted: Abbazia Defense",
+  "plis": 8
+ },
+ "scandinave-principale": {
+  "eco": "B01",
+  "nom": "Scandinavian Defense: Main Line, Mieses Variation",
+  "plis": 8
+ },
+ "grunfeld": {
+  "eco": "D85",
+  "nom": "Grünfeld Defense: Exchange Variation",
+  "plis": 8
+ },
+ "najdorf-anglaise": {
+  "eco": "B90",
+  "nom": "Sicilian Defense: Najdorf Variation, English Attack",
+  "plis": 15
+ },
+ "dragon-yougoslave": {
+  "eco": "B77",
+  "nom": "Sicilian Defense: Dragon Variation, Yugoslav Attack, Main Line",
+  "plis": 17
+ },
+ "sveshnikov": {
+  "eco": "B33",
+  "nom": "Sicilian Defense: Lasker-Pelikan Variation, Sveshnikov Variation",
+  "plis": 16
+ },
+ "marshall": {
+  "eco": "C89",
+  "nom": "Ruy Lopez: Marshall Attack",
+  "plis": 16
+ },
+ "tchigorine": {
+  "eco": "C96",
+  "nom": "Ruy Lopez: Closed, Chigorin Defense",
+  "plis": 20
+ },
+ "fegatello": {
+  "eco": "C57",
+  "nom": "Italian Game: Two Knights Defense, Fried Liver Attack",
+  "plis": 11
+ },
+ "mur-berlin": {
+  "eco": "C67",
+  "nom": "Ruy Lopez: Berlin Defense, l'Hermet Variation, Berlin Wall Defense",
+  "plis": 16
+ },
+ "pion-empoisonne": {
+  "eco": "C18",
+  "nom": "French Defense: Winawer Variation, Poisoned Pawn Variation",
+  "plis": 14
+ },
+ "meran": {
+  "eco": "D43",
+  "nom": "Semi-Slav Defense",
+  "plis": 8
+ },
+ "mar-del-plata": {
+  "eco": "E97",
+  "nom": "King's Indian Defense: Orthodox Variation, Aronin-Taimanov Defense",
+  "plis": 14
+ },
+ "tartakower": {
+  "eco": "D53",
+  "nom": "Queen's Gambit Declined",
+  "plis": 8
+ },
+ "nimzo-classique": {
+  "eco": "E32",
+  "nom": "Nimzo-Indian Defense: Classical Variation, Keres Defense",
+  "plis": 12
+ },
+ "grunfeld-tb1": {
+  "eco": "D85",
+  "nom": "Grünfeld Defense: Exchange Variation, Modern Exchange Variation",
+  "plis": 14
+ },
+ "evans-accepte": {
+  "eco": "C52",
+  "nom": "Italian Game: Evans Gambit, Pierce Defense",
+  "plis": 12
+ },
+ "mieses": {
+  "eco": "C45",
+  "nom": "Scotch Game: Mieses Variation",
+  "plis": 11
+ },
+ "steinitz": {
+  "eco": "C11",
+  "nom": "French Defense: Steinitz Variation, Boleslavsky Variation",
+  "plis": 13
+ }
+}

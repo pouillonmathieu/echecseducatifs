@@ -1,0 +1,192 @@
+/* Jeu : quiz des ouvertures
+   Mise en page : l'échiquier à gauche (niveau au-dessus, flèches de navigation dessous), la question, les coups et
+   les quatre propositions à droite (l'un sous l'autre sur téléphone). Même page pour « Rejouer l'ouverture ». */
+.ecran-ouv { max-width: 1060px; }
+
+body[data-chrono="oui"] .seulement-sans-chrono,
+body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
+body[data-vue="entrainement"] .seulement-quiz,
+body:not([data-vue="entrainement"]) .seulement-entrainement { display: none !important; }
+
+.jeu-ouv {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 360px);
+  align-items: center;
+  gap: 28px;
+}
+.plateau-ouv {
+  width: min(100%, 560px, calc(100vh - 270px));
+  width: min(100%, 560px, calc(100dvh - 270px));
+}
+body[data-vue="entrainement"] .plateau-ouv {
+  width: min(100%, 580px, calc(100vh - 200px));
+  width: min(100%, 580px, calc(100dvh - 200px));
+}
+.panneau-ouv { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.question.nouvelle { animation: nouvelle .4s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes nouvelle { from { transform: scale(.94); opacity: .3; } }
+.icone-question { flex: none; width: 42px; height: 42px; }
+
+/* la liste des coups : chaque coup se clique pour revoir la position */
+.liste-coups { margin: 0; min-height: 1.6em; line-height: 1.9; font-size: 16px; }
+.liste-coups .num { margin: 0 2px 0 4px; color: var(--encre-douce); font-weight: 500; font-variant-numeric: tabular-nums; }
+.liste-coups .coup {
+  padding: 1px 6px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--encre);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.liste-coups button.coup:hover { background: var(--surface-2); }
+.liste-coups .coup.actuel { background: var(--accent-doux); color: var(--accent); }
+.liste-coups .coup.a-venir { color: var(--encre-douce); font-weight: 500; letter-spacing: .1em; cursor: default; }
+
+/* les quatre propositions */
+.reponses-ouv { display: grid; gap: 8px; }
+.choix-ouv {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 2px solid var(--ligne);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--encre);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, background .15s;
+}
+.choix-ouv:hover { border-color: var(--accent); }
+.choix-ouv:active { transform: scale(.98); }
+.num-choix {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--accent-doux);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* après la réponse */
+.retour {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--ligne);
+  animation: nouvelle .35s cubic-bezier(.2, 1.3, .4, 1);
+}
+.retour.juste { border-color: var(--accent); }
+.retour.faux { border-color: var(--alerte); }
+.verdict { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 20px; font-weight: 700; }
+.verdict svg { flex: none; width: 30px; height: 30px; padding: 5px; border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; box-sizing: border-box; }
+.retour.juste .verdict { color: var(--accent); }
+.retour.juste .verdict svg { background: var(--accent-doux); }
+.retour.faux .verdict { color: var(--alerte); }
+.retour.faux .verdict svg { background: color-mix(in srgb, var(--alerte) 16%, transparent); }
+.nom-ouv { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; }
+.choix-faux { margin: 0; font-size: 14px; color: var(--encre-douce); }
+.explication { margin: 0 0 2px; line-height: 1.5; }
+.actions-retour { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions-retour > * { flex: 1 1 140px; text-decoration: none; }
+.actions-retour svg, .actions-ent svg:not(.illus), #btn-suivant svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+.score-libre { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--accent); font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
+.score-libre svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.astuce { margin: 0; font-size: 13px; color: var(--encre-douce); }
+.astuce kbd { padding: 1px 6px; border: 1px solid var(--ligne); border-radius: 6px; background: var(--surface); font: inherit; font-weight: 600; }
+@media (hover: none) { .astuce { display: none; } }
+
+/* minuteur (défi chrono) */
+.minuteur { flex: 1; height: 14px; border: 1px solid var(--ligne); border-radius: 7px; background: var(--surface-2); overflow: hidden; }
+#minuteur-barre { height: 100%; border-radius: 7px; background: var(--accent); transform-origin: left center; transition: background .3s; }
+body.presse #minuteur-barre { background: var(--alerte); }
+.bandeau-defi .points { flex: none; }
+.res-liste .res-t { font-weight: 600; }
+
+/* revoir les coups : sous l'échiquier */
+.navigation-coups { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.navigation-coups .bouton-icone { width: 42px; height: 42px; }
+.navigation-coups .bouton-icone:disabled { opacity: .35; cursor: default; }
+.navigation-coups svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.navigation-coups [data-nav="debut"] svg path:last-child, .navigation-coups [data-nav="fin"] svg path:last-child { fill: currentColor; }
+.nav-numero { min-width: 76px; text-align: center; font-weight: 600; color: var(--encre-douce); font-variant-numeric: tabular-nums; }
+.navigation-coups.en-arriere .nav-numero { color: var(--accent); }
+#btn-animation { margin-left: 8px; }
+
+/* ===== Rejouer l'ouverture ===== */
+.entrainement { display: flex; flex-direction: column; gap: 12px; }
+.ligne-camp { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; }
+.ligne-camp .choix-ligne { flex-wrap: wrap; }
+.etiquette-camp { font-weight: 600; color: var(--encre-douce); }
+.ligne-camp .choix-ligne button.avec-texte > svg { width: 30px; height: 30px; }
+.deux-rois { display: inline-flex; flex: none; }
+.deux-rois svg { width: 24px; height: 30px; }
+.deux-rois svg + svg { margin-left: -8px; }
+.message-ent { margin: 0; padding: 10px 14px; border-radius: 14px; background: var(--surface-2); font-weight: 600; line-height: 1.4; }
+.message-ent.erreur { background: color-mix(in srgb, var(--alerte) 15%, transparent); color: var(--alerte); }
+.message-ent.reussi { background: var(--accent-doux); color: var(--accent); }
+.liste-ent { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 10px; padding: 8px 10px; border: 1px solid var(--ligne); border-radius: 14px; background: var(--surface); list-style: none; max-height: 220px; overflow-y: auto; }
+.liste-ent li { white-space: nowrap; }
+.actions-ent { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions-ent > * { flex: 1 1 140px; text-decoration: none; }
+.actions-ent svg.illus { width: 28px; height: 28px; margin-left: -6px; }
+#btn-indice .ico-solution, #btn-indice.solution .ico-indice { display: none; }
+#btn-indice.solution .ico-solution { display: inline; }
+#btn-indice:disabled { opacity: .45; cursor: default; }
+
+/* l'échiquier quand on joue : la pièce choisie, l'indice, l'erreur */
+body[data-vue="entrainement"] .plateau-ouv .case-e { cursor: pointer; }
+.case-e.choisie::after { opacity: 1; box-shadow: inset 0 0 0 4px rgba(47, 163, 107, .9); background: rgba(47, 163, 107, .18); }
+.case-e.indice::after { opacity: 1; box-shadow: inset 0 0 0 4px var(--e-coup); background: rgba(242, 184, 39, .35); animation: pulse-indice 1.1s ease-in-out infinite; }
+@keyframes pulse-indice { 50% { background: rgba(242, 184, 39, .12); } }
+.plateau-ouv.secoue { animation: secoue .35s; }
+@keyframes secoue { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+@media (max-width: 860px) {
+  .jeu-ouv { grid-template-columns: 1fr; gap: 12px; align-content: start; }
+  .plateau-ouv, body[data-vue="entrainement"] .plateau-ouv { width: min(100%, 500px, calc(100dvh - 400px)); min-width: min(100%, 260px); }
+  .panneau-ouv { gap: 10px; width: min(100%, 520px); justify-self: center; }
+  .question { font-size: 17px; padding: 8px 12px; }
+  .icone-question { width: 34px; height: 34px; }
+  /* les quatre propositions sur deux colonnes, pour garder l'échiquier et les réponses sur l'écran */
+  .reponses-ouv { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .choix-ouv { gap: 8px; padding: 7px 9px; border-radius: 14px; font-size: 14px; }
+  .num-choix { width: 22px; height: 22px; border-radius: 7px; font-size: 12px; }
+  .liste-coups { font-size: 15px; line-height: 1.7; }
+  .navigation-coups .bouton-icone { width: 38px; height: 38px; }
+}
+@media (max-width: 560px) {
+  .choix-jeu .texte-choix { display: none; }
+  .choix-jeu .choix-ligne button.avec-texte { width: 46px; padding: 5px; justify-content: center; }
+  .ligne-camp .texte-choix { display: none; }
+  .ligne-camp .choix-ligne button.avec-texte { padding: 4px 8px; }
+}

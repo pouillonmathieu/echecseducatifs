@@ -1,0 +1,58 @@
+/* Fiche d'une ouverture : l'échiquier et les coups à gauche, l'idée et ce qu'il faut retenir à droite,
+   puis les variantes et les liens ; la page défile (ce n'est pas un jeu). */
+.ecran-fiche { max-width: 1080px; }
+.ico-quiz { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+a.bouton-defis { text-decoration: none; }
+
+.fiche { display: flex; flex-direction: column; gap: 28px; }
+.fiche-haut { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 440px); gap: 32px; align-items: start; }
+.plateau-fiche { width: min(100%, 500px); }
+.fiche .liste-coups { width: min(100%, 500px); }
+.liste-coups .coup.suite { color: var(--accent); }
+.ligne-vue { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 12px; margin: 0; padding: 6px 12px; border-radius: 12px; background: var(--accent-doux); color: var(--accent); font-weight: 600; }
+.bouton-lien { padding: 0; border: none; background: none; color: inherit; font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+.fiche-texte { display: flex; flex-direction: column; gap: 10px; }
+.fiche-texte h3, .fiche-section h3 { margin: 10px 0 0; font-size: 18px; }
+.etiquettes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0; color: var(--encre-douce); font-size: 15px; }
+.etiquettes a { color: var(--accent); font-weight: 600; }
+.etiquette-niveau { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--accent-doux); color: var(--accent); font-size: 13px; font-weight: 700; vertical-align: middle; }
+.etiquette-niveau[data-niveau="moyen"] { background: color-mix(in srgb, var(--or) 25%, transparent); color: color-mix(in srgb, var(--or) 60%, var(--encre)); }
+.etiquette-niveau[data-niveau="expert"] { background: color-mix(in srgb, var(--alerte) 18%, transparent); color: var(--alerte); }
+.fiche-nom { margin: 0; font-size: 30px; line-height: 1.15; letter-spacing: -0.01em; }
+.fiche-resume { margin: 0; font-size: 17px; line-height: 1.55; }
+.fiche-idees { margin: 0; padding-left: 22px; line-height: 1.5; }
+.fiche-idees li + li { margin-top: 4px; }
+.fiche-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.fiche-actions a { text-decoration: none; }
+.fiche-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+.fiche-section { display: flex; flex-direction: column; gap: 10px; }
+.fiche-intro { margin: 0; color: var(--encre-douce); }
+.variantes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.variante { display: flex; flex-direction: column; border: 2px solid var(--ligne); border-radius: 16px; background: var(--surface); overflow: hidden; transition: border-color .15s; }
+.variante:hover, .variante.montree { border-color: var(--accent); }
+.variante-voir { display: flex; flex-direction: column; gap: 6px; flex: 1; padding: 12px 14px; border: none; background: none; color: var(--encre); font: inherit; text-align: left; cursor: pointer; }
+.variante-nom { font-weight: 700; line-height: 1.3; }
+.variante-coups { font-weight: 600; color: var(--accent); font-size: 15px; line-height: 1.45; }
+.variante-texte { color: var(--encre-douce); line-height: 1.45; }
+.variante-fiche { display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 8px 14px; border-top: 1px solid var(--ligne); color: var(--accent); font-weight: 600; text-decoration: none; }
+.variante-fiche:hover { background: var(--surface-2); }
+.variante-fiche svg, .liens svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.liens { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.liens a { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); font-weight: 600; }
+
+/* toutes les ouvertures */
+.sommaire { display: flex; flex-direction: column; gap: 8px; }
+.sommaire-titre { margin: 18px 0 4px; font-size: 18px; }
+.sommaire-titre .etiquette-niveau { font-size: 16px; padding: 4px 14px; }
+.sommaire-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.sommaire-liste a { display: flex; flex-direction: column; gap: 4px; height: 100%; box-sizing: border-box; padding: 10px 14px; border: 2px solid var(--ligne); border-radius: 14px; background: var(--surface); color: var(--encre); text-decoration: none; }
+.sommaire-liste a:hover { border-color: var(--accent); }
+
+@media (max-width: 860px) {
+  .fiche-haut { grid-template-columns: 1fr; gap: 18px; }
+  .fiche-haut .colonne-plateau { width: 100%; }
+  .plateau-fiche { width: min(100%, 460px); }
+  .fiche-nom { font-size: 25px; }
+}

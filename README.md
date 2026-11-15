@@ -100,6 +100,23 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Les Blancs puis les Noirs lancent 3 dés (ou 1 en version classique) ; chaque face montre une pièce
   (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
   et la partie en cours est gardée dans le navigateur.
+- **Quiz des ouvertures** (`jeux/ouvertures/`) : les premiers coups d'une ouverture connue se jouent tout seuls sur
+  l'échiquier ; il faut la reconnaître parmi quatre noms (aux niveaux moyen et expert, des ouvertures qui commencent
+  pareil). Trois niveaux : facile (20 ouvertures de base, 1 à 3 coups), moyen (23 variantes principales, 4 à 6 coups),
+  expert (16 variantes avancées, 6 coups ou plus). Sous l'échiquier, les flèches (et la liste des coups, cliquable)
+  font revoir les coups à son rythme, et un bouton rejoue l'ouverture depuis le début. Mode libre, défi (10 ouvertures)
+  et défi chrono (20 s, le chrono part quand les coups ont fini de se jouer). Après la réponse : le nom, l'idée de
+  l'ouverture, « En savoir plus » (sa fiche, dans un nouvel onglet) et « Rejouer l'ouverture » : c'est alors le joueur qui
+  joue les coups (les Blancs, les Noirs ou les deux ; l'ordinateur joue l'autre camp), en glissant les pièces ou en
+  clic-clic ; un mauvais coup est refusé ; « Indice » éclaire la pièce à jouer et devient « Solution » (une flèche).
+  Les fiches (`jeux/ouvertures/fiche.html?o=<ouverture>`, ou toutes les ouvertures sans paramètre) : l'échiquier et les
+  coups, l'idée, trois choses à retenir, les principales variantes (celles du quiz ont leur propre fiche ; chacune se
+  montre sur l'échiquier), un lien vers « Rejouer l'ouverture » et des liens vers Lichess (page de l'ouverture à la
+  bonne position, échiquier d'analyse, exercices). Tout vient de `jeux/ouvertures/donnees.js`, généré par
+  `outils/ouvertures.js` : les textes y sont écrits pour le site (français et anglais), chaque coup est vérifié avec
+  chess.js, et le nom Lichess de chaque ouverture vient de la liste libre lichess-org/chess-openings
+  (`outils/ouvertures-lichess.json`) ; l'adresse des pages Lichess suit leur règle (accents et ponctuation retirés,
+  espaces en `_`).
 
 ## Sources
 
@@ -123,7 +140,7 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   site (`jeux/joue/portraits.js`), sans aucune photo. Les introductions des parties célèbres
   (`jeux/joue/intros.js`) sont rédigées pour ce site à partir de faits historiques.
 - Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
-  par `outils/positions-mat.js`, `outils/coups-notation.js` et `outils/parties-champions.js` ; chess.js n'est pas
+  par `outils/positions-mat.js`, `outils/coups-notation.js`, `outils/parties-champions.js` et `outils/ouvertures.js` ; chess.js n'est pas
   utilisé par le site lui-même.
 
 ## Atelier du coach
@@ -153,8 +170,9 @@ Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé da
 
 ## Page d'accueil
 
-Une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans faire défiler : 5 colonnes sur
-ordinateur (icônes plus petites sur un écran peu haut), 2 colonnes sur téléphone (icône à gauche du nom, sans la phrase).
+Une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans faire défiler : 6 colonnes sur
+ordinateur (icônes plus petites sur un écran peu haut), 4 sur tablette, 2 colonnes sur téléphone (icône à gauche du nom,
+sans la phrase).
 
 ## Version anglaise
 
@@ -191,7 +209,10 @@ outils/positions-mat.js  génère jeux/mat/positions.js en vérifiant chaque pos
 outils/coups-notation.js génère jeux/notation/coups.js (ouvertures et problèmes Lichess rejoués avec chess.js)
 outils/tables-roi.js calcule les tables de « Capture le roi » (jeux/roi/tables/)
 outils/parties-champions.js génère jeux/joue/parties.js (parties de outils/parties-champions.pgn et moments à jouer)
-jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js)
+outils/ouvertures.js  génère jeux/ouvertures/donnees.js (ouvertures, textes, variantes, liens Lichess)
+js/revoir.js          revoir les coups (⏮ ◀ ▶ ⏭, flèches du clavier, lecture automatique)
+js/glisser.js         glisser-déposer une pièce sur l'échiquier
+jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js ; le quiz des ouvertures a aussi fiche.html)
 ```
 
 ## Licence
