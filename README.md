@@ -101,14 +101,17 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (1 pion, 2 cavalier, 3 fou, 4 tour, 5 dame, 6 roi). Règles illustrées, mode face à face, historique, annulation,
   et la partie en cours est gardée dans le navigateur.
 - **Quiz des ouvertures** (`jeux/ouvertures/`) : les premiers coups d'une ouverture connue se jouent tout seuls sur
-  l'échiquier ; il faut la reconnaître parmi quatre noms (aux niveaux moyen et expert, des ouvertures qui commencent
-  pareil). Trois niveaux : facile (20 ouvertures de base, 1 à 3 coups), moyen (23 variantes principales, 4 à 6 coups),
+  l'échiquier, vu côté Blancs ou côté Noirs au hasard (bouton « Tourner l'échiquier ») ; il faut la reconnaître parmi
+  quatre noms (aux niveaux moyen et expert : les variantes dont la position ressemble le plus, de préférence de la même
+  famille, jamais une ligne qui contient l'autre). Trois niveaux : facile (20 ouvertures de base, 1 à 3 coups), moyen (23 variantes principales, 4 à 6 coups),
   expert (16 variantes avancées, 6 coups ou plus). Sous l'échiquier, les flèches (et la liste des coups, cliquable)
   font revoir les coups à son rythme, et un bouton rejoue l'ouverture depuis le début. Mode libre, défi (10 ouvertures)
   et défi chrono (20 s, le chrono part quand les coups ont fini de se jouer). Après la réponse : le nom, l'idée de
   l'ouverture, « En savoir plus » (sa fiche, dans un nouvel onglet) et « Rejouer l'ouverture » : c'est alors le joueur qui
   joue les coups (les Blancs, les Noirs ou les deux ; l'ordinateur joue l'autre camp), en glissant les pièces ou en
   clic-clic ; un mauvais coup est refusé ; « Indice » éclaire la pièce à jouer et devient « Solution » (une flèche).
+  Couleur jouée, « Tourner l'échiquier » et « Indice » sont au-dessus de l'échiquier (toujours à portée sur téléphone) ;
+  en revenant au quiz, le score du mode libre est gardé.
   Les fiches (`jeux/ouvertures/fiche.html?o=<ouverture>`, ou toutes les ouvertures sans paramètre) : l'échiquier et les
   coups, l'idée, trois choses à retenir, les principales variantes (celles du quiz ont leur propre fiche ; chacune se
   montre sur l'échiquier), un lien vers « Rejouer l'ouverture » et des liens vers Lichess (page de l'ouverture à la

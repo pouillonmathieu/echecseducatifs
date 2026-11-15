@@ -463,7 +463,6 @@
   "pour répondre,": "to answer,",
   "pour revoir les coups,": "to review the moves,",
   "suivant.": "next.",
-  "Je joue :": "I play:",
   "Je joue": "I play",
   "Les deux": "Both",
   "Indice": "Hint",
@@ -483,7 +482,12 @@
   "Position de départ": "Starting position",
   "Coup précédent": "Previous move",
   "Coup suivant": "Next move",
-  "Dernier coup": "Last move"
+  "Dernier coup": "Last move",
+  "Je joue les Blancs": "I play White",
+  "Je joue les Noirs": "I play Black",
+  "Je joue les deux camps": "I play both sides",
+  "Tourner l'échiquier": "Flip the board",
+  "La pièce à jouer, puis le coup": "The piece to move, then the move"
  },
  "jeux/ouvertures/fiche.html": {
   "Les ouvertures": "Chess openings",

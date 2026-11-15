@@ -142,12 +142,14 @@ body.presse #minuteur-barre { background: var(--alerte); }
 .navigation-coups.en-arriere .nav-numero { color: var(--accent); }
 #btn-animation { margin-left: 8px; }
 
+/* au-dessus de l'échiquier : niveau ou couleur jouée, « tourner l'échiquier », indice */
+.barre-plateau { flex-wrap: nowrap; }
+#btn-retourner svg { width: 24px; height: 24px; }
+#reg-camp button.avec-texte > svg { width: 30px; height: 30px; }
+#btn-indice svg { flex: none; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
 /* ===== Rejouer l'ouverture ===== */
 .entrainement { display: flex; flex-direction: column; gap: 12px; }
-.ligne-camp { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; }
-.ligne-camp .choix-ligne { flex-wrap: wrap; }
-.etiquette-camp { font-weight: 600; color: var(--encre-douce); }
-.ligne-camp .choix-ligne button.avec-texte > svg { width: 30px; height: 30px; }
 .deux-rois { display: inline-flex; flex: none; }
 .deux-rois svg { width: 24px; height: 30px; }
 .deux-rois svg + svg { margin-left: -8px; }
@@ -186,7 +188,19 @@ body[data-vue="entrainement"] .plateau-ouv .case-e { cursor: pointer; }
 }
 @media (max-width: 560px) {
   .choix-jeu .texte-choix { display: none; }
-  .choix-jeu .choix-ligne button.avec-texte { width: 46px; padding: 5px; justify-content: center; }
-  .ligne-camp .texte-choix { display: none; }
-  .ligne-camp .choix-ligne button.avec-texte { padding: 4px 8px; }
+  .choix-jeu .choix-ligne button.avec-texte:not(#btn-indice) { width: 46px; padding: 5px; justify-content: center; }
+  .choix-jeu #reg-camp button[data-camp="deux"] { width: 56px; }
+  .choix-jeu { gap: 6px; }
+}
+
+/* très petit téléphone (iPhone SE) : boutons plus serrés, indice en icône seule, titre plus petit */
+@media (max-width: 400px) {
+  .choix-jeu .choix-ligne button.avec-texte:not(#btn-indice), #btn-retourner { width: 38px; height: 38px; padding: 3px; }
+  .choix-jeu #reg-camp button[data-camp="deux"] { width: 48px; }
+  #reg-camp button.avec-texte > svg { width: 26px; height: 26px; }
+  .deux-rois svg { width: 20px; height: 26px; }
+  #btn-indice { height: 38px; padding: 4px 8px; }
+  #btn-indice-texte { display: none; }
+  .barre .titre { font-size: 18px; hyphens: auto; overflow-wrap: anywhere; }
+  .titre-long { display: none; }
 }

@@ -103,13 +103,28 @@
     jeu.dernier = jeu.pioche.pop();
     return PAR_ID[jeu.dernier];
   }
-  // trois autres noms du même niveau ; aux niveaux moyen et expert, de préférence des ouvertures qui commencent
-  // pareil (sinon le premier coup suffirait à répondre)
+  // les trois autres propositions
+  // - facile : trois autres ouvertures de base, au hasard ;
+  // - moyen et expert : des variantes dont la position finale ressemble le plus à celle de la question (même pièces
+  //   sur les mêmes cases), et de préférence de la même famille (sinon le début du nom suffirait à répondre). Jamais
+  //   une ligne qui contient l'autre (la Najdorf et son attaque anglaise, par exemple) : les deux seraient justes.
+  const grille = (fen) => fen.split(' ')[0].split('/').map(l => l.replace(/\d/g, n => '.'.repeat(+n))).join('');
+  const GRILLES = Object.fromEntries(OUVERTURES.map(o => [o.id, grille(o.fens[o.fens.length - 1])]));
+  const ressemblance = (a, b) => { let n = 0; for (let i = 0; i < 64; i++) if (a[i] === b[i]) n++; return n; };
+  const racine = (o) => (o.parent ? racine(PAR_ID[o.parent]) : o.id);
+  const contient = (a, b) => a.san.length <= b.san.length && a.san.every((x, i) => x === b.san[i]);
   function propositions(o) {
-    const autres = OUVERTURES.filter(x => x.niveau === o.niveau && x.id !== o.id && nomDe(x) !== nomDe(o));
-    const proches = o.niveau === 'facile' ? [] : melanger(autres.filter(x => x.san[0] === o.san[0])).slice(0, 2);
-    const reste = melanger(autres.filter(x => !proches.includes(x))).slice(0, 3 - proches.length);
-    return melanger([o, ...proches, ...reste]);
+    const autres = OUVERTURES.filter(x => x.id !== o.id && nomDe(x) !== nomDe(o));
+    let choisies;
+    if (o.niveau === 'facile') choisies = melanger(autres.filter(x => x.niveau === 'facile')).slice(0, 3);
+    else {
+      const proches = autres
+        .filter(x => x.niveau !== 'facile' && !contient(x, o) && !contient(o, x))
+        .map(x => ({ x, r: ressemblance(GRILLES[o.id], GRILLES[x.id]) + (racine(x) === racine(o) ? 6 : 0) + Math.random() * 3 }))
+        .sort((a, b) => b.r - a.r);
+      choisies = melanger(proches.slice(0, 5)).slice(0, 3).map(p => p.x);
+    }
+    return melanger([o, ...choisies]);
   }
 
   // ---------- Une question ----------
@@ -119,7 +134,8 @@
     jeu.question++;
     defi.chronoLance = false;
     jeu.choix = propositions(o);
-    jeu.orientation = 'blanc';
+    // il faut reconnaître l'ouverture des deux côtés de l'échiquier
+    jeu.orientation = Math.random() < 0.5 ? 'blanc' : 'noir';
     $('reponses').innerHTML = jeu.choix.map((x, i) =>
       `<button type="button" class="choix-ouv" data-i="${i}"><span class="num-choix" aria-hidden="true">${i + 1}</span><span>${nomDe(x)}</span></button>`).join('');
     $('reponses').hidden = false;
@@ -259,12 +275,14 @@
     document.body.dataset.mode = mode;
     montrerVue('quiz');
   }
-  function lancerLibre() {
+  // garderScore : en revenant de « Rejouer l'ouverture », on garde le score du mode libre
+  function lancerLibre(garderScore = false) {
+    const reprise = garderScore && jeu.mode === 'libre';
     preparer('libre');
     document.body.dataset.chrono = 'non';
     $('titre').textContent = t('Quiz des ouvertures', 'Openings quiz');
-    jeu.justes = 0; jeu.total = 0;
-    $('score-libre').textContent = '0 / 0';
+    if (!reprise) { jeu.justes = 0; jeu.total = 0; }
+    $('score-libre').textContent = `${jeu.justes} / ${jeu.total}`;
     poserQuestion(piocher());
   }
   function lancerDefi(chrono) {
@@ -300,7 +318,7 @@
     revoir.arreter();
     ent.o = o;
     montrerVue('entrainement');
-    $('titre').textContent = t('Rejoue l\'ouverture', 'Replay the opening');
+    $('titre').innerHTML = t('Rejoue <span class="titre-long">l\'ouverture</span>', 'Replay <span class="titre-long">the opening</span>');
     $('ent-nom').textContent = nomDe(o);
     $('btn-savoir-ent').href = `fiche.html?o=${o.id}`;
     majCamp();
@@ -446,7 +464,15 @@
     if (ent.o) recommencerEnt();
   }));
   $('btn-recommencer').addEventListener('click', recommencerEnt);
-  $('btn-retour-quiz').addEventListener('click', () => { clearTimeout(ent.ordi); ent.jeton++; lancerLibre(); });
+  $('btn-retour-quiz').addEventListener('click', () => { clearTimeout(ent.ordi); ent.jeton++; lancerLibre(true); });
+  // tourner l'échiquier (quiz et « Rejouer ») : on redessine la position regardée, sans animation
+  $('btn-retourner').addEventListener('click', () => {
+    jeu.orientation = jeu.orientation === 'blanc' ? 'noir' : 'blanc';
+    const ph = revoir.photoVue();
+    if (!ph) return;
+    numeroAvant = ph.i;
+    dessinerPhoto(ph);
+  });
   $('btn-rejouer-ouv').addEventListener('click', () => { if (jeu.ouverture) ouvrirEntrainement(jeu.ouverture); });
   window.addEventListener('resize', () => { if (jeu.vue === 'entrainement' && ent.indice >= 2 && revoir.enDirect()) apresDessinEnt(); });
 
@@ -470,8 +496,8 @@
   $('choix-defi').addEventListener('click', (e) => { if (e.target === e.currentTarget) fermerChoix(); });
   $('mode-defi').addEventListener('click', () => lancerDefi(false));
   $('mode-chrono').addEventListener('click', () => lancerDefi(true));
-  $('btn-retour').addEventListener('click', lancerLibre);
-  $('btn-menu').addEventListener('click', lancerLibre);
+  $('btn-retour').addEventListener('click', () => lancerLibre());
+  $('btn-menu').addEventListener('click', () => lancerLibre());
   $('btn-rejouer').addEventListener('click', () => lancerDefi(defi.chrono));
 
   // niveau
