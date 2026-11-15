@@ -266,6 +266,8 @@
     jeu.dernier = [p.c, d];
     p.c = d;
     jeu.coups++;
+    // la pièce jouée n'est plus choisie : au coup suivant, on choisit de nouveau (sauf s'il ne reste qu'une pièce)
+    jeu.selection = jeu.pieces.length === 1 ? 0 : -1;
     Sons.pose({ K: 4, Q: 9, R: 5, B: 3, N: 3 }[p.t]);
     if (d === jeu.kb) {
       jeu.kb = -1;
@@ -559,8 +561,12 @@
   // pour les tests
   window.CaptureRoi = { etat: () => jeu, defi: () => defi, valeur, coupsPiece, valeurNoire, coupsNoirs, jouer, EQUIPES };
 
+  // la consigne : dans une fenêtre au lancement, et depuis les réglages
+  const consigne = window.Consigne({ voile: $('consigne'), compris: $('btn-compris'), rouvrir: $('reg-consigne') });
+
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
   lancerLibre();
+  consigne.ouvrir();
 })();

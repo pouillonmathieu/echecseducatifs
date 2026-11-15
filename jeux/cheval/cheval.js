@@ -542,7 +542,7 @@
   };
   // en mode 2 joueurs : pas de niveau ni de défis
   const appliquerCamp = () => document.body.classList.toggle('deux-joueurs', deux());
-  choix('reg-camp', 'camp', () => { appliquerCamp(); nouvellePartie(); });
+  choix('reg-camp', 'camp', () => { appliquerCamp(); nouvellePartie(); consigne.ouvrir(); });
   choix('reg-niveau', 'niveau', nouvellePartie);
 
   brancherBoutonTheme($('btn-theme'));
@@ -555,9 +555,13 @@
   // pour les tests
   window.Cheval = { etat: () => jeu, defi: () => defi, AVEC_DAME, AVEC_CAVALIER, coupsDame, CAVALIER, jouer: (c) => jouer(typeof c === 'string' ? numero(c) : c) };
 
+  // la consigne : dans une fenêtre au lancement, et depuis les réglages
+  const consigne = window.Consigne({ voile: $('consigne'), compris: $('btn-compris'), rouvrir: $('reg-consigne') });
+
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
   appliquerCamp();
   lancerLibre();
+  consigne.ouvrir();
 })();

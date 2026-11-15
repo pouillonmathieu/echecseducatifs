@@ -54,7 +54,9 @@
   "K Q R B N": "K Q R B N",
   "Langue de la notation": "Notation language",
   "Continuer": "Continue",
-  "Pause": "Pause"
+  "Pause": "Pause",
+  "Revoir la consigne": "See the instructions again",
+  "Compris": "Got it"
  },
  "index.html": {
   "Mini-jeux d'échecs": "Chess mini-games",
@@ -488,8 +490,8 @@
   "Je joue les deux camps": "I play both sides",
   "Tourner l'échiquier": "Flip the board",
   "La pièce à jouer, puis le coup": "The piece to move, then the move",
-  "Les ouvertures": "The openings",
-  "La liste de toutes les ouvertures, avec leurs fiches": "The list of all the openings, with their pages"
+  "La liste de toutes les ouvertures, avec leurs fiches": "The list of all the openings, with their pages",
+  "La liste des ouvertures": "The list of openings"
  },
  "jeux/ouvertures/fiche.html": {
   "Les ouvertures": "Chess openings",

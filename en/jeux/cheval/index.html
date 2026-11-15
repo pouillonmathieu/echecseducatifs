@@ -9,11 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../../css/commun.css?v=202611152113">
-<link rel="stylesheet" href="../../../css/jeux.css?v=202611152113">
-<link rel="stylesheet" href="../../../css/echiquier.css?v=202611152113">
-<link rel="stylesheet" href="../../../jeux/cheval/cheval.css?v=202611152113">
-<script src="../../../js/commun.js?v=202611152113"></script>
+<link rel="stylesheet" href="../../../css/commun.css?v=202611152125">
+<link rel="stylesheet" href="../../../css/jeux.css?v=202611152125">
+<link rel="stylesheet" href="../../../css/echiquier.css?v=202611152125">
+<link rel="stylesheet" href="../../../jeux/cheval/cheval.css?v=202611152125">
+<script src="../../../js/commun.js?v=202611152125"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- illustrations des boutons : la dame et le cavalier sur un petit échiquier -->
@@ -70,6 +70,10 @@
           <svg viewBox="0 0 24 24"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3.5 6v2M3.5 11v2M10 21h2M15 21h2"/></svg>
           <span>Letters and numbers</span><span class="interrupteur" aria-hidden="true"></span>
         </button>
+        <button id="reg-consigne" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7"/><path d="M12 17h.01"/></svg>
+          <span>See the instructions again</span>
+        </button>
         <button id="reg-son" class="ligne-reglage" type="button">
           <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
           <span>Sound</span><span class="interrupteur" aria-hidden="true"></span>
@@ -108,13 +112,6 @@
     </div>
 
     <div class="panneau-cheval">
-      <div class="question" id="question">
-        <svg class="piece-question" viewBox="0 0 100 100" aria-hidden="true"><use id="piece-question" href="#piece-dame-blanc"/></svg>
-        <div>
-          <p class="question-titre" id="question-titre">Catch the knight!</p>
-          <p class="question-texte" id="question-texte">Her horse has run away: help the queen catch it in as few moves as possible.</p>
-        </div>
-      </div>
       <div class="compteur">
         <p class="compteur-nombre"><span id="coups">0</span> <span id="coups-mot">move</span></p>
         <p class="etat" id="etat" aria-live="polite">Your move.</p>
@@ -144,6 +141,23 @@
 
   <footer class="signature">Made by Mathieu Pouillon</footer>
 </main>
+
+<!-- la consigne : au lancement du jeu (et dans les réglages) -->
+<div id="consigne" class="voile" hidden>
+  <div class="carte-choix carte-consigne" role="dialog" aria-modal="true" aria-labelledby="question-titre">
+    <div class="question" id="question">
+      <svg class="piece-question" viewBox="0 0 100 100" aria-hidden="true"><use id="piece-question" href="#piece-dame-blanc"/></svg>
+      <div>
+        <p class="question-titre" id="question-titre">Catch the knight!</p>
+        <p class="question-texte" id="question-texte">Her horse has run away: help the queen catch it in as few moves as possible.</p>
+      </div>
+    </div>
+    <button id="btn-compris" class="bouton-principal" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      Got it
+    </button>
+  </div>
+</div>
 
 <!-- choix du défi -->
 <div id="choix-defi" class="voile" hidden>
@@ -205,12 +219,13 @@
   </div>
 </div>
 
-<script src="../../../js/pieces.js?v=202611152113"></script>
-<script src="../../../js/sons.js?v=202611152113"></script>
-<script src="../../../js/ui.js?v=202611152113"></script>
-<script src="../../../js/echiquier.js?v=202611152113"></script>
-<script src="../../../js/revoir.js?v=202611152113"></script>
-<script src="../../../js/glisser.js?v=202611152113"></script>
-<script src="../../../jeux/cheval/cheval.js?v=202611152113"></script>
+<script src="../../../js/pieces.js?v=202611152125"></script>
+<script src="../../../js/sons.js?v=202611152125"></script>
+<script src="../../../js/ui.js?v=202611152125"></script>
+<script src="../../../js/echiquier.js?v=202611152125"></script>
+<script src="../../../js/revoir.js?v=202611152125"></script>
+<script src="../../../js/glisser.js?v=202611152125"></script>
+<script src="../../../js/consigne.js?v=202611152125"></script>
+<script src="../../../jeux/cheval/cheval.js?v=202611152125"></script>
 </body>
 </html>

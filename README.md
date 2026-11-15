@@ -89,6 +89,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   calculée au chargement (analyse rétrograde : avec un jeu parfait, la dame attrape toujours le cavalier en 5 coups au
   plus) ; facile, le cavalier fuit au hasard vers une case sûre et la dame ne joue le meilleur coup qu'une fois sur deux.
   On joue en glissant sa pièce jusqu'à la case voulue (souris ou doigt, `js/glisser.js`) ou en clic-clic.
+  La consigne s'affiche dans une fenêtre au lancement (et quand on change de pièce), avec « Compris » ; on la revoit
+  depuis les réglages. Même chose dans « Capture le roi », où la pièce jouée n'est plus choisie après son coup.
   Réglage « Cases dangereuses » : les coups où l'adversaire peut te prendre sont marqués en rouge. Sous l'échiquier,
   des boutons font revoir les coups (`js/revoir.js`) ; « Recommencer » reprend la même position ; « Solution » (difficile)
   déroule une partie parfaite des deux côtés. Le panneau rappelle le meilleur nombre de coups possible pour la position
@@ -216,6 +218,7 @@ outils/parties-champions.js génère jeux/joue/parties.js (parties de outils/par
 outils/ouvertures.js  génère jeux/ouvertures/donnees.js (ouvertures, textes, variantes, liens Lichess)
 js/revoir.js          revoir les coups (⏮ ◀ ▶ ⏭, flèches du clavier, lecture automatique)
 js/glisser.js         glisser-déposer une pièce sur l'échiquier
+js/consigne.js        la consigne d'un jeu dans une fenêtre (au lancement, « Compris », à revoir dans les réglages)
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js ; le quiz des ouvertures a aussi fiche.html)
 ```
 
