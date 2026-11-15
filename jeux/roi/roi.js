@@ -229,7 +229,10 @@
     $('question-titre').textContent = t('Capture le roi !', 'Capture the king!');
     $('question-texte').textContent = t(`Avec ${NOMS_EQUIPES[jeu.equipe][0]}, attrape le roi noir. Il doit bouger à chaque coup : coince-le, puis prends-le. Attention, il peut prendre une pièce qui n'est pas protégée !`,
       `With ${NOMS_EQUIPES[jeu.equipe][1]}, catch the black king. It has to move every turn: trap it, then take it. Careful, it can take a piece that isn't protected!`);
-    $('bareme').textContent = t(`Le plus court possible : ${coupsTexte(jeu.min)}.`, `The shortest possible: ${coupsTexte(jeu.min)}.`);
+    // au niveau facile, le roi se trompe souvent : le minimum suppose qu'il se défend parfaitement
+    $('bareme').textContent = reglages.niveau === 'difficile'
+      ? t(`Le plus court possible : ${coupsTexte(jeu.min)}.`, `The shortest possible: ${coupsTexte(jeu.min)}.`)
+      : t(`Le plus court possible si le roi se défend parfaitement : ${coupsTexte(jeu.min)}.`, `The shortest possible if the king defends perfectly: ${coupsTexte(jeu.min)}.`);
     $('btn-solution').hidden = reglages.niveau !== 'difficile';
     document.querySelectorAll('.equipe-question').forEach(e => { e.innerHTML = EQUIPES[jeu.equipe].map(tp => `<svg viewBox="0 0 100 100"><use href="#piece-${NOMS[tp]}-blanc"/></svg>`).join(''); });
   }
@@ -401,8 +404,11 @@
     let titre, detail;
     if (issue === 'capture') {
       titre = etoiles === 3 ? t('Bravo, roi capturé !', 'Well done, king captured!') : t('Roi capturé !', 'King captured!');
-      detail = t(`Tu l'as capturé en ${coupsTexte(jeu.coups)}. Le plus court possible était ${coupsTexte(jeu.min)}.`,
-        `You captured it in ${coupsTexte(jeu.coups)}. The shortest possible was ${coupsTexte(jeu.min)}.`);
+      detail = jeu.coups < jeu.min
+        ? t(`Tu l'as capturé en ${coupsTexte(jeu.coups)}, encore mieux que le minimum (${coupsTexte(jeu.min)}) : le roi s'est trompé ! Au niveau difficile, il ne se trompe jamais.`,
+          `You captured it in ${coupsTexte(jeu.coups)}, even better than the minimum (${coupsTexte(jeu.min)}): the king made a mistake! At the hard level, it never does.`)
+        : t(`Tu l'as capturé en ${coupsTexte(jeu.coups)}. Le plus court possible était ${coupsTexte(jeu.min)}.`,
+          `You captured it in ${coupsTexte(jeu.coups)}. The shortest possible was ${coupsTexte(jeu.min)}.`);
     } else if (issue === 'echappe') {
       titre = t('Le roi s\'est échappé !', 'The king got away!');
       detail = t('Il a pris une pièce qui n\'était pas protégée, et ce qui reste ne suffit plus pour le capturer.', 'It took an unprotected piece, and what\'s left isn\'t enough to capture it.');

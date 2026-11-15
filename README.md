@@ -27,7 +27,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   protégée ; si ce qui reste ne suffit plus, il s'échappe. Départ au hasard, jamais gagnable en un ou deux coups.
   L'ordinateur joue le roi : difficile, parfaitement ; facile, une fois sur deux une case sûre au hasard. Les étoiles
   comparent le nombre de coups au minimum théorique (★★★ jusqu'au minimum + 25 %, ★★ jusqu'au minimum + 75 %) ;
-  le panneau n'affiche que ce minimum.
+  le panneau n'affiche que ce minimum (au niveau facile, il précise « si le roi se défend parfaitement » : le roi s'y
+  trompe souvent, et on peut alors faire mieux que le minimum).
   Défis : 5 parties (jusqu'à 15 étoiles), défi chrono à 15 s par coup. Comme dans « Le cheval de la reine » : glisser
   les pièces ou clic-clic (choisir la pièce, puis la case ; un 2e clic sur la pièce la lâche), revoir les
   coups, « Recommencer » (même position) et « Solution » (difficile : une partie parfaite au minimum de coups). Le minimum et le jeu parfait viennent de
@@ -90,7 +91,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   On joue en glissant sa pièce jusqu'à la case voulue (souris ou doigt, `js/glisser.js`) ou en clic-clic.
   Réglage « Cases dangereuses » : les coups où l'adversaire peut te prendre sont marqués en rouge. Sous l'échiquier,
   des boutons font revoir les coups (`js/revoir.js`) ; « Recommencer » reprend la même position ; « Solution » (difficile)
-  déroule une partie parfaite des deux côtés. Le panneau rappelle le meilleur nombre de coups possible pour la position.
+  déroule une partie parfaite des deux côtés. Le panneau rappelle le meilleur nombre de coups possible pour la position
+  (jeu parfait de l'ordinateur ; au niveau facile, il se trompe souvent, d'où la précision « si le cavalier fuit parfaitement »).
   Mode 2 joueurs (sur le même écran, la dame blanche commence ; le cavalier gagne s'il prend la dame ou tient 30 coups).
   Défis (avec la dame ou le cavalier, au niveau choisi) : 5 parties d'affilée, jusqu'à 15 étoiles ; défi chrono : 10 s
   par coup (temps écoulé : partie à 0 étoile).

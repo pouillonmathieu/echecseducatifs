@@ -230,9 +230,13 @@
           `One player has the white queen, the other the black knight. The queen starts and must catch the knight; the knight wins if it takes the queen or lasts ${LIMITE} moves.`);
     // le nombre de coups de référence pour cette position (jeu parfait des deux côtés)
     const m = jeu.meilleur;
+    // au niveau facile, l'ordinateur se trompe souvent : la référence suppose qu'il joue parfaitement
+    const parfait = reglages.niveau === 'difficile' || deux();
     $('bareme').textContent = camp === 'cavalier'
-      ? t(`Le plus long possible : ${coupsTexte(m)}.`, `The longest possible: ${coupsTexte(m)}.`)
-      : t(`Le plus court possible : ${coupsTexte(m)}.`, `The shortest possible: ${coupsTexte(m)}.`);
+      ? (parfait ? t(`Le plus long possible : ${coupsTexte(m)}.`, `The longest possible: ${coupsTexte(m)}.`)
+        : t(`Le plus long possible si la dame joue parfaitement : ${coupsTexte(m)}.`, `The longest possible if the queen plays perfectly: ${coupsTexte(m)}.`))
+      : (parfait ? t(`Le plus court possible : ${coupsTexte(m)}.`, `The shortest possible: ${coupsTexte(m)}.`)
+        : t(`Le plus court possible si le cavalier fuit parfaitement : ${coupsTexte(m)}.`, `The shortest possible if the knight runs away perfectly: ${coupsTexte(m)}.`));
     $('btn-solution').hidden = deux() || reglages.niveau !== 'difficile';
   }
   function majEtat() {
