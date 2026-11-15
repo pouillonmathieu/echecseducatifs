@@ -1,0 +1,183 @@
+/* Jeu : mat en un
+   Mise en page : l'échiquier à gauche (revoir le coup, tourner, indice au-dessus), la partie, le dernier coup, la
+   question et l'explication à droite (l'un sous l'autre sur téléphone). */
+.ecran-mat1 { max-width: 1060px; }
+
+body[data-chrono="oui"] .seulement-sans-chrono,
+body:not([data-chrono="oui"]) .seulement-chrono { display: none !important; }
+
+.jeu-mat1 {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 360px);
+  align-items: center;
+  gap: 28px;
+}
+.cadre-plateau {
+  position: relative;
+  width: min(100%, 580px, calc(100vh - 230px));
+  width: min(100%, 580px, calc(100dvh - 230px));
+}
+.plateau-mat1 { width: 100%; }
+.panneau-mat1 { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+/* la partie */
+.carte-partie {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--ligne);
+}
+.joueur { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; min-width: 0; }
+.joueur .nom { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pastille { flex: none; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--encre); box-sizing: border-box; }
+.pastille.blanc { background: #FFFFFF; }
+.pastille.noir { background: #2A2E38; }
+.titre-fide { flex: none; padding: 1px 6px; border-radius: 6px; background: var(--or); color: #2A2E38; font-size: 12px; font-weight: 700; }
+.elo { flex: none; color: var(--encre-douce); font-size: 14px; font-variant-numeric: tabular-nums; }
+.tournoi { margin: 2px 0 0; color: var(--encre-douce); font-size: 13px; line-height: 1.35; }
+
+/* le dernier coup : la gaffe */
+.dernier-coup { margin: 0; font-size: 17px; line-height: 1.4; }
+.coup-gaffe { display: inline-block; padding: 0 6px; border-radius: 8px; background: color-mix(in srgb, var(--alerte) 14%, transparent); font-weight: 700; white-space: nowrap; }
+.gaffe { margin-left: 2px; color: var(--alerte); }
+
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.question[hidden] { display: none; }
+.question.nouvelle { animation: nouvelle .4s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes nouvelle { from { transform: scale(.94); opacity: .3; } }
+.roi-question { flex: none; width: 42px; height: 42px; padding: 3px; border-radius: 12px; background: var(--surface-2); }
+
+.message { margin: 0; padding: 10px 14px; border-radius: 14px; background: var(--surface-2); font-weight: 600; line-height: 1.4; }
+.message[hidden] { display: none; }
+.message.erreur { background: color-mix(in srgb, var(--alerte) 14%, transparent); color: var(--alerte); }
+
+.retour {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--ligne);
+  animation: nouvelle .35s cubic-bezier(.2, 1.3, .4, 1);
+}
+.retour[hidden] { display: none; }
+.retour.juste { border-color: var(--accent); }
+.retour.faux { border-color: var(--alerte); }
+.verdict { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; }
+.verdict svg { flex: none; width: 30px; height: 30px; padding: 5px; border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; box-sizing: border-box; }
+.retour.juste .verdict { color: var(--accent); }
+.retour.juste .verdict svg { background: var(--accent-doux); }
+.retour.faux .verdict { color: var(--alerte); }
+.retour.faux .verdict svg { background: color-mix(in srgb, var(--alerte) 16%, transparent); }
+.motif { align-self: flex-start; margin: 0; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); font-size: 13px; font-weight: 600; color: var(--encre-douce); }
+.explication { margin: 0; line-height: 1.5; }
+.explication[hidden] { display: none; }
+.histoire { margin: 0; padding: 8px 12px; border-radius: 12px; background: var(--surface-2); font-size: 15px; line-height: 1.45; }
+.lien-partie { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; color: var(--accent); font-size: 14px; font-weight: 600; text-decoration: none; }
+.lien-partie[hidden] { display: none; }
+.lien-partie:hover { text-decoration: underline; }
+.lien-partie svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#btn-suivant svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.score-libre { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--accent); font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
+.score-libre svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.astuce { margin: 0; font-size: 13px; color: var(--encre-douce); }
+.astuce kbd { padding: 1px 6px; border: 1px solid var(--ligne); border-radius: 6px; background: var(--surface); font: inherit; font-weight: 600; }
+@media (hover: none) { .astuce { display: none; } }
+
+/* minuteur (défi chrono) */
+.minuteur { flex: 1; height: 14px; border: 1px solid var(--ligne); border-radius: 7px; background: var(--surface-2); overflow: hidden; }
+#minuteur-barre { height: 100%; border-radius: 7px; background: var(--accent); transform-origin: left center; transition: background .3s; }
+body.presse #minuteur-barre { background: var(--alerte); }
+.bandeau-defi .points { flex: none; }
+.res-liste .res-t { font-weight: 600; }
+
+/* au-dessus de l'échiquier : revoir le coup, tourner, indice ; une barre compacte (comme le quiz des ouvertures) */
+.barre-plateau { flex-wrap: nowrap; gap: 8px; }
+.barre-plateau .choix-ligne { gap: 2px; padding: 3px; border-radius: 13px; }
+.barre-plateau .choix-ligne button { height: 36px; border-radius: 10px; }
+.barre-plateau .choix-ligne button.avec-texte { gap: 6px; padding: 2px 10px 2px 6px; font-size: 14px; }
+.barre-plateau #btn-retourner { width: 36px; padding: 4px; }
+#btn-retourner svg { width: 22px; height: 22px; }
+#btn-revoir svg, #btn-indice svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+#btn-indice .ico-solution, #btn-indice.solution .ico-indice { display: none; }
+#btn-indice.solution .ico-solution { display: inline; }
+.barre-plateau button:disabled { opacity: .45; cursor: default; }
+
+/* l'échiquier : les pièces à jouer, la pièce choisie, ses coups, l'indice, l'erreur */
+.plateau-mat1.calme .case-e.arrivee { animation: none; }
+.plateau-mat1 .case-e.jouable { cursor: pointer; }
+.case-e.choisie::after { opacity: 1; box-shadow: inset 0 0 0 4px rgba(47, 163, 107, .9); background: rgba(47, 163, 107, .18); }
+.plateau-mat1 .case-e.possible, .plateau-mat1 .case-e.possible-prise { cursor: pointer; }
+.case-e.possible::after { opacity: 1; background: radial-gradient(circle, rgba(24, 30, 40, .35) 0 15%, transparent 17%); }
+.case-e.possible-prise::after { opacity: 1; background: radial-gradient(circle, transparent 0 60%, rgba(47, 163, 107, .85) 62% 76%, transparent 78%); }
+.case-e.indice::after { opacity: 1; box-shadow: inset 0 0 0 4px var(--e-coup); background: rgba(242, 184, 39, .35); animation: pulse-indice 1.1s ease-in-out infinite; }
+@keyframes pulse-indice { 50% { background: rgba(242, 184, 39, .12); } }
+.plateau-mat1.secoue { animation: secoue .35s; }
+@keyframes secoue { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+/* promotion : quatre pièces au milieu de l'échiquier */
+.promotion {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  background: rgba(20, 24, 32, .45);
+  border-radius: 12px;
+}
+.promotion[hidden] { display: none; }
+.promotion p { margin: 0; padding: 4px 12px; border-radius: 10px; background: var(--surface); font-weight: 700; }
+.promo-choix { display: flex; gap: 8px; padding: 8px; border-radius: 16px; background: var(--surface); box-shadow: 0 8px 24px rgba(0, 0, 0, .25); }
+.promo-choix button { width: 64px; height: 64px; padding: 4px; border: 2px solid var(--ligne); border-radius: 12px; background: var(--surface-2); cursor: pointer; }
+.promo-choix button:hover, .promo-choix button:focus-visible { border-color: var(--accent); }
+.promo-choix svg { width: 100%; height: 100%; }
+
+@media (max-width: 860px) {
+  .jeu-mat1 { grid-template-columns: 1fr; gap: 10px; align-content: start; }
+  .cadre-plateau { width: min(100%, 520px, calc(100dvh - 400px)); min-width: min(100%, 270px); }
+  .panneau-mat1 { gap: 8px; width: min(100%, 520px); justify-self: center; }
+  /* la partie sur une seule ligne serrée : les deux joueurs côte à côte */
+  .carte-partie { gap: 1px; padding: 7px 12px; }
+  .joueur { font-size: 14px; gap: 6px; }
+  .titre-fide { font-size: 11px; }
+  .elo { font-size: 13px; }
+  .tournoi { font-size: 12px; }
+  .dernier-coup { font-size: 15px; }
+  .question { font-size: 17px; padding: 8px 12px; }
+  .roi-question { width: 34px; height: 34px; }
+  .promo-choix button { width: 54px; height: 54px; }
+}
+@media (max-width: 560px) {
+  .choix-jeu .texte-choix { display: none; }
+  .barre-plateau .choix-ligne button.avec-texte#btn-revoir { width: 36px; padding: 4px; justify-content: center; }
+}
+
+/* très petit téléphone (iPhone SE) : le titre passe sous les boutons, sur toute la largeur */
+@media (max-width: 400px) {
+  .ecran-mat1 > .barre { flex-wrap: wrap; row-gap: 4px; }
+  .ecran-mat1 > .barre .titre { order: 10; flex-basis: 100%; margin: 0; font-size: 21px; }
+  .ecran-mat1 > .barre > a.bouton-icone:first-child, .ecran-mat1 > .barre > #btn-retour { margin-right: auto; }
+  #btn-indice-texte { display: none; }
+  .barre-plateau .choix-ligne #btn-indice { padding: 4px 8px; }
+}

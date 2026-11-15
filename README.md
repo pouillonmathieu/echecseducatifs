@@ -123,6 +123,25 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   chess.js, et le nom Lichess de chaque ouverture vient de la liste libre lichess-org/chess-openings
   (`outils/ouvertures-lichess.json`) ; l'adresse des pages Lichess suit leur règle (accents et ponctuation retirés,
   espaces en `_`).
+- **Mat en un** (`jeux/mat1/`) : de vraies parties de grands maîtres (souvent en blitz ou en rapide). L'échiquier,
+  vu du côté du joueur, rejoue le dernier coup d'un grand maître : une gaffe qui laisse un mat en un coup (« Magnus
+  Carlsen vient de jouer 33…Ce5?? »). La carte de la partie donne les joueurs (titre, Elo), le tournoi, l'année et la
+  cadence. Il faut trouver le mat et le jouer, en glissant la pièce ou en clic-clic (points sur les cases possibles,
+  réglable ; choix de la pièce pour une promotion ; roquer en posant le roi sur sa tour). Un coup qui ne fait pas mat
+  est montré puis expliqué, avec des flèches rouges : pas d'échec, pat, ou les défenses (le roi s'enfuit, on prend la
+  pièce, on bloque l'échec). Après le mat : le motif (mat du couloir, étouffé, échec double, à la découverte…),
+  pourquoi c'est mat (qui donne échec, pourquoi on ne peut pas prendre la pièce, qui surveille chaque case de fuite),
+  les autres mats possibles, et ce qui s'est passé dans la vraie partie (le mat joué, ou raté, et le résultat), avec
+  un lien vers la partie sur Lichess. « Revoir le coup » rejoue la gaffe ; « Tourner l'échiquier ».
+  Mode libre (plusieurs essais, « Indice » éclaire la pièce qui mate, puis « Solution » montre le coup ; le score compte
+  les mats trouvés du premier coup), défi (10 positions, un seul essai) et défi chrono (30 s par position, à partir de
+  la fin de l'animation).
+  Les positions viennent de la base des retransmissions Lichess (2020 à octobre 2026) : `outils/mats-en-un-recherche.py`
+  y cherche, mois par mois, chaque coup d'un grand maître après lequel l'adversaire a un mat en un ;
+  `outils/mats-en-un.py` ne garde que les vraies gaffes (un autre coup évitait le mat, et la position n'était pas déjà
+  perdue d'après l'évaluation Lichess ou Stockfish), au plus 3 par joueur, les parties de blitz et de rapide en premier
+  (sélection dans `outils/mats-en-un.json`), puis écrit `jeux/mat1/problemes.js` en vérifiant chaque mat, avec la
+  raison de chaque coup qui ne mate pas et les explications (français et anglais).
 
 ## Sources
 
@@ -145,6 +164,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (résultat dans `outils/explications.json`) et sont rédigées par le jeu. Les portraits sont dessinés par le
   site (`jeux/joue/portraits.js`), sans aucune photo. Les introductions des parties célèbres
   (`jeux/joue/intros.js`) sont rédigées pour ce site à partir de faits historiques.
+- Positions de « Mat en un » : parties de la [base des retransmissions Lichess](https://database.lichess.org/#broadcasts)
+  (domaine public, CC0), vérifiées avec [python-chess](https://github.com/niklasf/python-chess) (licence GPL, utilisé
+  seulement par les outils, pas par le site) ; positions d'avant la gaffe évaluées avec Stockfish quand Lichess n'en
+  donne pas l'évaluation.
 - Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
   par `outils/positions-mat.js`, `outils/coups-notation.js`, `outils/parties-champions.js` et `outils/ouvertures.js` ; chess.js n'est pas
   utilisé par le site lui-même.
@@ -216,6 +239,8 @@ outils/coups-notation.js génère jeux/notation/coups.js (ouvertures et problèm
 outils/tables-roi.js calcule les tables de « Capture le roi » (jeux/roi/tables/)
 outils/parties-champions.js génère jeux/joue/parties.js (parties de outils/parties-champions.pgn et moments à jouer)
 outils/ouvertures.js  génère jeux/ouvertures/donnees.js (ouvertures, textes, variantes, liens Lichess)
+outils/mats-en-un-recherche.py  cherche les mats en un laissés par des grands maîtres (retransmissions Lichess)
+outils/mats-en-un.py  choisit les vraies gaffes et génère jeux/mat1/problemes.js
 js/revoir.js          revoir les coups (⏮ ◀ ▶ ⏭, flèches du clavier, lecture automatique)
 js/glisser.js         glisser-déposer une pièce sur l'échiquier
 js/consigne.js        la consigne d'un jeu dans une fenêtre (au lancement, « Compris », à revoir dans les réglages)

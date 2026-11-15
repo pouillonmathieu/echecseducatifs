@@ -134,7 +134,9 @@
   "Capture le roi": "Capture the king",
   "Coince le roi noir avec ton équipe, puis prends-le.": "Trap the black king with your team, then take it.",
   "Quiz des ouvertures": "Openings quiz",
-  "Reconnais l'ouverture jouée sur l'échiquier.": "Recognise the opening played on the board."
+  "Reconnais l'ouverture jouée sur l'échiquier.": "Recognise the opening played on the board.",
+  "Mat en un": "Mate in one",
+  "Un champion vient de gaffer : trouve le mat !": "A champion just blundered: find the mate!"
  },
  "identiques": [
   "CC BY-SA 3.0",
@@ -512,5 +514,26 @@
   "Coup précédent": "Previous move",
   "Coup suivant": "Next move",
   "Dernier coup": "Last move"
+ },
+ "jeux/mat1/index.html": {
+  "Mat en un": "Mate in one",
+  "Montrer les coups possibles": "Show possible moves",
+  "Des points sur les cases où la pièce choisie peut aller": "Dots on the squares the chosen piece can go to",
+  "Revoir le coup": "Replay the move",
+  "Indice": "Hint",
+  "Le pion devient…": "The pawn becomes…",
+  "Les Blancs jouent et font mat en un coup !": "White to play and mate in one!",
+  "Voir la partie sur Lichess": "See the game on Lichess",
+  "Glisse la pièce ou touche-la, puis touche sa case d'arrivée.": "Drag the piece, or tap it and then tap its destination square.",
+  "suivant.": "next.",
+  "10 positions : trouve le mat en un coup, du premier essai.": "10 positions: find the mate in one, on the first try.",
+  "30 secondes par position": "30 seconds per position",
+  "Revoir le dernier coup de l'adversaire": "Replay the opponent's last move",
+  "Tourner l'échiquier": "Flip the board",
+  "La pièce qui fait mat, puis le coup": "The piece that mates, then the move",
+  "Promotion : choisis la pièce": "Promotion: choose the piece",
+  "Mats trouvés du premier coup": "Mates found on the first try",
+  "Détail des positions": "Positions in detail",
+  "Montrer les coups possibles<small>Des points sur les cases où la pièce choisie peut aller</small>": "Show possible moves<small>Dots on the squares the chosen piece can go to</small>"
  }
 }
