@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../css/commun.css?v=202611152312">
-<link rel="stylesheet" href="../../css/jeux.css?v=202611152312">
-<link rel="stylesheet" href="../../css/echiquier.css?v=202611152312">
-<link rel="stylesheet" href="mat1.css?v=202611152312">
-<script src="../../js/commun.js?v=202611152312"></script>
+<link rel="stylesheet" href="../../css/commun.css?v=202611152315">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611152315">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611152315">
+<link rel="stylesheet" href="mat1.css?v=202611152315">
+<script src="../../js/commun.js?v=202611152315"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- illustrations pour les non-lecteurs -->
@@ -69,6 +69,10 @@
           <svg viewBox="0 0 24 24"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3.5 6v2M3.5 11v2M10 21h2M15 21h2"/></svg>
           <span>Lettres et chiffres</span><span class="interrupteur" aria-hidden="true"></span>
         </button>
+        <button id="reg-commentaires" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4Z"/><path d="M8 9h8M8 12.5h5"/></svg>
+          <span>Commentaires<small>Les explications et l'histoire de la partie ; sans eux, tout tient sur un écran de téléphone</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
         <button id="reg-points" class="ligne-reglage" type="button">
           <svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="2"/><circle cx="17" cy="7" r="2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
           <span>Montrer les coups possibles<small>Des points sur les cases où la pièce choisie peut aller</small></span><span class="interrupteur" aria-hidden="true"></span>
@@ -122,7 +126,8 @@
 
     <div class="panneau-mat1">
       <!-- la partie : qui joue contre qui, où, et à quelle cadence -->
-      <div class="carte-partie" id="carte-partie">
+      <!-- la partie : montrée seulement une fois le problème résolu -->
+      <div class="carte-partie" id="carte-partie" hidden>
         <p class="joueur" id="joueur-blanc"></p>
         <p class="joueur" id="joueur-noir"></p>
         <p class="tournoi" id="tournoi"></p>
@@ -136,6 +141,7 @@
 
       <div class="retour" id="retour" hidden aria-live="polite">
         <p class="verdict" id="verdict"></p>
+        <p class="resume-partie" id="resume-partie"></p>
         <p class="motif" id="motif"></p>
         <p class="explication" id="explication"></p>
         <p class="histoire" id="histoire"></p>
@@ -211,12 +217,12 @@
   </div>
 </div>
 
-<script src="../../js/pieces.js?v=202611152312"></script>
-<script src="../../js/sons.js?v=202611152312"></script>
-<script src="../../js/ui.js?v=202611152312"></script>
-<script src="../../js/echiquier.js?v=202611152312"></script>
-<script src="../../js/glisser.js?v=202611152312"></script>
-<script src="problemes.js?v=202611152312"></script>
-<script src="mat1.js?v=202611152312"></script>
+<script src="../../js/pieces.js?v=202611152315"></script>
+<script src="../../js/sons.js?v=202611152315"></script>
+<script src="../../js/ui.js?v=202611152315"></script>
+<script src="../../js/echiquier.js?v=202611152315"></script>
+<script src="../../js/glisser.js?v=202611152315"></script>
+<script src="problemes.js?v=202611152315"></script>
+<script src="mat1.js?v=202611152315"></script>
 </body>
 </html>

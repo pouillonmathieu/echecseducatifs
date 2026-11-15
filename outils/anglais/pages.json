@@ -534,6 +534,8 @@
   "Promotion : choisis la pièce": "Promotion: choose the piece",
   "Mats trouvés du premier coup": "Mates found on the first try",
   "Détail des positions": "Positions in detail",
-  "Montrer les coups possibles<small>Des points sur les cases où la pièce choisie peut aller</small>": "Show possible moves<small>Dots on the squares the chosen piece can go to</small>"
+  "Montrer les coups possibles<small>Des points sur les cases où la pièce choisie peut aller</small>": "Show possible moves<small>Dots on the squares the chosen piece can go to</small>",
+  "Commentaires": "Comments",
+  "Les explications et l'histoire de la partie ; sans eux, tout tient sur un écran de téléphone": "The explanations and the story of the game; without them, everything fits on one phone screen"
  }
 }

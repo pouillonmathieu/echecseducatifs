@@ -124,9 +124,9 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (`outils/ouvertures-lichess.json`) ; l'adresse des pages Lichess suit leur règle (accents et ponctuation retirés,
   espaces en `_`).
 - **Mat en un** (`jeux/mat1/`) : de vraies parties de grands maîtres (souvent en blitz ou en rapide). L'échiquier,
-  vu du côté du joueur, rejoue le dernier coup d'un grand maître : une gaffe qui laisse un mat en un coup (« Magnus
-  Carlsen vient de jouer 33…Ce5?? »). La carte de la partie donne les joueurs (titre, Elo), le tournoi, l'année et la
-  cadence. Il faut trouver le mat et le jouer, en glissant la pièce ou en clic-clic (points sur les cases possibles,
+  vu du côté du joueur, rejoue le dernier coup d'un grand maître : une gaffe qui laisse un mat en un coup (« Les Noirs
+  viennent de jouer 33…Ce5?? »). Les joueurs ne sont montrés qu'une fois le problème résolu : la carte de la partie
+  (titre, Elo, tournoi, année, cadence) et « Magnus Carlsen avait joué 33…Ce5?? ». Il faut trouver le mat et le jouer, en glissant la pièce ou en clic-clic (points sur les cases possibles,
   réglable ; choix de la pièce pour une promotion ; roquer en posant le roi sur sa tour). Un coup qui ne fait pas mat
   est montré puis expliqué, avec des flèches rouges : pas d'échec, pat, ou les défenses (le roi s'enfuit, on prend la
   pièce, on bloque l'échec). Après le mat : le motif (mat du couloir, étouffé, échec double, à la découverte…),
@@ -136,6 +136,9 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Mode libre (plusieurs essais, « Indice » éclaire la pièce qui mate, puis « Solution » montre le coup ; le score compte
   les mats trouvés du premier coup), défi (10 positions, un seul essai) et défi chrono (30 s par position, à partir de
   la fin de l'animation).
+  Réglage « Commentaires » : sans eux, plus d'explications ni d'histoire de la partie (un coup raté donne seulement
+  « Pas mat ! », les flèches restent ; après le mat, le verdict, les joueurs sur une ligne et « Suivant »), et sur
+  téléphone tout tient sur un seul écran, sans faire défiler (vérifié de l'iPhone SE au grand iPhone, en libre et en défi).
   Les positions viennent de la base des retransmissions Lichess (janvier 2020 à octobre 2026 ; 200 positions, surtout en blitz et en rapide) : `outils/mats-en-un-recherche.py`
   y cherche, mois par mois, chaque coup d'un grand maître après lequel l'adversaire a un mat en un ;
   `outils/mats-en-un.py` ne garde que les vraies gaffes (un autre coup évitait le mat, et la position n'était pas déjà

@@ -20,6 +20,7 @@
 
   const reglages = {
     coordonnees: Prefs.lire('echecs.mat1.coordonnees', true),
+    commentaires: Prefs.lire('echecs.mat1.commentaires', true),
     points: Prefs.lire('echecs.mat1.points', true),
   };
   // etat : 'anim' (le coup adverse se joue), 'jeu' (à toi), 'erreur' (un coup raté est montré), 'fini'
@@ -173,6 +174,9 @@
     $('joueur-noir').innerHTML = ligne('noir');
     const cad = CADENCE[p.partie.cadence];
     $('tournoi').textContent = [p.partie.evenement, p.partie.evenement.includes(p.partie.annee) ? '' : p.partie.annee, cad && (EN ? cad[1] : cad[0])].filter(Boolean).join(' · ');
+    // les joueurs ne sont montrés qu'une fois le problème résolu
+    $('carte-partie').hidden = true;
+    $('resume-partie').textContent = [`${p.partie.blancs} – ${p.partie.noirs}`, p.partie.annee].filter(Boolean).join(' · ');
     $('dernier-coup').innerHTML = '&nbsp;';
     document.querySelector('#roi-question').setAttribute('href', `#piece-roi-${p.trait}`);
     $('question-texte').textContent = t(`${camp(p.trait)} jouent et font mat en un coup !`, `${camp(p.trait)} to play and mate in one!`);
@@ -191,9 +195,7 @@
     const p = jeu.p;
     jeu.fenAvant = p.fen;
     dessiner(p.apres, p.coup, true);
-    $('dernier-coup').innerHTML = t(
-      `<b>${nomJoueur(p, p.gaffeur)}</b> vient de jouer <span class="coup-gaffe">${numero(p.num, p.gaffeur)}${sanFr(p.san)}<span class="gaffe">??</span></span>`,
-      `<b>${nomJoueur(p, p.gaffeur)}</b> has just played <span class="coup-gaffe">${numero(p.num, p.gaffeur)}${p.san}<span class="gaffe">??</span></span>`);
+    dernierCoup(false);
     plusTard(() => {
       if (jeu.etat !== 'anim') return;
       jeu.etat = 'jeu';
@@ -204,6 +206,14 @@
         if (defi.chrono) demarrerChrono();
       }
     }, 420);
+  }
+  // « Les Noirs viennent de jouer 33…Ce5?? » ; une fois résolu : « Magnus Carlsen vient de jouer… »
+  function dernierCoup(avecNom) {
+    const p = jeu.p;
+    const coup = `<span class="coup-gaffe">${numero(p.num, p.gaffeur)}${sanFr(p.san)}<span class="gaffe">??</span></span>`;
+    $('dernier-coup').innerHTML = avecNom
+      ? t(`<b>${nomJoueur(p, p.gaffeur)}</b> avait joué ${coup}`, `<b>${nomJoueur(p, p.gaffeur)}</b> had played ${coup}`)
+      : t(`<b>${camp(p.gaffeur)}</b> viennent de jouer ${coup}`, `<b>${camp(p.gaffeur)}</b> just played ${coup}`);
   }
   // « Revoir le coup » : la position d'avant, puis la gaffe à nouveau
   function revoirCoup() {
@@ -225,6 +235,8 @@
     m.innerHTML = texte;
     m.className = 'message ' + classe;
     m.hidden = !texte;
+    // sans les commentaires, le message prend la place de la question (tout tient sur un écran de téléphone)
+    $('question').classList.toggle('cache-par-message', !!texte);
   }
 
   // ---------- Le joueur joue ----------
@@ -342,8 +354,9 @@
     Echiquier.dessinerAnnotations(plateau, fleches);
     Sons.refus();
     plateau.classList.remove('secoue'); void plateau.offsetWidth; plateau.classList.add('secoue');
+    const court = !reglages.commentaires;
     if (jeu.mode === 'libre') {
-      message(texte + ' ' + t('Essaie encore !', 'Try again!'), 'erreur');
+      message(court ? t('Pas mat ! Essaie encore.', 'Not mate! Try again.') : texte + ' ' + t('Essaie encore !', 'Try again!'), 'erreur');
       plusTard(() => {
         if (jeu.etat !== 'erreur') return;
         jeu.etat = 'jeu';
@@ -353,7 +366,7 @@
     }
     // défi : un seul essai
     arreterChrono();
-    message(texte, 'erreur');
+    message(court ? t('Pas mat !', 'Not mate!') : texte, 'erreur');
     jeu.final = { ok: false, texte };
     plusTard(() => finir(false, false), PAUSE_ERREUR);
   }
@@ -412,6 +425,8 @@
     $('explication').textContent = expl;
     $('explication').hidden = !expl;
     $('histoire').innerHTML = histoire(p);
+    $('carte-partie').hidden = false;
+    dernierCoup(true);
     const lien = $('lien-partie');
     lien.hidden = !p.partie.lien;
     if (p.partie.lien) lien.href = p.partie.lien;
@@ -601,11 +616,14 @@
   const appliquer = () => document.body.classList.toggle('sans-coordonnees', !reglages.coordonnees);
   brancherInterrupteur($('reg-coordonnees'), reglages.coordonnees, (v) => { reglages.coordonnees = v; Prefs.ecrire('echecs.mat1.coordonnees', v); appliquer(); });
   brancherInterrupteur($('reg-points'), reglages.points, (v) => { reglages.points = v; Prefs.ecrire('echecs.mat1.points', v); if (jeu.etat === 'jeu') dessinerProbleme(); });
+  const appliquerCommentaires = () => document.body.classList.toggle('sans-commentaires', !reglages.commentaires);
+  brancherInterrupteur($('reg-commentaires'), reglages.commentaires, (v) => { reglages.commentaires = v; Prefs.ecrire('echecs.mat1.commentaires', v); appliquerCommentaires(); });
   brancherInterrupteur($('reg-son'), Sons.actif, (v) => { Sons.actif = v; });
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
   appliquer();
+  appliquerCommentaires();
   lancerLibre();
   window.MatEnUn = { jeu, defi, poser, PROBLEMES, jouer, jouerSur, pourquoi };
 })();
