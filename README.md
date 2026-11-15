@@ -132,7 +132,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   pièce, on bloque l'échec). Après le mat : le motif (mat du couloir, étouffé, échec double, à la découverte…),
   pourquoi c'est mat (qui donne échec, pourquoi on ne peut pas prendre la pièce, qui surveille chaque case de fuite),
   les autres mats possibles, et ce qui s'est passé dans la vraie partie (le mat joué, ou raté, et le résultat), avec
-  un lien vers la partie sur Lichess. « Revoir le coup » rejoue la gaffe ; « Tourner l'échiquier ».
+  un lien vers la partie sur Lichess. « Revoir le coup » rejoue la gaffe ; une fois le problème résolu, il devient
+  « Rejouer » (le même exercice, sans compter dans le score ni dans le défi). « Tourner l'échiquier ». Une fois résolu,
+  sur téléphone et petite tablette, « Suivant » prend la place de l'indice au-dessus de l'échiquier : toujours au même
+  endroit, sans faire défiler (sur ordinateur, il reste dans le cadre de l'explication).
   Mode libre (plusieurs essais, « Indice » éclaire la pièce qui mate, puis « Solution » montre le coup ; le score compte
   les mats trouvés du premier coup), défi (10 positions, un seul essai) et défi chrono (30 s par position, à partir de
   la fin de l'animation).

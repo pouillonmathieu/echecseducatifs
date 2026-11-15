@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../css/commun.css?v=202611152315">
-<link rel="stylesheet" href="../../css/jeux.css?v=202611152315">
-<link rel="stylesheet" href="../../css/echiquier.css?v=202611152315">
-<link rel="stylesheet" href="mat1.css?v=202611152315">
-<script src="../../js/commun.js?v=202611152315"></script>
+<link rel="stylesheet" href="../../css/commun.css?v=202611152325">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611152325">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611152325">
+<link rel="stylesheet" href="mat1.css?v=202611152325">
+<script src="../../js/commun.js?v=202611152325"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- illustrations pour les non-lecteurs -->
@@ -93,7 +93,8 @@
 
   <section class="jeu-mat1">
     <div class="colonne-plateau">
-      <!-- au-dessus de l'échiquier : revoir le dernier coup, tourner l'échiquier, indice puis solution -->
+      <!-- au-dessus de l'échiquier : revoir le dernier coup (une fois résolu : rejouer le même exercice), tourner
+           l'échiquier, indice puis solution ; une fois résolu, sur téléphone, « Suivant » à la place de l'indice -->
       <div class="choix-jeu barre-plateau">
         <div class="choix-ligne">
           <button type="button" class="avec-texte" id="btn-revoir" title="Revoir le dernier coup de l'adversaire">
@@ -107,10 +108,16 @@
           </button>
         </div>
         <div class="choix-ligne seulement-libre">
-          <button class="avec-texte" id="btn-indice" type="button" title="La pièce qui fait mat, puis le coup">
+          <button class="avec-texte seulement-pas-resolu" id="btn-indice" type="button" title="La pièce qui fait mat, puis le coup">
             <svg class="ico-indice" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4.9 1 .9 1.7V16h5.2v-.4c0-.7.3-1.3.9-1.7A6 6 0 0 0 12 3Z"/></svg>
             <svg class="ico-solution" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M10 5h9v9"/></svg>
             <span id="btn-indice-texte">Indice</span>
+          </button>
+        </div>
+        <div class="choix-ligne ligne-suivant-haut">
+          <button class="avec-texte" id="btn-suivant-haut" type="button">
+            <span id="btn-suivant-haut-texte">Suivant</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
           </button>
         </div>
       </div>
@@ -217,12 +224,12 @@
   </div>
 </div>
 
-<script src="../../js/pieces.js?v=202611152315"></script>
-<script src="../../js/sons.js?v=202611152315"></script>
-<script src="../../js/ui.js?v=202611152315"></script>
-<script src="../../js/echiquier.js?v=202611152315"></script>
-<script src="../../js/glisser.js?v=202611152315"></script>
-<script src="problemes.js?v=202611152315"></script>
-<script src="mat1.js?v=202611152315"></script>
+<script src="../../js/pieces.js?v=202611152325"></script>
+<script src="../../js/sons.js?v=202611152325"></script>
+<script src="../../js/ui.js?v=202611152325"></script>
+<script src="../../js/echiquier.js?v=202611152325"></script>
+<script src="../../js/glisser.js?v=202611152325"></script>
+<script src="problemes.js?v=202611152325"></script>
+<script src="mat1.js?v=202611152325"></script>
 </body>
 </html>

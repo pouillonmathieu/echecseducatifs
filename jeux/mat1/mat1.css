@@ -219,3 +219,18 @@ body.sans-commentaires .resume-partie { display: block; }
   body.sans-commentaires .verdict svg { width: 22px; height: 22px; padding: 4px; }
   body.sans-commentaires #btn-suivant { padding: 7px 10px; font-size: 15px; }
 }
+
+/* une fois résolu : plus d'indice ; sur téléphone, « Suivant » au-dessus de l'échiquier, toujours au même endroit
+   (celui du cadre de l'explication disparaît) ; sur ordinateur, il reste dans le cadre */
+body.resolu .seulement-pas-resolu, body.resolu .choix-ligne:has(> .seulement-pas-resolu) { display: none !important; }
+.ligne-suivant-haut { display: none !important; }
+#btn-suivant-haut { gap: 4px; padding: 2px 8px 2px 14px; background: var(--accent); color: var(--sur-accent); font-weight: 700; }
+#btn-suivant-haut svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 860px) {
+  body.resolu .ligne-suivant-haut { display: flex !important; }
+  body.resolu .retour #btn-suivant { display: none; }
+  body.resolu .barre-plateau .texte-choix { display: inline; }
+}
+@media (max-width: 560px) {
+  body.resolu .barre-plateau .choix-ligne button.avec-texte#btn-revoir { width: auto; padding: 2px 10px 2px 6px; }
+}

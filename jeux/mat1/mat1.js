@@ -149,8 +149,10 @@
   // le numéro du coup : « 42. » pour les Blancs, « 42… » pour les Noirs
   const numero = (n, c) => `${n}${c === 'blanc' ? '.' : '…'}`;
 
-  function poser(p) {
+  // rejoue : le même exercice, refait après l'avoir résolu (sans compter dans le score ni dans le défi)
+  function poser(p, rejoue = false) {
     jeu.partie++;
+    jeu.rejoue = rejoue;
     arreterChrono();
     jeu.p = p;
     jeu.etat = 'anim';
@@ -203,7 +205,7 @@
       majIndice();
       if (jeu.mode === 'defi') {
         defi.debut = performance.now();
-        if (defi.chrono) demarrerChrono();
+        if (defi.chrono && !jeu.rejoue) demarrerChrono();
       }
     }, 420);
   }
@@ -378,7 +380,7 @@
     message('');
     const premier = jeu.essais === 0 && jeu.aide === 0;
     Sons.bravo();
-    if (jeu.mode === 'libre') {
+    if (jeu.mode === 'libre' && !jeu.rejoue) {
       jeu.total++;
       if (premier) jeu.justes++;
       $('score-libre').textContent = `${jeu.justes} / ${jeu.total}`;
@@ -436,11 +438,13 @@
     r.hidden = false;
     $('question').hidden = true;
     majIndice();
-    if (jeu.mode === 'defi') {
+    if (jeu.mode === 'defi' && !jeu.rejoue) {
       defi.resultats.push({ ok: juste, san: coupMat, temps: (performance.now() - defi.debut) / 1000 });
       majPoints();
     }
-    $('btn-suivant').firstChild.textContent = jeu.mode === 'defi' && defi.numero === NB_DEFIS - 1 ? t('Voir le résultat ', 'See the result ') : t('Suivant ', 'Next ');
+    const dernier = jeu.mode === 'defi' && defi.numero === NB_DEFIS - 1;
+    $('btn-suivant').firstChild.textContent = dernier ? t('Voir le résultat ', 'See the result ') : t('Suivant ', 'Next ');
+    $('btn-suivant-haut-texte').textContent = dernier ? t('Résultat', 'Result') : t('Suivant', 'Next');
     $('btn-suivant').focus({ preventScroll: true });
   }
 
@@ -471,7 +475,11 @@
     b.classList.toggle('solution', jeu.aide >= 1);
     $('btn-indice-texte').textContent = jeu.aide >= 1 ? t('Solution', 'Solution') : t('Indice', 'Hint');
     b.disabled = jeu.etat === 'fini' || jeu.aide >= 2;
-    $('btn-revoir').disabled = jeu.etat === 'fini';
+    // une fois résolu : « Rejouer » refait le même exercice, et « Suivant » passe au-dessus de l'échiquier (téléphone)
+    const fini = jeu.etat === 'fini';
+    document.body.classList.toggle('resolu', fini);
+    $('btn-revoir').querySelector('.texte-choix').textContent = fini ? t('Rejouer', 'Play again') : t('Revoir le coup', 'Replay the move');
+    $('btn-revoir').title = fini ? t('Refaire le même exercice', 'Do the same puzzle again') : t('Revoir le dernier coup de l\'adversaire', 'Replay the opponent\'s last move');
   }
   $('btn-indice').addEventListener('click', () => {
     if (jeu.mode !== 'libre' || jeu.etat === 'fini' || jeu.aide >= 2) return;
@@ -482,7 +490,8 @@
       : t('Solution : suis la flèche et joue le coup !', 'Solution: follow the arrow and play the move!'));
     majIndice();
   });
-  $('btn-revoir').addEventListener('click', revoirCoup);
+  $('btn-revoir').addEventListener('click', () => { if (jeu.etat === 'fini') poser(jeu.p, true); else revoirCoup(); });
+  $('btn-suivant-haut').addEventListener('click', suivant);
   // tourner l'échiquier : on redessine ce qui est montré
   $('btn-retourner').addEventListener('click', () => {
     jeu.orientation = autre(jeu.orientation);
