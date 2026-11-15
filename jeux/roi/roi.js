@@ -49,11 +49,13 @@
   // site directement depuis le disque)
   const SRC = document.currentScript ? document.currentScript.src : '';
   const BASE = SRC.slice(0, SRC.lastIndexOf('/') + 1);
+  // même numéro de version que roi.js (outils/version.py) : après une mise à jour, le navigateur reprend les tables neuves
+  const VERSION = SRC.includes('?') ? SRC.slice(SRC.indexOf('?')) : '';
   async function lireTable(types) {
     if (T.dejaLa(types)) return;
     try {
       if (!('DecompressionStream' in window)) throw new Error('pas de décompression');
-      const r = await fetch(`${BASE}tables/${T.cle(types)}.bin.gz`);
+      const r = await fetch(`${BASE}tables/${T.cle(types)}.bin.gz${VERSION}`);
       if (!r.ok) throw new Error(r.status);
       const flux = r.body.pipeThrough(new DecompressionStream('gzip'));
       const W = new Uint8Array(await new Response(flux).arrayBuffer());
