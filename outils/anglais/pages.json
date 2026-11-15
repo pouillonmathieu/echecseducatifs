@@ -487,7 +487,9 @@
   "Je joue les Noirs": "I play Black",
   "Je joue les deux camps": "I play both sides",
   "Tourner l'échiquier": "Flip the board",
-  "La pièce à jouer, puis le coup": "The piece to move, then the move"
+  "La pièce à jouer, puis le coup": "The piece to move, then the move",
+  "Les ouvertures": "The openings",
+  "La liste de toutes les ouvertures, avec leurs fiches": "The list of all the openings, with their pages"
  },
  "jeux/ouvertures/fiche.html": {
   "Les ouvertures": "Chess openings",

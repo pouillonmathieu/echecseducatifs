@@ -110,6 +110,7 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   l'ouverture, « En savoir plus » (sa fiche, dans un nouvel onglet) et « Rejouer l'ouverture » : c'est alors le joueur qui
   joue les coups (les Blancs, les Noirs ou les deux ; l'ordinateur joue l'autre camp), en glissant les pièces ou en
   clic-clic ; un mauvais coup est refusé ; « Indice » éclaire la pièce à jouer et devient « Solution » (une flèche).
+  En mode libre, un bouton au-dessus de l'échiquier ouvre la liste de toutes les ouvertures (nouvel onglet).
   Couleur jouée, « Tourner l'échiquier » et « Indice » sont au-dessus de l'échiquier (toujours à portée sur téléphone) ;
   en revenant au quiz, le score du mode libre est gardé.
   Les fiches (`jeux/ouvertures/fiche.html?o=<ouverture>`, ou toutes les ouvertures sans paramètre) : l'échiquier et les

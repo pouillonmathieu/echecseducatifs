@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../css/commun.css?v=202611152022">
-<link rel="stylesheet" href="../../css/jeux.css?v=202611152022">
-<link rel="stylesheet" href="../../css/echiquier.css?v=202611152022">
-<link rel="stylesheet" href="ouvertures.css?v=202611152022">
-<script src="../../js/commun.js?v=202611152022"></script>
+<link rel="stylesheet" href="../../css/commun.css?v=202611152113">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611152113">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611152113">
+<link rel="stylesheet" href="ouvertures.css?v=202611152113">
+<script src="../../js/commun.js?v=202611152113"></script>
 </head>
 <body data-mode="libre" data-chrono="non" data-vue="quiz">
 <!-- illustrations pour les non-lecteurs -->
@@ -100,6 +100,13 @@
           <button type="button" id="btn-retourner" aria-label="Tourner l'échiquier" title="Tourner l'échiquier">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v13M7 17l-3-3M7 17l3-3"/><path d="M17 20V7M17 7l-3 3M17 7l3 3"/></svg>
           </button>
+        </div>
+        <!-- la liste de toutes les ouvertures (mode libre), dans un nouvel onglet pour garder la partie -->
+        <div class="choix-ligne seulement-libre seulement-quiz">
+          <a class="lien-liste" id="btn-liste" href="fiche.html" target="_blank" rel="noopener" title="La liste de toutes les ouvertures, avec leurs fiches">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 11.5h5"/></svg>
+            <span class="texte-choix">Les ouvertures</span>
+          </a>
         </div>
         <div class="choix-ligne seulement-entrainement">
           <button class="avec-texte" id="btn-indice" type="button" title="La pièce à jouer, puis le coup">
@@ -234,13 +241,13 @@
   </div>
 </div>
 
-<script src="../../js/pieces.js?v=202611152022"></script>
-<script src="../../js/sons.js?v=202611152022"></script>
-<script src="../../js/ui.js?v=202611152022"></script>
-<script src="../../js/echiquier.js?v=202611152022"></script>
-<script src="../../js/revoir.js?v=202611152022"></script>
-<script src="../../js/glisser.js?v=202611152022"></script>
-<script src="donnees.js?v=202611152022"></script>
-<script src="ouvertures.js?v=202611152022"></script>
+<script src="../../js/pieces.js?v=202611152113"></script>
+<script src="../../js/sons.js?v=202611152113"></script>
+<script src="../../js/ui.js?v=202611152113"></script>
+<script src="../../js/echiquier.js?v=202611152113"></script>
+<script src="../../js/revoir.js?v=202611152113"></script>
+<script src="../../js/glisser.js?v=202611152113"></script>
+<script src="donnees.js?v=202611152113"></script>
+<script src="ouvertures.js?v=202611152113"></script>
 </body>
 </html>

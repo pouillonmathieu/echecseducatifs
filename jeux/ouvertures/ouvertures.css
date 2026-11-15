@@ -145,6 +145,11 @@ body.presse #minuteur-barre { background: var(--alerte); }
 /* au-dessus de l'échiquier : niveau ou couleur jouée, « tourner l'échiquier », indice */
 .barre-plateau { flex-wrap: nowrap; }
 #btn-retourner svg { width: 24px; height: 24px; }
+/* lien vers la liste des ouvertures : même allure que les boutons de la barre */
+.lien-liste { display: flex; align-items: center; gap: 6px; height: 46px; box-sizing: border-box; padding: 4px 12px 4px 9px; border: 2px solid transparent; border-radius: 12px; color: var(--encre); font-size: 15px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background .15s, transform .1s; }
+.lien-liste:hover { background: var(--surface-2); }
+.lien-liste:active { transform: scale(.94); }
+.lien-liste svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 #reg-camp button.avec-texte > svg { width: 30px; height: 30px; }
 #btn-indice svg { flex: none; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -191,16 +196,20 @@ body[data-vue="entrainement"] .plateau-ouv .case-e { cursor: pointer; }
   .choix-jeu .choix-ligne button.avec-texte:not(#btn-indice) { width: 46px; padding: 5px; justify-content: center; }
   .choix-jeu #reg-camp button[data-camp="deux"] { width: 56px; }
   .choix-jeu { gap: 6px; }
+  .lien-liste { width: 46px; padding: 5px; justify-content: center; }
 }
 
 /* très petit téléphone (iPhone SE) : boutons plus serrés, indice en icône seule, titre plus petit */
 @media (max-width: 400px) {
   .choix-jeu .choix-ligne button.avec-texte:not(#btn-indice), #btn-retourner { width: 38px; height: 38px; padding: 3px; }
   .choix-jeu #reg-camp button[data-camp="deux"] { width: 48px; }
+  .lien-liste { width: 38px; height: 38px; padding: 3px; }
   #reg-camp button.avec-texte > svg { width: 26px; height: 26px; }
   .deux-rois svg { width: 20px; height: 26px; }
   #btn-indice { height: 38px; padding: 4px 8px; }
   #btn-indice-texte { display: none; }
-  .barre .titre { font-size: 18px; hyphens: auto; overflow-wrap: anywhere; }
-  .titre-long { display: none; }
+  /* le titre passe sous les boutons, sur toute la largeur */
+  .ecran-ouv > .barre { flex-wrap: wrap; row-gap: 4px; }
+  .ecran-ouv > .barre .titre { order: 10; flex-basis: 100%; margin: 0; font-size: 21px; }
+  .ecran-ouv > .barre > a.bouton-icone:first-child, .ecran-ouv > .barre > #btn-retour { margin-right: auto; }
 }
