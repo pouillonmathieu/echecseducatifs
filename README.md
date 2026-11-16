@@ -142,8 +142,12 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Réglage « Commentaires » : sans eux, plus d'explications ni d'histoire de la partie (un coup raté donne seulement
   « Pas mat ! », les flèches restent ; après le mat, le verdict, les joueurs sur une ligne et « Suivant »), et sur
   téléphone tout tient sur un seul écran, sans faire défiler (vérifié de l'iPhone SE au grand iPhone, en libre et en défi).
-  Les positions viennent de la base des retransmissions Lichess (janvier 2020 à octobre 2026 ; 200 positions, surtout en blitz et en rapide) : `outils/mats-en-un-recherche.py`
-  y cherche, mois par mois, chaque coup d'un grand maître après lequel l'adversaire a un mat en un ;
+  300 positions : 200 de la base des retransmissions Lichess (tournois sur échiquier, janvier 2020 à octobre 2026,
+  surtout en blitz et en rapide) et 100 parties en ligne de Chess.com (blitz des 12 derniers mois, dont des Titled
+  Tuesday). `outils/mats-en-un-recherche.py` cherche, mois par mois, chaque coup d'un grand maître après lequel
+  l'adversaire a un mat en un ; `outils/mats-en-un-chesscom.py` fait de même avec l'API publique de Chess.com, pour les
+  62 grands maîtres des classements blitz et rapide (vrais noms ; l'adversaire doit avoir un vrai nom dans son profil ;
+  pas de gaffe jouée avec moins de 5 secondes à la pendule ; pas d'Elo affiché, les classements en ligne n'en sont pas) ;
   `outils/mats-en-un.py` ne garde que les vraies gaffes (un autre coup évitait le mat, et la position n'était pas déjà
   perdue d'après l'évaluation Lichess ou Stockfish), au plus 3 par joueur, les parties de blitz et de rapide en premier
   (sélection dans `outils/mats-en-un.json`), puis écrit `jeux/mat1/problemes.js` en vérifiant chaque mat, avec la
@@ -171,7 +175,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   site (`jeux/joue/portraits.js`), sans aucune photo. Les introductions des parties célèbres
   (`jeux/joue/intros.js`) sont rédigées pour ce site à partir de faits historiques.
 - Positions de « Mat en un » : parties de la [base des retransmissions Lichess](https://database.lichess.org/#broadcasts)
-  (domaine public, CC0), vérifiées avec [python-chess](https://github.com/niklasf/python-chess) (licence GPL, utilisé
+  (domaine public, CC0) et parties en ligne lues avec l'[API publique de Chess.com](https://www.chess.com/news/view/published-data-api)
+  (coups seulement, avec un lien vers chaque partie), vérifiées avec [python-chess](https://github.com/niklasf/python-chess) (licence GPL, utilisé
   seulement par les outils, pas par le site) ; positions d'avant la gaffe évaluées avec Stockfish quand Lichess n'en
   donne pas l'évaluation.
 - Toutes les positions et tous les coups sont vérifiés avec [chess.js](https://github.com/jhlywa/chess.js) (licence BSD)
@@ -246,6 +251,7 @@ outils/tables-roi.js calcule les tables de « Capture le roi » (jeux/roi/tables
 outils/parties-champions.js génère jeux/joue/parties.js (parties de outils/parties-champions.pgn et moments à jouer)
 outils/ouvertures.js  génère jeux/ouvertures/donnees.js (ouvertures, textes, variantes, liens Lichess)
 outils/mats-en-un-recherche.py  cherche les mats en un laissés par des grands maîtres (retransmissions Lichess)
+outils/mats-en-un-chesscom.py  la même chose dans les parties en ligne des grands maîtres sur Chess.com
 outils/mats-en-un.py  choisit les vraies gaffes et génère jeux/mat1/problemes.js
 js/revoir.js          revoir les coups (⏮ ◀ ▶ ⏭, flèches du clavier, lecture automatique)
 js/glisser.js         glisser-déposer une pièce sur l'échiquier
