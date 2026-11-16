@@ -70,12 +70,12 @@ def evaluer(moteur, fen, blanc):
 
 
 def choisir(dossiers):
-    vus, bons = set(), []
+    vus, candidats = set(), []
     lignes = []
     for dossier in dossiers:
         for f in sorted(glob.glob(os.path.join(dossier, '*.jsonl'))):
             lignes += [json.loads(l) for l in open(f)]
-    moteur = stockfish()
+    # d'abord les filtres rapides
     for d in lignes:
         h = d['h']
         blanc = d['joueur'] == 'w'
@@ -86,32 +86,39 @@ def choisir(dossiers):
         cad = cadence(h)
         if cad is None: continue
         # en ligne : pas les gaffes des toutes dernières secondes (coups joués d'avance)
-        if d['h'].get('Source') == 'chess.com' and (d.get('horloge') or 0) < 5: continue
+        if h.get('Source') == 'chess.com' and (d.get('horloge') or 0) < 5: continue
         cle = ' '.join(d['apres'].split()[:4])
         if cle in vus: continue
+        vus.add(cle)
+        d['cadence'] = cad
+        candidats.append(d)
+    # priorité : blitz et rapide d'abord, les parties récentes ; au plus PAR_JOUEUR problèmes par joueur qui gaffe.
+    # Stockfish n'évalue que les positions nécessaires : une gaffe compte si la position n'était pas déjà perdue.
+    random.seed(7)
+    random.shuffle(candidats)
+    candidats.sort(key=lambda d: (d['cadence'] == 'classique', -int(annee(d['h']) or 0)))
+    moteur = stockfish()
+    moteur.configure({'Threads': os.cpu_count() or 1, 'Hash': 128})
+    par_joueur, par_source, garde, perdues = {}, {}, [], 0
+    for d in candidats:
+        blanc = d['joueur'] == 'w'
+        g = d['h']['White'] if blanc else d['h']['Black']
+        src = d['h'].get('Source', 'lichess')
+        if par_joueur.get(g, 0) >= PAR_JOUEUR or par_source.get(src, 0) >= MAX[src]: continue
         v = pov(d['eval_avant'], blanc)
         if v is None:
             v = evaluer(moteur, d['avant'], blanc)
             d['eval_sf'] = v
-        if v < -4: continue  # déjà perdu : pas une vraie gaffe
-        vus.add(cle)
-        d['cadence'] = cad
+        if v < -4:  # déjà perdu : pas une vraie gaffe
+            perdues += 1
+            continue
         d['eval'] = v
-        bons.append(d)
-    moteur.quit()
-    # priorité : blitz et rapide d'abord, puis le reste ; au plus 3 problèmes par joueur qui gaffe
-    random.seed(7)
-    random.shuffle(bons)
-    bons.sort(key=lambda d: (d['cadence'] == 'classique', -int(annee(d['h']) or 0)))
-    par_joueur, par_source, garde = {}, {}, []
-    for d in bons:
-        g = d['h']['White'] if d['joueur'] == 'w' else d['h']['Black']
-        src = d['h'].get('Source', 'lichess')
-        if par_joueur.get(g, 0) >= PAR_JOUEUR or par_source.get(src, 0) >= MAX[src]: continue
         par_joueur[g] = par_joueur.get(g, 0) + 1
         par_source[src] = par_source.get(src, 0) + 1
         garde.append(d)
-    print(len(lignes), 'coups trouvés,', len(bons), 'vraies gaffes,', len(garde), 'gardées', par_source, file=sys.stderr)
+    moteur.quit()
+    print(len(lignes), 'coups trouvés,', len(candidats), 'candidats,', perdues, 'positions déjà perdues écartées,',
+          len(garde), 'gardées', par_source, file=sys.stderr)
     return garde
 
 # ---------------------------------------------------------------- textes
