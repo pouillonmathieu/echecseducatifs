@@ -69,6 +69,9 @@ def evaluer(moteur, fen, blanc):
     return -100 if s.is_mate() and s.mate() < 0 else 100 if s.is_mate() else s.score() / 100
 
 
+NOM_PROPRE = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ɏḀ-ỿ][A-Za-zÀ-ÖØ-öø-ɏḀ-ỿ .,'’()-]*$")
+
+
 def choisir(dossiers):
     vus, candidats = set(), []
     lignes = []
@@ -83,6 +86,8 @@ def choisir(dossiers):
         if titre_gaffeur != 'GM' or not d['evite']: continue
         # de vrais noms (pas des pseudos de sites en ligne)
         if any(' ' not in n.strip() and ',' not in n for n in (h['White'], h['Black'])): continue
+        # en lettres latines, sans chiffres ni pseudo (« Instagram Id… »)
+        if any(not NOM_PROPRE.match(n.strip()) or re.search(r'instagram|youtube|twitch|\bid\b', n, re.I) for n in (h['White'], h['Black'])): continue
         cad = cadence(h)
         if cad is None: continue
         # en ligne : pas les gaffes des toutes dernières secondes (coups joués d'avance)
@@ -294,6 +299,7 @@ def raison(b0, mv):
 def nom_joueur(n):
     """« Rapport, Richard » -> « Richard Rapport »"""
     n = re.sub(r'\s+', ' ', re.sub(r'\(.*?\)', '', n)).strip()
+    if n == n.lower() or n == n.upper(): n = n.title()  # « karthikeyan pandian » -> « Karthikeyan Pandian »
     if ',' in n:
         nom, prenom = [x.strip() for x in n.split(',', 1)]
         return f'{prenom} {nom}'.strip()
