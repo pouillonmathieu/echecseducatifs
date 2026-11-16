@@ -431,7 +431,11 @@
     dernierCoup(true);
     const lien = $('lien-partie');
     lien.hidden = !p.partie.lien;
-    if (p.partie.lien) lien.href = p.partie.lien;
+    if (p.partie.lien) {
+      lien.href = p.partie.lien;
+      const site = p.partie.lien.includes('chess.com') ? 'Chess.com' : 'Lichess';
+      lien.firstChild.textContent = t(`Voir la partie sur ${site} `, `See the game on ${site} `);
+    }
     const r = $('retour');
     r.classList.toggle('juste', juste);
     r.classList.toggle('faux', !juste);

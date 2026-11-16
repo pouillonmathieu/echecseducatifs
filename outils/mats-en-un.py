@@ -1,15 +1,17 @@
 """Génère jeux/mat1/problemes.js pour le jeu « Mat en un ».
 
-Les problèmes viennent de vraies parties de grands maîtres (base des retransmissions Lichess, domaine public) : un
-grand maître joue un coup qui laisse un mat en un coup. L'échiquier montre ce coup, le joueur doit trouver le mat.
+Les problèmes viennent de vraies parties de grands maîtres (base des retransmissions Lichess, domaine public, et
+parties en ligne des meilleurs grands maîtres sur Chess.com) : un grand maître joue un coup qui laisse un mat en un
+coup. L'échiquier montre ce coup, le joueur doit trouver le mat.
 
-1. outils/mats-en-un-recherche.py trouve ces coups, mois par mois (un fichier .jsonl par mois) ;
+1. outils/mats-en-un-recherche.py trouve ces coups, mois par mois (un fichier .jsonl par mois), et
+   outils/mats-en-un-chesscom.py dans les parties Chess.com (un fichier .jsonl par joueur) ;
 2. ce script garde les vraies gaffes : le grand maître avait un coup qui évitait le mat, et sa position n'était pas
    déjà perdue (évaluation Lichess, ou Stockfish quand elle manque) ; il écrit la sélection dans
    outils/mats-en-un.json, puis les problèmes avec, pour chaque coup possible du joueur, pourquoi ce n'est pas mat
    (pas d'échec, le roi s'enfuit, on prend la pièce, on bloque l'échec, pat), et l'explication de chaque mat.
 
-usage : python3 outils/mats-en-un.py [dossier des .jsonl]   (sans dossier : repart de outils/mats-en-un.json)
+usage : python3 outils/mats-en-un.py [dossiers des .jsonl : Lichess, Chess.com]   (sans dossier : repart de outils/mats-en-un.json)
         (pip install chess==1.10.0 ; Stockfish dans /usr/games/stockfish ou $STOCKFISH)"""
 import sys, os, re, json, glob, random
 import chess, chess.engine
@@ -17,7 +19,7 @@ import chess, chess.engine
 ICI = os.path.dirname(os.path.abspath(__file__))
 SELECTION = os.path.join(ICI, 'mats-en-un.json')
 SORTIE = os.path.join(ICI, '..', 'jeux', 'mat1', 'problemes.js')
-MAX = 200
+MAX = {'lichess': 200, 'chess.com': 100}  # problèmes gardés par source
 
 # ---------------------------------------------------------------- sélection
 def cadence(h):
@@ -25,11 +27,13 @@ def cadence(h):
     if 'armageddon' in nom or 'casual' in nom: return None  # pas d'armageddon ni de parties amicales en ligne
     if re.search(r'blitz|bullet|speed chess', nom): return 'blitz'
     if re.search(r'rapid|rápid|rapide|schnell|rapido', nom): return 'rapide'
+    tc_class = h.get('TimeClass')  # Chess.com donne la cadence
+    if tc_class: return {'blitz': 'blitz', 'rapid': 'rapide'}.get(tc_class)
     tc = re.sub(r'^\s*\d+\s*/', '', h.get('TimeControl', '') or '')
     m = re.search(r'(\d+)', tc)
     if not m: return 'classique' if re.search(r'classic|olympiad|olympiade|championship|bundesliga|league|liga', nom) else None
     n = int(m.group(1))
-    minutes = n / 60 if n >= 300 else n
+    minutes = n / 60 if n >= 300 or n in (180, 240) else n  # 180+2 : des secondes ; 90+30 : des minutes
     if minutes <= 10: return 'blitz'
     if minutes <= 60: return 'rapide'
     return 'classique'
@@ -64,11 +68,12 @@ def evaluer(moteur, fen, blanc):
     return -100 if s.is_mate() and s.mate() < 0 else 100 if s.is_mate() else s.score() / 100
 
 
-def choisir(dossier):
+def choisir(dossiers):
     vus, bons = set(), []
     lignes = []
-    for f in sorted(glob.glob(os.path.join(dossier, '*.jsonl'))):
-        lignes += [json.loads(l) for l in open(f)]
+    for dossier in dossiers:
+        for f in sorted(glob.glob(os.path.join(dossier, '*.jsonl'))):
+            lignes += [json.loads(l) for l in open(f)]
     moteur = stockfish()
     for d in lignes:
         h = d['h']
@@ -79,6 +84,8 @@ def choisir(dossier):
         if any(' ' not in n.strip() and ',' not in n for n in (h['White'], h['Black'])): continue
         cad = cadence(h)
         if cad is None: continue
+        # en ligne : pas les gaffes des toutes dernières secondes (coups joués d'avance)
+        if d['h'].get('Source') == 'chess.com' and (d.get('horloge') or 0) < 5: continue
         cle = ' '.join(d['apres'].split()[:4])
         if cle in vus: continue
         v = pov(d['eval_avant'], blanc)
@@ -95,14 +102,15 @@ def choisir(dossier):
     random.seed(7)
     random.shuffle(bons)
     bons.sort(key=lambda d: (d['cadence'] == 'classique', -int(annee(d['h']) or 0)))
-    par_joueur, garde = {}, []
+    par_joueur, par_source, garde = {}, {}, []
     for d in bons:
         g = d['h']['White'] if d['joueur'] == 'w' else d['h']['Black']
-        if par_joueur.get(g, 0) >= 3: continue
+        src = d['h'].get('Source', 'lichess')
+        if par_joueur.get(g, 0) >= 3 or par_source.get(src, 0) >= MAX[src]: continue
         par_joueur[g] = par_joueur.get(g, 0) + 1
+        par_source[src] = par_source.get(src, 0) + 1
         garde.append(d)
-        if len(garde) >= MAX: break
-    print(len(lignes), 'coups trouvés,', len(bons), 'vraies gaffes,', len(garde), 'gardées', file=sys.stderr)
+    print(len(lignes), 'coups trouvés,', len(bons), 'vraies gaffes,', len(garde), 'gardées', par_source, file=sys.stderr)
     return garde
 
 # ---------------------------------------------------------------- textes
@@ -345,7 +353,7 @@ def construire(d, i):
 
 def main():
     if len(sys.argv) > 1:
-        sel = choisir(sys.argv[1])
+        sel = choisir(sys.argv[1:])
         json.dump(sel, open(SELECTION, 'w'), ensure_ascii=False, indent=0)
     sel = json.load(open(SELECTION))
     probs = [construire(d, i) for i, d in enumerate(sel)]
