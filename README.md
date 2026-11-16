@@ -143,11 +143,12 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   Réglage « Commentaires » : sans eux, plus d'explications ni d'histoire de la partie (un coup raté donne seulement
   « Pas mat ! », les flèches restent ; après le mat, le verdict, les joueurs sur une ligne et « Suivant »), et sur
   téléphone tout tient sur un seul écran, sans faire défiler (vérifié de l'iPhone SE au grand iPhone, en libre et en défi).
-  300 positions : 200 de la base des retransmissions Lichess (tournois sur échiquier, janvier 2020 à octobre 2026,
-  surtout en blitz et en rapide) et 100 parties en ligne de Chess.com (blitz des 12 derniers mois, dont des Titled
-  Tuesday). `outils/mats-en-un-recherche.py` cherche, mois par mois, chaque coup d'un grand maître après lequel
+  997 positions (508 grands maîtres) : 220 de la base des retransmissions Lichess (tournois sur échiquier, janvier
+  2020 à octobre 2026) et 777 parties en ligne de Chess.com (surtout du blitz, dont des Titled Tuesday ; 24 mois pour
+  les 62 grands maîtres des classements blitz et rapide, 12 mois pour les 764 autres grands maîtres actifs classés
+  2500 ou plus) ; au plus 5 positions par joueur. `outils/mats-en-un-recherche.py` cherche, mois par mois, chaque coup d'un grand maître après lequel
   l'adversaire a un mat en un ; `outils/mats-en-un-chesscom.py` fait de même avec l'API publique de Chess.com, pour les
-  62 grands maîtres des classements blitz et rapide (vrais noms ; l'adversaire doit avoir un vrai nom dans son profil ;
+  grands maîtres (vrais noms, en lettres latines ; l'adversaire doit avoir un vrai nom dans son profil ;
   pas de gaffe jouée avec moins de 5 secondes à la pendule ; pas d'Elo affiché, les classements en ligne n'en sont pas) ;
   `outils/mats-en-un.py` ne garde que les vraies gaffes (un autre coup évitait le mat, et la position n'était pas déjà
   perdue d'après l'évaluation Lichess ou Stockfish), au plus 3 par joueur, les parties de blitz et de rapide en premier
