@@ -6,7 +6,8 @@ blitz et de rapide comptées pour le classement, des derniers mois. L'adversaire
 (sinon la partie n'est pas gardée). Une ligne JSON par coup trouvé, au même format que outils/mats-en-un-recherche.py
 (les noms sont les vrais noms, le tournoi est « Titled Tuesday », « Titled Arena » ou « Chess.com »).
 
-usage : python3 outils/mats-en-un-chesscom.py <dossier de sortie> [nombre de mois, 12 par défaut]
+usage : python3 outils/mats-en-un-chesscom.py <dossier de sortie> [nombre de mois, 12 par défaut] [mois récents à sauter, 0]
+        (par exemple « out2 12 12 » : les 12 mois d'avant les 12 derniers)
 puis : python3 outils/mats-en-un.py <dossier Lichess> <dossier Chess.com>"""
 import sys, os, io, re, json, time, urllib.request, urllib.error
 import chess, chess.pgn
@@ -14,6 +15,7 @@ import chess, chess.pgn
 UA = 'EchecsEducatifsBot/1.0 (https://pouillonmathieu.github.io/echecseducatifs/)'
 dossier = sys.argv[1]
 NB_MOIS = int(sys.argv[2]) if len(sys.argv) > 2 else 12
+SAUTER = int(sys.argv[3]) if len(sys.argv) > 3 else 0
 os.makedirs(dossier, exist_ok=True)
 
 
@@ -133,7 +135,7 @@ def main():
         arch = (lire(f'https://api.chess.com/pub/player/{j.lower()}/games/archives') or {}).get('archives', [])
         total = trouves = 0
         with open(fin, 'w') as f:
-            for url in arch[-NB_MOIS:]:
+            for url in (arch[-NB_MOIS - SAUTER:-SAUTER] if SAUTER else arch[-NB_MOIS:]):
                 mois = lire(url) or {}
                 for g in mois.get('games', []):
                     if g.get('rules') != 'chess' or not g.get('rated') or g.get('time_class') not in ('blitz', 'rapid'): continue

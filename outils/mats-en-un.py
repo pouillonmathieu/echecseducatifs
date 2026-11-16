@@ -19,7 +19,8 @@ import chess, chess.engine
 ICI = os.path.dirname(os.path.abspath(__file__))
 SELECTION = os.path.join(ICI, 'mats-en-un.json')
 SORTIE = os.path.join(ICI, '..', 'jeux', 'mat1', 'problemes.js')
-MAX = {'lichess': 200, 'chess.com': 100}  # problèmes gardés par source
+MAX = {'lichess': int(os.environ.get('MAX_LICHESS', 200)), 'chess.com': int(os.environ.get('MAX_CHESSCOM', 100))}  # par source
+PAR_JOUEUR = int(os.environ.get('PAR_JOUEUR', 3))  # au plus tant de problèmes par joueur qui gaffe
 
 # ---------------------------------------------------------------- sélection
 def cadence(h):
@@ -106,7 +107,7 @@ def choisir(dossiers):
     for d in bons:
         g = d['h']['White'] if d['joueur'] == 'w' else d['h']['Black']
         src = d['h'].get('Source', 'lichess')
-        if par_joueur.get(g, 0) >= 3 or par_source.get(src, 0) >= MAX[src]: continue
+        if par_joueur.get(g, 0) >= PAR_JOUEUR or par_source.get(src, 0) >= MAX[src]: continue
         par_joueur[g] = par_joueur.get(g, 0) + 1
         par_source[src] = par_source.get(src, 0) + 1
         garde.append(d)
