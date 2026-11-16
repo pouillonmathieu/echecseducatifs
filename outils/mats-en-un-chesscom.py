@@ -8,15 +8,19 @@ blitz et de rapide comptées pour le classement, des derniers mois. L'adversaire
 
 usage : python3 outils/mats-en-un-chesscom.py <dossier de sortie> [nombre de mois, 12 par défaut] [mois récents à sauter, 0]
         (par exemple « out2 12 12 » : les 12 mois d'avant les 12 derniers)
+plus de joueurs : python3 outils/mats-en-un-chesscom.py liste joueurs.tsv
+        (tous les grands maîtres de Chess.com actifs en blitz ou en rapide, classés 2500 ou plus, avec un vrai nom)
+        puis JOUEURS=joueurs.tsv DEPUIS=2024/11 TRANCHE=1/4 python3 outils/mats-en-un-chesscom.py out3
+        (DEPUIS : les mois à partir de celui-ci ; TRANCHE : un quart de la liste, pour lancer 4 recherches à la fois)
 puis : python3 outils/mats-en-un.py <dossier Lichess> <dossier Chess.com>"""
 import sys, os, io, re, json, time, urllib.request, urllib.error
 import chess, chess.pgn
 
 UA = 'EchecsEducatifsBot/1.0 (https://pouillonmathieu.github.io/echecseducatifs/)'
 dossier = sys.argv[1]
-NB_MOIS = int(sys.argv[2]) if len(sys.argv) > 2 else 12
+NB_MOIS = int(sys.argv[2]) if len(sys.argv) > 2 and dossier != 'liste' else 12
 SAUTER = int(sys.argv[3]) if len(sys.argv) > 3 else 0
-os.makedirs(dossier, exist_ok=True)
+if dossier != 'liste': os.makedirs(dossier, exist_ok=True)
 
 
 def lire(url, essais=5):
@@ -120,14 +124,46 @@ def chercher(g, joueur, sortie):
     return n
 
 
+def liste(sortie):
+    """les grands maîtres actifs en blitz ou en rapide (dernière partie il y a moins d'un an, classés 2500 ou plus),
+    avec un vrai nom dans leur profil"""
+    gms = (lire('https://api.chess.com/pub/titled/GM') or {}).get('players', [])
+    print(len(gms), 'grands maîtres sur Chess.com', file=sys.stderr)
+    limite = time.time() - 365 * 86400
+    with open(sortie, 'w') as f:
+        for k, u in enumerate(gms):
+            st = lire(f'https://api.chess.com/pub/player/{u}/stats') or {}
+            ok = any((st.get(c) or {}).get('last', {}).get('date', 0) > limite and (st.get(c) or {}).get('last', {}).get('rating', 0) >= 2500
+                     for c in ('chess_blitz', 'chess_rapid'))
+            if not ok: continue
+            nom = profil(u)['nom']
+            if ' ' not in nom: continue
+            f.write(f'{u}\t{nom}\n')
+            f.flush()
+            if k % 100 == 0: print(k, file=sys.stderr, flush=True)
+
+
 def main():
-    lb = lire('https://api.chess.com/pub/leaderboards')
+    if dossier == 'liste':
+        liste(sys.argv[2])
+        return
     joueurs = []
-    for cat in ('live_blitz', 'live_rapid'):
-        for x in lb.get(cat, []):
-            if x.get('title') == 'GM' and x.get('name') and x['username'] not in joueurs:
-                joueurs.append(x['username'])
-                profils[x['username'].lower()] = {'nom': x['name'].strip(), 'titre': 'GM'}
+    if os.environ.get('JOUEURS'):
+        for l in open(os.environ['JOUEURS']):
+            u, nom = l.rstrip('\n').split('\t')
+            joueurs.append(u)
+            profils[u.lower()] = {'nom': nom.strip(), 'titre': 'GM'}
+    else:
+        lb = lire('https://api.chess.com/pub/leaderboards')
+        for cat in ('live_blitz', 'live_rapid'):
+            for x in lb.get(cat, []):
+                if x.get('title') == 'GM' and x.get('name') and x['username'] not in joueurs:
+                    joueurs.append(x['username'])
+                    profils[x['username'].lower()] = {'nom': x['name'].strip(), 'titre': 'GM'}
+    if os.environ.get('TRANCHE'):
+        k, n = map(int, os.environ['TRANCHE'].split('/'))
+        joueurs = joueurs[k - 1::n]
+    depuis = os.environ.get('DEPUIS')  # « 2024/11 » : les mois à partir de celui-ci
     print(len(joueurs), 'grands maîtres', file=sys.stderr)
     for j in joueurs:
         fin = os.path.join(dossier, j.lower() + '.jsonl')
@@ -135,7 +171,9 @@ def main():
         arch = (lire(f'https://api.chess.com/pub/player/{j.lower()}/games/archives') or {}).get('archives', [])
         total = trouves = 0
         with open(fin, 'w') as f:
-            for url in (arch[-NB_MOIS - SAUTER:-SAUTER] if SAUTER else arch[-NB_MOIS:]):
+            if depuis: choisis = [u for u in arch if u[-7:] >= depuis]
+            else: choisis = arch[-NB_MOIS - SAUTER:-SAUTER] if SAUTER else arch[-NB_MOIS:]
+            for url in choisis:
                 mois = lire(url) or {}
                 for g in mois.get('games', []):
                     if g.get('rules') != 'chess' or not g.get('rated') or g.get('time_class') not in ('blitz', 'rapid'): continue
