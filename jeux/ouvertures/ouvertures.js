@@ -312,7 +312,9 @@
   const peutJouer = () => jeu.vue === 'entrainement' && ent.o && !fini() && aMoi(ent.k) && revoir.enDirect() && !revoir.lecture();
   const couleurSur = (c) => { const p = Echiquier.lireFen(ent.o.fens[ent.k])[c]; return p ? p.couleur : null; };
 
-  function ouvrirEntrainement(o) {
+  // depuis le quiz : on garde l'échiquier comme il était montré (même orientation), et on joue la couleur d'en bas
+  function ouvrirEntrainement(o, orientation = null) {
+    if (orientation) ent.camp = orientation;
     jeu.partie++;
     arreterChrono();
     revoir.arreter();
@@ -473,7 +475,7 @@
     numeroAvant = ph.i;
     dessinerPhoto(ph);
   });
-  $('btn-rejouer-ouv').addEventListener('click', () => { if (jeu.ouverture) ouvrirEntrainement(jeu.ouverture); });
+  $('btn-rejouer-ouv').addEventListener('click', () => { if (jeu.ouverture) ouvrirEntrainement(jeu.ouverture, jeu.orientation); });
   window.addEventListener('resize', () => { if (jeu.vue === 'entrainement' && ent.indice >= 2 && revoir.enDirect()) apresDessinEnt(); });
 
   // ---------- Branchements ----------

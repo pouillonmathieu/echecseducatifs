@@ -110,7 +110,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   font revoir les coups à son rythme, et un bouton rejoue l'ouverture depuis le début. Mode libre, défi (10 ouvertures)
   et défi chrono (20 s, le chrono part quand les coups ont fini de se jouer). Après la réponse : le nom, l'idée de
   l'ouverture, « En savoir plus » (sa fiche, dans un nouvel onglet) et « Rejouer l'ouverture » : c'est alors le joueur qui
-  joue les coups (les Blancs, les Noirs ou les deux ; l'ordinateur joue l'autre camp), en glissant les pièces ou en
+  joue les coups (les Blancs, les Noirs ou les deux ; l'ordinateur joue l'autre camp ; en venant du quiz, l'échiquier
+  garde l'orientation qu'il avait et on joue la couleur d'en bas), en glissant les pièces ou en
   clic-clic ; un mauvais coup est refusé ; « Indice » éclaire la pièce à jouer et devient « Solution » (une flèche).
   En mode libre, un bouton au-dessus de l'échiquier ouvre la liste de toutes les ouvertures (nouvel onglet).
   Couleur jouée, « Tourner l'échiquier » et « Indice » sont au-dessus de l'échiquier (toujours à portée sur téléphone) ;
