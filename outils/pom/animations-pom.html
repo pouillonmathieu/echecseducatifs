@@ -156,6 +156,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 
         <ellipse id="ombre" cx="510" cy="968" rx="210" ry="18"/>
         <g id="etoiles"></g>
+        <g id="zzz"><text class="zzz">Z</text><text class="zzz">Z</text><text class="zzz">Z</text></g>
         <g id="nuage" opacity="0">
           <g id="gouttes">
             <path class="goutte" d="M0 -9 C4 -3 7 1 7 5 C7 9 4 12 0 12 C-4 12 -7 9 -7 5 C-7 1 -4 -3 0 -9 Z"/>
@@ -273,6 +274,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">6+7</span><b>Hmm… puis Eurêka !</b></button>
         <button class="danse" type="button" data-danse="triste"><span class="num">8</span><b>Oh non…</b></button>
         <button class="danse" type="button" data-danse="front"><span class="num">9</span><b>Oh là là !</b></button>
+        <button class="danse" type="button" data-suite="endort dort"><span class="num">10</span><b>Il s'endort… (puis il dort)</b></button>
+        <button class="danse" type="button" data-danse="reveil"><span class="num">11</span><b>Réveil !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -311,8 +314,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 
   // ---------- Couleurs des deux versions ----------
   const PALETTES = {
-    noir: { piece: '#272B32', claire: '#30353D', reflet: '#4D535D', trou: '#16181C', trait: '#14161A', gant: '#FFFFFF', gantTrait: '#1A1C20', bras: '#272B32', brasFond: '#272B32', chap: '#1E2228', refletChap: '#4A5059', ruban: '#2C313A', vitesse: '#8C95A2', ombre: '#D9D3C2' },
-    blanc: { piece: '#EFEADB', claire: '#E7E1CF', reflet: '#FFFFFF', trou: '#D3CCB6', trait: '#C9C0A6', gant: '#FFFFFF', gantTrait: '#CFC6AC', bras: '#EFEADB', brasFond: '#CFC6AC', chap: '#F1ECDE', refletChap: '#FFFFFF', ruban: '#E2DBC7', vitesse: '#B9C0CA', ombre: '#C9C3B2' },
+    noir: { piece: '#272B32', claire: '#30353D', reflet: '#4D535D', trou: '#16181C', trait: '#14161A', gant: '#FFFFFF', gantTrait: '#1A1C20', bras: '#272B32', brasFond: '#272B32', chap: '#1E2228', refletChap: '#4A5059', ruban: '#2C313A', vitesse: '#8C95A2', zzz: '#5B7DB8', zzzBord: '#FFFFFF', ombre: '#D9D3C2' },
+    blanc: { piece: '#EFEADB', claire: '#E7E1CF', reflet: '#FFFFFF', trou: '#D3CCB6', trait: '#C9C0A6', gant: '#FFFFFF', gantTrait: '#CFC6AC', bras: '#EFEADB', brasFond: '#CFC6AC', chap: '#F1ECDE', refletChap: '#FFFFFF', ruban: '#E2DBC7', vitesse: '#B9C0CA', zzz: '#9DB8E6', zzzBord: '#20252C', ombre: '#C9C3B2' },
   };
   const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
   svg.prepend(style);
@@ -348,6 +351,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       .sourcil { fill: none; stroke: #111111; stroke-width: 7; stroke-linecap: round; }
       #ombre { fill: ${c.ombre}; }
       .pensee circle { fill: #FFFFFF; stroke: ${c.trait}; stroke-width: 4; }
+      .zzz { font: 800 70px 'Lexend', system-ui, sans-serif; fill: ${c.zzz}; stroke: ${c.zzzBord}; stroke-width: 2; paint-order: stroke; }
       .nuage { fill: #A9B1BC; stroke: #5E6672; stroke-width: 4; stroke-linejoin: round; }
       .goutte { fill: #6FA8DC; stroke: #3F79AE; stroke-width: 2; }
       .ampoule-halo { fill: #FFE066; opacity: .3; }
@@ -368,7 +372,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, devantG: 0, devantD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -384,7 +388,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     pom: $('pom'), queueFeuille: $('queue-feuille'), corps: $('corps'), tete: $('tete'), chapeau: $('chapeau'), ombre: $('ombre'),
     pupilles: document.querySelectorAll('.pupille-oeil'), oeilG: $('oeil-g'), oeilD: $('oeil-d'), fermeG: $('ferme-g'), fermeD: $('ferme-d'), etincelle: $('etincelle'), bords: document.querySelectorAll('.bord-paupiere'), joie: $('yeux-joie'), ouverts: $('yeux-ouverts'), sourcils: $('sourcils'),
     sG: $('sourcil-g'), sD: $('sourcil-d'), paupieres: document.querySelectorAll('.paupiere'),
-    bras: { G: $('bras-g'), D: $('bras-d') }, etoiles: $('etoiles'), pensee: $('pensee'), nuage: $('nuage'), gouttes: document.querySelectorAll('#gouttes .goutte'), ampoule: $('ampoule'), rayons: $('ampoule-rayons'),
+    bras: { G: $('bras-g'), D: $('bras-d') }, etoiles: $('etoiles'), pensee: $('pensee'), zzz: document.querySelectorAll('#zzz text'), nuage: $('nuage'), gouttes: document.querySelectorAll('#gouttes .goutte'), ampoule: $('ampoule'), rayons: $('ampoule-rayons'),
   };
   // les étoiles qui éclatent autour de Pom'
   const ETOILES = [[250, 150, 1], [770, 90, .8], [200, 480, .7], [820, 420, .9], [330, -130, .65], [690, -190, .75], [850, 720, .6], [170, 780, .55]];
@@ -474,6 +478,16 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     el.sourcils.setAttribute('transform', `translate(0 ${-p.sourcils})`);
     el.sG.setAttribute('transform', `translate(0 ${-p.sourcilG}) rotate(${-p.sourcilsPli} 468 288)`);
     el.sD.setAttribute('transform', `translate(0 ${-p.sourcilD}) rotate(${p.sourcilsPli} 545 288)`);
+    // les « Z » du sommeil : ils sortent l'un après l'autre de la tête, montent en grossissant et s'effacent
+    el.zzz.forEach((z, i) => {
+      // p.zzz : le temps écoulé en cycles ; chaque « Z » part un tiers de cycle après le précédent
+      const t = p.zzz - i / 3;
+      if (t < 0 || p.zzzVisible <= 0) { z.setAttribute('opacity', 0); return; }
+      const q = t % 1;
+      const x = 585 + p.x + 85 * q + 10 * Math.sin(q * 2 * Math.PI), y = 250 - 190 * q;
+      z.setAttribute('opacity', p.zzzVisible * Math.min(1, q / .15) * Math.min(1, (1 - q) / .3));
+      z.setAttribute('transform', `translate(${x} ${y}) rotate(-12) scale(${.5 + .8 * q})`);
+    });
     // le petit nuage gris : il apparaît au-dessus de la tête et fait tomber quelques gouttes
     const n = Math.max(0, Math.min(1, p.nuage));
     el.nuage.setAttribute('opacity', n);
@@ -539,7 +553,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   }
   // une danse : une durée et des pistes ; les canaux absents gardent la pose de repos
   function danse(duree, pistes) {
-    const f = Object.fromEntries(Object.entries(pistes).map(([k, v]) => [k, typeof v === 'function' ? v : piste(v)]));
+    const f = Object.fromEntries(Object.entries(pistes).map(([k, v]) => [k, typeof v === 'function' ? v : typeof v === 'number' ? () => v : piste(v)]));
     return { duree, pose: (ms) => { const p = { ...POSE }; for (const k in f) p[k] = f[k](ms); return p; } };
   }
   const P = POSE;
@@ -878,14 +892,79 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       grimace: [[0, 0], [1990, 1], [2740, 1], [2760, 0]],
     });
   })();
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !' };
+  // 10. « Il s'endort » (quand le joueur ne fait plus rien) : un grand bâillement en s'étirant, il pique du nez, se
+  //     redresse d'un coup, retombe, les yeux se ferment, le chapeau glisse sur les yeux, les premiers « Z » ;
+  //     puis « Il dort » tourne en boucle (respiration lente, « Z z z ») jusqu'au « Réveil ! » (sursaut, chapeau qui saute)
+  const DODO = { y: -8, sy: .95, sx: 1.04, teteY: -14, teteRot: 9, chapY: -34, chapRot: 7, aG: 112, bG: 18, aD: 68, bD: -18, pG: 0, pD: 0 };
+  DANSES.endort = danse(4600, {
+    // le bâillement : il se grandit, bras en l'air, yeux fermés ; puis il retombe
+    sy: [[0, 1], [500, 1.1, 'io'], [1300, 1.12], [1700, .97, 'io'], [1900, 1, 'io'], [3400, .98], [4200, DODO.sy, 'io']],
+    sx: [[0, 1], [500, .95, 'io'], [1300, .94], [1700, 1.02, 'io'], [1900, 1, 'io'], [3400, 1.01], [4200, DODO.sx, 'io']],
+    y: [[0, 0], [3400, 0], [4200, DODO.y, 'io']],
+    aG: [[0, P.aG], [500, 244, 'io'], [1300, 250], [1650, P.aG - 4, 'in'], [1850, P.aG, 'out'], [3400, P.aG], [4200, DODO.aG, 'io']],
+    aD: [[0, P.aD], [500, -64, 'io'], [1300, -70], [1650, P.aD + 4, 'in'], [1850, P.aD, 'out'], [3400, P.aD], [4200, DODO.aD, 'io']],
+    bG: [[0, P.bG], [500, -30, 'io'], [1300, -30], [1650, 40, 'in'], [1900, P.bG, 'out'], [4200, DODO.bG, 'io']],
+    bD: [[0, P.bD], [500, 30, 'io'], [1300, 30], [1650, -40, 'in'], [1900, P.bD, 'out'], [4200, DODO.bD, 'io']],
+    pG: [[0, P.pG], [500, -20], [1300, -24], [1700, 18, 'in'], [1950, P.pG, 'out'], [4200, DODO.pG]],
+    pD: [[0, P.pD], [500, 20], [1300, 24], [1700, -18, 'in'], [1950, P.pD, 'out'], [4200, DODO.pD]],
+    mainG: [[0, 'pendante'], [300, 'poing-leve'], [1550, 'pendante']], mainD: [[0, 'pendante'], [300, 'poing-leve'], [1550, 'pendante']],
+    // il est élastique : les bras s'allongent pour s'étirer bien au-dessus de la tête
+    lgG: [[0, 1], [500, 1.5, 'io'], [1300, 1.55], [1650, 1, 'in']], lgD: [[0, 1], [500, 1.5, 'io'], [1300, 1.55], [1650, 1, 'in']],
+    // la tête : renversée pendant le bâillement ; puis elle pique du nez, se redresse d'un coup, et retombe
+    teteY: [[0, 0], [500, 12, 'io'], [1300, 14], [1700, 0, 'io'], [2000, 0], [2550, -12, 'in'], [2650, 2, 'out'], [2800, 0], [3500, -10, 'io'], [4200, DODO.teteY, 'io']],
+    teteRot: [[0, 0], [500, -7, 'io'], [1300, -8], [1700, 0, 'io'], [2000, 0], [2550, 9, 'in'], [2650, -2, 'out'], [2800, 0], [3500, 7, 'io'], [4200, DODO.teteRot, 'io']],
+    chapY: [[0, 0], [500, 10, 'io'], [1300, 12], [1700, 0, 'io'], [2550, -4], [2650, 14, 'out'], [2800, 0, 'in'], [3400, -2], [4100, DODO.chapY, 'in']],
+    chapRot: [[0, 0], [3400, 0], [4100, DODO.chapRot, 'io']],
+    // les yeux : fermés pour bâiller, puis les paupières tombent peu à peu ; il lutte (elles se rouvrent d'un coup), puis s'endort
+    sourcils: [[0, 0], [500, 14, 'io'], [1300, 14], [1700, 0, 'io'], [2550, -2], [2650, 10, 'out'], [2900, 0], [4200, -2]],
+    clinG: [[0, 0], [400, 1, 'io'], [1350, 1], [1600, .45, 'out'], [2500, .78, 'io'], [2620, .25, 'out'], [2900, .4], [3600, 1, 'io']],
+    clinD: [[0, 0], [400, 1, 'io'], [1350, 1], [1600, .45, 'out'], [2500, .78, 'io'], [2620, .25, 'out'], [2900, .4], [3600, 1, 'io']],
+    regardY: [[0, 0], [1700, 2], [2500, 5], [2620, -2], [2900, 3]],
+    // les premiers « Z »
+    zzz: (ms) => (ms < 3700 ? -1 : (ms - 3700) / 2400),
+    zzzVisible: [[0, 0], [3700, 0], [4200, 1, 'io']],
+  });
+  DANSES.dort = danse(2400, {
+    y: DODO.y,
+    sy: (ms) => DODO.sy + .03 * Math.sin(ms / 2400 * 2 * Math.PI),
+    sx: (ms) => DODO.sx - .02 * Math.sin(ms / 2400 * 2 * Math.PI),
+    teteY: (ms) => DODO.teteY + 2.5 * Math.sin(ms / 2400 * 2 * Math.PI - .5),
+    teteRot: DODO.teteRot, chapRot: DODO.chapRot,
+    chapY: (ms) => DODO.chapY + 2 * Math.sin(ms / 2400 * 2 * Math.PI - .9),
+    aG: (ms) => DODO.aG + 2 * Math.sin(ms / 2400 * 2 * Math.PI), aD: (ms) => DODO.aD - 2 * Math.sin(ms / 2400 * 2 * Math.PI),
+    bG: DODO.bG, bD: DODO.bD, pG: DODO.pG, pD: DODO.pD,
+    sourcils: -2, clinG: 1, clinD: 1, regardY: 3,
+    zzz: (ms) => 1 + (4600 - 3700) / 2400 + ms / 2400, zzzVisible: 1, // à la suite des premiers « Z »
+  });
+  DANSES.reveil = danse(2200, {
+    // le sursaut : il bondit, le chapeau s'envole et retombe, les yeux s'écarquillent ; il regarde autour de lui
+    y: [[0, DODO.y], [140, -12, 'in'], [330, 70, 'out'], [560, 0, 'in']],
+    sy: [[0, DODO.sy], [140, .86, 'in'], [330, 1.14, 'out'], [560, .9, 'in'], [850, 1, 'ressort']],
+    sx: [[0, DODO.sx], [140, 1.08, 'in'], [330, .92, 'out'], [560, 1.07, 'in'], [850, 1, 'ressort']],
+    teteY: [[0, DODO.teteY], [140, -16], [330, 18, 'out'], [600, -4], [900, 0, 'ressort']],
+    teteRot: [[0, DODO.teteRot], [300, -4, 'out'], [700, 0], [1000, -5, 'io'], [1300, 5, 'io'], [1600, 0, 'io']],
+    chapY: [[0, DODO.chapY], [140, DODO.chapY], [420, 110, 'out'], [760, 0, 'in'], [860, 10, 'out'], [960, 0, 'in']],
+    chapRot: [[0, DODO.chapRot], [420, -14, 'out'], [760, 0, 'io']],
+    aG: [[0, DODO.aG], [140, DODO.aG], [330, 205, 'out'], [700, 190], [1000, P.aG - 6, 'in'], [1200, P.aG, 'out']],
+    aD: [[0, DODO.aD], [140, DODO.aD], [330, -25, 'out'], [700, -10], [1000, P.aD + 6, 'in'], [1200, P.aD, 'out']],
+    bG: [[0, DODO.bG], [330, -20], [1000, 30, 'in'], [1300, P.bG, 'out']],
+    bD: [[0, DODO.bD], [330, 20], [1000, -30, 'in'], [1300, P.bD, 'out']],
+    mainG: [[0, 'pendante'], [200, 'ouverte'], [950, 'pendante']], mainD: [[0, 'pendante'], [200, 'ouverte'], [950, 'pendante']],
+    clinG: [[0, 1], [150, 1], [220, 0, 'out'], [1700, 0], [1760, 1], [1820, 0]],
+    clinD: [[0, 1], [150, 1], [220, 0, 'out'], [1700, 0], [1760, 1], [1820, 0]],
+    sourcils: [[0, -2], [220, 24, 'out'], [900, 18], [1700, 6], [2100, 0]],
+    regardX: [[0, 0], [900, 0], [1050, -9, 'io'], [1300, -9], [1450, 9, 'io'], [1700, 9], [1900, 0, 'io']],
+    regardY: [[0, 3], [220, -2], [900, 0]],
+    zzz: [[0, 0]], zzzVisible: [[0, 1], [150, 0]],
+  });
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
   const ANGLES = ['chapRot', 'tour', 'rot', 'aG', 'aD'];
-  const SANS_FONDU = ['etoiles', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie'];
+  const SANS_FONDU = ['etoiles', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
     for (const c in b) {
@@ -912,7 +991,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       if (ms >= duree) {
         const fin = d.pose(duree);
         if (file.length) { derniere = fin; lancer(file.shift()); }
-        else if (boucle) { derniere = fin; lancer(enCours); }
+        else if (boucle || enCours === 'dort') { derniere = fin; lancer(enCours); }
         else {
           enCours = null;
           fondu = { depuis: fin, t0: now, duree: FONDU_FIN / vitesse };
@@ -935,7 +1014,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
