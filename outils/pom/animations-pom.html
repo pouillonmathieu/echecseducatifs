@@ -277,6 +277,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-suite="endort dort"><span class="num">10</span><b>Il s'endort… (puis il dort)</b></button>
         <button class="danse" type="button" data-danse="reveil"><span class="num">11</span><b>Réveil !</b></button>
         <button class="danse" type="button" data-danse="reverence"><span class="num">12</span><b>Quel beau coup !</b></button>
+        <button class="danse" type="button" data-danse="dab"><span class="num">13</span><b>Dab !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -1074,7 +1075,47 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       joie: [[0, 0], [3050, 0], [3100, 1], [3350, 1], [3400, 0]],
     });
   })();
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !' };
+  // 13. « Dab ! » : un double dab. Clac, vers la droite : un bras tendu en diagonale, l'autre courbé devant le visage, la
+  //     tête penchée dedans, les yeux fermés ; clac, la même chose vers la gauche ; puis retour au repos.
+  DANSES.dab = (() => {
+    // une pose de dab vers la droite ; vers la gauche, c'est le miroir
+    const DROITE = {
+      aD: -45, bD: 0, lgD: 1.9, pD: 0, mainD: 'ouverte',           // le bras tendu, en diagonale vers le haut
+      aG: 300, bG: -70, lgG: 2.1, pG: -10, mainG: 'ouverte',       // le bras courbé en travers du visage
+      devantG: 1, devantD: 0,
+      teteRot: -18, teteY: -12, teteX: -8, chapRot: -8, pli: 5,
+    };
+    const miroir = (d) => ({
+      aD: 180 - d.aG, bD: -d.bG, lgD: d.lgG, pD: -d.pG, mainD: d.mainG,
+      aG: 180 - d.aD, bG: -d.bD, lgG: d.lgD, pG: -d.pD, mainG: d.mainD,
+      devantG: d.devantD, devantD: d.devantG,
+      teteRot: -d.teteRot, teteY: d.teteY, teteX: -d.teteX, chapRot: -d.chapRot, pli: -d.pli,
+    });
+    const GAUCHE = miroir(DROITE);
+    // les clés de chaque canal : repos, dab à droite (clac à 400 ms), dab à gauche (clac à 1350 ms), repos
+    const cle = (k, repos) => [[0, repos], [230, repos], [400, DROITE[k], 'rebond'], [1080, DROITE[k]], [1350, GAUCHE[k], 'rebond'], [1950, GAUCHE[k]], [2350, repos, 'io']];
+    const d = {};
+    for (const k of ['aD', 'bD', 'lgD', 'pD', 'aG', 'bG', 'lgG', 'pG', 'teteRot', 'teteY', 'teteX', 'chapRot', 'pli']) d[k] = cle(k, k.startsWith('lg') ? 1 : POSE[k]);
+    // l'angle du bras gauche passe par le haut (300° = -60°) : on garde des valeurs continues
+    d.aG = [[0, P.aG], [230, P.aG], [400, DROITE.aG, 'rebond'], [1080, DROITE.aG], [1350, 180 - DROITE.aD, 'rebond'], [1950, 180 - DROITE.aD], [2350, P.aG, 'io']];
+    d.aD = [[0, P.aD], [230, P.aD], [400, DROITE.aD, 'rebond'], [1080, DROITE.aD], [1350, 180 - DROITE.aG, 'rebond'], [1950, 180 - DROITE.aG], [2350, P.aD, 'io']];
+    return danse(2400, {
+      ...d,
+      mainD: [[0, 'pendante'], [300, 'ouverte'], [2150, 'pendante']], mainG: [[0, 'pendante'], [300, 'ouverte'], [2150, 'pendante']],
+      devantG: [[0, 0], [300, 1], [1200, 0]], devantD: [[0, 0], [1200, 1], [2100, 0]],
+      // l'élan, puis un petit saut à chaque clac
+      sy: [[0, 1], [230, .9, 'io'], [400, 1.06, 'out'], [560, 1, 'io'], [1180, .94, 'io'], [1350, 1.06, 'out'], [1500, 1, 'io']],
+      sx: [[0, 1], [230, 1.06, 'io'], [400, .96, 'out'], [560, 1, 'io'], [1180, 1.04, 'io'], [1350, .96, 'out'], [1500, 1, 'io']],
+      y: [[0, 0], [230, -4], [400, 26, 'out'], [560, 0, 'in'], [1180, 0], [1350, 26, 'out'], [1500, 0, 'in']],
+      chapY: [[0, 0], [400, 14, 'out'], [600, 0, 'in'], [1350, 16, 'out'], [1550, 0, 'in']],
+      // les yeux fermés, l'air cool ; les sourcils levés
+      clinG: [[0, 0], [330, 0], [400, 1], [1180, 1], [1240, 0], [1300, 1], [2050, 1], [2150, 0]],
+      clinD: [[0, 0], [330, 0], [400, 1], [1180, 1], [1240, 0], [1300, 1], [2050, 1], [2150, 0]],
+      sourcils: [[0, 0], [400, 10, 'out'], [2000, 10], [2350, 0]],
+      etoiles: [[0, -1], [420, 0], [2300, 1, 'lin']],
+    });
+  })();
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -1131,7 +1172,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
