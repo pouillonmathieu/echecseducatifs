@@ -276,6 +276,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="front"><span class="num">9</span><b>Oh là là !</b></button>
         <button class="danse" type="button" data-suite="endort dort"><span class="num">10</span><b>Il s'endort… (puis il dort)</b></button>
         <button class="danse" type="button" data-danse="reveil"><span class="num">11</span><b>Réveil !</b></button>
+        <button class="danse" type="button" data-danse="reverence"><span class="num">12</span><b>Quel beau coup !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -369,7 +370,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   const POSE = {
     x: 0, y: 0, rot: 0, flip: 1, tour: 0, vitesse: 0, sx: 1, sy: 1, pli: 0,
     teteY: 0, teteX: 0, teteRot: 0,
-    chapY: 0, chapX: 0, chapRot: 0,
+    chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
     joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
@@ -435,8 +436,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     el.tete.setAttribute('transform', `translate(${tx} ${ty}) rotate(${p.teteRot} 507 365)`);
     // chapeau sur la tête : posé sur la pomme (il cache la queue et la feuille) ; les danses le font s'envoler de là
     const chapY = p.chapY - (chapeauSurTete ? SUR_TETE : 0);
-    el.chapeau.setAttribute('transform', `translate(${tx + p.chapX} ${ty - chapY}) rotate(${p.teteRot + p.chapRot} 508 205)`);
-    el.queueFeuille.setAttribute('opacity', Math.max(0, Math.min(1, (chapY + SUR_TETE - 8) / 22)));
+    if (p.chapLibre) {
+      // le chapeau ne suit plus la tête (il tombe, il est par terre, une main le tient) : position propre
+      el.chapeau.setAttribute('transform', `translate(${p.chapLX - 508} ${p.chapLY - 205}) rotate(${p.chapLR} 508 205)`);
+      el.queueFeuille.setAttribute('opacity', 1);
+    } else {
+      el.chapeau.setAttribute('transform', `translate(${tx + p.chapX} ${ty - chapY}) rotate(${p.teteRot + p.chapRot} 508 205)`);
+      el.queueFeuille.setAttribute('opacity', Math.max(0, Math.min(1, (chapY + SUR_TETE - 8) / 22)));
+    }
     bras('G', p); bras('D', p);
     // le visage fait le tour de la pomme : il glisse, se resserre sur le côté et disparaît derrière
     const t = rad(p.tour), c = Math.cos(t), sn = Math.sin(t);
@@ -957,7 +964,117 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     regardY: [[0, 3], [220, -2], [900, 0]],
     zzz: [[0, 0]], zzzVisible: [[0, 1], [150, 0]],
   });
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !' };
+  // 12. « Bravo, quel coup ! » : une révérence élégante (la main sur le cœur, l'autre bras ouvert), mais le chapeau
+  //     tombe ; « oups ! », il bondit jusqu'à lui, se tasse, son bras s'allonge jusqu'au sol pour l'attraper par le
+  //     bord, le remonte et le remet sur sa tête d'une petite tape, puis revient au centre, un peu gêné.
+  DANSES.reverence = (() => {
+    // les sauts : [début, fin, hauteur]
+    const SAUTS = [[1700, 1920, 55], [3350, 3570, 45]];
+    const saut = (ms) => { for (const [a, b, h] of SAUTS) if (ms >= a && ms <= b) return [(ms - a) / (b - a), h]; return null; };
+    const xP = piste([[0, 0], [1700, 0], [1920, 60, 'io'], [3350, 60], [3570, 0, 'io']]);
+    const yP = (ms) => { const s = saut(ms); return s ? s[1] * Math.sin(Math.PI * s[0]) : 0; };
+    const syBase = piste([[0, 1], [450, 1.04, 'io'], [1000, .9, 'io'], [1250, .9], [1500, 1.03, 'out'], [1600, 1], [1950, 1], [2150, .8, 'io'], [2350, .8], [2850, 1.02, 'io'], [3000, .96, 'io'], [3150, 1, 'io']]);
+    const sySaut = (ms) => { const s = saut(ms); if (!s) return 1; const q = s[0]; return q < .15 ? .86 + q : q > .85 ? .86 + (1 - q) : 1.08; };
+    const syP = (ms) => syBase(ms) * sySaut(ms);
+    const sxP = (ms) => 1 / Math.sqrt(syP(ms));
+    const teteYP = piste([[0, 0], [450, 6, 'io'], [1000, -62, 'io'], [1250, -62], [1500, 6, 'out'], [1650, 0, 'io'], [2150, -10, 'io'], [2350, -10], [2850, 0, 'io']]);
+    const teteRotP = piste([[0, 0], [1000, 10, 'io'], [1250, 10], [1500, -4, 'io'], [1700, 0, 'io'], [2150, 6, 'io'], [2350, 6], [2850, 0, 'io']]);
+    const q = (ms) => ({ ...POSE, x: xP(ms), y: yP(ms), sx: sxP(ms), sy: syP(ms), teteY: teteYP(ms), teteRot: teteRotP(ms) });
+    // le chapeau posé sur la tête, à l'instant ms : son pivot dans la scène, et sa rotation
+    function surTete(ms, chapY = 0) {
+      const p = q(ms);
+      const [nx, ny] = pointCorps(p, 508, 458);
+      const tx = nx - 508, ty = ny - 458 - 12 - p.teteY;
+      return [508 + tx + p.x, 205 + ty - (chapY - SUR_TETE) - p.y, p.teteRot];
+    }
+    // le chapeau libre : il tombe en tournoyant, rebondit, reste par terre, puis la main le remonte sur la tête
+    const LACHE = 900, SOL = 1360, PRISE = 2300, POSE_ = 2900;
+    const PAR_TERRE = [700, 936]; // pivot du chapeau là où il touche le sol, à droite de Pom'
+    const ROULE = 150; // puis il roule un peu plus loin
+    function libre(ms) {
+      if (ms < LACHE || ms >= POSE_) return null;
+      if (ms < SOL) {
+        const [x0, y0, r0] = surTete(LACHE);
+        const k = (ms - LACHE) / (SOL - LACHE);
+        return [x0 + (PAR_TERRE[0] - x0) * k, y0 + (PAR_TERRE[1] - y0) * k * k - 70 * Math.sin(Math.PI * k), r0 + (360 - r0) * k];
+      }
+      if (ms < 1520) { const k = (ms - SOL) / 160; return [PAR_TERRE[0] + 30 * k, PAR_TERRE[1] - 22 * Math.sin(Math.PI * k), 360 - 8 * Math.sin(Math.PI * k)]; }
+      if (ms < 1900) { const k = EASE.out((ms - 1520) / 380); return [PAR_TERRE[0] + 30 + (ROULE - 30) * k, PAR_TERRE[1] - 4 * Math.sin(Math.PI * k * 3) * (1 - k), 360 + 10 * Math.sin(Math.PI * k * 2) * (1 - k)]; }
+      if (ms < PRISE) return [PAR_TERRE[0] + ROULE, PAR_TERRE[1], 360];
+      // la main le remonte : en arc de cercle, du sol jusqu'au-dessus de la tête, puis il se pose
+      const [x1, y1, r1] = surTete(POSE_);
+      const k = EASE.io((ms - PRISE) / (POSE_ - PRISE));
+      const x0 = PAR_TERRE[0] + ROULE, y0 = PAR_TERRE[1];
+      const cx = (x0 + x1) / 2 + 60, cy = Math.min(y0, y1) - 120;
+      const bx = (1 - k) * (1 - k) * x0 + 2 * (1 - k) * k * cx + k * k * x1;
+      const by = (1 - k) * (1 - k) * y0 + 2 * (1 - k) * k * cy + k * k * y1;
+      return [bx, by, 360 + (r1 - 0) * k];
+    }
+    // la main droite de l'écran (main gauche de Pom') : elle prend le chapeau par le haut, comme on le ramasse
+    const BORD = [34, -78]; // dans le dessin du chapeau, par rapport à son pivot : le haut du dôme, à droite de la croix
+    function bord(ms) {
+      const h = libre(ms) || [...surTete(ms), 0];
+      const r = rad(h[2]);
+      return [h[0] + BORD[0] * Math.cos(r) - BORD[1] * Math.sin(r), h[1] + BORD[0] * Math.sin(r) + BORD[1] * Math.cos(r)];
+    }
+    // un bras qui vise un point de la scène (le point est ramené dans le dessin de Pom', comme son épaule)
+    function viser(cote, ms, wx, wy, dir, bend) {
+      const p = q(ms);
+      const [ex, ey] = pointCorps(p, cote === 'G' ? 442 : 580, cote === 'G' ? 580 : 566);
+      const lx = wx - p.x, ly = wy + p.y;
+      let a = Math.atan2(ly - ey, lx - ex) * 180 / Math.PI;
+      if (cote === 'G' && a < 0) a += 360;
+      const L = Math.hypot(lx - ex, ly - ey), t = Math.atan2(-bend, L / 2) * 180 / Math.PI;
+      return { a, b: bend, lg: L / 138, p: dir - a - t };
+    }
+    const repos = (c) => ({ a: P['a' + c], b: P['b' + c], lg: 1, p: P['p' + c] });
+    const mix = (u, v, k) => ({ a: u.a + (v.a - u.a) * k, b: u.b + (v.b - u.b) * k, lg: u.lg + (v.lg - u.lg) * k, p: u.p + (v.p - u.p) * k });
+    // la révérence : main sur le cœur (main gauche de Pom'), bras droit grand ouvert
+    const COEUR = [520, 640], OUVERT = [250, 520];
+    function brasD(ms) {
+      if (ms < 1400) {
+        const v = viser('D', ms, COEUR[0], COEUR[1], -130, 10);
+        return ms < 450 ? mix(repos('D'), v, EASE.io(ms / 450)) : v;
+      }
+      if (ms < 1600) return mix(viser('D', 1400, COEUR[0], COEUR[1], -130, 10), repos('D'), EASE.out((ms - 1400) / 200));
+      if (ms < 1960) return repos('D');
+      const [gx, gy] = bord(Math.max(ms, PRISE));
+      if (ms < PRISE) return mix(repos('D'), viser('D', ms, gx, gy - 6, 80, -20), EASE.io((ms - 1960) / (PRISE - 1960)));
+      if (ms < POSE_ + 120) { const [bx, by] = bord(Math.min(ms, POSE_ - 1)); return viser('D', ms, bx, by - 6, 80, -20); }
+      const [bx, by] = bord(POSE_ - 1);
+      return mix(viser('D', POSE_ + 120, bx, by - 6, 80, -20), repos('D'), EASE.io(Math.min(1, (ms - POSE_ - 120) / 400)));
+    }
+    function brasG(ms) {
+      const v = viser('G', ms, OUVERT[0], OUVERT[1], 200, -30);
+      if (ms < 500) return mix(repos('G'), v, EASE.io(ms / 500));
+      if (ms < 1400) return v;
+      if (ms < 1600) return mix(viser('G', 1400, OUVERT[0], OUVERT[1], 200, -30), repos('G'), EASE.out((ms - 1400) / 200));
+      return repos('G');
+    }
+    return danse(4300, {
+      x: xP, y: yP, sy: syP, sx: sxP, teteY: teteYP, teteRot: teteRotP,
+      aD: (ms) => brasD(ms).a, bD: (ms) => brasD(ms).b, lgD: (ms) => brasD(ms).lg, pD: (ms) => brasD(ms).p,
+      aG: (ms) => brasG(ms).a, bG: (ms) => brasG(ms).b, lgG: (ms) => brasG(ms).lg, pG: (ms) => brasG(ms).p,
+      mainD: [[0, 'pendante'], [200, 'ouverte-cote'], [1450, 'pendante']],
+      mainG: [[0, 'pendante'], [250, 'presente'], [1450, 'pendante']],
+      devantD: [[0, 0], [250, 1], [1450, 0], [2200, 1], [3050, 0]],
+      // le chapeau : sur la tête, puis libre (il tombe, il est par terre, la main le remonte), puis à nouveau sur la tête
+      chapLibre: (ms) => (libre(ms) ? 1 : 0),
+      chapLX: (ms) => { const h = libre(ms); if (!h) return 0; return h[0] - xP(ms); },
+      chapLY: (ms) => { const h = libre(ms); if (!h) return 0; return h[1] + yP(ms); },
+      chapLR: (ms) => { const h = libre(ms); return h ? h[2] : 0; },
+      chapY: [[0, 0], [POSE_, 0], [POSE_ + 90, -9, 'out'], [POSE_ + 220, 0, 'io']],
+      // le visage : yeux fermés pendant la révérence ; « oups ! » ; il suit son chapeau des yeux ; soulagé, un peu gêné
+      clinG: [[0, 0], [550, 0], [800, 1, 'io'], [1300, 1], [1400, 0, 'out']],
+      clinD: [[0, 0], [550, 0], [800, 1, 'io'], [1300, 1], [1400, 0, 'out']],
+      sourcils: [[0, 0], [400, 8, 'io'], [1300, 6], [1450, 24, 'out'], [2000, 18], [2900, 10], [3200, 4], [4000, 0]],
+      sourcilsPli: [[0, 0], [1450, 0], [1550, 6], [2900, 6], [3200, 0]],
+      regardX: [[0, 0], [1400, 0], [1500, 9, 'out'], [2200, 6], [2600, 2], [3100, 0], [3700, -6, 'io'], [4100, 0, 'io']],
+      regardY: [[0, 0], [1400, 0], [1500, 9, 'out'], [2200, 9], [2600, -9, 'io'], [2900, -6], [3100, 0, 'io']],
+      joie: [[0, 0], [3050, 0], [3100, 1], [3350, 1], [3400, 0]],
+    });
+  })();
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -1014,7 +1131,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
