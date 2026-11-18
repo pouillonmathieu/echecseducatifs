@@ -364,6 +364,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
             <g id="vit-chap-av" class="vitesse" opacity="0"><path d="M352 202 A156 32 0 0 0 662 202"/><path d="M400 142 A107 20 0 0 0 614 142"/></g>
           </g>
           <use id="pion" href="#pion-dessin" opacity="0"/>
+          <g id="main-seule-g" opacity="0"><use class="main"/></g>
+          <g id="main-seule-d" opacity="0"><use class="main"/></g>
         </g>
         <!-- le choc du « tape-m'en cinq » : des traits qui jaillissent autour de la main -->
         <g id="choc" opacity="0"></g>
@@ -510,7 +512,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, mainDevantG: 0, mainDevantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -526,7 +528,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     pom: $('pom'), queueFeuille: $('queue-feuille'), corps: $('corps'), tete: $('tete'), chapeau: $('chapeau'), ombre: $('ombre'),
     pupilles: document.querySelectorAll('.pupille-oeil'), oeilG: $('oeil-g'), oeilD: $('oeil-d'), fermeG: $('ferme-g'), fermeD: $('ferme-d'), etincelle: $('etincelle'), bords: document.querySelectorAll('.bord-paupiere'), joie: $('yeux-joie'), ouverts: $('yeux-ouverts'), sourcils: $('sourcils'),
     sG: $('sourcil-g'), sD: $('sourcil-d'), paupieres: document.querySelectorAll('.paupiere'),
-    bras: { G: $('bras-g'), D: $('bras-d') }, etoiles: $('etoiles'), pensee: $('pensee'), zzz: document.querySelectorAll('#zzz text'), nuage: $('nuage'), gouttes: document.querySelectorAll('#gouttes .goutte'), ampoule: $('ampoule'), rayons: $('ampoule-rayons'),
+    bras: { G: $('bras-g'), D: $('bras-d') }, mainSeule: { G: $('main-seule-g'), D: $('main-seule-d') }, etoiles: $('etoiles'), pensee: $('pensee'), zzz: document.querySelectorAll('#zzz text'), nuage: $('nuage'), gouttes: document.querySelectorAll('#gouttes .goutte'), ampoule: $('ampoule'), rayons: $('ampoule-rayons'),
   };
   // les étoiles qui éclatent autour de Pom'
   // l'épaisseur de la croix du chapeau : des copies de la croix, derrière elle
@@ -586,6 +588,15 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const miroir = cote !== MAINS[type].cote;
     const entree = miroir ? 180 - MAINS[type].entree : MAINS[type].entree;
     m.setAttribute('transform', `translate(${L} 0) rotate(${tangente - entree + p['p' + cote]}) translate(0 ${p['tape' + cote]}) scale(${p['echelle' + cote]}) scale(${miroir ? -1 : 1} 1)`);
+    // la main seule devant le chapeau (p.mainDevantG / D), le bras restant derrière : une copie de la main, par-dessus
+    const seule = el.mainSeule[cote];
+    if (p['mainDevant' + cote] > .5) {
+      if (seule.previousElementSibling !== el.chapeau) el.pom.insertBefore(seule, el.chapeau.nextSibling);
+      seule.setAttribute('transform', g.getAttribute('transform'));
+      seule.firstElementChild.setAttribute('href', '#main-' + type);
+      seule.firstElementChild.setAttribute('transform', m.getAttribute('transform'));
+      seule.setAttribute('opacity', 1); m.setAttribute('opacity', 0);
+    } else { seule.setAttribute('opacity', 0); m.setAttribute('opacity', 1); }
   }
 
   function dessiner(p) {
@@ -1918,6 +1929,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     return Object.assign(danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
       mainD: [[0, 'pendante']],
+      // le bras derrière le chapeau, mais la main devant : elle le tient par en dessous
+      mainDevantD: [[0, 0], [EN_MAIN - 120, 1], [REMET + 80, 0]],
       mainG: [[0, 'pendante'], [PASSES - 200, 'ouverte'], [POUF + 120, 'presente'], [DEDANS + 200, 'pendante']],
       devantG: [[0, 0], [PASSES - 200, 1], [POUF + 120, 0]],
       teteY,
