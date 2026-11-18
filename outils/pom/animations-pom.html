@@ -2051,22 +2051,34 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const lance = { a: 255, b: 0, lg: 1.45, p: 0 };
     const V = { G: { a: 235, b: 0, lg: 1.5, p: 0 }, D: { a: -55, b: 0, lg: 1.5, p: 0 } };
     const tada = { G: { a: 215, b: 16, lg: 1.3, p: 0 }, D: { a: -35, b: -16, lg: 1.3, p: 0 } };
+    // pendant la roue, les mains vont chercher le sol tôt (devant lui, du côté où il part), s'y appuient quand il a la
+    // tête en bas, et ne remontent que tard (derrière lui) : la direction des bras est fixée dans la scène, puis
+    // ramenée dans le dessin de Pom' qui tourne
+    const SOL_DEBUT = ELAN - 80, SOL_FIN = FIN_ROUE + 160;
+    const versSol = piste([[0, 55], [SOL_DEBUT, 55], [DEBUT + 300, 80, 'io'], [(DEBUT + FIN_ROUE) / 2, 90, 'io'], [FIN_ROUE - 300, 104, 'io'], [SOL_FIN, 124, 'io']]);
+    const prendSol = piste([[0, 0], [SOL_DEBUT, 0], [DEBUT + 150, 1, 'io'], [FIN_ROUE - 100, 1], [SOL_FIN + 150, 0, 'io']]);
+    function auSol(c, ms, ref) {
+      let a = versSol(ms) + (c === 'G' ? 14 : -14) - rot(ms);
+      while (a - ref > 180) a -= 360;
+      while (a - ref < -180) a += 360;
+      return { a, b: c === 'G' ? 10 : -10, lg: 1.5, p: 0 };
+    }
     function brasG(ms) {
       const r = brasRepos('G');
       if (ms < PREND) return bougerBras(r, tient(), EASE.io(ms / PREND));
       if (ms < LANCE) return bougerBras(tient(), lance, EASE.in((ms - PREND) / (LANCE - PREND)));
-      if (ms < DEBUT) return bougerBras(lance, V.G, EASE.io((ms - LANCE) / (DEBUT - LANCE)));
-      if (ms < FIN_ROUE) return V.G;
-      if (ms < SUR_TETE_ + 120) return bougerBras(V.G, tada.G, EASE.io((ms - FIN_ROUE) / (SUR_TETE_ + 120 - FIN_ROUE)));
+      const base = ms < SOL_FIN ? bougerBras(lance, V.G, EASE.io(Math.min(1, (ms - LANCE) / (DEBUT - LANCE)))) : V.G;
+      if (ms < SOL_FIN + 150) return bougerBras(base, auSol('G', ms, base.a), prendSol(ms));
+      if (ms < SUR_TETE_ + 300) return bougerBras(auSol('G', SOL_FIN + 150, V.G.a), tada.G, EASE.io((ms - SOL_FIN - 150) / (SUR_TETE_ + 300 - SOL_FIN - 150)));
       if (ms < RETOUR - 100) return tada.G;
       return bougerBras(tada.G, r, EASE.io(Math.min(1, (ms - RETOUR + 100) / 400)));
     }
     function brasD(ms) {
       const r = brasRepos('D');
       if (ms < LANCE) return r;
-      if (ms < DEBUT) return bougerBras(r, V.D, EASE.io((ms - LANCE) / (DEBUT - LANCE)));
-      if (ms < FIN_ROUE) return V.D;
-      if (ms < SUR_TETE_ + 120) return bougerBras(V.D, tada.D, EASE.io((ms - FIN_ROUE) / (SUR_TETE_ + 120 - FIN_ROUE)));
+      const base = bougerBras(r, V.D, EASE.io(Math.min(1, (ms - LANCE) / (DEBUT - LANCE))));
+      if (ms < SOL_FIN + 150) return bougerBras(base, auSol('D', ms, base.a), prendSol(ms));
+      if (ms < SUR_TETE_ + 300) return bougerBras(auSol('D', SOL_FIN + 150, V.D.a), tada.D, EASE.io((ms - SOL_FIN - 150) / (SUR_TETE_ + 300 - SOL_FIN - 150)));
       if (ms < RETOUR - 100) return tada.D;
       return bougerBras(tada.D, r, EASE.io(Math.min(1, (ms - RETOUR + 100) / 400)));
     }
@@ -2076,6 +2088,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       mainD: [[0, 'pendante'], [LANCE + 100, 'ouverte'], [RETOUR + 200, 'pendante']],
       devantG: [[0, 0], [120, 1], [LANCE + 80, 0]],
       x: xP, y: yP, rot,
+      // le corps n'est pas raide : il s'incline vers le côté où il part (avant et au début de la roue), puis de l'autre
+      // côté à la fin, et se redresse en se posant
+      pli: piste([[0, 0], [ELAN - 120, 0], [DEBUT, -12, 'io'], [DEBUT + 350, -9, 'io'], [(DEBUT + FIN_ROUE) / 2, 0, 'io'], [FIN_ROUE - 350, 10, 'io'], [FIN_ROUE, 12, 'io'], [FIN_ROUE + 260, -3, 'io'], [SUR_TETE_ + 200, 0, 'io']]),
+      teteRot: piste([[0, 0], [ELAN - 120, 0], [DEBUT, 10, 'io'], [(DEBUT + FIN_ROUE) / 2, 0, 'io'], [FIN_ROUE, -10, 'io'], [SUR_TETE_ + 150, 0, 'io']]),
       chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
       chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
       chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
