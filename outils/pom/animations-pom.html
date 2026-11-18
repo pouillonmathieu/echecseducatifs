@@ -539,7 +539,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, goutteGene: 0, question: 0, spirale: 0, spiraleRot: 0, orbite: 0, orbitePhase: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, mainDevantG: 0, mainDevantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, goutteGene: 0, question: 0, questionX: 640, questionY: 222, spirale: 0, spiraleRot: 0, orbite: 0, orbitePhase: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, mainDevantG: 0, mainDevantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -721,7 +721,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // le point d'interrogation : il surgit au-dessus de la tête, en se balançant
     const qu = $('question');
     qu.setAttribute('opacity', Math.min(1, p.question * 1.5));
-    qu.setAttribute("transform", `translate(640 222) rotate(${14 * (1 - p.question) + 6}) scale(${1.4 * (.3 + .7 * EASE.ressort(Math.min(1, p.question)))})`);
+    qu.setAttribute("transform", `translate(${p.questionX} ${p.questionY}) rotate(${14 * (1 - p.question) + 6}) scale(${1.4 * (.3 + .7 * EASE.ressort(Math.min(1, p.question)))})`);
     // la goutte de gêne : elle apparaît sur le côté de la tête et glisse un peu
     const gg = $('goutte-gene');
     gg.setAttribute('opacity', Math.min(1, p.goutteGene * 2));
@@ -2217,35 +2217,55 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
-  // 27. il se gratte la tête : perplexe, il passe la main sous le bord de son chapeau (qui bascule) et se gratte ;
-  //     un point d'interrogation apparaît au-dessus de lui
+  // 27. il se gratte la tête : perplexe, il soulève son chapeau d'une main (la gauche, à droite de l'écran) et se
+  //     gratte le haut de la tête de l'autre ; un point d'interrogation apparaît ; puis il remet son chapeau
   DANSES.gratte = (() => {
-    const MONTE = 380, GRATTE = 420, FIN_GRATTE = 1900, DUREE = 2700;
+    const PREND = 340, LEVE = 720, GRATTE = 820, FIN_GRATTE = 2050, REMET = 2150, SUR_TETE_ = 2600, DUREE = 3250;
+    const SUR = () => (chapeauSurTete ? 259 : 193);
+    // le chapeau : soulevé de la tête, tenu en l'air sur le côté, un peu penché, puis remis
+    const cx = piste([[0, 508], [PREND, 508], [LEVE, 640, 'io'], [REMET, 640], [SUR_TETE_, 508, 'io']]);
+    const cy = (ms) => piste([[0, SUR()], [PREND, SUR()], [LEVE, SUR() - 70, 'io'], [REMET, SUR() - 70], [SUR_TETE_, SUR(), 'io']])(ms);
+    const cr = piste([[0, 0], [PREND, 0], [LEVE, 20, 'io'], [REMET, 20], [SUR_TETE_, 0, 'io']]);
+    const chapeau = (ms) => (ms < PREND || ms >= SUR_TETE_ ? null : [cx(ms), cy(ms), cr(ms)]);
+    // la main qui tient le bord droit du chapeau
+    const bord = (ms) => { const t = Math.max(PREND, Math.min(ms, SUR_TETE_)), r = rad(cr(t)); return [cx(t) + 120 * Math.cos(r), cy(t) + 120 * Math.sin(r) + 30]; };
+    const tient = (ms) => { const [x, y] = bord(ms); return viserBras('D', POSE, x + 4, y + 18, -112, 32); };
+    function brasD(ms) {
+      const r = brasRepos('D');
+      if (ms < PREND) return bougerBras(r, tient(PREND), EASE.io(ms / PREND));
+      if (ms < SUR_TETE_) return tient(ms);
+      return bougerBras(tient(SUR_TETE_), r, EASE.io(Math.min(1, (ms - SUR_TETE_) / 450)));
+    }
+    // l'autre main se gratte le haut de la tête
     const gratte = (ms) => (ms > GRATTE && ms < FIN_GRATTE ? Math.sin(2 * Math.PI * (ms - GRATTE) / 160) : 0);
-    const sous = viserBras('G', POSE, 404, (chapeauSurTete ? 259 : 193) + 52, -40, -36);
+    const tete = viserBras('G', POSE, 408, 286, -12, -40);
     function brasG(ms) {
       const r = brasRepos('G');
-      if (ms < MONTE) return bougerBras(r, sous, EASE.io(ms / MONTE));
-      if (ms < FIN_GRATTE) return sous;
-      return bougerBras(sous, r, EASE.io(Math.min(1, (ms - FIN_GRATTE) / 450)));
+      if (ms < LEVE - 150) return r;
+      if (ms < GRATTE) return bougerBras(r, tete, EASE.io((ms - LEVE + 150) / (GRATTE - LEVE + 150)));
+      if (ms < FIN_GRATTE) return tete;
+      return bougerBras(tete, r, EASE.io(Math.min(1, (ms - FIN_GRATTE) / 450)));
     }
-    const bascule = piste([[0, 0], [MONTE - 60, 0], [GRATTE, 1, 'out'], [FIN_GRATTE, 1], [FIN_GRATTE + 300, 0, 'ressort']]);
     return danse(DUREE, {
-      ...pistesBras('G', brasG),
+      ...pistesBras('G', brasG), ...pistesBras('D', brasD),
       tapeG: (ms) => 7 * gratte(ms),
-      mainG: [[0, 'pendante'], [MONTE - 160, 'coucou-dos'], [FIN_GRATTE + 200, 'pendante']],
-      devantG: [[0, 0], [MONTE - 160, 1], [FIN_GRATTE + 300, 0]],
-      // le chapeau soulevé d'un côté par la main, qui tressaute pendant qu'il se gratte
-      chapRot: (ms) => 13 * bascule(ms) + 1.5 * gratte(ms),
-      chapY: (ms) => 12 * bascule(ms) + 1.5 * Math.abs(gratte(ms)),
-      chapX: (ms) => 5 * bascule(ms),
-      teteRot: [[0, 0], [MONTE, 6, 'io'], [FIN_GRATTE, 6], [DUREE - 200, 0, 'io']],
+      mainG: [[0, 'pendante'], [LEVE - 50, 'coucou-dos'], [FIN_GRATTE + 200, 'pendante']],
+      mainD: [[0, 'pendante']],
+      devantG: [[0, 0], [LEVE - 50, 1], [FIN_GRATTE + 300, 0]],
+      // le bras derrière le chapeau, la main devant
+      mainDevantD: [[0, 0], [PREND - 100, 1], [SUR_TETE_ + 100, 1], [SUR_TETE_ + 120, 0]],
+      chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
+      chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
+      chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
+      chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
+      chapY: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 80, -7, 'out'], [SUR_TETE_ + 260, 0, 'io']],
+      teteRot: [[0, 0], [LEVE, 0], [GRATTE, -7, 'io'], [FIN_GRATTE, -7], [SUR_TETE_, 0, 'io']],
       // perplexe : un sourcil levé, l'autre froncé, il regarde en l'air
-      sourcilG: [[0, 0], [MONTE, 12, 'out'], [FIN_GRATTE, 12], [DUREE, 0]],
-      sourcilD: [[0, 0], [MONTE, -3, 'out'], [FIN_GRATTE, -3], [DUREE, 0]],
-      regardX: [[0, 0], [MONTE, 5, 'out'], [FIN_GRATTE, 5], [DUREE - 200, 0]],
-      regardY: [[0, 0], [MONTE, -8, 'out'], [FIN_GRATTE, -8], [DUREE - 200, 0]],
-      question: [[0, 0], [GRATTE + 100, 0], [GRATTE + 350, 1, 'out'], [FIN_GRATTE + 150, 1], [FIN_GRATTE + 350, 0]],
+      sourcilG: [[0, 0], [LEVE, 12, 'out'], [FIN_GRATTE, 12], [DUREE, 0]],
+      sourcilD: [[0, 0], [LEVE, -3, 'out'], [FIN_GRATTE, -3], [DUREE, 0]],
+      regardX: [[0, 0], [LEVE, -5, 'out'], [FIN_GRATTE, -5], [SUR_TETE_, 0]],
+      regardY: [[0, 0], [LEVE, -8, 'out'], [FIN_GRATTE, -8], [SUR_TETE_, 0]],
+      question: [[0, 0], [GRATTE + 100, 0], [GRATTE + 350, 1, 'out'], [FIN_GRATTE + 150, 1], [FIN_GRATTE + 350, 0]], questionX: 486, questionY: 206,
     });
   })();
 
@@ -2257,7 +2277,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // le pivot du chapeau : sur la tête, puis devant le visage (qui disparaît derrière la calotte), un peu plus bas
     // quand il jette un œil par-dessus le bord
     const py = (ms) => {
-      const devant = SUR() + 168, lorgne = SUR() + 335;
+      const devant = SUR() + 168, lorgne = SUR() + 226; // (juste les yeux au-dessus de la calotte)
       return piste([[0, SUR()], [PREND, SUR()], [CACHE, devant, 'io'], [LORGNE, devant], [LORGNE + 200, lorgne, 'io'], [LORGNE_FIN, lorgne], [RECACHE, devant, 'out'], [REMET, devant], [SUR_TETE_, SUR(), 'io']])(ms);
     };
     const pr = piste([[0, 0], [PREND, 0], [CACHE, -4, 'io'], [LORGNE, 3], [LORGNE + 200, 0, 'io'], [RECACHE, 2, 'out'], [REMET, 0], [SUR_TETE_, 0, 'io']]);
@@ -2289,7 +2309,6 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       // derrière le bord : les yeux inquiets regardent à gauche, à droite ; puis un petit air gêné, avec une goutte
       tristesse: [[0, 0], [LORGNE, .8], [LORGNE_FIN, .8], [RECACHE, 0]],
       regardX: [[0, 0], [LORGNE + 150, 0], [LORGNE + 350, -8, 'io'], [LORGNE + 650, 8, 'io'], [LORGNE_FIN - 100, 0, 'io']],
-      regardY: [[0, 0], [LORGNE + 150, 5], [LORGNE_FIN, 5], [RECACHE, 0]],
       sourcils: [[0, 0], [LORGNE, 10], [LORGNE_FIN, 10], [RECACHE, 0], [SUR_TETE_, 0], [SUR_TETE_ + 150, 6, 'out'], [DUREE, 0]],
       joie: [[0, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [DUREE - 250, 1], [DUREE - 200, 0]],
       teteRot: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 200, 8, 'io'], [DUREE - 150, 8], [DUREE, 0, 'io']],
