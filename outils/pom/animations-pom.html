@@ -284,6 +284,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
           <g id="bras-d"><path class="bras-fond"/><path class="bras"/><use class="main"/></g>
 
           <!-- la tête : une pomme avec des yeux et des sourcils -->
+          <g id="orbite-ar"></g>
           <g id="tete">
             <g id="queue-feuille">
               <path class="queue" d="M505 302 Q500 276 490 254"/>
@@ -310,6 +311,11 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
                 <path class="nervure" d="M505 268 Q532 254 556 246"/>
               </g>
             </g>
+            <!-- le point d'interrogation, au-dessus de la tête -->
+            <g id="question" opacity="0">
+              <path class="question" d="M-15 -46 C-15 -68 15 -70 15 -48 C15 -34 1 -32 1 -16"/>
+              <circle class="question-point" cx="1" cy="2" r="6"/>
+            </g>
             <!-- la petite goutte de gêne, sur le côté de la tête -->
             <g id="goutte-gene" opacity="0">
               <path class="goutte-gene" d="M0 -22 C6 -12 12 -4 12 4 C12 12 6 17 0 17 C-6 17 -12 12 -12 4 C-12 -4 -6 -12 0 -22 Z"/>
@@ -330,6 +336,11 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
                 <g clip-path="url(#clip-oeil-d)"><path class="paupiere"/><path class="bord-paupiere"/></g>
                 <circle class="contour-oeil" cx="541" cy="337" r="32"/>
               </g>
+            </g>
+            <!-- les yeux en spirale (la tête qui tourne) -->
+            <g id="spirales" opacity="0">
+              <path class="spirale" d="M2.0 0.0 L2.1 0.2 L2.2 0.5 L2.2 0.7 L2.2 1.0 L2.2 1.2 L2.1 1.5 L2.0 1.8 L1.9 2.1 L1.7 2.3 L1.5 2.6 L1.3 2.8 L1.0 3.0 L0.7 3.2 L0.4 3.4 L0.0 3.5 L-0.4 3.6 L-0.8 3.6 L-1.2 3.6 L-1.6 3.6 L-2.0 3.5 L-2.4 3.3 L-2.8 3.1 L-3.2 2.9 L-3.6 2.6 L-3.9 2.2 L-4.2 1.9 L-4.5 1.5 L-4.7 1.0 L-4.9 0.5 L-5.0 0.0 L-5.1 -0.5 L-5.1 -1.1 L-5.0 -1.6 L-4.9 -2.2 L-4.8 -2.8 L-4.5 -3.3 L-4.2 -3.8 L-3.9 -4.3 L-3.5 -4.8 L-3.0 -5.2 L-2.5 -5.6 L-1.9 -5.9 L-1.3 -6.2 L-0.7 -6.4 L-0.0 -6.5 L0.7 -6.6 L1.4 -6.6 L2.1 -6.5 L2.8 -6.3 L3.5 -6.1 L4.2 -5.7 L4.8 -5.4 L5.4 -4.9 L6.0 -4.3 L6.5 -3.7 L6.9 -3.1 L7.3 -2.4 L7.6 -1.6 L7.9 -0.8 L8.0 -0.0 L8.1 0.8 L8.0 1.7 L7.9 2.6 L7.7 3.4 L7.4 4.2 L7.0 5.1 L6.5 5.8 L5.9 6.5 L5.2 7.2 L4.5 7.8 L3.7 8.3 L2.8 8.7 L1.9 9.1 L1.0 9.3 L0.0 9.5 L-1.0 9.5 L-2.0 9.5 L-3.0 9.3 L-4.0 9.0 L-5.0 8.7 L-5.9 8.2 L-6.8 7.6 L-7.7 6.9 L-8.4 6.1 L-9.1 5.3 L-9.7 4.3 L-10.2 3.3 L-10.6 2.2 L-10.8 1.1 L-11.0 0.0 L-11.0 -1.2 L-11.0 -2.3 L-10.7 -3.5 L-10.4 -4.6 L-10.0 -5.8 L-9.4 -6.8 L-8.7 -7.8 L-7.9 -8.8 L-7.0 -9.6 L-6.0 -10.4 L-4.9 -11.1 L-3.8 -11.6 L-2.6 -12.0 L-1.3 -12.3 L-0.0 -12.5 L1.3 -12.5 L2.6 -12.4 L4.0 -12.2 L5.2 -11.8 L6.5 -11.3 L7.7 -10.6 L8.8 -9.8 L9.9 -8.9 L10.8 -7.9 L11.7 -6.8 L12.4 -5.5 L13.0 -4.2 L13.5 -2.9 L13.8 -1.5 L14.0 -0.0 L14.0 1.5 L13.9 3.0 L13.6 4.4 L13.2 5.9 L12.6 7.2 L11.8 8.6 L10.9 9.8 L9.9 11.0 L8.8 12.1 L7.5 13.0 L6.1 13.8 L4.7 14.5 L3.2 15.0 L1.6 15.3 L0.0 15.5 L-1.6 15.5 L-3.3 15.4 L-4.9 15.0 L-6.5 14.5 L-8.0 13.9 L-9.5 13.0 L-10.8 12.0 L-12.1 10.9 L-13.3 9.6 L-14.3 8.2 L-15.2 6.8 L-15.9 5.2 L-16.4 3.5 L-16.8 1.8 L-17.0 0.0 L-17.0 -1.8 L-16.8 -3.6 L-16.5 -5.3 L-15.9 -7.1 L-15.2 -8.7 L-14.2 -10.3 L-13.2 -11.8 L-11.9 -13.2 L-10.5 -14.5 L-9.0 -15.6 L-7.4 -16.5 L-5.6 -17.3 L-3.8 -17.9 L-1.9 -18.3 L-0.0 -18.5 L1.9 -18.5 L3.9 -18.3 L5.8 -17.9 L7.7 -17.3 L9.5 -16.5 L11.2 -15.5 L12.8 -14.3 L14.3 -12.9 L15.7 -11.4 L16.9 -9.8 L17.9 -8.0 L18.7 -6.1 L19.4 -4.1 L19.8 -2.1 L20.0 -0.0"/>
+              <path class="spirale" d="M2.0 0.0 L2.1 0.2 L2.2 0.5 L2.2 0.7 L2.2 1.0 L2.2 1.2 L2.1 1.5 L2.0 1.8 L1.9 2.1 L1.7 2.3 L1.5 2.6 L1.3 2.8 L1.0 3.0 L0.7 3.2 L0.4 3.4 L0.0 3.5 L-0.4 3.6 L-0.8 3.6 L-1.2 3.6 L-1.6 3.6 L-2.0 3.5 L-2.4 3.3 L-2.8 3.1 L-3.2 2.9 L-3.6 2.6 L-3.9 2.2 L-4.2 1.9 L-4.5 1.5 L-4.7 1.0 L-4.9 0.5 L-5.0 0.0 L-5.1 -0.5 L-5.1 -1.1 L-5.0 -1.6 L-4.9 -2.2 L-4.8 -2.8 L-4.5 -3.3 L-4.2 -3.8 L-3.9 -4.3 L-3.5 -4.8 L-3.0 -5.2 L-2.5 -5.6 L-1.9 -5.9 L-1.3 -6.2 L-0.7 -6.4 L-0.0 -6.5 L0.7 -6.6 L1.4 -6.6 L2.1 -6.5 L2.8 -6.3 L3.5 -6.1 L4.2 -5.7 L4.8 -5.4 L5.4 -4.9 L6.0 -4.3 L6.5 -3.7 L6.9 -3.1 L7.3 -2.4 L7.6 -1.6 L7.9 -0.8 L8.0 -0.0 L8.1 0.8 L8.0 1.7 L7.9 2.6 L7.7 3.4 L7.4 4.2 L7.0 5.1 L6.5 5.8 L5.9 6.5 L5.2 7.2 L4.5 7.8 L3.7 8.3 L2.8 8.7 L1.9 9.1 L1.0 9.3 L0.0 9.5 L-1.0 9.5 L-2.0 9.5 L-3.0 9.3 L-4.0 9.0 L-5.0 8.7 L-5.9 8.2 L-6.8 7.6 L-7.7 6.9 L-8.4 6.1 L-9.1 5.3 L-9.7 4.3 L-10.2 3.3 L-10.6 2.2 L-10.8 1.1 L-11.0 0.0 L-11.0 -1.2 L-11.0 -2.3 L-10.7 -3.5 L-10.4 -4.6 L-10.0 -5.8 L-9.4 -6.8 L-8.7 -7.8 L-7.9 -8.8 L-7.0 -9.6 L-6.0 -10.4 L-4.9 -11.1 L-3.8 -11.6 L-2.6 -12.0 L-1.3 -12.3 L-0.0 -12.5 L1.3 -12.5 L2.6 -12.4 L4.0 -12.2 L5.2 -11.8 L6.5 -11.3 L7.7 -10.6 L8.8 -9.8 L9.9 -8.9 L10.8 -7.9 L11.7 -6.8 L12.4 -5.5 L13.0 -4.2 L13.5 -2.9 L13.8 -1.5 L14.0 -0.0 L14.0 1.5 L13.9 3.0 L13.6 4.4 L13.2 5.9 L12.6 7.2 L11.8 8.6 L10.9 9.8 L9.9 11.0 L8.8 12.1 L7.5 13.0 L6.1 13.8 L4.7 14.5 L3.2 15.0 L1.6 15.3 L0.0 15.5 L-1.6 15.5 L-3.3 15.4 L-4.9 15.0 L-6.5 14.5 L-8.0 13.9 L-9.5 13.0 L-10.8 12.0 L-12.1 10.9 L-13.3 9.6 L-14.3 8.2 L-15.2 6.8 L-15.9 5.2 L-16.4 3.5 L-16.8 1.8 L-17.0 0.0 L-17.0 -1.8 L-16.8 -3.6 L-16.5 -5.3 L-15.9 -7.1 L-15.2 -8.7 L-14.2 -10.3 L-13.2 -11.8 L-11.9 -13.2 L-10.5 -14.5 L-9.0 -15.6 L-7.4 -16.5 L-5.6 -17.3 L-3.8 -17.9 L-1.9 -18.3 L-0.0 -18.5 L1.9 -18.5 L3.9 -18.3 L5.8 -17.9 L7.7 -17.3 L9.5 -16.5 L11.2 -15.5 L12.8 -14.3 L14.3 -12.9 L15.7 -11.4 L16.9 -9.8 L17.9 -8.0 L18.7 -6.1 L19.4 -4.1 L19.8 -2.1 L20.0 -0.0"/>
             </g>
             <!-- l'œil fermé : un trait calme pour cligner, un petit arc rieur pour le clin d'œil -->
             <path id="ferme-g" class="oeil-ferme" opacity="0"/>
@@ -364,6 +375,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
             <g id="vit-chap-av" class="vitesse" opacity="0"><path d="M352 202 A156 32 0 0 0 662 202"/><path d="M400 142 A107 20 0 0 0 614 142"/></g>
           </g>
           <use id="pion" href="#pion-dessin" opacity="0"/>
+          <g id="orbite-av"></g>
           <g id="main-seule-g" opacity="0"><use class="main"/></g>
           <g id="main-seule-d" opacity="0"><use class="main"/></g>
         </g>
@@ -396,15 +408,20 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="basket"><span class="num">16</span><b>Le basket</b></button>
         <button class="danse" type="button" data-danse="guitare"><span class="num">17</span><b>La guitare</b></button>
         <button class="danse" type="button" data-danse="magie"><span class="num">18</span><b>Le tour de magie</b></button>
+        <p class="groupe">Les erreurs</p>
+        <button class="danse" type="button" data-danse="triste"><span class="num">19</span><b>Oh non…</b></button>
+        <button class="danse" type="button" data-danse="front"><span class="num">20</span><b>Oh là là !</b></button>
+        <button class="danse" type="button" data-danse="nonnon"><span class="num">21</span><b>Non, non, non !</b></button>
+        <button class="danse" type="button" data-danse="gratte"><span class="num">22</span><b>Il se gratte la tête</b></button>
+        <button class="danse" type="button" data-danse="cache"><span class="num">23</span><b>Oups !</b></button>
+        <button class="danse" type="button" data-danse="tournis"><span class="num">24</span><b>La tête qui tourne</b></button>
         <p class="groupe">Les autres moments</p>
-        <button class="danse" type="button" data-danse="bonjour"><span class="num">19</span><b>Bonjour !</b></button>
-        <button class="danse" type="button" data-danse="reflechit"><span class="num">20</span><b>Hmm…</b></button>
-        <button class="danse" type="button" data-danse="eureka"><span class="num">21</span><b>Eurêka !</b></button>
-        <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">20+21</span><b>Hmm… puis Eurêka !</b></button>
-        <button class="danse" type="button" data-danse="triste"><span class="num">22</span><b>Oh non…</b></button>
-        <button class="danse" type="button" data-danse="front"><span class="num">23</span><b>Oh là là !</b></button>
-        <button class="danse" type="button" data-suite="endort dort"><span class="num">24</span><b>Il s'endort… (puis il dort)</b></button>
-        <button class="danse" type="button" data-danse="reveil"><span class="num">25</span><b>Réveil !</b></button>
+        <button class="danse" type="button" data-danse="bonjour"><span class="num">25</span><b>Bonjour !</b></button>
+        <button class="danse" type="button" data-danse="reflechit"><span class="num">26</span><b>Hmm…</b></button>
+        <button class="danse" type="button" data-danse="eureka"><span class="num">27</span><b>Eurêka !</b></button>
+        <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">26+27</span><b>Hmm… puis Eurêka !</b></button>
+        <button class="danse" type="button" data-suite="endort dort"><span class="num">28</span><b>Il s'endort… (puis il dort)</b></button>
+        <button class="danse" type="button" data-danse="reveil"><span class="num">29</span><b>Réveil !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -428,6 +445,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
           <button class="outil" type="button" data-hasard="1" aria-label="1 étoile"><b>★</b></button>
           <button class="outil" type="button" data-hasard="2" aria-label="2 étoiles"><b>★★</b></button>
           <button class="outil" type="button" data-hasard="3" aria-label="3 étoiles"><b>★★★</b></button>
+        </div>
+        <div class="hasard" role="group" aria-label="Une animation d'erreur au hasard">
+          <span>Erreur, au hasard :</span>
+          <button class="outil" type="button" id="erreur-hasard">Raté !</button>
         </div>
       </div>
     </div>
@@ -503,6 +524,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       .pion { fill: ${c.piece}; stroke: ${nom === 'noir' ? '#5A616C' : c.trait}; stroke-width: 3; stroke-linejoin: round; }
       .pion-reflet { fill: none; stroke: ${c.reflet}; stroke-width: 4; stroke-linecap: round; }
       .goutte-gene { fill: #9AD3F5; stroke: #1A1C20; stroke-width: 3; stroke-linejoin: round; }
+      .spirale { fill: none; stroke: #111111; stroke-width: 4; stroke-linecap: round; }
+      .orbite { fill: #F2B827; stroke: #1A1C20; stroke-width: 2; }
+      .question { fill: none; stroke: #5B7DB8; stroke-width: 10; stroke-linecap: round; }
+      .question-point { fill: #5B7DB8; }
       .goutte-reflet { fill: #FFFFFF; opacity: .85; }
       .choc-trait { stroke: #F2B827; stroke-width: 11; stroke-linecap: round; }`;
   }
@@ -514,7 +539,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, goutteGene: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, mainDevantG: 0, mainDevantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, goutteGene: 0, question: 0, spirale: 0, spiraleRot: 0, orbite: 0, orbitePhase: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, mainDevantG: 0, mainDevantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -540,6 +565,13 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     t.removeAttribute('id'); t.setAttribute('class', 'croix-tranche');
     $('croix').parentNode.insertBefore(t, $('croix'));
     return t;
+  });
+  // les petites étoiles qui tournent autour de la tête quand elle tourne
+  const ORBITE = Array.from({ length: 4 }, () => {
+    const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    u.setAttribute('href', '#etoile'); u.setAttribute('class', 'orbite'); u.setAttribute('opacity', 0);
+    $('orbite-av').appendChild(u);
+    return u;
   });
   const ETOILES = [[250, 150, 1], [770, 90, .8], [200, 480, .7], [820, 420, .9], [330, -130, .65], [690, -190, .75], [850, 720, .6], [170, 780, .55],
     [130, 270, .6], [905, 240, .65], [505, -250, .7], [140, 610, .5], [900, 580, .55], [400, -40, .45], [640, -30, .5], [700, 880, .45]];
@@ -671,6 +703,25 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (joie) { el.fermeG.setAttribute('opacity', 0); el.fermeD.setAttribute('opacity', 0); }
     // les pupilles : elles suivent le regard, et rapetissent quand il écarquille les yeux (p.pupille < 1)
     el.pupilles.forEach((x, i) => { const [cx, cy] = i ? [535, 344] : [479, 345]; x.setAttribute('transform', `translate(${p.regardX} ${p.regardY}) translate(${cx} ${cy}) scale(${p.pupille}) translate(${-cx} ${-cy})`); });
+    // les yeux en spirale : ils remplacent les pupilles et tournent
+    const sp = p.spirale > .5;
+    $('spirales').setAttribute('opacity', sp ? 1 : 0);
+    el.pupilles.forEach((x) => x.setAttribute('opacity', sp ? 0 : 1));
+    [...$('spirales').children].forEach((x, i) => x.setAttribute('transform', `translate(${i ? 541 : 472} ${i ? 337 : 338}) rotate(${p.spiraleRot * (i ? -1 : 1)})`));
+    // les étoiles qui tournent autour de la tête : un anneau autour du bord du chapeau, celles de derrière passent
+    // derrière la tête (elles suivent la tête)
+    const tt = el.tete.getAttribute('transform');
+    ORBITE.forEach((e, i) => {
+      const f = rad(p.orbitePhase + i * 90), devant = Math.sin(f) > 0, k = .75 + .25 * Math.sin(f);
+      const parent = devant ? $('orbite-av') : $('orbite-ar');
+      if (e.parentNode !== parent) parent.appendChild(e);
+      e.setAttribute('opacity', p.orbite * (devant ? 1 : .8));
+      e.setAttribute('transform', `${tt} translate(${507 + 150 * Math.cos(f)} ${270 + 30 * Math.sin(f)}) rotate(${p.orbitePhase * 2}) scale(${1.15 * k})`);
+    });
+    // le point d'interrogation : il surgit au-dessus de la tête, en se balançant
+    const qu = $('question');
+    qu.setAttribute('opacity', Math.min(1, p.question * 1.5));
+    qu.setAttribute("transform", `translate(640 222) rotate(${14 * (1 - p.question) + 6}) scale(${1.4 * (.3 + .7 * EASE.ressort(Math.min(1, p.question)))})`);
     // la goutte de gêne : elle apparaît sur le côté de la tête et glisse un peu
     const gg = $('goutte-gene');
     gg.setAttribute('opacity', Math.min(1, p.goutteGene * 2));
@@ -2132,6 +2183,151 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
+  // 26. « Non, non, non ! » : il lève l'index et le balance de gauche à droite en secouant la tête, l'air malicieux ;
+  //     puis il tend la main ouverte, paume en l'air : « essaie encore ! »
+  DANSES.nonnon = (() => {
+    const LEVE = 300, NON = 380, FIN_NON = 1500, INVITE = 1700, FIN = 2500, DUREE = 2950;
+    const balance = (ms) => (ms > NON && ms < FIN_NON ? Math.sin(2 * Math.PI * (ms - NON) / 280) * Math.min(1, (ms - NON) / 120, (FIN_NON - ms) / 160) : 0);
+    const doigt = (ms) => viserBras('D', POSE, 652 + 6 * balance(ms), 492, -90 - 24 * balance(ms), 30);
+    const invite = viserBras('D', POSE, 690, 640, -40, 20);
+    function brasD(ms) {
+      const r = brasRepos('D');
+      if (ms < LEVE) return bougerBras(r, doigt(LEVE), EASE.out(ms / LEVE));
+      if (ms < FIN_NON) return doigt(ms);
+      if (ms < INVITE) return bougerBras(doigt(FIN_NON), invite, EASE.io((ms - FIN_NON) / (INVITE - FIN_NON)));
+      if (ms < FIN) return invite;
+      return bougerBras(invite, r, EASE.io(Math.min(1, (ms - FIN) / 400)));
+    }
+    return danse(DUREE, {
+      ...pistesBras('D', brasD),
+      mainD: [[0, 'pendante'], [LEVE - 150, 'index-leve'], [FIN_NON + 100, 'presente'], [FIN + 150, 'pendante']],
+      devantD: [[0, 0], [LEVE - 150, 1], [FIN + 250, 0]],
+      echelleD: [[0, 1], [LEVE, 1.25, 'out'], [FIN_NON, 1.25], [INVITE, 1.1, 'io'], [FIN, 1.1], [DUREE, 1, 'io']],
+      // la tête fait « non » à contretemps du doigt
+      teteRot: (ms) => -7 * balance(ms - 70) + (ms > INVITE - 100 && ms < FIN + 200 ? 8 * Math.sin(Math.PI * Math.min(1, (ms - INVITE + 100) / (FIN - INVITE + 300))) : 0),
+      teteX: (ms) => -6 * balance(ms - 70),
+      chapRot: (ms) => -3 * balance(ms - 110),
+      pli: [[0, 0], [LEVE, -2, 'out'], [FIN_NON, -2], [INVITE, 2, 'io'], [FIN, 2], [DUREE, 0, 'io']],
+      // l'air malicieux : un sourcil levé, l'autre froncé, les yeux qui le regardent ; puis un regard encourageant
+      sourcilD: [[0, 0], [LEVE, 12, 'out'], [FIN_NON, 12], [INVITE, 8, 'io'], [FIN, 8], [DUREE, 0]],
+      sourcilG: [[0, 0], [LEVE, -4, 'out'], [FIN_NON, -4], [INVITE, 8, 'io'], [FIN, 8], [DUREE, 0]],
+      regardX: [[0, 0], [LEVE, 3], [FIN_NON, 3], [INVITE, 0]],
+      clinRieur: [[0, 0], [INVITE, 0], [INVITE + 1, 0]],
+      sy: [[0, 1], [INVITE - 100, 1], [INVITE, .97, 'out'], [INVITE + 260, 1, 'ressort']],
+    });
+  })();
+
+  // 27. il se gratte la tête : perplexe, il passe la main sous le bord de son chapeau (qui bascule) et se gratte ;
+  //     un point d'interrogation apparaît au-dessus de lui
+  DANSES.gratte = (() => {
+    const MONTE = 380, GRATTE = 420, FIN_GRATTE = 1900, DUREE = 2700;
+    const gratte = (ms) => (ms > GRATTE && ms < FIN_GRATTE ? Math.sin(2 * Math.PI * (ms - GRATTE) / 160) : 0);
+    const sous = viserBras('G', POSE, 404, (chapeauSurTete ? 259 : 193) + 52, -40, -36);
+    function brasG(ms) {
+      const r = brasRepos('G');
+      if (ms < MONTE) return bougerBras(r, sous, EASE.io(ms / MONTE));
+      if (ms < FIN_GRATTE) return sous;
+      return bougerBras(sous, r, EASE.io(Math.min(1, (ms - FIN_GRATTE) / 450)));
+    }
+    const bascule = piste([[0, 0], [MONTE - 60, 0], [GRATTE, 1, 'out'], [FIN_GRATTE, 1], [FIN_GRATTE + 300, 0, 'ressort']]);
+    return danse(DUREE, {
+      ...pistesBras('G', brasG),
+      tapeG: (ms) => 7 * gratte(ms),
+      mainG: [[0, 'pendante'], [MONTE - 160, 'coucou-dos'], [FIN_GRATTE + 200, 'pendante']],
+      devantG: [[0, 0], [MONTE - 160, 1], [FIN_GRATTE + 300, 0]],
+      // le chapeau soulevé d'un côté par la main, qui tressaute pendant qu'il se gratte
+      chapRot: (ms) => 13 * bascule(ms) + 1.5 * gratte(ms),
+      chapY: (ms) => 12 * bascule(ms) + 1.5 * Math.abs(gratte(ms)),
+      chapX: (ms) => 5 * bascule(ms),
+      teteRot: [[0, 0], [MONTE, 6, 'io'], [FIN_GRATTE, 6], [DUREE - 200, 0, 'io']],
+      // perplexe : un sourcil levé, l'autre froncé, il regarde en l'air
+      sourcilG: [[0, 0], [MONTE, 12, 'out'], [FIN_GRATTE, 12], [DUREE, 0]],
+      sourcilD: [[0, 0], [MONTE, -3, 'out'], [FIN_GRATTE, -3], [DUREE, 0]],
+      regardX: [[0, 0], [MONTE, 5, 'out'], [FIN_GRATTE, 5], [DUREE - 200, 0]],
+      regardY: [[0, 0], [MONTE, -8, 'out'], [FIN_GRATTE, -8], [DUREE - 200, 0]],
+      question: [[0, 0], [GRATTE + 100, 0], [GRATTE + 350, 1, 'out'], [FIN_GRATTE + 150, 1], [FIN_GRATTE + 350, 0]],
+    });
+  })();
+
+  // 28. « Oups ! » : il ôte son chapeau à deux mains et se cache le visage derrière ; il jette un œil par-dessus le
+  //     bord, inquiet, se recache, puis remet son chapeau avec un petit air gêné
+  DANSES.cache = (() => {
+    const PREND = 320, CACHE = 700, LORGNE = 1250, LORGNE_FIN = 1950, RECACHE = 2150, REMET = 2350, SUR_TETE_ = 2800, DUREE = 3500;
+    const SUR = () => (chapeauSurTete ? 259 : 193);
+    // le pivot du chapeau : sur la tête, puis devant le visage (qui disparaît derrière la calotte), un peu plus bas
+    // quand il jette un œil par-dessus le bord
+    const py = (ms) => {
+      const devant = SUR() + 168, lorgne = SUR() + 335;
+      return piste([[0, SUR()], [PREND, SUR()], [CACHE, devant, 'io'], [LORGNE, devant], [LORGNE + 200, lorgne, 'io'], [LORGNE_FIN, lorgne], [RECACHE, devant, 'out'], [REMET, devant], [SUR_TETE_, SUR(), 'io']])(ms);
+    };
+    const pr = piste([[0, 0], [PREND, 0], [CACHE, -4, 'io'], [LORGNE, 3], [LORGNE + 200, 0, 'io'], [RECACHE, 2, 'out'], [REMET, 0], [SUR_TETE_, 0, 'io']]);
+    // il tremble un peu derrière son chapeau
+    const tremble = (ms) => (ms > CACHE && ms < LORGNE ? 2 * Math.sin(ms / 30) : 0);
+    const chapeau = (ms) => (ms < PREND || ms >= SUR_TETE_ ? null : [508 + tremble(ms), py(ms), pr(ms)]);
+    // les mains tiennent le bord du chapeau des deux côtés
+    const tenir = (c, ms) => { const h = chapeau(Math.max(PREND, Math.min(ms, SUR_TETE_ - 1))); const s = c === 'G' ? -1 : 1; return viserBras(c, POSE, h[0] + s * 146, h[1] + 44, s < 0 ? -70 : -110, s < 0 ? -28 : 28); };
+    const bras = (c) => (ms) => {
+      const r = brasRepos(c);
+      if (ms < PREND) return bougerBras(r, tenir(c, PREND), EASE.io(ms / PREND));
+      if (ms < SUR_TETE_) return tenir(c, ms);
+      return bougerBras(tenir(c, SUR_TETE_ - 1), r, EASE.io(Math.min(1, (ms - SUR_TETE_) / 450)));
+    };
+    return danse(DUREE, {
+      ...pistesBras('G', bras('G')), ...pistesBras('D', bras('D')),
+      mainG: [[0, 'pendante']], mainD: [[0, 'pendante']],
+      echelleG: [[0, 1], [PREND, .85], [SUR_TETE_, .85], [SUR_TETE_ + 300, 1]], echelleD: [[0, 1], [PREND, .85], [SUR_TETE_, .85], [SUR_TETE_ + 300, 1]],
+      // les bras derrière le chapeau, les mains devant
+      mainDevantG: [[0, 0], [PREND - 100, 1], [SUR_TETE_ + 100, 1], [SUR_TETE_ + 120, 0]],
+      mainDevantD: [[0, 0], [PREND - 100, 1], [SUR_TETE_ + 100, 1], [SUR_TETE_ + 120, 0]],
+      chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
+      chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
+      chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
+      chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
+      chapY: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 80, -7, 'out'], [SUR_TETE_ + 260, 0, 'io']],
+      sy: [[0, 1], [PREND, 1], [CACHE, .95, 'io'], [LORGNE, .95], [LORGNE + 200, .97, 'io'], [RECACHE, .94, 'out'], [REMET, .95], [SUR_TETE_, 1, 'io']],
+      teteY: [[0, 0], [PREND, 0], [CACHE, -8, 'io'], [LORGNE, -8], [LORGNE + 200, 0, 'io'], [RECACHE, -8, 'out'], [REMET, -8], [SUR_TETE_, 0, 'io']],
+      // derrière le bord : les yeux inquiets regardent à gauche, à droite ; puis un petit air gêné, avec une goutte
+      tristesse: [[0, 0], [LORGNE, .8], [LORGNE_FIN, .8], [RECACHE, 0]],
+      regardX: [[0, 0], [LORGNE + 150, 0], [LORGNE + 350, -8, 'io'], [LORGNE + 650, 8, 'io'], [LORGNE_FIN - 100, 0, 'io']],
+      regardY: [[0, 0], [LORGNE + 150, 5], [LORGNE_FIN, 5], [RECACHE, 0]],
+      sourcils: [[0, 0], [LORGNE, 10], [LORGNE_FIN, 10], [RECACHE, 0], [SUR_TETE_, 0], [SUR_TETE_ + 150, 6, 'out'], [DUREE, 0]],
+      joie: [[0, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [DUREE - 250, 1], [DUREE - 200, 0]],
+      teteRot: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 200, 8, 'io'], [DUREE - 150, 8], [DUREE, 0, 'io']],
+      goutteGene: [[0, 0], [SUR_TETE_ + 80, 0], [DUREE - 150, 1, 'lin'], [DUREE - 149, 0]],
+    });
+  })();
+
+  // 29. la tête qui tourne : il chancelle, les yeux en spirale, des petites étoiles tournent autour de sa tête ; il
+  //     secoue la tête, et tout s'arrête
+  DANSES.tournis = (() => {
+    const CHOC = 120, TOURNE = 320, SECOUE = 2250, FIN_SECOUE = 2700, DUREE = 3300;
+    const T = 950; // un tour de vertige
+    const phase = (ms) => 2 * Math.PI * (ms - TOURNE) / T;
+    const vertige = piste([[0, 0], [TOURNE - 100, 0], [TOURNE + 250, 1, 'out'], [SECOUE - 150, 1], [SECOUE + 100, 0, 'io']]);
+    const secoue = (ms) => (ms > SECOUE && ms < FIN_SECOUE ? Math.sin(2 * Math.PI * (ms - SECOUE) / 130) * (1 - (ms - SECOUE) / (FIN_SECOUE - SECOUE)) : 0);
+    return danse(DUREE, {
+      // il chancelle en rond
+      rot: (ms) => 6 * Math.sin(phase(ms)) * vertige(ms),
+      x: (ms) => 16 * Math.sin(phase(ms) + .6) * vertige(ms),
+      pli: (ms) => -7 * Math.sin(phase(ms) + 1.2) * vertige(ms),
+      teteRot: (ms) => -9 * Math.sin(phase(ms) + 1.6) * vertige(ms) + 14 * secoue(ms),
+      teteX: (ms) => 7 * Math.cos(phase(ms)) * vertige(ms) + 6 * secoue(ms),
+      chapRot: (ms) => 5 * Math.sin(phase(ms) + 2.2) * vertige(ms) - 4 * secoue(ms),
+      // les bras ballants
+      aG: (ms) => P.aG + 16 * Math.sin(phase(ms) + .4) * vertige(ms), aD: (ms) => P.aD + 16 * Math.sin(phase(ms) + .9) * vertige(ms),
+      sy: [[0, 1], [CHOC, .9, 'out'], [TOURNE, 1.02, 'out'], [TOURNE + 200, 1, 'io'], [SECOUE, 1], [FIN_SECOUE, 1], [FIN_SECOUE + 80, 1.03, 'out'], [FIN_SECOUE + 300, 1, 'io']],
+      // les yeux en spirale, les étoiles qui tournent ; après la secousse, il cligne des yeux et se reprend
+      spirale: [[0, 0], [CHOC + 60, 0], [CHOC + 80, 1], [SECOUE + 120, 1], [SECOUE + 140, 0]],
+      spiraleRot: (ms) => 0.5 * ms,
+      orbite: [[0, 0], [TOURNE - 120, 0], [TOURNE + 150, 1, 'out'], [SECOUE, 1], [SECOUE + 220, 0, 'io']],
+      orbitePhase: (ms) => 360 * (ms - TOURNE) / 900,
+      sourcils: [[0, 0], [CHOC, 10, 'out'], [SECOUE, 8], [FIN_SECOUE, 0], [FIN_SECOUE + 150, 10, 'out'], [DUREE, 0]],
+      sourcilsPli: [[0, 0], [CHOC, 6], [SECOUE, 6], [SECOUE + 100, 0]],
+      clinG: [[0, 0], [FIN_SECOUE, 0], [FIN_SECOUE + 70, 1], [FIN_SECOUE + 140, 0], [FIN_SECOUE + 260, 0], [FIN_SECOUE + 330, 1], [FIN_SECOUE + 400, 0]],
+      clinD: [[0, 0], [FIN_SECOUE, 0], [FIN_SECOUE + 70, 1], [FIN_SECOUE + 140, 0], [FIN_SECOUE + 260, 0], [FIN_SECOUE + 330, 1], [FIN_SECOUE + 400, 0]],
+    });
+  })();
+
   // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
   // à 3, une pluie de confettis (elle part avec les étoiles et finit avec l'animation)
   const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, tape5: 1, hourra: 2, reverence: 2, musichall: 2, glissade: 2, chapeau: 2, roue: 2, dab: 3, floss: 3, toupie: 3, basket: 3, guitare: 3, magie: 3 };
@@ -2150,14 +2346,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     };
   }
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé', vague: 'La vague', guitare: 'La guitare', musichall: 'Le music-hall', basket: 'Le basket', magie: 'Le tour de magie', glissade: 'La glissade', roue: 'La roue' };
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé', vague: 'La vague', guitare: 'La guitare', musichall: 'Le music-hall', basket: 'Le basket', magie: 'Le tour de magie', glissade: 'La glissade', roue: 'La roue', nonnon: 'Non, non, non !', gratte: 'Il se gratte la tête', cache: 'Oups !', tournis: 'La tête qui tourne' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
   const ANGLES = ['chapRot', 'tour', 'teteTour', 'rot', 'aG', 'aD'];
-  const SANS_FONDU = ['pion', 'chapDerriere', 'etoiles', 'niveau', 'halo', 'confettis', 'choc', 'goutteGene', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
+  const SANS_FONDU = ['pion', 'chapDerriere', 'etoiles', 'niveau', 'halo', 'confettis', 'choc', 'goutteGene', 'question', 'spirale', 'orbite', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
     for (const c in b) {
@@ -2207,14 +2403,21 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'tape5', 'hourra', 'reverence', 'musichall', 'glissade', 'chapeau', 'roue', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'tape5', 'hourra', 'reverence', 'musichall', 'glissade', 'chapeau', 'roue', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'triste', 'front', 'nonnon', 'gratte', 'cache', 'tournis', 'reflechit', 'eureka', 'endort']; lancer('bonjour'); });
   // le niveau de réussite de chaque animation, à côté de son nom
   document.querySelectorAll('.danse[data-danse]').forEach((b) => {
     const n = NIVEAUX[b.dataset.danse];
     if (n) b.insertAdjacentHTML('beforeend', `<span class="niveau" aria-label="${n} étoile${n > 1 ? 's' : ''}">${'★'.repeat(n)}</span>`);
   });
-  // une animation de réussite au hasard, pour un niveau (jamais deux fois de suite la même)
   let derniereHasard = null;
+  // une animation d'erreur au hasard (jamais deux fois de suite la même)
+  const ERREURS = ['triste', 'front', 'nonnon', 'gratte', 'cache', 'tournis'];
+  $('erreur-hasard').addEventListener('click', () => {
+    const choix = ERREURS.filter((n) => n !== derniereHasard);
+    derniereHasard = choix[Math.floor(Math.random() * choix.length)];
+    file = []; lancer(derniereHasard);
+  });
+  // une animation de réussite au hasard, pour un niveau (jamais deux fois de suite la même)
   document.querySelectorAll('[data-hasard]').forEach((b) => b.addEventListener('click', () => {
     const choix = Object.keys(NIVEAUX).filter((n) => NIVEAUX[n] === +b.dataset.hasard && n !== derniereHasard);
     derniereHasard = choix[Math.floor(Math.random() * choix.length)];

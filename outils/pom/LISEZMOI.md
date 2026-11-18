@@ -11,6 +11,9 @@
   Le floss, La toupie, Le basket, La guitare, Le tour de magie). Le niveau règle les effets : 5 petites étoiles ; 10
   étoiles et un halo doré ; 16 grandes étoiles colorées qui scintillent, le halo et une pluie de confettis. La page
   propose « Réussite, au hasard » pour chaque niveau.
+- Les erreurs (6) : Oh non… ; Oh là là ! ; Non, non, non ! (le doigt qui fait non, puis « essaie encore ») ; Il se
+  gratte la tête (avec un point d'interrogation) ; Oups ! (il se cache derrière son chapeau) ; La tête qui tourne
+  (yeux en spirale, étoiles autour de la tête). La page propose aussi « Erreur, au hasard ».
 - Les gants viennent des dessins de l'auteur (images non versionnées) : `gants-decalquer.py` décalque les deux
   gants du dessin d'origine (`gants2.json`), `mains-reperer.py` repère les 16 mains des planches (poignet,
   direction du bras), `mains-decalquer.py` les décalque (`gants16.json`). Le décalque utilise potracer
