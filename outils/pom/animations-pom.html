@@ -1351,14 +1351,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const repos = (c) => ({ a: P['a' + c], b: P['b' + c], lg: 1, p: P['p' + c] });
     const mix = (u, v, k) => ({ a: u.a + (v.a - u.a) * k, b: u.b + (v.b - u.b) * k, lg: u.lg + (v.lg - u.lg) * k, p: u.p + (v.p - u.p) * k });
     // la révérence : main sur le cœur (main gauche de Pom'), bras droit grand ouvert
-    const COEUR = [520, 684], OUVERT = [250, 520];
+    const COEUR = [520, 662], OUVERT = [250, 520];
     function brasD(ms) {
       if (ms < 1400) {
-        const v = viser('D', ms, COEUR[0], COEUR[1], 100, 10);
+        const v = viser('D', ms, COEUR[0], COEUR[1], 165, 10);
         return ms < 450 ? mix(repos('D'), v, EASE.io(ms / 450)) : v;
       }
       // la révérence se termine proprement : la main quitte le cœur et redescend doucement
-      if (ms < 1800) return mix(viser('D', 1400, COEUR[0], COEUR[1], 100, 10), repos('D'), EASE.io((ms - 1400) / 400));
+      if (ms < 1800) return mix(viser('D', 1400, COEUR[0], COEUR[1], 165, 10), repos('D'), EASE.io((ms - 1400) / 400));
       if (ms < 2860) { const r = repos('D'); r.a -= 30 * sursaut(ms); return r; } // au sursaut, les bras s'écartent
       const [gx, gy] = bord(Math.max(ms, PRISE));
       if (ms < PRISE) return mix(repos('D'), viser('D', ms, gx, gy - 6, 80, -20), EASE.io((ms - 2860) / (PRISE - 2860)));
