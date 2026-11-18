@@ -1218,10 +1218,9 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       pupille: [[0, 1], [SURSAUT, 1], [SURSAUT + 50, .55, 'out'], [2420, .6], [2580, 1, 'io']],
       exclam: [[0, 0], [SURSAUT + 10, 0], [SURSAUT + 100, 1, 'out'], [2450, 1], [2560, 0]],
       joie: [[0, 0], [3950, 0], [4000, 1], [4250, 1], [4300, 0]],
-      // le chapeau est revenu sur sa tête : les étoiles de la réussite
-      etoiles: [[0, -1], [3920, 0], [5150, 1, 'lin']],
-      // le halo : pendant la révérence, puis à nouveau avec les étoiles
-      halo: [[0, -1], [250, -1], [260, 0], [1900, 1, 'lin'], [1910, -1], [3910, -1], [3920, 0], [5150, 1, 'lin']],
+      // le moment fort, c'est la révérence : les étoiles et le halo l'accompagnent (rien après : le chapeau n'est qu'un
+      // contretemps)
+      etoiles: [[0, -1], [300, 0], [1950, 1, 'lin']],
     });
   })();
   // 13. « Dab ! » : un double dab. Clac, vers la droite : un bras tendu en diagonale, l'autre courbé devant le visage, la
@@ -1434,6 +1433,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       joie: [[0, 0], [CHOC - 20, 0], [CHOC, 1], [LACHE + 200, 1], [LACHE + 300, 0]],
       choc: [[0, -1], [CHOC - 1, -1], [CHOC, 0], [CHOC + 420, 1, 'out']], chocX: 314, chocY: 475,
       etoiles: [[0, -1], [CHOC, 0], [CHOC + 1100, 1, 'lin']],
+      // le halo s'allume d'un coup au choc, puis s'éteint doucement
+      halo: [[0, -1], [CHOC - 1, -1], [CHOC, .4], [CHOC + 900, 1, 'lin']],
     });
   })();
 
