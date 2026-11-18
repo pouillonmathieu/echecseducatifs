@@ -1240,7 +1240,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       const L = Math.hypot(x - ex, y - ey), t = Math.atan2(-b, L / 2) * 180 / Math.PI;
       // le gant, doigts vers le haut, penché vers l'autre main ; il se redresse au clap
       const dir = -90 - s * (12 - 12 * c(ms));
-      const v = { a, b, lg: L / 138, p: dir - a - t }, r = repos(k), m = A(ms);
+      // la main droite de Pom' (à gauche de l'écran) tourne dans l'autre sens que la gauche, en miroir (+360°)
+      const v = { a, b, lg: L / 138, p: dir - a - t + (k === 'G' ? 360 : 0) }, r = repos(k), m = A(ms);
       return { a: r.a + (v.a - r.a) * m, b: r.b + (v.b - r.b) * m, lg: r.lg + (v.lg - r.lg) * m, p: r.p + (v.p - r.p) * m };
     }
     const pistes = {};
