@@ -388,22 +388,23 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="musichall"><span class="num">9</span><b>Le music-hall</b></button>
         <button class="danse" type="button" data-danse="glissade"><span class="num">10</span><b>La glissade</b></button>
         <button class="danse" type="button" data-danse="chapeau"><span class="num">11</span><b>La danse du chapeau</b></button>
+        <button class="danse" type="button" data-danse="roue"><span class="num">12</span><b>La roue</b></button>
         <p class="groupe">★★★ Grande réussite</p>
-        <button class="danse" type="button" data-danse="dab"><span class="num">12</span><b>Dab !</b></button>
-        <button class="danse" type="button" data-danse="floss"><span class="num">13</span><b>Le floss</b></button>
-        <button class="danse" type="button" data-danse="toupie"><span class="num">14</span><b>La toupie</b></button>
-        <button class="danse" type="button" data-danse="basket"><span class="num">15</span><b>Le basket</b></button>
-        <button class="danse" type="button" data-danse="guitare"><span class="num">16</span><b>La guitare</b></button>
-        <button class="danse" type="button" data-danse="magie"><span class="num">17</span><b>Le tour de magie</b></button>
+        <button class="danse" type="button" data-danse="dab"><span class="num">13</span><b>Dab !</b></button>
+        <button class="danse" type="button" data-danse="floss"><span class="num">14</span><b>Le floss</b></button>
+        <button class="danse" type="button" data-danse="toupie"><span class="num">15</span><b>La toupie</b></button>
+        <button class="danse" type="button" data-danse="basket"><span class="num">16</span><b>Le basket</b></button>
+        <button class="danse" type="button" data-danse="guitare"><span class="num">17</span><b>La guitare</b></button>
+        <button class="danse" type="button" data-danse="magie"><span class="num">18</span><b>Le tour de magie</b></button>
         <p class="groupe">Les autres moments</p>
-        <button class="danse" type="button" data-danse="bonjour"><span class="num">16</span><b>Bonjour !</b></button>
-        <button class="danse" type="button" data-danse="reflechit"><span class="num">17</span><b>Hmm…</b></button>
-        <button class="danse" type="button" data-danse="eureka"><span class="num">18</span><b>Eurêka !</b></button>
-        <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">17+18</span><b>Hmm… puis Eurêka !</b></button>
-        <button class="danse" type="button" data-danse="triste"><span class="num">19</span><b>Oh non…</b></button>
-        <button class="danse" type="button" data-danse="front"><span class="num">20</span><b>Oh là là !</b></button>
-        <button class="danse" type="button" data-suite="endort dort"><span class="num">21</span><b>Il s'endort… (puis il dort)</b></button>
-        <button class="danse" type="button" data-danse="reveil"><span class="num">22</span><b>Réveil !</b></button>
+        <button class="danse" type="button" data-danse="bonjour"><span class="num">19</span><b>Bonjour !</b></button>
+        <button class="danse" type="button" data-danse="reflechit"><span class="num">20</span><b>Hmm…</b></button>
+        <button class="danse" type="button" data-danse="eureka"><span class="num">21</span><b>Eurêka !</b></button>
+        <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">20+21</span><b>Hmm… puis Eurêka !</b></button>
+        <button class="danse" type="button" data-danse="triste"><span class="num">22</span><b>Oh non…</b></button>
+        <button class="danse" type="button" data-danse="front"><span class="num">23</span><b>Oh là là !</b></button>
+        <button class="danse" type="button" data-suite="endort dort"><span class="num">24</span><b>Il s'endort… (puis il dort)</b></button>
+        <button class="danse" type="button" data-danse="reveil"><span class="num">25</span><b>Réveil !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -2012,9 +2013,65 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
+  // 25. la roue : il prend son élan et fait une roue sur le côté, une main qui tient son chapeau, l'autre bras tendu ;
+  //     il retombe sur sa base, lève les bras (ta-da !), puis revient à sa place en deux petits bonds
+  DANSES.roue = (() => {
+    const ELAN = 280, DEBUT = 300, FIN_ROUE = 1000, TADA = 1150, RETOUR = 1950, DUREE = 3150;
+    const LOIN = 200, R = 252; // la distance parcourue ; le centre du corps est à R au-dessus de la base
+    // le tour : il penche d'abord à contre-sens (l'élan), puis un tour complet, et un petit balancement à l'arrivée
+    const rot = piste([[0, 0], [ELAN, -10, 'out'], [DEBUT, -10], [FIN_ROUE, 360, 'io'], [FIN_ROUE + 120, 366, 'out'], [FIN_ROUE + 300, 360, 'io']]);
+    // le centre du corps : il avance, monte un peu pendant la roue ; puis deux bonds pour revenir
+    const X = piste([[0, 0], [DEBUT, -12, 'out'], [FIN_ROUE, LOIN, 'io'], [RETOUR, LOIN], [RETOUR + 450, LOIN / 2, 'io'], [RETOUR + 900, 0, 'io']]);
+    const H = (ms) => {
+      // (la tête en bas, il doit être assez haut pour que son chapeau ne touche pas le sol)
+      if (ms > DEBUT && ms < FIN_ROUE) return 250 * Math.sin(Math.PI * (ms - DEBUT) / (FIN_ROUE - DEBUT));
+      for (const t of [RETOUR, RETOUR + 450]) if (ms > t && ms < t + 450) return 50 * Math.sin(Math.PI * (ms - t) / 450);
+      return 0;
+    };
+    // la base tourne autour du centre du corps : on déplace la base pour que le centre suive son chemin
+    const xP = (ms) => X(ms) - R * Math.sin(rad(rot(ms)));
+    const yP = (ms) => H(ms) + R - R * Math.cos(rad(rot(ms)));
+    const v = (ms) => (X(ms + 15) - X(ms - 15)) / 30;
+    // la main qui tient le chapeau (comme dans la glissade), l'autre bras tendu
+    const tient = () => viserBras('G', POSE, 346, (chapeauSurTete ? 262 : 196) + 38, -80, -30);
+    const tendu = { a: -50, b: -12, lg: 1.4, p: 0 };
+    const tada = { G: { a: 220, b: 16, lg: 1.3, p: 0 }, D: { a: -40, b: -16, lg: 1.3, p: 0 } };
+    function brasG(ms) {
+      const r = brasRepos('G');
+      if (ms < ELAN) return bougerBras(r, tient(), EASE.io(ms / ELAN));
+      if (ms < FIN_ROUE + 120) return tient();
+      if (ms < TADA + 120) return bougerBras(tient(), tada.G, EASE.rebond(Math.min(1, (ms - FIN_ROUE - 120) / 150)));
+      if (ms < RETOUR - 100) return tada.G;
+      return bougerBras(tada.G, r, EASE.io(Math.min(1, (ms - RETOUR + 100) / 400)));
+    }
+    function brasD(ms) {
+      const r = brasRepos('D');
+      if (ms < ELAN) return bougerBras(r, tendu, EASE.io(ms / ELAN));
+      if (ms < FIN_ROUE + 120) return tendu;
+      if (ms < TADA + 120) return bougerBras(tendu, tada.D, EASE.rebond(Math.min(1, (ms - FIN_ROUE - 120) / 150)));
+      if (ms < RETOUR - 100) return tada.D;
+      return bougerBras(tada.D, r, EASE.io(Math.min(1, (ms - RETOUR + 100) / 400)));
+    }
+    return danse(DUREE, {
+      ...pistesBras('G', brasG), ...pistesBras('D', brasD),
+      mainG: [[0, 'pendante'], [ELAN - 120, 'poing-cote'], [FIN_ROUE + 150, 'ouverte'], [RETOUR + 200, 'pendante']],
+      mainD: [[0, 'pendante'], [ELAN - 150, 'ouverte'], [RETOUR + 200, 'pendante']],
+      devantG: [[0, 0], [150, 1], [FIN_ROUE + 150, 0]],
+      x: xP, y: yP, rot,
+      sy: [[0, 1], [ELAN, .9, 'out'], [DEBUT + 60, 1.06, 'out'], [FIN_ROUE - 60, 1.02], [FIN_ROUE + 40, .88, 'out'], [FIN_ROUE + 300, 1, 'ressort'],
+        [RETOUR, 1], [RETOUR + 40, .92], [RETOUR + 120, 1.04, 'out'], [RETOUR + 420, 1, 'io'], [RETOUR + 450, .93], [RETOUR + 530, 1.04, 'out'], [RETOUR + 900, .94, 'io'], [RETOUR + 1100, 1, 'ressort']],
+      traine: (ms) => Math.max(-1, Math.min(1, v(ms) * 2.2)),
+      teteY: [[0, 0], [ELAN, -8, 'out'], [DEBUT + 100, 10, 'out'], [FIN_ROUE, 6], [FIN_ROUE + 60, -10, 'out'], [FIN_ROUE + 320, 0, 'ressort']],
+      // les yeux fermés de joie pendant la roue, grands ouverts pour le ta-da
+      joie: [[0, 0], [DEBUT - 20, 0], [DEBUT, 1], [FIN_ROUE + 60, 1], [FIN_ROUE + 80, 0]],
+      sourcils: [[0, 0], [ELAN, 10, 'out'], [FIN_ROUE, 10], [FIN_ROUE + 150, 18, 'out'], [RETOUR, 14], [DUREE, 0]],
+      etoiles: [[0, -1], [FIN_ROUE + 60, 0], [FIN_ROUE + 1300, 1, 'lin']],
+    });
+  })();
+
   // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
   // à 3, une pluie de confettis (elle part avec les étoiles et finit avec l'animation)
-  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, tape5: 1, hourra: 2, reverence: 2, musichall: 2, glissade: 2, chapeau: 2, dab: 3, floss: 3, toupie: 3, basket: 3, guitare: 3, magie: 3 };
+  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, tape5: 1, hourra: 2, reverence: 2, musichall: 2, glissade: 2, chapeau: 2, roue: 2, dab: 3, floss: 3, toupie: 3, basket: 3, guitare: 3, magie: 3 };
   for (const [nom, niveau] of Object.entries(NIVEAUX)) {
     const d = DANSES[nom], pose = d.pose;
     let t0 = 0;
@@ -2030,7 +2087,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     };
   }
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé', vague: 'La vague', guitare: 'La guitare', musichall: 'Le music-hall', basket: 'Le basket', magie: 'Le tour de magie', glissade: 'La glissade' };
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé', vague: 'La vague', guitare: 'La guitare', musichall: 'Le music-hall', basket: 'Le basket', magie: 'Le tour de magie', glissade: 'La glissade', roue: 'La roue' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -2087,7 +2144,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'tape5', 'hourra', 'reverence', 'musichall', 'glissade', 'chapeau', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'tape5', 'hourra', 'reverence', 'musichall', 'glissade', 'chapeau', 'roue', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
   // le niveau de réussite de chaque animation, à côté de son nom
   document.querySelectorAll('.danse[data-danse]').forEach((b) => {
     const n = NIVEAUX[b.dataset.danse];
