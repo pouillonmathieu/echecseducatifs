@@ -165,6 +165,20 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
             <!-- le poignet bouffant -->
             <path class="gant-dessin" d="M-24 -4 C-28 8 -16 15 0 15 C16 15 30 10 28 -4 C18 2 -12 2 -24 -4 Z"/>
           </g></g>
+          <!-- la main de profil (main gauche de Pom', paume vers la gauche) : pour applaudir. Le poignet est en (0, 0),
+               les doigts vers le haut ; le pouce, devant la paume, pointe vers le haut -->
+          <g id="main-profil"><g transform="scale(1.35)">
+            <!-- l'annulaire et l'auriculaire, derrière : on ne voit que leur bout -->
+            <path class="gant-dessin" style="stroke-width:2.6" d="M0 -50 C2 -72 6 -88 12 -92 C18 -95 22 -89 21 -80 C20 -66 17 -50 11 -40 Z"/>
+            <!-- le majeur, plus long, dépasse derrière l'index -->
+            <path class="gant-dessin" style="stroke-width:2.6" d="M-12 -50 C-12 -78 -10 -100 -2 -106 C5 -110 12 -104 12 -94 C12 -78 10 -62 5 -52 Z"/>
+            <!-- la paume et l'index, devant -->
+            <path class="gant-dessin" style="stroke-width:2.6" d="M-17 0 C-21 -20 -22 -46 -21 -66 C-21 -84 -19 -96 -12 -99 C-5 -101 0 -95 0 -86 C0 -72 2 -56 8 -44 C14 -32 20 -18 18 0 Z"/>
+            <!-- le pouce, couché devant la paume, vers le haut -->
+            <path class="gant-dessin" style="stroke-width:2.6" d="M-4 -22 C-15 -28 -24 -42 -27 -56 C-29 -66 -21 -70 -16 -62 C-12 -54 -6 -46 1 -40 C5 -34 3 -26 -4 -22 Z"/>
+            <!-- le poignet bouffant -->
+            <path class="gant-dessin" style="stroke-width:2.6" d="M-20 -4 C-24 8 -12 14 1 14 C14 14 25 8 21 -4 C11 2 -9 2 -20 -4 Z"/>
+          </g></g>
           <path id="etoile" d="M0 -22 Q4 -4 22 0 Q4 4 0 22 Q-4 4 -22 0 Q-4 -4 0 -22 Z"/>
         </defs>
 
@@ -304,6 +318,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="reverence"><span class="num">12</span><b>Quel beau coup !</b></button>
         <button class="danse" type="button" data-danse="dab"><span class="num">13</span><b>Dab !</b></button>
         <button class="danse" type="button" data-danse="floss"><span class="num">14</span><b>Le floss</b></button>
+        <button class="danse" type="button" data-danse="applaudit"><span class="num">15</span><b>Bravo !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -425,6 +440,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 
   // direction du bras qui entre dans chaque gant, sur le dessin original (en degrés)
   const MAINS = {"pouce": {"entree": -150, "cote": "G", "nom": "Pouce levé", "boite": [-88.0, -87.4, 89.0, 104.7]}, "ouverte": {"entree": -65, "cote": "D", "nom": "Main ouverte", "boite": [-46.9, -95.0, 123.9, 97.7]}, "poing-cote": {"entree": -24.5, "cote": "D", "nom": "Poing, de côté", "boite": [-8.5, -99.6, 108.9, 109.4]}, "poing-leve": {"entree": -113.6, "cote": "D", "nom": "Poing levé", "boite": [-85.3, -109.8, 105.8, 121.3]}, "poing-bas": {"entree": 123.3, "cote": "D", "nom": "Poing vers le bas", "boite": [-128.7, -20.2, 138.9, 130.3]}, "pendante": {"entree": 73.8, "cote": "D", "nom": "Main détendue", "boite": [-44.4, -2.4, 107.7, 119.2]}, "index-leve": {"entree": -88.2, "cote": "D", "nom": "Index levé", "boite": [-52.8, -143.9, 96.6, 144.8]}, "victoire": {"entree": -84.0, "cote": "D", "nom": "Victoire", "boite": [-48.1, -130.5, 87.2, 131.0]}, "index-oblique": {"entree": -67.8, "cote": "D", "nom": "Index et pouce", "boite": [-66.4, -168.5, 155.7, 174.4]}, "coucou-dos": {"entree": -99.7, "cote": "D", "nom": "Coucou, de dos", "boite": [-74.6, -135.1, 96.6, 138.7]}, "ouverte-cote": {"entree": -145.2, "cote": "D", "nom": "Main ouverte (de côté ou de dos)", "boite": [-109.3, -114.0, 121.7, 123.0], "deux": "main droite de côté, main gauche de dos"}, "presente": {"entree": -67.7, "cote": "D", "nom": "Paume vers le haut", "boite": [-55.8, -107.8, 143.6, 111.2]}, "paume": {"entree": -84.1, "cote": "D", "nom": "Tape-m'en cinq", "boite": [-73.0, -133.3, 119.0, 134.1]}, "index-pointe": {"entree": 102.7, "cote": "G", "nom": "Index pointé", "boite": [-99.2, -1.9, 168.1, 95.2]}, "coucou": {"entree": -14.9, "cote": "D", "nom": "Coucou", "boite": [-6.2, -99.2, 112.4, 112.4]}, "ok": {"entree": -104.1, "cote": "D", "nom": "OK", "boite": [-68.5, -127.5, 95.0, 130.3]}, "shaka": {"entree": -165.8, "cote": "G", "nom": "Shaka", "boite": [-159.8, -132.8, 169.2, 161.3]}, "pouce-index": {"entree": -99.1, "cote": "D", "nom": "Pouce et index", "boite": [-109.6, -124.6, 158.5, 128.2]}, "index-menton": {"entree": -90, "cote": "G", "nom": "Index sous le menton", "boite": [-89.7, -121.9, 138.0, 140.3]}};
+  MAINS.profil = { entree: -90, cote: 'D', nom: 'Main de profil', boite: [-46, -150, 80, 172] }; // dessinée dans la page
   function bras(cote, p) {
     const g = el.bras[cote];
     const [ex, ey] = cote === 'G' ? [442, 580] : [580, 566];
@@ -1202,7 +1218,50 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss' };
+  // 15. il applaudit : les mains se rejoignent devant lui et claquent en rythme, les yeux rieurs ; à chaque clap, un
+  //     petit tassement du corps et un hochement de tête
+  DANSES.applaudit = (() => {
+    const DEBUT = 380, T = 290, N = 8, FIN = DEBUT + N * T, DUREE = FIN + 520;
+    const CENTRE = [511, 668], OUVERT = 92, FERME = 29; // écart du poignet au milieu : mains ouvertes, mains jointes
+    // c : 1 au moment du clap, 0 quand les mains sont le plus écartées
+    const c = (ms) => {
+      if (ms < DEBUT - T / 2 || ms > FIN) return 0;
+      const f = (((ms - DEBUT) % T) + T) % T / T;
+      return Math.pow(Math.abs(Math.cos(Math.PI * f)), 6);
+    };
+    const A = piste([[0, 0], [DEBUT - T / 2, 1, 'io'], [FIN, 1], [DUREE - 60, 0, 'io']]);
+    const corps = (ms) => ({ ...POSE, sy: 1 - .035 * c(ms) * A(ms), sx: 1 + .02 * c(ms) * A(ms) });
+    const repos = (k) => ({ a: P['a' + k], b: P['b' + k], lg: 1, p: P['p' + k] });
+    function bras(k, ms) {
+      const q = corps(ms), s = k === 'G' ? -1 : 1;
+      const [ex, ey] = pointCorps(q, k === 'G' ? 442 : 580, k === 'G' ? 580 : 566);
+      const ecart = OUVERT - (OUVERT - FERME) * c(ms);
+      const [x, y] = pointCorps(q, CENTRE[0] + s * ecart, CENTRE[1] + 6 * c(ms));
+      const b = k === 'G' ? 40 : -40;
+      let a = Math.atan2(y - ey, x - ex) * 180 / Math.PI;
+      const L = Math.hypot(x - ex, y - ey), t = Math.atan2(-b, L / 2) * 180 / Math.PI;
+      // le gant, doigts vers le haut, penché vers l'autre main ; il se redresse au clap
+      const dir = -90 - s * (12 - 12 * c(ms));
+      const v = { a, b, lg: L / 138, p: dir - a - t }, r = repos(k), m = A(ms);
+      return { a: r.a + (v.a - r.a) * m, b: r.b + (v.b - r.b) * m, lg: r.lg + (v.lg - r.lg) * m, p: r.p + (v.p - r.p) * m };
+    }
+    const pistes = {};
+    for (const k of ['G', 'D']) for (const x of ['a', 'b', 'lg', 'p']) pistes[x + k] = (ms) => bras(k, ms)[x];
+    return danse(DUREE, {
+      ...pistes,
+      mainG: [[0, 'pendante'], [DEBUT - 250, 'profil'], [FIN + 260, 'pendante']],
+      mainD: [[0, 'pendante'], [DEBUT - 250, 'profil'], [FIN + 260, 'pendante']],
+      devantG: [[0, 0], [DEBUT - 250, 1], [FIN + 260, 0]], devantD: [[0, 0], [DEBUT - 250, 1], [FIN + 260, 0]],
+      sy: (ms) => corps(ms).sy, sx: (ms) => corps(ms).sx,
+      teteY: (ms) => -7 * c(ms) * A(ms), teteRot: (ms) => 3 * Math.sin(Math.PI * (ms - DEBUT) / T) * A(ms),
+      chapY: (ms) => 5 * c(ms) * A(ms),
+      joie: [[0, 0], [DEBUT - 200, 1], [FIN, 1], [FIN + 100, 0]],
+      sourcils: [[0, 0], [DEBUT, 8, 'out'], [FIN, 8], [DUREE, 0]],
+      etoiles: [[0, -1], [DEBUT + 100, 0], [DEBUT + 2500, 1, 'lin']],
+    });
+  })();
+
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -1259,7 +1318,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
