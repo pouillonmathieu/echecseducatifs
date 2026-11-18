@@ -304,6 +304,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 
           <!-- le chapeau melon, couronné d'une croix -->
           <g id="chapeau">
+            <!-- les lignes de vitesse quand le chapeau tourne sur lui-même : la moitié arrière, derrière lui... -->
+            <g id="vit-chap-ar" class="vitesse" opacity="0"><path d="M352 202 A156 32 0 0 1 662 202"/><path d="M400 142 A107 20 0 0 1 614 142"/></g>
             <!-- la croix du roi : bras évasés, sur un petit col -->
             <path id="croix" class="chap" d="M483 2 Q507 9 531 2 Q520 18 521 30 Q535 26 552 18 Q544 41 552 64 Q535 56 521 52 Q520 68 523 80 Q526 92 534 98 L480 98 Q488 92 491 80 Q494 68 493 52 Q479 56 462 64 Q470 41 462 18 Q479 26 493 30 Q494 18 483 2 Z"/>
             <!-- la calotte arrondie, presque droite sur les côtés -->
@@ -312,8 +314,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
             <path class="ruban" d="M424 176 Q507 186 590 176 L590 196 Q507 206 424 196 Z"/>
             <!-- le bord, relevé aux deux bouts -->
             <path class="chap" d="M378 186 C390 176 404 180 424 188 Q507 206 590 188 C610 180 624 176 636 186 C640 206 628 222 600 226 Q507 238 414 226 C386 222 374 206 378 186 Z"/>
-            <path class="reflet-chap" d="M450 146 Q456 116 480 104"/>
+            <path id="reflet-calotte" class="reflet-chap" d="M450 146 Q456 116 480 104"/>
             <path class="reflet-chap fin" d="M392 194 Q507 220 622 194"/>
+            <!-- ... et la moitié avant, devant lui -->
+            <g id="vit-chap-av" class="vitesse" opacity="0"><path d="M352 202 A156 32 0 0 0 662 202"/><path d="M400 142 A107 20 0 0 0 614 142"/></g>
           </g>
         </g>
         <!-- le choc du « tape-m'en cinq » : des traits qui jaillissent autour de la main -->
@@ -456,7 +460,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, chapTour: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -535,9 +539,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     let queueVue;
     if (p.chapLibre) {
       // le chapeau ne suit plus la tête (il tombe, il est par terre, une main le tient) : position propre
-      // (chapTour : il tourne sur lui-même, comme une toupie, vu de face)
-      const ct = Math.cos(rad(p.chapTour)), sct = Math.abs(ct) < .06 ? .06 * Math.sign(ct || 1) : ct;
-      el.chapeau.setAttribute('transform', `translate(${p.chapLX - 508} ${p.chapLY - 205}) rotate(${p.chapLR} 508 205) translate(508 0) scale(${sct} 1) translate(-508 0)`);
+      el.chapeau.setAttribute('transform', `translate(${p.chapLX - 508} ${p.chapLY - 205}) rotate(${p.chapLR} 508 205)`);
       queueVue = 1;
     } else {
       // tête penchée en avant : le chapeau bascule avec elle (il descend un peu et s'écrase en hauteur)
@@ -566,7 +568,17 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     el.queueDessus.setAttribute('transform', `translate(0 ${haut - 302}) translate(505 302) scale(1 ${Math.max(.15, cph)}) translate(-505 -302)`);
     el.visage.setAttribute('opacity', c > .05 ? 1 : 0);
     el.feuille.setAttribute('transform', `translate(500 0) scale(${Math.abs(c) < .05 ? .05 * Math.sign(c || 1) : c} 1) translate(-500 0)`);
-    el.croix.setAttribute('transform', `translate(507 0) scale(${Math.max(.16, Math.abs(c))} 1) translate(-507 0)`);
+    // le chapeau qui tourne sur lui-même (p.chapTour, quand il est libre) : il reste rond, mais la croix s'amincit et
+    // s'élargit, le reflet glisse sur la calotte et disparaît derrière, et des lignes de vitesse l'entourent
+    const th = rad(p.chapLibre ? p.chapTour : 0), cc = Math.cos(rad(p.tour) + th);
+    el.croix.setAttribute('transform', `translate(507 0) scale(${Math.max(.16, Math.abs(cc))} 1) translate(-507 0)`);
+    const reflet = $('reflet-calotte');
+    reflet.setAttribute('transform', `translate(${62 * Math.sin(th)} 0)`);
+    reflet.setAttribute('opacity', th ? Math.max(0, Math.cos(th)) : 1);
+    for (const v of [$('vit-chap-av'), $('vit-chap-ar')]) {
+      v.setAttribute('opacity', p.chapVitesse);
+      [...v.children].forEach(x => { x.style.strokeDashoffset = -(p.chapTour || 0) * 1.4; });
+    }
     for (const v of [el.vitAv, el.vitAr]) {
       v.setAttribute('opacity', p.vitesse);
       v.style.strokeDashoffset = -p.tour * 2.2;
@@ -1740,6 +1752,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
       chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
       chapTour: (ms) => (chapeau(ms) ? tour(ms) : 0),
+      chapVitesse: [[0, 0], [LANCE, 0], [LANCE + 120, .5, 'out'], [RATTRAPE, .5], [RATTRAPE + 160, 1, 'out'], [PICHENETTE, 1], [PICHENETTE + 200, .45, 'io'], [SUR_TETE_ - 60, .3], [SUR_TETE_, 0]],
       chapY: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 80, -8, 'out'], [SUR_TETE_ + 260, 0, 'io']],
       // il ne quitte pas son chapeau des yeux ; ravi à l'arrivée
       regardX: (ms) => { const h = chapeau(ms); return h ? Math.max(-9, Math.min(9, (h[0] - 508) / 14)) : 0; },
