@@ -1535,7 +1535,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       regardX: (ms) => (ms < DEPART || ms > ARRIVEE + 100 ? 0 : -9 + 18 * Math.min(1, w(ms))),
       sourcils: [[0, 0], [OUVRE, 8, 'out'], [ARRIVEE, 8], [DUREE, 0]],
       joie: [[0, 0], [ARRIVEE + 60, 0], [ARRIVEE + 80, 1], [DUREE - 250, 1], [DUREE - 200, 0]],
-      etoiles: [[0, -1], [ARRIVEE - 100, 0], [ARRIVEE + 1000, 1, 'lin']],
+      // les étoiles jaillissent quand la vague passe par la tête
+      etoiles: [[0, -1], [(DEPART + ARRIVEE) / 2 - 40, 0], [(DEPART + ARRIVEE) / 2 + 1300, 1, 'lin']],
     });
   })();
 
