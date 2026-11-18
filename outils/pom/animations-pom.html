@@ -317,6 +317,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="dab"><span class="num">13</span><b>Dab !</b></button>
         <button class="danse" type="button" data-danse="floss"><span class="num">14</span><b>Le floss</b></button>
         <button class="danse" type="button" data-danse="applaudit"><span class="num">15</span><b>Bravo !</b></button>
+        <button class="danse" type="button" data-danse="ok"><span class="num">16</span><b>Clin d'œil</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -414,7 +415,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -539,7 +540,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       else ferme.setAttribute('d', `M${cx - 26} ${cy + 7 + 5 * r} Q${cx} ${cy + 14 - 46 * r} ${cx + 26} ${cy + 7 + 5 * r}`);
     });
     el.etincelle.setAttribute('opacity', p.etincelle);
-    el.etincelle.setAttribute('transform', `translate(592 300) rotate(${p.etincelle * 90}) scale(${.4 + .8 * p.etincelle})`);
+    el.etincelle.setAttribute('transform', `translate(${p.etincelleX} ${p.etincelleY}) rotate(${p.etincelle * 90}) scale(${.4 + .8 * p.etincelle})`);
     el.sourcils.setAttribute('transform', `translate(0 ${-p.sourcils})`);
     el.sG.setAttribute('transform', `translate(0 ${-p.sourcilG}) rotate(${-p.sourcilsPli} 468 288)`);
     el.sD.setAttribute('transform', `translate(0 ${-p.sourcilD}) rotate(${p.sourcilsPli} 545 288)`);
@@ -1260,7 +1261,45 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !' };
+  // 16. clin d'œil : il lève la main à côté de son visage en faisant « OK », penche la tête, fait un clin d'œil, et une
+  //     petite étincelle brille à côté
+  DANSES.ok = (() => {
+    const MONTE = 140, LA = 430, TCHIK = 560, REDESCEND = 1750, DUREE = 2250;
+    const pli = piste([[0, 0], [MONTE, 0], [LA, -3, 'out'], [REDESCEND, -3], [DUREE - 80, 0, 'io']]);
+    const corps = (ms) => ({ ...POSE, pli: pli(ms) });
+    // la main : à côté de la tête, doigts vers le haut ; au clin d'œil, un petit coup en avant (« tchik »)
+    const hx = piste([[0, 668], [TCHIK - 60, 668], [TCHIK, 676, 'out'], [TCHIK + 220, 668, 'io']]);
+    const hy = piste([[0, 504], [TCHIK - 60, 504], [TCHIK, 492, 'out'], [TCHIK + 220, 504, 'io']]);
+    const hdir = piste([[0, -98], [TCHIK - 60, -98], [TCHIK, -84, 'out'], [TCHIK + 260, -96, 'io']]);
+    const repos = () => ({ a: P.aD, b: P.bD, lg: 1, p: P.pD });
+    function brasD(ms) {
+      const q = corps(ms), [ex, ey] = pointCorps(q, 580, 566), [x, y] = pointCorps(q, hx(ms), hy(ms));
+      const b = 30, a = Math.atan2(y - ey, x - ex) * 180 / Math.PI;
+      const L = Math.hypot(x - ex, y - ey), t = Math.atan2(-b, L / 2) * 180 / Math.PI;
+      const v = { a, b, lg: L / 138, p: hdir(ms) - a - t }, r = repos();
+      const m = ms < MONTE ? 0 : ms < LA ? EASE.rebond((ms - MONTE) / (LA - MONTE)) : ms < REDESCEND ? 1 : 1 - EASE.io(Math.min(1, (ms - REDESCEND) / (DUREE - 80 - REDESCEND)));
+      return { a: r.a + (v.a - r.a) * m, b: r.b + (v.b - r.b) * m, lg: r.lg + (v.lg - r.lg) * m, p: r.p + (v.p - r.p) * m };
+    }
+    return danse(DUREE, {
+      aD: (ms) => brasD(ms).a, bD: (ms) => brasD(ms).b, lgD: (ms) => brasD(ms).lg, pD: (ms) => brasD(ms).p,
+      mainD: [[0, 'pendante'], [MONTE + 90, 'ok'], [REDESCEND + 180, 'pendante']],
+      devantD: [[0, 0], [MONTE + 90, 1], [REDESCEND + 300, 0]],
+      pli,
+      // la tête penche vers la main ; un petit hochement au clin d'œil
+      teteRot: [[0, 0], [MONTE, 0], [LA, 8, 'out'], [TCHIK - 60, 8], [TCHIK, 12, 'out'], [TCHIK + 260, 8, 'io'], [REDESCEND, 8], [DUREE - 80, 0, 'io']],
+      teteX: [[0, 0], [MONTE, 0], [LA, 5, 'out'], [REDESCEND, 5], [DUREE - 80, 0, 'io']],
+      teteY: [[0, 0], [TCHIK - 60, 0], [TCHIK, -6, 'out'], [TCHIK + 200, 0, 'io']],
+      chapRot: [[0, 0], [MONTE, 0], [LA, 3, 'out'], [REDESCEND, 3], [DUREE - 80, 0, 'io']],
+      // le clin d'œil (l'œil du côté opposé à la main), le sourcil de l'autre œil levé
+      clinG: [[0, 0], [TCHIK - 80, 0], [TCHIK, 1, 'out'], [TCHIK + 820, 1], [TCHIK + 920, 0]],
+      sourcilG: [[0, 0], [TCHIK - 80, 0], [TCHIK, -3, 'out'], [TCHIK + 820, -3], [TCHIK + 920, 0]],
+      sourcilD: [[0, 0], [LA, 6, 'out'], [TCHIK, 12, 'out'], [REDESCEND, 12], [DUREE, 0]],
+      etincelle: [[0, 0], [TCHIK - 40, 0], [TCHIK + 110, 1, 'out'], [TCHIK + 420, 0, 'in']], etincelleX: 606, etincelleY: 318,
+      sy: [[0, 1], [TCHIK - 60, 1], [TCHIK, .97, 'out'], [TCHIK + 260, 1, 'ressort']],
+    });
+  })();
+
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -1317,7 +1356,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
