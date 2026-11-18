@@ -593,7 +593,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       const q = p.choc, cx = p.chocX + p.x, cy = p.chocY - p.y;
       ch.setAttribute('opacity', Math.min(1, 3 * (1 - q)));
       [...ch.children].forEach((l, i) => {
-        const ang = rad(-82 + i * 40 + (i % 2) * 8) /* pas de trait vers le visage */, r0 = 200 + 70 * q, r1 = r0 + 26 + 40 * (1 - q) * (i % 2 ? .7 : 1);
+        const ang = rad(-98 - i * 40 - (i % 2) * 8) /* pas de trait vers le visage */, r0 = 200 + 70 * q, r1 = r0 + 26 + 40 * (1 - q) * (i % 2 ? .7 : 1);
         l.setAttribute('x1', cx + r0 * Math.cos(ang)); l.setAttribute('y1', cy + r0 * Math.sin(ang));
         l.setAttribute('x2', cx + r1 * Math.cos(ang)); l.setAttribute('y2', cy + r1 * Math.sin(ang));
       });
@@ -1321,39 +1321,44 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   //     choc, la main s'écrase contre la vitre, des traits jaillissent tout autour et tout tremble un peu
   DANSES.tape5 = (() => {
     const MONTE = 120, ARME = 520, ATTENTE = 700, CHOC = 830, LACHE = 1350, DUREE = 1950;
-    const pli = piste([[0, 0], [MONTE, 0], [ARME, 5, 'out'], [ATTENTE, 6], [CHOC, -5, 'in'], [LACHE, -4], [DUREE - 80, 0, 'io']]);
+    const pli = piste([[0, 0], [MONTE, 0], [ARME, -5, 'out'], [ATTENTE, -6], [CHOC, 5, 'in'], [LACHE, 4], [DUREE - 80, 0, 'io']]);
     const corps = (ms) => ({ ...POSE, pli: pli(ms) });
-    // le poignet (dans le dessin de Pom') et la direction de la main, doigts vers le haut
-    const hx = piste([[0, 640], [ARME, 694, 'out'], [ATTENTE, 700], [CHOC, 736, 'in'], [LACHE, 736], [DUREE, 640]]);
+    // la main droite de Pom' (à gauche de l'écran) : le poignet (dans le dessin de Pom') et la direction de la main,
+    // doigts vers le haut
+    const hx = piste([[0, 382], [ARME, 328, 'out'], [ATTENTE, 322], [CHOC, 286, 'in'], [LACHE, 286], [DUREE, 382]]);
     const hy = piste([[0, 620], [ARME, 470, 'out'], [ATTENTE, 462], [CHOC, 650, 'in'], [LACHE, 650], [DUREE, 620]]);
-    const hdir = piste([[0, -90], [ARME, -110, 'out'], [ATTENTE, -114], [CHOC, -92, 'in'], [LACHE, -92]]);
-    const repos = () => ({ a: P.aD, b: P.bD, lg: 1, p: P.pD });
-    function brasD(ms) {
-      const q = corps(ms), [ex, ey] = pointCorps(q, 580, 566), [x, y] = pointCorps(q, hx(ms), hy(ms));
-      const b = ms < ATTENTE ? 26 : 8, a = Math.atan2(y - ey, x - ex) * 180 / Math.PI;
+    const hdir = piste([[0, -90], [ARME, -70, 'out'], [ATTENTE, -66], [CHOC, -88, 'in'], [LACHE, -88]]);
+    const repos = () => ({ a: P.aG, b: P.bG, lg: 1, p: P.pG });
+    function brasG(ms) {
+      const q = corps(ms), [ex, ey] = pointCorps(q, 442, 580), [x, y] = pointCorps(q, hx(ms), hy(ms));
+      const b = ms < ATTENTE ? -26 : -8;
+      let a = Math.atan2(y - ey, x - ex) * 180 / Math.PI;
+      if (a < 0) a += 360;
       const L = Math.hypot(x - ex, y - ey), t = Math.atan2(-b, L / 2) * 180 / Math.PI;
       const v = { a, b, lg: L / 138, p: hdir(ms) - a - t }, r = repos();
+      while (v.p - r.p > 180) v.p -= 360;
+      while (v.p - r.p < -180) v.p += 360;
       const m = ms < MONTE ? 0 : ms < ARME ? EASE.out((ms - MONTE) / (ARME - MONTE)) : ms < LACHE ? 1 : 1 - EASE.io(Math.min(1, (ms - LACHE) / (DUREE - 80 - LACHE)));
       return { a: r.a + (v.a - r.a) * m, b: r.b + (v.b - r.b) * m, lg: r.lg + (v.lg - r.lg) * m, p: r.p + (v.p - r.p) * m };
     }
     // un petit tremblement au choc
     const secousse = (ms) => (ms > CHOC && ms < CHOC + 260 ? 7 * Math.sin((ms - CHOC) / 22) * (1 - (ms - CHOC) / 260) : 0);
     return danse(DUREE, {
-      aD: (ms) => brasD(ms).a, bD: (ms) => brasD(ms).b, lgD: (ms) => brasD(ms).lg, pD: (ms) => brasD(ms).p,
-      mainD: [[0, 'pendante'], [MONTE + 80, 'paume'], [LACHE + 260, 'pendante']],
-      devantD: [[0, 0], [MONTE + 80, 1], [DUREE - 150, 0]],
+      aG: (ms) => brasG(ms).a, bG: (ms) => brasG(ms).b, lgG: (ms) => brasG(ms).lg, pG: (ms) => brasG(ms).p,
+      mainG: [[0, 'pendante'], [MONTE + 80, 'paume'], [LACHE + 260, 'pendante']],
+      devantG: [[0, 0], [MONTE + 80, 1], [DUREE - 150, 0]],
       // la main vient vers nous : elle grossit ; au choc, elle s'écrase un peu contre la vitre
-      echelleD: [[0, 1], [ARME, .92, 'out'], [ATTENTE, .9], [CHOC, 2.5, 'in'], [CHOC + 70, 2.62, 'out'], [CHOC + 200, 2.52, 'io'], [LACHE, 2.52], [LACHE + 300, 1, 'io']],
+      echelleG: [[0, 1], [ARME, .92, 'out'], [ATTENTE, .9], [CHOC, 2.5, 'in'], [CHOC + 70, 2.62, 'out'], [CHOC + 200, 2.52, 'io'], [LACHE, 2.52], [LACHE + 300, 1, 'io']],
       pli, x: secousse,
-      teteRot: [[0, 0], [MONTE, 0], [ARME, -6, 'out'], [ATTENTE, -7], [CHOC, 5, 'in'], [LACHE, 4], [DUREE - 80, 0, 'io']],
+      teteRot: [[0, 0], [MONTE, 0], [ARME, 6, 'out'], [ATTENTE, 7], [CHOC, -5, 'in'], [LACHE, -4], [DUREE - 80, 0, 'io']],
       teteY: [[0, 0], [ATTENTE, 4], [CHOC, -6, 'in'], [CHOC + 200, 0, 'out']],
       sy: [[0, 1], [MONTE, 1], [ARME, 1.04, 'out'], [ATTENTE, 1.05], [CHOC, .94, 'in'], [CHOC + 300, 1, 'ressort']],
       sx: [[0, 1], [MONTE, 1], [ARME, .98, 'out'], [ATTENTE, .97], [CHOC, 1.04, 'in'], [CHOC + 300, 1, 'ressort']],
       // il guette, les yeux grands ouverts, puis ferme les yeux de joie au choc
-      regardX: [[0, 0], [MONTE, 0], [ARME, 3, 'out'], [CHOC, 0]],
+      regardX: [[0, 0], [MONTE, 0], [ARME, -3, 'out'], [CHOC, 0]],
       sourcils: [[0, 0], [ARME, 10, 'out'], [LACHE, 10], [DUREE, 0]],
       joie: [[0, 0], [CHOC - 20, 0], [CHOC, 1], [LACHE + 200, 1], [LACHE + 300, 0]],
-      choc: [[0, -1], [CHOC - 1, -1], [CHOC, 0], [CHOC + 420, 1, 'out']], chocX: 708, chocY: 475,
+      choc: [[0, -1], [CHOC - 1, -1], [CHOC, 0], [CHOC + 420, 1, 'out']], chocX: 314, chocY: 475,
       etoiles: [[0, -1], [CHOC, 0], [CHOC + 1100, 1, 'lin']],
     });
   })();
