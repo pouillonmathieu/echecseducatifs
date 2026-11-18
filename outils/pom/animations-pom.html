@@ -1159,9 +1159,9 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
   // 14. le floss (d'après les tutos) : bras tendus, poings serrés, les deux bras balancent ensemble d'un côté à l'autre,
-  //     les hanches dans l'autre sens. Les bras passent devant le corps ; à chaque bout, le bras de ce côté-là passe
-  //     derrière la hanche (elle s'est écartée de l'autre côté, il a la place), puis revient devant pour repartir :
-  //     « de l'arrière vers l'avant, de chaque côté ».
+  //     les hanches dans l'autre sens. Comme un fil autour des hanches : à chaque balancement, un bras traverse devant
+  //     le corps et l'autre derrière (sa main est cachée par le corps). Au bout, la hanche s'est écartée : les deux
+  //     bras échangent leur place (celui de derrière revient devant, l'autre passe derrière) et ils repartent.
   DANSES.floss = (() => {
     const DEBUT = 300, T = 330, N = 10, FIN = DEBUT + N * T, DUREE = FIN + 450;
     // u : où sont les bras, de -1 (à gauche de l'écran) à +1 (à droite) ; un petit temps à chaque bout
@@ -1178,9 +1178,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const HANCHES = 46, PENCHE = 9; // la base part à l'opposé des bras, le corps penche vers eux (épaules presque fixes)
     // le bras droit de l'écran, selon u (angle dans le repère du corps, qui penche) : en travers devant le corps quand
     // les bras sont à gauche, tendu sur le côté quand ils sont à droite (un peu plus court : il part en arrière)
-    // au bout, le bras qui passe derrière rentre un peu vers le dos : son poing se cache à moitié derrière la hanche
-    const angleD = (v) => 90 - 52 * v - PENCHE * v + 24 * Math.pow(Math.max(0, v), 4);
-    const longD = (v) => 1.32 - .22 * Math.pow(Math.max(0, v), 4);
+    const angleD = (v) => 90 - 52 * v - PENCHE * v;
+    const longD = () => 1.32;
     return danse(DUREE, {
       aD: melanger(P.aD, angleD), aG: melanger(P.aG, (v) => 180 - angleD(-v)),
       lgD: melanger(1, longD), lgG: melanger(1, (v) => longD(-v)),
@@ -1188,8 +1187,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       pD: melanger(P.pD, () => 0), pG: melanger(P.pG, () => 0),
       mainG: [[0, 'pendante'], [DEBUT - 150, 'poing-bas'], [FIN + 150, 'pendante']],
       mainD: [[0, 'pendante'], [DEBUT - 150, 'poing-bas'], [FIN + 150, 'pendante']],
-      // derrière seulement au bout de son côté, quand la hanche s'est écartée
-      derriereD: (ms) => (A(ms) > .5 && u(ms) > .8 ? 1 : 0), derriereG: (ms) => (A(ms) > .5 && u(ms) < -.8 ? 1 : 0),
+      // de gauche à droite, le bras gauche passe derrière ; de droite à gauche, le bras droit ; l'échange se fait au
+      // bout de chaque balancement (pendant le petit temps d'arrêt, les poings dépassent alors du corps)
+      derriereG: (ms) => (A(ms) > .5 && Math.floor((ms - DEBUT + 40) / T) % 2 === 0 ? 1 : 0),
+      derriereD: (ms) => (A(ms) > .5 && Math.floor((ms - DEBUT + 40) / T) % 2 !== 0 ? 1 : 0),
       x: enRythme((v) => -HANCHES * v), rot: enRythme((v) => PENCHE * v),
       // la tête reste droite et suit un peu les bras ; un petit rebond à chaque passage au milieu
       teteRot: enRythme((v) => -PENCHE * v + 4 * v), teteX: enRythme((v) => 6 * v), chapRot: enRythme((v) => 3 * v),
