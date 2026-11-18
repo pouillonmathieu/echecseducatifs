@@ -2238,7 +2238,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     }
     // l'autre main se gratte le haut de la tête
     const gratte = (ms) => (ms > GRATTE && ms < FIN_GRATTE ? Math.sin(2 * Math.PI * (ms - GRATTE) / 160) : 0);
-    const tete = viserBras('G', POSE, 408, 286, -12, -40);
+    const tete = viserBras('G', POSE, 404, 280, -14, -40); // la main de profil, posée sur le haut de la tête
     function brasG(ms) {
       const r = brasRepos('G');
       if (ms < LEVE - 150) return r;
@@ -2249,7 +2249,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     return danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
       tapeG: (ms) => 7 * gratte(ms),
-      mainG: [[0, 'pendante'], [LEVE - 50, 'coucou-dos'], [FIN_GRATTE + 200, 'pendante']],
+      mainG: [[0, 'pendante'], [LEVE - 50, 'profil'], [FIN_GRATTE + 200, 'pendante']],
       mainD: [[0, 'pendante']],
       devantG: [[0, 0], [LEVE - 50, 1], [FIN_GRATTE + 300, 0]],
       // le bras derrière le chapeau, la main devant
