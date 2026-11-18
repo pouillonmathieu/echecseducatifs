@@ -461,7 +461,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -564,7 +564,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     else if (el.chapeau.previousElementSibling !== el.tete) el.pom.insertBefore(el.chapeau, el.tete.nextSibling);
     bras('G', p); bras('D', p);
     // le visage fait le tour de la pomme : il glisse, se resserre sur le côté et disparaît derrière
-    const t = rad(p.tour), c = Math.cos(t), sn = Math.sin(t);
+    const t = rad(p.tour + p.teteTour), c = Math.cos(t), sn = Math.sin(t); // (teteTour : la tête tourne seule)
     // la tête penche en avant (p.penche, en degrés) : le visage descend sur la pomme et s'écrase en hauteur
     const ph = rad(p.penche), cph = Math.cos(ph), sph = Math.sin(ph);
     el.visage.setAttribute('transform', `translate(0 ${72 * sph}) translate(0 338) scale(1 ${cph}) translate(0 -338) translate(${507 + 78 * sn} 0) scale(${Math.max(c, .001)} 1) translate(-507 0)`);
@@ -581,7 +581,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // s'élargit, le reflet glisse sur la calotte et disparaît derrière, et des lignes de vitesse l'entourent
     // la croix a de l'épaisseur : des copies d'elle, de l'arrière vers l'avant, s'écartent quand elle tourne (on voit
     // alors sa tranche) ; la face la plus proche est dessinée en dernier
-    const th = rad(p.chapLibre ? p.chapTour : 0), ang = rad(p.tour) + th, ca = Math.cos(ang), sa = Math.sin(ang);
+    const th = rad(p.chapLibre ? p.chapTour : p.teteTour), ang = rad(p.tour) + th, ca = Math.cos(ang), sa = Math.sin(ang);
     const sc = Math.max(.035, Math.abs(ca)), sens = ca >= 0 ? 1 : -1, faces = [...TRANCHES, el.croix];
     faces.forEach((f, i) => {
       const z = sens * (-EPAISSEUR / 2 + EPAISSEUR * i / (faces.length - 1));
@@ -1706,11 +1706,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   //     ballon, l'autre poing sur la hanche ; d'une pichenette, le chapeau s'envole et retombe pile sur sa tête. Les bras
   //     au ciel !
   DANSES.basket = (() => {
-    const LEVE = 300, LANCE = 330, RATTRAPE = 960, TAPE = 1620, PICHENETTE = 2350, SUR_TETE_ = 2950, TADA = 3050, DUREE = 4500;
+    const ELAN = 180, LANCE = 400, ATTERRIT = 560, LEVE = 600, RATTRAPE = 1000, TAPE = 1620, PICHENETTE = 2350, SUR_TETE_ = 2950, TADA = 3050, DUREE = 4500;
     const BOUT = [12, -125]; // le bout de l'index, par rapport au poignet (gant « index levé », doigt vers le haut)
     const ENFONCE = 8; // le doigt entre sous le chapeau : le pivot du chapeau est un peu plus bas que le bout du doigt
     const surTete = (teteY) => [508, (chapeauSurTete ? 259 : 193) - teteY];
-    const teteY = piste([[0, 0], [LANCE - 90, -10, 'out'], [LANCE + 30, 14, 'out'], [LANCE + 260, 0, 'io'], [SUR_TETE_, 0], [SUR_TETE_ + 70, -10, 'out'], [SUR_TETE_ + 320, 0, 'ressort']]);
+    // le saut du début : il se tasse, bondit en faisant un tour complet de la tête (le chapeau prend son élan), retombe
+    const yP = piste([[0, 0], [ELAN, -4, 'out'], [LANCE - 40, 62, 'out'], [ATTERRIT, 0, 'in'], [2950 + 60, 0], [2950 + 260, 40, 'out'], [2950 + 460, 0, 'in']]);
+    const teteTour = piste([[0, 0], [ELAN, 0], [ATTERRIT, 360, 'io']]);
+    const teteY = piste([[0, 0], [ELAN, -10, 'out'], [LANCE, 14, 'out'], [ATTERRIT + 200, 0, 'io'], [SUR_TETE_, 0], [SUR_TETE_ + 70, -10, 'out'], [SUR_TETE_ + 320, 0, 'ressort']]);
     // le poignet de la main qui tient le chapeau (main droite de Pom', à gauche de l'écran)
     function poignet(ms) {
       if (ms < RATTRAPE) return [292, 396 + (ms > 700 ? 18 * EASE.io(Math.min(1, (ms - 700) / 260)) : 0)];
@@ -1720,15 +1723,15 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const surDoigt = (ms) => { const [x, y] = poignet(ms); return [x + BOUT[0], y + BOUT[1] + ENFONCE]; };
     // la rotation : elle tourne en l'air, puis de plus en plus vite sur le doigt (la main fait de petits cercles)
     const tour = (ms) => {
-      if (ms < LANCE) return 0;
+      if (ms < LANCE) return teteTour(ms);
       const t = ms - LANCE;
-      return t * .9 + (ms > TAPE ? (ms - TAPE) * .6 : 0); // degrés par ms
+      return teteTour(LANCE) + t * 1.1 + (ms > TAPE ? (ms - TAPE) * .5 : 0); // degrés par ms : il garde l'élan de la tête
     };
     function chapeau(ms) {
       if (ms < LANCE || ms >= SUR_TETE_) return null;
       if (ms < RATTRAPE) { // lancé : il monte, redescend sur le doigt
-        const k = (ms - LANCE) / (RATTRAPE - LANCE), [x0, y0] = surTete(teteY(LANCE)), [x1, y1] = surDoigt(RATTRAPE);
-        return [x0 + (x1 - x0) * k, y0 + (y1 - y0) * k - 380 * Math.sin(Math.PI * k), 0];
+        const k = (ms - LANCE) / (RATTRAPE - LANCE), [x0, y0] = surTete(teteY(LANCE)).map((v, i) => v - i * yP(LANCE)), [x1, y1] = surDoigt(RATTRAPE);
+        return [x0 + (x1 - x0) * k, y0 + (y1 - y0) * k - 250 * Math.sin(Math.PI * k), 0];
       }
       if (ms < PICHENETTE) { const [x, y] = surDoigt(ms); return [x, y, 3 * Math.sin(ms / 70)]; }
       const k = (ms - PICHENETTE) / (SUR_TETE_ - PICHENETTE), [x0, y0] = surDoigt(PICHENETTE), [x1, y1] = surTete(teteY(SUR_TETE_));
@@ -1739,7 +1742,9 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const tada = { G: viserBras('G', q, 318, 330, -112, -20), D: viserBras('D', q, 702, 318, -68, 20) };
     function brasG(ms) {
       const [x, y] = poignet(ms), v = viserBras('G', q, x, y, -90, -26);
-      if (ms < LEVE) return bougerBras(repos('G'), v, EASE.out(ms / LEVE));
+      // le bras se lève au dernier moment : il arrive en place juste quand le chapeau tombe sur le doigt
+      if (ms < LEVE) return repos('G');
+      if (ms < RATTRAPE) return bougerBras(repos('G'), v, EASE.io((ms - LEVE) / (RATTRAPE - LEVE)));
       if (ms < PICHENETTE + 120) return v;
       if (ms < TADA + 150) return bougerBras(v, tada.G, EASE.rebond(Math.min(1, (ms - PICHENETTE - 120) / (TADA + 150 - PICHENETTE - 120))));
       if (ms < 3800) return tada.G;
@@ -1755,7 +1760,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     }
     return danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
-      mainG: [[0, 'pendante'], [120, 'index-leve'], [PICHENETTE + 250, 'poing-leve'], [4100, 'pendante']],
+      mainG: [[0, 'pendante'], [LEVE + 120, 'index-leve'], [PICHENETTE + 250, 'poing-leve'], [4100, 'pendante']],
       mainD: [[0, 'pendante'], [200, 'poing-cote'], [PICHENETTE + 120, 'poing-leve'], [4100, 'pendante']],
       // la main qui tient le chapeau reste derrière lui (l'index est caché dessous)
       devantD: [[0, 0], [PICHENETTE, 1], [4200, 0]],
@@ -1763,7 +1768,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       teteRot: [[0, 0], [LANCE, 0], [RATTRAPE, -6, 'io'], [PICHENETTE, -6], [SUR_TETE_, 0, 'io']],
       chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
       chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
-      chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
+      chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] + yP(ms) : 0; }, // (le chapeau ne suit pas le saut de Pom')
       chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
       chapTour: (ms) => (chapeau(ms) ? tour(ms) : 0),
       chapVitesse: [[0, 0], [LANCE, 0], [LANCE + 120, .5, 'out'], [RATTRAPE, .5], [RATTRAPE + 160, 1, 'out'], [PICHENETTE, 1], [PICHENETTE + 200, .45, 'io'], [SUR_TETE_ - 60, .3], [SUR_TETE_, 0]],
@@ -1773,8 +1778,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       regardY: (ms) => { const h = chapeau(ms); return h ? Math.max(-9, Math.min(9, (h[1] - 330) / 25)) : 0; },
       sourcils: [[0, 0], [LANCE, 10, 'out'], [RATTRAPE, 16, 'out'], [PICHENETTE, 14], [SUR_TETE_, 20, 'out'], [3800, 16], [DUREE, 0]],
       joie: [[0, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [4000, 1], [4050, 0]],
-      sy: [[0, 1], [SUR_TETE_, 1], [SUR_TETE_ + 70, .94, 'out'], [SUR_TETE_ + 320, 1.04, 'ressort'], [3800, 1.02], [4400, 1, 'io']],
-      y: [[0, 0], [SUR_TETE_ + 60, 0], [SUR_TETE_ + 260, 40, 'out'], [SUR_TETE_ + 460, 0, 'in']],
+      teteTour, y: yP,
+      sy: [[0, 1], [ELAN, .88, 'out'], [ELAN + 90, 1.08, 'out'], [ATTERRIT - 40, 1.02], [ATTERRIT, .9, 'out'], [ATTERRIT + 220, 1, 'ressort'], [SUR_TETE_, 1], [SUR_TETE_ + 70, .94, 'out'], [SUR_TETE_ + 320, 1.04, 'ressort'], [3800, 1.02], [4400, 1, 'io']],
       etoiles: [[0, -1], [SUR_TETE_, 0], [SUR_TETE_ + 1450, 1, 'lin']],
     });
   })();
@@ -1802,7 +1807,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
-  const ANGLES = ['chapRot', 'tour', 'rot', 'aG', 'aD'];
+  const ANGLES = ['chapRot', 'tour', 'teteTour', 'rot', 'aG', 'aD'];
   const SANS_FONDU = ['chapDerriere', 'etoiles', 'niveau', 'halo', 'confettis', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
