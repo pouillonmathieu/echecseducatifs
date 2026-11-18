@@ -1046,16 +1046,16 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   //     bord, le remonte et le remet sur sa tête d'une petite tape, puis revient au centre, un peu gêné.
   DANSES.reverence = (() => {
     // les sauts : [début, fin, hauteur]
-    const SAUTS = [[1700, 1920, 55], [3350, 3570, 45]];
+    const SAUTS = [[2300, 2520, 55], [3950, 4170, 45]];
     const saut = (ms) => { for (const [a, b, h] of SAUTS) if (ms >= a && ms <= b) return [(ms - a) / (b - a), h]; return null; };
-    const xP = piste([[0, 0], [1700, 0], [1920, 60, 'io'], [3350, 60], [3570, 0, 'io']]);
+    const xP = piste([[0, 0], [2300, 0], [2520, 60, 'io'], [3950, 60], [4170, 0, 'io']]);
     const yP = (ms) => { const s = saut(ms); return s ? s[1] * Math.sin(Math.PI * s[0]) : 0; };
-    const syBase = piste([[0, 1], [450, 1.04, 'io'], [1000, .9, 'io'], [1250, .9], [1500, 1.03, 'out'], [1600, 1], [1950, 1], [2150, .8, 'io'], [2350, .8], [2850, 1.02, 'io'], [3000, .96, 'io'], [3150, 1, 'io']]);
+    const syBase = piste([[0, 1], [450, 1.04, 'io'], [1000, .9, 'io'], [1250, .9], [1500, 1.03, 'out'], [1600, 1], [2550, 1], [2750, .8, 'io'], [2950, .8], [3450, 1.02, 'io'], [3600, .96, 'io'], [3750, 1, 'io']]);
     const sySaut = (ms) => { const s = saut(ms); if (!s) return 1; const q = s[0]; return q < .15 ? .86 + q : q > .85 ? .86 + (1 - q) : 1.08; };
     const syP = (ms) => syBase(ms) * sySaut(ms);
     const sxP = (ms) => 1 / Math.sqrt(syP(ms));
-    const teteYP = piste([[0, 0], [450, 6, 'io'], [1000, -62, 'io'], [1250, -62], [1500, 6, 'out'], [1650, 0, 'io'], [2150, -10, 'io'], [2350, -10], [2850, 0, 'io']]);
-    const teteRotP = piste([[0, 0], [1000, 10, 'io'], [1250, 10], [1500, -4, 'io'], [1700, 0, 'io'], [2150, 6, 'io'], [2350, 6], [2850, 0, 'io']]);
+    const teteYP = piste([[0, 0], [450, 6, 'io'], [1000, -62, 'io'], [1250, -62], [1500, 6, 'out'], [1650, 0, 'io'], [2750, 0], [2750, -10, 'io'], [2950, -10], [3450, 0, 'io']]);
+    const teteRotP = piste([[0, 0], [1000, 10, 'io'], [1250, 10], [1500, -4, 'io'], [1700, 0, 'io'], [2550, 0], [2750, 6, 'io'], [2950, 6], [3450, 0, 'io']]);
     const q = (ms) => ({ ...POSE, x: xP(ms), y: yP(ms), sx: sxP(ms), sy: syP(ms), teteY: teteYP(ms), teteRot: teteRotP(ms) });
     // le chapeau posé sur la tête, à l'instant ms : son pivot dans la scène, et sa rotation
     function surTete(ms, chapY = 0) {
@@ -1065,7 +1065,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       return [508 + tx + p.x, 205 + ty - (chapY - SUR_TETE) - p.y, p.teteRot];
     }
     // le chapeau libre : il tombe en tournoyant, rebondit, reste par terre, puis la main le remonte sur la tête
-    const LACHE = 900, SOL = 1360, PRISE = 2300, POSE_ = 2900;
+    const LACHE = 900, SOL = 1360, PRISE = 2900, POSE_ = 3500;
     const PAR_TERRE = [700, 936]; // pivot du chapeau là où il touche le sol, à droite de Pom'
     const ROULE = 150; // puis il roule un peu plus loin
     function libre(ms) {
@@ -1113,10 +1113,11 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         const v = viser('D', ms, COEUR[0], COEUR[1], -130, 10);
         return ms < 450 ? mix(repos('D'), v, EASE.io(ms / 450)) : v;
       }
-      if (ms < 1600) return mix(viser('D', 1400, COEUR[0], COEUR[1], -130, 10), repos('D'), EASE.out((ms - 1400) / 200));
-      if (ms < 1960) return repos('D');
+      // la révérence se termine proprement : la main quitte le cœur et redescend doucement
+      if (ms < 1800) return mix(viser('D', 1400, COEUR[0], COEUR[1], -130, 10), repos('D'), EASE.io((ms - 1400) / 400));
+      if (ms < 2560) return repos('D');
       const [gx, gy] = bord(Math.max(ms, PRISE));
-      if (ms < PRISE) return mix(repos('D'), viser('D', ms, gx, gy - 6, 80, -20), EASE.io((ms - 1960) / (PRISE - 1960)));
+      if (ms < PRISE) return mix(repos('D'), viser('D', ms, gx, gy - 6, 80, -20), EASE.io((ms - 2560) / (PRISE - 2560)));
       if (ms < POSE_ + 120) { const [bx, by] = bord(Math.min(ms, POSE_ - 1)); return viser('D', ms, bx, by - 6, 80, -20); }
       const [bx, by] = bord(POSE_ - 1);
       return mix(viser('D', POSE_ + 120, bx, by - 6, 80, -20), repos('D'), EASE.io(Math.min(1, (ms - POSE_ - 120) / 400)));
@@ -1125,30 +1126,32 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       const v = viser('G', ms, OUVERT[0], OUVERT[1], 200, -30);
       if (ms < 500) return mix(repos('G'), v, EASE.io(ms / 500));
       if (ms < 1400) return v;
-      if (ms < 1600) return mix(viser('G', 1400, OUVERT[0], OUVERT[1], 200, -30), repos('G'), EASE.out((ms - 1400) / 200));
+      if (ms < 1800) return mix(viser('G', 1400, OUVERT[0], OUVERT[1], 200, -30), repos('G'), EASE.io((ms - 1400) / 400));
       return repos('G');
     }
-    return danse(4300, {
+    return danse(4900, {
       x: xP, y: yP, sy: syP, sx: sxP, teteY: teteYP, teteRot: teteRotP,
       aD: (ms) => brasD(ms).a, bD: (ms) => brasD(ms).b, lgD: (ms) => brasD(ms).lg, pD: (ms) => brasD(ms).p,
       aG: (ms) => brasG(ms).a, bG: (ms) => brasG(ms).b, lgG: (ms) => brasG(ms).lg, pG: (ms) => brasG(ms).p,
-      mainD: [[0, 'pendante'], [200, 'ouverte-cote'], [1450, 'pendante']],
-      mainG: [[0, 'pendante'], [250, 'presente'], [1450, 'pendante']],
-      devantD: [[0, 0], [250, 1], [1450, 0], [2200, 1], [3050, 0]],
+      mainD: [[0, 'pendante'], [200, 'ouverte-cote'], [1620, 'pendante']],
+      mainG: [[0, 'pendante'], [250, 'presente'], [1620, 'pendante']],
+      devantD: [[0, 0], [250, 1], [1620, 0], [2800, 1], [3650, 0]],
       // le chapeau : sur la tête, puis libre (il tombe, il est par terre, la main le remonte), puis à nouveau sur la tête
       chapLibre: (ms) => (libre(ms) ? 1 : 0),
       chapLX: (ms) => { const h = libre(ms); if (!h) return 0; return h[0] - xP(ms); },
       chapLY: (ms) => { const h = libre(ms); if (!h) return 0; return h[1] + yP(ms); },
       chapLR: (ms) => { const h = libre(ms); return h ? h[2] : 0; },
       chapY: [[0, 0], [POSE_, 0], [POSE_ + 90, -9, 'out'], [POSE_ + 220, 0, 'io']],
-      // le visage : yeux fermés pendant la révérence ; « oups ! » ; il suit son chapeau des yeux ; soulagé, un peu gêné
-      clinG: [[0, 0], [550, 0], [800, 1, 'io'], [1300, 1], [1400, 0, 'out']],
-      clinD: [[0, 0], [550, 0], [800, 1, 'io'], [1300, 1], [1400, 0, 'out']],
-      sourcils: [[0, 0], [400, 8, 'io'], [1300, 6], [1450, 24, 'out'], [2000, 18], [2900, 10], [3200, 4], [4000, 0]],
-      sourcilsPli: [[0, 0], [1450, 0], [1550, 6], [2900, 6], [3200, 0]],
-      regardX: [[0, 0], [1400, 0], [1500, 9, 'out'], [2200, 6], [2600, 2], [3100, 0], [3700, -6, 'io'], [4100, 0, 'io']],
-      regardY: [[0, 0], [1400, 0], [1500, 9, 'out'], [2200, 9], [2600, -9, 'io'], [2900, -6], [3100, 0, 'io']],
-      joie: [[0, 0], [3050, 0], [3100, 1], [3350, 1], [3400, 0]],
+      // le visage : yeux fermés pendant toute la révérence, rouverts une fois redressé, l'air satisfait ; puis il
+      // s'aperçoit que sa tête est bien légère (il lève les yeux) : « oups ! », il cherche et suit son chapeau des yeux ;
+      // soulagé, un peu gêné
+      clinG: [[0, 0], [550, 0], [800, 1, 'io'], [1500, 1], [1620, 0, 'out']],
+      clinD: [[0, 0], [550, 0], [800, 1, 'io'], [1500, 1], [1620, 0, 'out']],
+      sourcils: [[0, 0], [400, 8, 'io'], [1300, 6], [1700, 4], [1900, 4], [2000, 10, 'out'], [2080, 24, 'out'], [2600, 18], [3500, 10], [3800, 4], [4600, 0]],
+      sourcilsPli: [[0, 0], [2050, 0], [2150, 6], [3500, 6], [3800, 0]],
+      regardX: [[0, 0], [2050, 0], [2150, 9, 'out'], [2800, 6], [3200, 2], [3700, 0], [4300, -6, 'io'], [4700, 0, 'io']],
+      regardY: [[0, 0], [1820, 0], [1920, -9, 'out'], [2050, -9], [2150, 9, 'out'], [2800, 9], [3200, -9, 'io'], [3500, -6], [3700, 0, 'io']],
+      joie: [[0, 0], [3650, 0], [3700, 1], [3950, 1], [4000, 0]],
     });
   })();
   // 13. « Dab ! » : un double dab. Clac, vers la droite : un bras tendu en diagonale, l'autre courbé devant le visage, la
