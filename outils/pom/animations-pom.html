@@ -445,7 +445,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, niveau: 1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -652,8 +652,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       s.setAttribute('transform', `translate(${sx} ${sy}) rotate(${q * 120}) scale(${niv.t * t * (.4 + e)})`);
     });
     // le halo doré, derrière Pom' (2 et 3 étoiles)
-    const qh = Math.max(0, Math.min(1, p.etoiles));
-    $('halo').setAttribute('opacity', p.niveau >= 1.5 && p.etoiles > 0 ? Math.sin(Math.PI * qh) * (p.niveau >= 2.5 ? 1 : .7) : 0);
+    // (il suit les étoiles, sauf si l'animation lui donne son propre moment : p.halo ; il suit Pom' quand il s'envole)
+    const vh = p.halo >= 0 ? p.halo : p.etoiles, qh = Math.max(0, Math.min(1, vh));
+    $('halo').setAttribute('opacity', p.niveau >= 1.5 && vh > 0 ? Math.sin(Math.PI * qh) * (p.niveau >= 2.5 ? 1 : .7) : 0);
+    $('halo').setAttribute('transform', `translate(${p.x} ${-p.y})`);
     // les confettis (3 étoiles) : ils tombent du haut en tournoyant et en se balançant
     [...$('confettis').children].forEach((r, i) => {
       const c = CONFETTIS[i], q = (p.confettis - c.retard) / .6;
@@ -758,6 +760,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       joie: [[0, 0], [1330, 0], [1420, 1, 'out'], [2300, 1], [2550, 0]],
       sourcils: [[0, 0], [300, 12], [1300, 8], [1420, 18, 'rebond'], [2300, 16], [2600, 0]],
       etoiles: [[0, -1], [1350, 0], [2400, 1, 'lin']],
+      // le halo s'allume quand il s'envole
+      halo: [[0, -1], [330, -1], [340, 0], [2550, 1, 'lin']],
     }),
     // 4. deux coups de poing victorieux, clin d'œil, petit saut
     // 4. « Yes ! » : deux coups de poing vers le ciel, en bondissant de joie, et le V de la victoire ;
@@ -1494,7 +1498,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
   const ANGLES = ['chapRot', 'tour', 'rot', 'aG', 'aD'];
-  const SANS_FONDU = ['etoiles', 'niveau', 'confettis', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
+  const SANS_FONDU = ['etoiles', 'niveau', 'halo', 'confettis', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
     for (const c in b) {
