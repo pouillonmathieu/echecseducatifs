@@ -295,6 +295,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
             <path class="reflet-chap fin" d="M392 194 Q507 220 622 194"/>
           </g>
         </g>
+        <!-- le choc du « tape-m'en cinq » : des traits qui jaillissent autour de la main -->
+        <g id="choc" opacity="0"></g>
       </svg>
       <span class="legende" id="legende">Pom' flotte</span>
     </div>
@@ -318,6 +320,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="floss"><span class="num">14</span><b>Le floss</b></button>
         <button class="danse" type="button" data-danse="applaudit"><span class="num">15</span><b>Bravo !</b></button>
         <button class="danse" type="button" data-danse="ok"><span class="num">16</span><b>Clin d'œil</b></button>
+        <button class="danse" type="button" data-danse="tape5"><span class="num">17</span><b>Tape-m'en cinq !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -405,7 +408,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       .ampoule-ligne { fill: none; stroke: #1A1C20; stroke-width: 3; }
       .ampoule-reflet { fill: none; stroke: #FFFFFF; stroke-width: 5; stroke-linecap: round; opacity: .8; }
       .vitesse path { fill: none; stroke: ${c.vitesse}; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 70 46; }
-      .etoile { fill: #F2B827; }`;
+      .etoile { fill: #F2B827; }
+      .choc-trait { stroke: #F2B827; stroke-width: 11; stroke-linecap: round; }`;
   }
 
   // ---------- Le moteur : une pose par image ----------
@@ -415,7 +419,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -435,6 +439,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   };
   // les étoiles qui éclatent autour de Pom'
   const ETOILES = [[250, 150, 1], [770, 90, .8], [200, 480, .7], [820, 420, .9], [330, -130, .65], [690, -190, .75], [850, 720, .6], [170, 780, .55]];
+  $('choc').innerHTML = Array.from({ length: 7 }, () => '<line class="choc-trait"/>').join('');
   el.etoiles.innerHTML = ETOILES.map(() => '<use href="#etoile" class="etoile" opacity="0"/>').join('');
 
   // direction du bras qui entre dans chaque gant, sur le dessin original (en degrés)
@@ -469,7 +474,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // un gant dessiné pour l'autre côté du corps est retourné en miroir (il devient l'autre main)
     const miroir = cote !== MAINS[type].cote;
     const entree = miroir ? 180 - MAINS[type].entree : MAINS[type].entree;
-    m.setAttribute('transform', `translate(${L} 0) rotate(${tangente - entree + p['p' + cote]}) translate(0 ${p['tape' + cote]}) scale(${miroir ? -1 : 1} 1)`);
+    m.setAttribute('transform', `translate(${L} 0) rotate(${tangente - entree + p['p' + cote]}) translate(0 ${p['tape' + cote]}) scale(${p['echelle' + cote]}) scale(${miroir ? -1 : 1} 1)`);
   }
 
   function dessiner(p) {
@@ -580,6 +585,18 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const k = Math.max(.35, 1 - p.y / 520);
     el.ombre.setAttribute('transform', `translate(${510 + p.x} 968) scale(${k} ${k}) translate(-510 -968)`);
     el.ombre.setAttribute('opacity', .35 + .65 * k);
+    // le choc : des traits qui partent de la main et s'effacent
+    const ch = $('choc');
+    if (p.choc <= 0 || p.choc >= 1) ch.setAttribute('opacity', 0);
+    else {
+      const q = p.choc, cx = p.chocX + p.x, cy = p.chocY - p.y;
+      ch.setAttribute('opacity', Math.min(1, 3 * (1 - q)));
+      [...ch.children].forEach((l, i) => {
+        const ang = rad(-100 + i * 40 + (i % 2) * 8) /* pas de trait vers le visage */, r0 = 200 + 70 * q, r1 = r0 + 26 + 40 * (1 - q) * (i % 2 ? .7 : 1);
+        l.setAttribute('x1', cx + r0 * Math.cos(ang)); l.setAttribute('y1', cy + r0 * Math.sin(ang));
+        l.setAttribute('x2', cx + r1 * Math.cos(ang)); l.setAttribute('y2', cy + r1 * Math.sin(ang));
+      });
+    }
     // les étoiles : elles grandissent puis s'effacent
     [...el.etoiles.children].forEach((s, i) => {
       const [sx, sy, t] = ETOILES[i];
@@ -1299,14 +1316,55 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil' };
+  // 17. tape-m'en cinq : il arme sa main en l'air, puis la lance vers l'écran (elle grossit en venant vers nous) ; au
+  //     choc, la main s'écrase contre la vitre, des traits jaillissent tout autour et tout tremble un peu
+  DANSES.tape5 = (() => {
+    const MONTE = 120, ARME = 520, ATTENTE = 700, CHOC = 830, LACHE = 1350, DUREE = 1950;
+    const pli = piste([[0, 0], [MONTE, 0], [ARME, 5, 'out'], [ATTENTE, 6], [CHOC, -5, 'in'], [LACHE, -4], [DUREE - 80, 0, 'io']]);
+    const corps = (ms) => ({ ...POSE, pli: pli(ms) });
+    // le poignet (dans le dessin de Pom') et la direction de la main, doigts vers le haut
+    const hx = piste([[0, 640], [ARME, 694, 'out'], [ATTENTE, 700], [CHOC, 712, 'in'], [LACHE, 712], [DUREE, 640]]);
+    const hy = piste([[0, 620], [ARME, 470, 'out'], [ATTENTE, 462], [CHOC, 752, 'in'], [LACHE, 752], [DUREE, 620]]);
+    const hdir = piste([[0, -90], [ARME, -110, 'out'], [ATTENTE, -114], [CHOC, -92, 'in'], [LACHE, -92]]);
+    const repos = () => ({ a: P.aD, b: P.bD, lg: 1, p: P.pD });
+    function brasD(ms) {
+      const q = corps(ms), [ex, ey] = pointCorps(q, 580, 566), [x, y] = pointCorps(q, hx(ms), hy(ms));
+      const b = ms < ATTENTE ? 26 : 8, a = Math.atan2(y - ey, x - ex) * 180 / Math.PI;
+      const L = Math.hypot(x - ex, y - ey), t = Math.atan2(-b, L / 2) * 180 / Math.PI;
+      const v = { a, b, lg: L / 138, p: hdir(ms) - a - t }, r = repos();
+      const m = ms < MONTE ? 0 : ms < ARME ? EASE.out((ms - MONTE) / (ARME - MONTE)) : ms < LACHE ? 1 : 1 - EASE.io(Math.min(1, (ms - LACHE) / (DUREE - 80 - LACHE)));
+      return { a: r.a + (v.a - r.a) * m, b: r.b + (v.b - r.b) * m, lg: r.lg + (v.lg - r.lg) * m, p: r.p + (v.p - r.p) * m };
+    }
+    // un petit tremblement au choc
+    const secousse = (ms) => (ms > CHOC && ms < CHOC + 260 ? 7 * Math.sin((ms - CHOC) / 22) * (1 - (ms - CHOC) / 260) : 0);
+    return danse(DUREE, {
+      aD: (ms) => brasD(ms).a, bD: (ms) => brasD(ms).b, lgD: (ms) => brasD(ms).lg, pD: (ms) => brasD(ms).p,
+      mainD: [[0, 'pendante'], [MONTE + 80, 'paume'], [LACHE + 260, 'pendante']],
+      devantD: [[0, 0], [MONTE + 80, 1], [DUREE - 150, 0]],
+      // la main vient vers nous : elle grossit ; au choc, elle s'écrase un peu contre la vitre
+      echelleD: [[0, 1], [ARME, .92, 'out'], [ATTENTE, .9], [CHOC, 2.5, 'in'], [CHOC + 70, 2.62, 'out'], [CHOC + 200, 2.52, 'io'], [LACHE, 2.52], [LACHE + 300, 1, 'io']],
+      pli, x: secousse,
+      teteRot: [[0, 0], [MONTE, 0], [ARME, -6, 'out'], [ATTENTE, -7], [CHOC, 5, 'in'], [LACHE, 4], [DUREE - 80, 0, 'io']],
+      teteY: [[0, 0], [ATTENTE, 4], [CHOC, -6, 'in'], [CHOC + 200, 0, 'out']],
+      sy: [[0, 1], [MONTE, 1], [ARME, 1.04, 'out'], [ATTENTE, 1.05], [CHOC, .94, 'in'], [CHOC + 300, 1, 'ressort']],
+      sx: [[0, 1], [MONTE, 1], [ARME, .98, 'out'], [ATTENTE, .97], [CHOC, 1.04, 'in'], [CHOC + 300, 1, 'ressort']],
+      // il guette, les yeux grands ouverts, puis ferme les yeux de joie au choc
+      regardX: [[0, 0], [MONTE, 0], [ARME, 3, 'out'], [CHOC, 0]],
+      sourcils: [[0, 0], [ARME, 10, 'out'], [LACHE, 10], [DUREE, 0]],
+      joie: [[0, 0], [CHOC - 20, 0], [CHOC, 1], [LACHE + 200, 1], [LACHE + 300, 0]],
+      choc: [[0, -1], [CHOC - 1, -1], [CHOC, 0], [CHOC + 420, 1, 'out']], chocX: 684, chocY: 577,
+      etoiles: [[0, -1], [CHOC, 0], [CHOC + 1100, 1, 'lin']],
+    });
+  })();
+
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
   const ANGLES = ['chapRot', 'tour', 'rot', 'aG', 'aD'];
-  const SANS_FONDU = ['etoiles', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
+  const SANS_FONDU = ['etoiles', 'choc', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
     for (const c in b) {
@@ -1356,7 +1414,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'tape5', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
