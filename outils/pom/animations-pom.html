@@ -593,7 +593,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       const q = p.choc, cx = p.chocX + p.x, cy = p.chocY - p.y;
       ch.setAttribute('opacity', Math.min(1, 3 * (1 - q)));
       [...ch.children].forEach((l, i) => {
-        const ang = rad(-100 + i * 40 + (i % 2) * 8) /* pas de trait vers le visage */, r0 = 200 + 70 * q, r1 = r0 + 26 + 40 * (1 - q) * (i % 2 ? .7 : 1);
+        const ang = rad(-82 + i * 40 + (i % 2) * 8) /* pas de trait vers le visage */, r0 = 200 + 70 * q, r1 = r0 + 26 + 40 * (1 - q) * (i % 2 ? .7 : 1);
         l.setAttribute('x1', cx + r0 * Math.cos(ang)); l.setAttribute('y1', cy + r0 * Math.sin(ang));
         l.setAttribute('x2', cx + r1 * Math.cos(ang)); l.setAttribute('y2', cy + r1 * Math.sin(ang));
       });
@@ -1324,8 +1324,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const pli = piste([[0, 0], [MONTE, 0], [ARME, 5, 'out'], [ATTENTE, 6], [CHOC, -5, 'in'], [LACHE, -4], [DUREE - 80, 0, 'io']]);
     const corps = (ms) => ({ ...POSE, pli: pli(ms) });
     // le poignet (dans le dessin de Pom') et la direction de la main, doigts vers le haut
-    const hx = piste([[0, 640], [ARME, 694, 'out'], [ATTENTE, 700], [CHOC, 712, 'in'], [LACHE, 712], [DUREE, 640]]);
-    const hy = piste([[0, 620], [ARME, 470, 'out'], [ATTENTE, 462], [CHOC, 752, 'in'], [LACHE, 752], [DUREE, 620]]);
+    const hx = piste([[0, 640], [ARME, 694, 'out'], [ATTENTE, 700], [CHOC, 736, 'in'], [LACHE, 736], [DUREE, 640]]);
+    const hy = piste([[0, 620], [ARME, 470, 'out'], [ATTENTE, 462], [CHOC, 650, 'in'], [LACHE, 650], [DUREE, 620]]);
     const hdir = piste([[0, -90], [ARME, -110, 'out'], [ATTENTE, -114], [CHOC, -92, 'in'], [LACHE, -92]]);
     const repos = () => ({ a: P.aD, b: P.bD, lg: 1, p: P.pD });
     function brasD(ms) {
@@ -1353,7 +1353,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       regardX: [[0, 0], [MONTE, 0], [ARME, 3, 'out'], [CHOC, 0]],
       sourcils: [[0, 0], [ARME, 10, 'out'], [LACHE, 10], [DUREE, 0]],
       joie: [[0, 0], [CHOC - 20, 0], [CHOC, 1], [LACHE + 200, 1], [LACHE + 300, 0]],
-      choc: [[0, -1], [CHOC - 1, -1], [CHOC, 0], [CHOC + 420, 1, 'out']], chocX: 684, chocY: 577,
+      choc: [[0, -1], [CHOC - 1, -1], [CHOC, 0], [CHOC + 420, 1, 'out']], chocX: 708, chocY: 475,
       etoiles: [[0, -1], [CHOC, 0], [CHOC + 1100, 1, 'lin']],
     });
   })();
