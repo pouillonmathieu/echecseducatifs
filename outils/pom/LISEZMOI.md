@@ -6,8 +6,8 @@
   Animations : Hop, hourra ! ; La danse du chapeau ; La toupie ; Yes ! ; Bonjour ! ; Hmm… ; Eurêka ! ;
   Hmm… puis Eurêka ! ; Oh non… ; Oh là là ! ; Quel beau coup ! (révérence, chapeau qui tombe) ; Dab ! (double dab, tête penchée) ; Le floss (bras devant et derrière le corps) ; Bravo ! (il applaudit) ; Clin d'œil (avec le signe OK) ; Tape-m'en cinq ! (high-five vers l'écran) ; Pouce levé ; La vague ; La guitare (imaginaire) ; Le music-hall (le chapeau roule le long des bras) ;
   Le basket (le chapeau tourne sur l'index) ; Le tour de magie (un pion sort du chapeau) ; La glissade ; Il s'endort… (puis il dort, en boucle) ; Réveil !
-- Niveaux de réussite (pour les exercices) : 1 étoile (Yes !, Pouce levé, Clin d'œil, Bravo !, La vague), 2 étoiles
-  (Hop, hourra !, Quel beau coup !, Tape-m'en cinq !, Le music-hall, La glissade, La danse du chapeau), 3 étoiles (Dab !,
+- Niveaux de réussite (pour les exercices) : 1 étoile (Yes !, Pouce levé, Clin d'œil, Bravo !, La vague, Tape-m'en cinq !),
+  2 étoiles (Hop, hourra !, Quel beau coup !, Le music-hall, La glissade, La danse du chapeau), 3 étoiles (Dab !,
   Le floss, La toupie, Le basket, La guitare, Le tour de magie). Le niveau règle les effets : 5 petites étoiles ; 10
   étoiles et un halo doré ; 16 grandes étoiles colorées qui scintillent, le halo et une pluie de confettis. La page
   propose « Réussite, au hasard » pour chaque niveau.

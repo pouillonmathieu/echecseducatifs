@@ -310,10 +310,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
                 <path class="nervure" d="M505 268 Q532 254 556 246"/>
               </g>
             </g>
-            <!-- le point d'exclamation de l'étonnement, au-dessus de la tête -->
-            <g id="exclam" opacity="0">
-              <path class="exclam" d="M-9 -60 C-9 -70 9 -70 9 -60 L5 -8 C4 -2 -4 -2 -5 -8 Z"/>
-              <circle class="exclam" cx="0" cy="12" r="8"/>
+            <!-- la petite goutte de gêne, sur le côté de la tête -->
+            <g id="goutte-gene" opacity="0">
+              <path class="goutte-gene" d="M0 -22 C6 -12 12 -4 12 4 C12 12 6 17 0 17 C-6 17 -12 12 -12 4 C-12 -4 -6 -12 0 -22 Z"/>
+              <ellipse class="goutte-reflet" cx="-4" cy="5" rx="3" ry="5"/>
             </g>
             <g id="visage">
             <g id="yeux-ouverts">
@@ -381,10 +381,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="ok"><span class="num">3</span><b>Clin d'œil</b></button>
         <button class="danse" type="button" data-danse="applaudit"><span class="num">4</span><b>Bravo !</b></button>
         <button class="danse" type="button" data-danse="vague"><span class="num">5</span><b>La vague</b></button>
+        <button class="danse" type="button" data-danse="tape5"><span class="num">6</span><b>Tape-m'en cinq !</b></button>
         <p class="groupe">★★ Belle réussite</p>
-        <button class="danse" type="button" data-danse="hourra"><span class="num">6</span><b>Hop, hourra !</b></button>
-        <button class="danse" type="button" data-danse="reverence"><span class="num">7</span><b>Quel beau coup !</b></button>
-        <button class="danse" type="button" data-danse="tape5"><span class="num">8</span><b>Tape-m'en cinq !</b></button>
+        <button class="danse" type="button" data-danse="hourra"><span class="num">7</span><b>Hop, hourra !</b></button>
+        <button class="danse" type="button" data-danse="reverence"><span class="num">8</span><b>Quel beau coup !</b></button>
         <button class="danse" type="button" data-danse="musichall"><span class="num">9</span><b>Le music-hall</b></button>
         <button class="danse" type="button" data-danse="glissade"><span class="num">10</span><b>La glissade</b></button>
         <button class="danse" type="button" data-danse="chapeau"><span class="num">11</span><b>La danse du chapeau</b></button>
@@ -501,7 +501,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       .etoile { fill: #F2B827; }
       .pion { fill: ${c.piece}; stroke: ${nom === 'noir' ? '#5A616C' : c.trait}; stroke-width: 3; stroke-linejoin: round; }
       .pion-reflet { fill: none; stroke: ${c.reflet}; stroke-width: 4; stroke-linecap: round; }
-      .exclam { fill: #F2B827; stroke: #1A1C20; stroke-width: 4; stroke-linejoin: round; }
+      .goutte-gene { fill: #9AD3F5; stroke: #1A1C20; stroke-width: 3; stroke-linejoin: round; }
+      .goutte-reflet { fill: #FFFFFF; opacity: .85; }
       .choc-trait { stroke: #F2B827; stroke-width: 11; stroke-linecap: round; }`;
   }
 
@@ -512,7 +513,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, mainDevantG: 0, mainDevantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, traine: 0, pion: 0, pionX: 0, pionY: 0, pionR: 0, pionE: 1, teteTour: 0, chapTour: 0, chapVitesse: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, goutteGene: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, mainDevantG: 0, mainDevantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -669,10 +670,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (joie) { el.fermeG.setAttribute('opacity', 0); el.fermeD.setAttribute('opacity', 0); }
     // les pupilles : elles suivent le regard, et rapetissent quand il écarquille les yeux (p.pupille < 1)
     el.pupilles.forEach((x, i) => { const [cx, cy] = i ? [535, 344] : [479, 345]; x.setAttribute('transform', `translate(${p.regardX} ${p.regardY}) translate(${cx} ${cy}) scale(${p.pupille}) translate(${-cx} ${-cy})`); });
-    // le point d'exclamation : il surgit au-dessus de la tête
-    const ex = $('exclam');
-    ex.setAttribute('opacity', Math.min(1, p.exclam * 1.5));
-    ex.setAttribute("transform", `translate(604 232) rotate(${12 - 12 * p.exclam}) scale(${1.5 * (.3 + .7 * EASE.ressort(Math.min(1, p.exclam)))})`);
+    // la goutte de gêne : elle apparaît sur le côté de la tête et glisse un peu
+    const gg = $('goutte-gene');
+    gg.setAttribute('opacity', Math.min(1, p.goutteGene * 2));
+    gg.setAttribute('transform', `translate(596 ${300 + 14 * p.goutteGene}) scale(${1.2 * (.4 + .6 * EASE.out(Math.min(1, p.goutteGene * 3)))})`);
     // cligner : la paupière descend dans l'œil, puis l'œil fermé devient un trait (calme) ou un arc rieur (clin d'œil)
     [[p.clinG, 472, 338, el.oeilG, el.fermeG, 0], [p.clinD, 541, 337, el.oeilD, el.fermeD, 1]].forEach(([k, cx, cy, oeil, ferme, i]) => {
       k = Math.max(0, Math.min(1, k));
@@ -1344,7 +1345,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       regardX: [[0, 0], [2420, 0], [2520, 9, 'out'], [3100, 6], [3500, 2], [4000, 0], [4600, -6, 'io'], [5000, 0, 'io']],
       regardY: [[0, 0], [1820, 0], [1920, -9, 'out'], [2030, -9], [SURSAUT + 40, -2, 'out'], [2420, -2], [2520, 9, 'out'], [3100, 9], [3500, -9, 'io'], [3800, -6], [4000, 0, 'io']],
       pupille: [[0, 1], [SURSAUT, 1], [SURSAUT + 50, .55, 'out'], [2420, .6], [2580, 1, 'io']],
-      exclam: [[0, 0], [SURSAUT + 10, 0], [SURSAUT + 100, 1, 'out'], [2450, 1], [2560, 0]],
+      goutteGene: [[0, 0], [SURSAUT + 10, 0], [2560, 1, 'lin'], [2561, 0]],
       joie: [[0, 0], [3950, 0], [4000, 1], [4250, 1], [4300, 0]],
       // le moment fort, c'est la révérence : les étoiles et le halo l'accompagnent (rien après : le chapeau n'est qu'un
       // contretemps)
@@ -2006,12 +2007,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       etincelle: [[0, 0], [POSE_FIN + 40, 0], [POSE_FIN + 190, 1, 'out'], [POSE_FIN + 500, 0, 'in']], etincelleX: 424, etincelleY: 322,
       sy: [[0, 1], [POSE_FIN - 60, 1], [POSE_FIN, .96, 'out'], [POSE_FIN + 260, 1, 'ressort']],
       etoiles: [[0, -1], [POSE_FIN - 40, 0], [POSE_FIN + 1150, 1, 'lin']],
+      // le halo brille dès le début de la glissade
+      halo: [[0, -1], [100, -1], [110, 0], [DUREE - 80, 1, 'lin']],
     });
   })();
 
   // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
   // à 3, une pluie de confettis (elle part avec les étoiles et finit avec l'animation)
-  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, hourra: 2, reverence: 2, tape5: 2, musichall: 2, glissade: 2, chapeau: 2, dab: 3, floss: 3, toupie: 3, basket: 3, guitare: 3, magie: 3 };
+  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, tape5: 1, hourra: 2, reverence: 2, musichall: 2, glissade: 2, chapeau: 2, dab: 3, floss: 3, toupie: 3, basket: 3, guitare: 3, magie: 3 };
   for (const [nom, niveau] of Object.entries(NIVEAUX)) {
     const d = DANSES[nom], pose = d.pose;
     let t0 = 0;
@@ -2034,7 +2037,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
   const ANGLES = ['chapRot', 'tour', 'teteTour', 'rot', 'aG', 'aD'];
-  const SANS_FONDU = ['pion', 'chapDerriere', 'etoiles', 'niveau', 'halo', 'confettis', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
+  const SANS_FONDU = ['pion', 'chapDerriere', 'etoiles', 'niveau', 'halo', 'confettis', 'choc', 'goutteGene', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
     for (const c in b) {
@@ -2084,7 +2087,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'hourra', 'reverence', 'tape5', 'musichall', 'glissade', 'chapeau', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'tape5', 'hourra', 'reverence', 'musichall', 'glissade', 'chapeau', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
   // le niveau de réussite de chaque animation, à côté de son nom
   document.querySelectorAll('.danse[data-danse]').forEach((b) => {
     const n = NIVEAUX[b.dataset.danse];
