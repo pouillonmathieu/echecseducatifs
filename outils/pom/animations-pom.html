@@ -2063,7 +2063,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // (il reste levé au-dessus de la tête, et c'est la roue qui l'amène vers le sol ; il s'y pose au dernier moment)
     // le bras gauche (à droite de l'écran) quitte le sol juste après que la main droite s'y est posée
     const prendSolD = piste([[0, 0], [SOL_DEBUT, 0], [DEBUT + 150, 1, 'io'], [MILIEU - 60, 1], [MILIEU + 280, 0, 'io']]);
-    const prendSolG = piste([[0, 0], [MILIEU - 330, 0], [MILIEU - 90, 1, 'io'], [FIN_ROUE - 100, 1], [SOL_FIN + 150, 0, 'io']]);
+    const prendSolG = piste([[0, 0], [MILIEU - 330, 0], [MILIEU - 90, 1, 'io'], [MILIEU + 260, 1], [FIN_ROUE - 180, 0, 'io']]); // (et la quitte avant qu'il soit debout)
     // (les bras tournent dans le même sens que le corps : le bras gauche de l'écran passe par-dessus la tête ; ref,
     // s'il est donné, ramène l'angle au plus près d'une autre pose)
     function auSol(c, ms, ref) {
