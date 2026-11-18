@@ -213,6 +213,17 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
             </g>
             <path class="pomme" d="M507 302 C470 282 415 295 415 362 C415 422 450 450 481 447 C495 446 500 440 507 440 C514 440 520 446 535 447 C566 450 600 422 600 362 C600 295 545 282 507 302 Z"/>
             <ellipse class="eclat" cx="452" cy="404" rx="12" ry="22" transform="rotate(20 452 404)"/>
+            <!-- le dessus de la pomme, quand la tête penche en avant : le creux de la queue, puis la queue et la feuille
+                 vues d'en haut (elles passent alors devant la pomme) -->
+            <g id="dessus" opacity="0">
+              <ellipse id="creux" class="creux" cx="507" cy="300" rx="32" ry="0"/>
+              <ellipse id="creux-fond" class="creux-fond" cx="507" cy="300" rx="14" ry="0"/>
+              <g id="queue-dessus">
+                <path class="queue" d="M505 302 Q500 276 490 254"/>
+                <path class="feuille" d="M500 272 Q520 238 568 240 Q552 278 500 272 Z"/>
+                <path class="nervure" d="M505 268 Q532 254 556 246"/>
+              </g>
+            </g>
             <g id="visage">
             <g id="yeux-ouverts">
               <!-- chaque œil : le blanc, la pupille, et une paupière découpée à sa forme, qui descend pour cligner -->
@@ -340,6 +351,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       .reflet-chap.fin { stroke-width: 4; opacity: .45; }
       .ruban { fill: ${c.ruban}; }
       .pomme { fill: url(#g-pomme); }
+      .creux { fill: #B3161F; } .creux-fond { fill: #8E0F17; }
       .eclat { fill: #FFFFFF; opacity: .22; }
       .queue { fill: none; stroke: #6E5A2C; stroke-width: 8; stroke-linecap: round; }
       .feuille { fill: #4FA24C; } .nervure { fill: none; stroke: #2F7A3A; stroke-width: 3; stroke-linecap: round; }
@@ -374,7 +386,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -386,7 +398,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     return [BASE[0] + dx * p.sx + Math.tan(rad(p.pli)) * dy * p.sy, BASE[1] + dy * p.sy];
   }
   const el = {
-    visage: $('visage'), feuille: $('feuille'), croix: $('croix'), vitAv: $('vitesse-avant'), vitAr: $('vitesse-arriere'),
+    visage: $('visage'), dessus: $('dessus'), creux: $('creux'), creuxFond: $('creux-fond'), queueDessus: $('queue-dessus'), feuille: $('feuille'), croix: $('croix'), vitAv: $('vitesse-avant'), vitAr: $('vitesse-arriere'),
     pom: $('pom'), queueFeuille: $('queue-feuille'), corps: $('corps'), tete: $('tete'), chapeau: $('chapeau'), ombre: $('ombre'),
     pupilles: document.querySelectorAll('.pupille-oeil'), oeilG: $('oeil-g'), oeilD: $('oeil-d'), fermeG: $('ferme-g'), fermeD: $('ferme-d'), etincelle: $('etincelle'), bords: document.querySelectorAll('.bord-paupiere'), joie: $('yeux-joie'), ouverts: $('yeux-ouverts'), sourcils: $('sourcils'),
     sG: $('sourcil-g'), sD: $('sourcil-d'), paupieres: document.querySelectorAll('.paupiere'),
@@ -437,18 +449,33 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     el.tete.setAttribute('transform', `translate(${tx} ${ty}) rotate(${p.teteRot} 507 365)`);
     // chapeau sur la tête : posé sur la pomme (il cache la queue et la feuille) ; les danses le font s'envoler de là
     const chapY = p.chapY - (chapeauSurTete ? SUR_TETE : 0);
+    let queueVue;
     if (p.chapLibre) {
       // le chapeau ne suit plus la tête (il tombe, il est par terre, une main le tient) : position propre
       el.chapeau.setAttribute('transform', `translate(${p.chapLX - 508} ${p.chapLY - 205}) rotate(${p.chapLR} 508 205)`);
-      el.queueFeuille.setAttribute('opacity', 1);
+      queueVue = 1;
     } else {
-      el.chapeau.setAttribute('transform', `translate(${tx + p.chapX} ${ty - chapY}) rotate(${p.teteRot + p.chapRot} 508 205)`);
-      el.queueFeuille.setAttribute('opacity', Math.max(0, Math.min(1, (chapY + SUR_TETE - 8) / 22)));
+      // tête penchée en avant : le chapeau bascule avec elle (il descend un peu et s'écrase en hauteur)
+      const ph = rad(p.penche), dyH = 110 * (1 - Math.cos(ph)), sH = (1 + Math.cos(ph)) / 2;
+      el.chapeau.setAttribute('transform', `translate(${tx + p.chapX} ${ty - chapY}) rotate(${p.teteRot + p.chapRot} 508 205) translate(0 ${dyH}) translate(508 232) scale(1 ${sH}) translate(-508 -232)`);
+      queueVue = Math.max(0, Math.min(1, (chapY + SUR_TETE - 8) / 22));
     }
+    // la queue et la feuille : de face, ou vues d'en haut quand la tête penche ; cachées sous le chapeau
+    el.queueFeuille.setAttribute('opacity', p.penche > 3 ? 0 : queueVue);
+    el.queueDessus.setAttribute('opacity', queueVue);
     bras('G', p); bras('D', p);
     // le visage fait le tour de la pomme : il glisse, se resserre sur le côté et disparaît derrière
     const t = rad(p.tour), c = Math.cos(t), sn = Math.sin(t);
-    el.visage.setAttribute('transform', `translate(${507 + 78 * sn} 0) scale(${Math.max(c, .001)} 1) translate(-507 0)`);
+    // la tête penche en avant (p.penche, en degrés) : le visage descend sur la pomme et s'écrase en hauteur
+    const ph = rad(p.penche), cph = Math.cos(ph), sph = Math.sin(ph);
+    el.visage.setAttribute('transform', `translate(0 ${72 * sph}) translate(0 338) scale(1 ${cph}) translate(0 -338) translate(${507 + 78 * sn} 0) scale(${Math.max(c, .001)} 1) translate(-507 0)`);
+    // le dessus de la pomme : le creux de la queue descend du haut de la pomme et s'ouvre ; la queue raccourcit (elle
+    // pointe vers nous) et passe devant la pomme
+    const haut = 365 - 78 * cph;
+    el.dessus.setAttribute('opacity', p.penche > 3 ? 1 : 0);
+    el.creux.setAttribute('cy', haut); el.creux.setAttribute('ry', 30 * sph);
+    el.creuxFond.setAttribute('cy', haut + 2 * sph); el.creuxFond.setAttribute('ry', 13 * sph);
+    el.queueDessus.setAttribute('transform', `translate(0 ${haut - 302}) translate(505 302) scale(1 ${Math.max(.15, cph)}) translate(-505 -302)`);
     el.visage.setAttribute('opacity', c > .05 ? 1 : 0);
     el.feuille.setAttribute('transform', `translate(500 0) scale(${Math.abs(c) < .05 ? .05 * Math.sign(c || 1) : c} 1) translate(-500 0)`);
     el.croix.setAttribute('transform', `translate(507 0) scale(${Math.max(.16, Math.abs(c))} 1) translate(-507 0)`);
@@ -1083,19 +1110,19 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       aD: -45, bD: 0, lgD: 1.9, pD: 0, mainD: 'ouverte',           // le bras tendu, en diagonale vers le haut
       aG: 300, bG: -70, lgG: 2.1, pG: -10, mainG: 'ouverte',       // le bras courbé en travers du visage
       devantG: 1, devantD: 0,
-      teteRot: -18, teteY: -12, teteX: -8, chapRot: -8, pli: 5,
+      teteRot: -18, teteY: -24, teteX: -8, chapRot: -8, pli: 5, penche: 45,
     };
     const miroir = (d) => ({
       aD: 180 - d.aG, bD: -d.bG, lgD: d.lgG, pD: -d.pG, mainD: d.mainG,
       aG: 180 - d.aD, bG: -d.bD, lgG: d.lgD, pG: -d.pD, mainG: d.mainD,
       devantG: d.devantD, devantD: d.devantG,
-      teteRot: -d.teteRot, teteY: d.teteY, teteX: -d.teteX, chapRot: -d.chapRot, pli: -d.pli,
+      teteRot: -d.teteRot, teteY: d.teteY, teteX: -d.teteX, chapRot: -d.chapRot, pli: -d.pli, penche: d.penche,
     });
     const GAUCHE = miroir(DROITE);
     // les clés de chaque canal : repos, dab à droite (clac à 400 ms), dab à gauche (clac à 1350 ms), repos
     const cle = (k, repos) => [[0, repos], [230, repos], [400, DROITE[k], 'rebond'], [1080, DROITE[k]], [1350, GAUCHE[k], 'rebond'], [1950, GAUCHE[k]], [2350, repos, 'io']];
     const d = {};
-    for (const k of ['aD', 'bD', 'lgD', 'pD', 'aG', 'bG', 'lgG', 'pG', 'teteRot', 'teteY', 'teteX', 'chapRot', 'pli']) d[k] = cle(k, k.startsWith('lg') ? 1 : POSE[k]);
+    for (const k of ['aD', 'bD', 'lgD', 'pD', 'aG', 'bG', 'lgG', 'pG', 'teteRot', 'teteY', 'teteX', 'chapRot', 'pli', 'penche']) d[k] = cle(k, k.startsWith('lg') ? 1 : POSE[k]);
     // l'angle du bras gauche passe par le haut (300° = -60°) : on garde des valeurs continues
     d.aG = [[0, P.aG], [230, P.aG], [400, DROITE.aG, 'rebond'], [1080, DROITE.aG], [1350, 180 - DROITE.aD, 'rebond'], [1950, 180 - DROITE.aD], [2350, P.aG, 'io']];
     d.aD = [[0, P.aD], [230, P.aD], [400, DROITE.aD, 'rebond'], [1080, DROITE.aD], [1350, 180 - DROITE.aG, 'rebond'], [1950, 180 - DROITE.aG], [2350, P.aD, 'io']];
