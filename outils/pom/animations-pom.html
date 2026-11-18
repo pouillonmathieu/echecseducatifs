@@ -1172,16 +1172,26 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // A : l'ampleur, de 0 (repos) à 1 (floss), pour entrer et sortir en douceur
     const A = piste([[0, 0], [DEBUT, 1, 'io'], [FIN, 1], [DUREE - 50, 0, 'io']]);
     const melanger = (repos, cible) => (ms) => repos + (cible(u(ms)) - repos) * A(ms);
+    // le chemin du bras droit (à droite de l'écran) selon u : en travers devant le corps (u = -1), puis il ressort sur
+    // le côté en contournant la hanche (u = BASCULE, c'est là qu'il passe derrière), puis il rentre derrière le corps,
+    // la main cachée par le corps (u = 1). Le bras gauche fait le chemin en miroir.
+    const BASCULE = .35;
+    const CHEMIN = [[-1, 156, 1.5], [BASCULE, 34, 1.2], [1, 88, .9]]; // [u, angle, longueur]
+    const chemin = (v, i) => {
+      const k = v <= BASCULE ? 0 : 1, [u0, ...a] = CHEMIN[k], [u1, ...b] = CHEMIN[k + 1];
+      const t = EASE.io((v - u0) / (u1 - u0));
+      return a[i] + (b[i] - a[i]) * t;
+    };
     const enRythme = (f) => (ms) => f(u(ms)) * A(ms);
     return danse(DUREE, {
-      aG: melanger(P.aG, (v) => 99 - 64 * v), aD: melanger(P.aD, (v) => 81 - 64 * v),
+      aD: melanger(P.aD, (v) => chemin(v, 0)), aG: melanger(P.aG, (v) => 180 - chemin(-v, 0)),
       bG: melanger(P.bG, (v) => -6 * v), bD: melanger(P.bD, (v) => -6 * v),
-      lgG: melanger(1, () => 1.3), lgD: melanger(1, () => 1.3),
+      lgD: melanger(1, (v) => chemin(v, 1)), lgG: melanger(1, (v) => chemin(-v, 1)),
       pG: melanger(P.pG, () => 0), pD: melanger(P.pD, () => 0),
       mainG: [[0, 'pendante'], [DEBUT - 120, 'poing-bas'], [FIN + 150, 'pendante']],
       mainD: [[0, 'pendante'], [DEBUT - 120, 'poing-bas'], [FIN + 150, 'pendante']],
       // le bras du côté où vont les bras passe derrière le corps, l'autre en travers devant
-      derriereG: (ms) => (A(ms) > .3 && u(ms) < 0 ? 1 : 0), derriereD: (ms) => (A(ms) > .3 && u(ms) > 0 ? 1 : 0),
+      derriereG: (ms) => (A(ms) > .3 && u(ms) < -BASCULE ? 1 : 0), derriereD: (ms) => (A(ms) > .3 && u(ms) > BASCULE ? 1 : 0),
       // les hanches dans l'autre sens, la tête qui suit les bras ; un petit rebond à chaque passage au milieu
       x: enRythme((v) => -13 * v), pli: enRythme((v) => -6 * v), rot: enRythme((v) => 2 * v),
       teteX: enRythme((v) => 7 * v), teteRot: enRythme((v) => 7 * v), chapRot: enRythme((v) => 4 * v),
