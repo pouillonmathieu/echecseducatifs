@@ -1303,11 +1303,11 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       mainD: [[0, 'pendante'], [MONTE + 90, 'ok'], [REDESCEND + 180, 'pendante']],
       devantD: [[0, 0], [MONTE + 90, 1], [REDESCEND + 300, 0]],
       pli,
-      // la tête penche vers la main ; un petit hochement au clin d'œil
-      teteRot: [[0, 0], [MONTE, 0], [LA, 8, 'out'], [TCHIK - 60, 8], [TCHIK, 12, 'out'], [TCHIK + 260, 8, 'io'], [REDESCEND, 8], [DUREE - 80, 0, 'io']],
-      teteX: [[0, 0], [MONTE, 0], [LA, 5, 'out'], [REDESCEND, 5], [DUREE - 80, 0, 'io']],
+      // la tête penche du côté de l'œil qui cligne ; un petit hochement au clin d'œil
+      teteRot: [[0, 0], [MONTE, 0], [LA, -8, 'out'], [TCHIK - 60, -8], [TCHIK, -12, 'out'], [TCHIK + 260, -8, 'io'], [REDESCEND, -8], [DUREE - 80, 0, 'io']],
+      teteX: [[0, 0], [MONTE, 0], [LA, -5, 'out'], [REDESCEND, -5], [DUREE - 80, 0, 'io']],
       teteY: [[0, 0], [TCHIK - 60, 0], [TCHIK, -6, 'out'], [TCHIK + 200, 0, 'io']],
-      chapRot: [[0, 0], [MONTE, 0], [LA, 3, 'out'], [REDESCEND, 3], [DUREE - 80, 0, 'io']],
+      chapRot: [[0, 0], [MONTE, 0], [LA, -3, 'out'], [REDESCEND, -3], [DUREE - 80, 0, 'io']],
       // le clin d'œil (l'œil du côté opposé à la main), le sourcil de l'autre œil levé
       clinG: [[0, 0], [TCHIK - 80, 0], [TCHIK, 1, 'out'], [TCHIK + 820, 1], [TCHIK + 920, 0]],
       sourcilG: [[0, 0], [TCHIK - 80, 0], [TCHIK, -3, 'out'], [TCHIK + 820, -3], [TCHIK + 920, 0]],
