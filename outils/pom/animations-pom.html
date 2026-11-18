@@ -2016,7 +2016,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   // 25. la roue : il lance son chapeau en l'air (le chapeau tourne sur lui-même), fait une roue, lentement, les bras
   //     tendus ; à la fin de la roue, le chapeau lui retombe pile sur la tête. Ta-da ! Puis il revient en deux bonds
   DANSES.roue = (() => {
-    const PREND = 260, LANCE = 420, ELAN = 620, DEBUT = 700, FIN_ROUE = 2200, SUR_TETE_ = 2330, RETOUR = 3000, DUREE = 4200;
+    const PREND = 260, ARME = 560, LANCE = 680, ELAN = 880, DEBUT = 960, FIN_ROUE = 2460, SUR_TETE_ = 2590, RETOUR = 3260, DUREE = 4460;
     const LOIN = 170, R = 252; // la distance parcourue ; le centre du corps est à R au-dessus de la base
     const rot = piste([[0, 0], [ELAN, 0], [DEBUT, -10, 'out'], [FIN_ROUE, 360, 'io'], [FIN_ROUE + 120, 365, 'out'], [FIN_ROUE + 320, 360, 'io']]);
     const X = piste([[0, 0], [DEBUT, -10, 'out'], [FIN_ROUE, LOIN, 'io'], [RETOUR, LOIN], [RETOUR + 450, LOIN / 2, 'io'], [RETOUR + 900, 0, 'io']]);
@@ -2033,10 +2033,18 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // le chapeau, dans la scène (il ne suit pas Pom' qui tourne) : lancé tout droit, très haut, il retombe sur la tête
     // une fois la roue finie
     const SUR = () => (chapeauSurTete ? 259 : 193);
+    // l'élan : la main qui tient le bord du chapeau descend un peu sur le côté en le penchant, puis remonte d'un coup
+    // et le lâche vers le ciel
+    const poignet = piste([[0, 0], [PREND, 0], [ARME, 1, 'io'], [LANCE, 2, 'in']]);
+    const W = [[346, 38], [300, 72], [362, -48]]; // (y par rapport au chapeau posé sur la tête)
+    const main = (ms) => { const k = poignet(ms), i = Math.min(1, Math.floor(k)), f = k - i, A = W[i], B = W[Math.min(2, i + 1)]; return [A[0] + (B[0] - A[0]) * f, SUR() + A[1] + (B[1] - A[1]) * f]; };
+    const penche = piste([[0, 0], [PREND, 0], [ARME, -20, 'io'], [LANCE, 8, 'in']]);
+    const OFF = [162, -38]; // du poignet au pivot du chapeau
     function chapeauScene(ms) {
-      if (ms < LANCE || ms >= SUR_TETE_) return null;
-      const k = (ms - LANCE) / (SUR_TETE_ - LANCE);
-      return [508 + LOIN * EASE.io(k), SUR() + (-380) * Math.sin(Math.PI * k) - 24 * Math.sin(Math.PI * Math.min(1, k * 6)) * (k < 1 / 6 ? 1 : 0), 6 * Math.sin(k * 9)];
+      if (ms < PREND || ms >= SUR_TETE_) return null;
+      if (ms < LANCE) { const [x, y] = main(ms); return [x + OFF[0], y + OFF[1], penche(ms)]; }
+      const k = (ms - LANCE) / (SUR_TETE_ - LANCE), [x0, y0] = main(LANCE), H0 = [x0 + OFF[0], y0 + OFF[1]];
+      return [H0[0] + (508 + LOIN - H0[0]) * EASE.io(k), H0[1] + (SUR() - H0[1]) * k - 360 * Math.sin(Math.PI * k), 8 * (1 - k) + 6 * Math.sin(k * 9)];
     }
     // ramené dans le dessin de Pom' (qui est déplacé et tourné)
     function chapeau(ms) {
@@ -2047,7 +2055,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     }
     // la main qui lance le chapeau (main droite de Pom', à gauche de l'écran) : elle le prend par le bord, puis le
     // lance vers le ciel ; pendant la roue, les deux bras tendus en V ; ta-da à l'arrivée
-    const tient = () => viserBras('G', POSE, 346, SUR() + 38, -80, -30);
+    const tient = (ms = PREND) => { const [x, y] = main(ms); return viserBras('G', POSE, x, y, -80 + penche(ms) * 1.5, -30); };
     const lance = { a: 255, b: 0, lg: 1.45, p: 0 };
     const V = { G: { a: 235, b: 0, lg: 1.5, p: 0 }, D: { a: -55, b: 0, lg: 1.5, p: 0 } };
     const tada = { G: { a: 215, b: 16, lg: 1.3, p: 0 }, D: { a: -35, b: -16, lg: 1.3, p: 0 } };
@@ -2075,8 +2083,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     function brasG(ms) {
       const r = brasRepos('G');
       if (ms < PREND) return bougerBras(r, tient(), EASE.io(ms / PREND));
-      if (ms < LANCE) return bougerBras(tient(), lance, EASE.in((ms - PREND) / (LANCE - PREND)));
-      const base = ms < SOL_FIN ? bougerBras(lance, V.G, EASE.io(Math.min(1, (ms - LANCE) / (DEBUT - LANCE)))) : V.G;
+      if (ms < LANCE) return tient(ms);
+      const base = ms < SOL_FIN ? bougerBras(ms < LANCE + 90 ? bougerBras(tient(LANCE), lance, (ms - LANCE) / 90) : lance, V.G, EASE.io(Math.max(0, Math.min(1, (ms - LANCE - 90) / (DEBUT - LANCE - 90))))) : V.G;
       if (ms < SOL_FIN + 150) return bougerBras(base, auSol('G', ms), prendSolG(ms));
       if (ms < SUR_TETE_ + 300) return bougerBras(V.G, tada.G, EASE.io((ms - SOL_FIN - 150) / (SUR_TETE_ + 300 - SOL_FIN - 150)));
       if (ms < RETOUR - 100) return tada.G;
@@ -2106,7 +2114,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
       chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
       // le chapeau tourne sur lui-même pendant son vol, de plus en plus lentement
-      chapTour: (ms) => (chapeau(ms) ? 1.4 * (ms - LANCE) - .00012 * Math.pow(ms - LANCE, 2) : 0),
+      chapTour: (ms) => (chapeau(ms) && ms > LANCE ? 1.4 * (ms - LANCE) - .00012 * Math.pow(ms - LANCE, 2) : 0),
       chapVitesse: [[0, 0], [LANCE, 0], [LANCE + 150, .8, 'out'], [SUR_TETE_ - 300, .5], [SUR_TETE_, 0]],
       chapY: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 80, -9, 'out'], [SUR_TETE_ + 260, 0, 'io']],
       sy: [[0, 1], [LANCE - 80, .94, 'out'], [LANCE + 60, 1.04, 'out'], [ELAN, 1], [DEBUT, .9, 'out'], [DEBUT + 120, 1.05, 'out'], [FIN_ROUE - 80, 1.02], [FIN_ROUE + 40, .9, 'out'],
