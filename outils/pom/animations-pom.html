@@ -340,6 +340,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="ok"><span class="num">16</span><b>Clin d'œil</b></button>
         <button class="danse" type="button" data-danse="tape5"><span class="num">17</span><b>Tape-m'en cinq !</b></button>
         <button class="danse" type="button" data-danse="pouce"><span class="num">18</span><b>Pouce levé</b></button>
+        <button class="danse" type="button" data-danse="vague"><span class="num">19</span><b>La vague</b></button>
+        <button class="danse" type="button" data-danse="guitare"><span class="num">20</span><b>La guitare</b></button>
+        <button class="danse" type="button" data-danse="musichall"><span class="num">21</span><b>Le music-hall</b></button>
+        <button class="danse" type="button" data-danse="basket"><span class="num">22</span><b>Le basket</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -445,7 +449,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, chapTour: 0, chapDerriere: 0, niveau: 1, halo: -1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -524,7 +528,9 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     let queueVue;
     if (p.chapLibre) {
       // le chapeau ne suit plus la tête (il tombe, il est par terre, une main le tient) : position propre
-      el.chapeau.setAttribute('transform', `translate(${p.chapLX - 508} ${p.chapLY - 205}) rotate(${p.chapLR} 508 205)`);
+      // (chapTour : il tourne sur lui-même, comme une toupie, vu de face)
+      const ct = Math.cos(rad(p.chapTour)), sct = Math.abs(ct) < .06 ? .06 * Math.sign(ct || 1) : ct;
+      el.chapeau.setAttribute('transform', `translate(${p.chapLX - 508} ${p.chapLY - 205}) rotate(${p.chapLR} 508 205) translate(508 0) scale(${sct} 1) translate(-508 0)`);
       queueVue = 1;
     } else {
       // tête penchée en avant : le chapeau bascule avec elle (il descend un peu et s'écrase en hauteur)
@@ -535,6 +541,9 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // la queue et la feuille : de face, ou vues d'en haut quand la tête penche ; cachées sous le chapeau
     el.queueFeuille.setAttribute('opacity', p.penche > 3 ? 0 : queueVue);
     el.queueDessus.setAttribute('opacity', queueVue);
+    // le chapeau passe derrière Pom' (p.chapDerriere), ou reprend sa place, devant la tête
+    if (p.chapDerriere > .5) { if (el.chapeau.nextSibling !== el.vitAr && el.chapeau.nextElementSibling !== el.vitAr) el.pom.insertBefore(el.chapeau, el.vitAr); }
+    else if (el.chapeau.previousElementSibling !== el.tete) el.pom.insertBefore(el.chapeau, el.tete.nextSibling);
     bras('G', p); bras('D', p);
     // le visage fait le tour de la pomme : il glisse, se resserre sur le côté et disparaît derrière
     const t = rad(p.tour), c = Math.cos(t), sn = Math.sin(t);
@@ -698,6 +707,18 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     return { duree, pose: (ms) => { const p = { ...POSE }; for (const k in f) p[k] = f[k](ms); return p; } };
   }
   const P = POSE;
+  // les bras : viser un point (dans le dessin de Pom', déformé comme le corps), avec la direction de la main et le pli
+  // du bras ; le repos ; un mélange des deux ; les pistes des quatre réglages d'un bras
+  function viserBras(cote, q, x, y, dir, b) {
+    const [ex, ey] = pointCorps(q, cote === 'G' ? 442 : 580, cote === 'G' ? 580 : 566), [tx, ty] = pointCorps(q, x, y);
+    let a = Math.atan2(ty - ey, tx - ex) * 180 / Math.PI;
+    if (cote === 'G' && a < 0) a += 360;
+    const L = Math.hypot(tx - ex, ty - ey), t = Math.atan2(-b, L / 2) * 180 / Math.PI;
+    return { a, b, lg: L / 138, p: dir - a - t };
+  }
+  const brasRepos = (c) => ({ a: P['a' + c], b: P['b' + c], lg: 1, p: P['p' + c] });
+  const bougerBras = (u, v, k) => ({ a: u.a + (v.a - u.a) * k, b: u.b + (v.b - u.b) * k, lg: u.lg + (v.lg - u.lg) * k, p: u.p + (v.p - u.p) * k });
+  const pistesBras = (c, f) => ({ ['a' + c]: (ms) => f(ms).a, ['b' + c]: (ms) => f(ms).b, ['lg' + c]: (ms) => f(ms).lg, ['p' + c]: (ms) => f(ms).p });
 
   const DANSES = {
     // 1. il se tasse, bondit, le chapeau s'envole en tournant et retombe sur la pomme
@@ -1477,9 +1498,246 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
+  // 19. la vague : il ouvre les bras à l'horizontale ; une ondulation part du bout de sa main droite, remonte le bras,
+  //     passe par les épaules et la tête, redescend l'autre bras et ressort par le bout de l'autre main ; petit salut
+  DANSES.vague = (() => {
+    const OUVRE = 380, DEPART = 480, ARRIVEE = 1750, SALUT = 1950, DUREE = 2750;
+    // w : où est la vague, de 0 (bout de la main droite de Pom', à gauche de l'écran) à 1 (bout de l'autre main)
+    const w = (ms) => (ms < DEPART ? -1 : ms > ARRIVEE ? 2 : (ms - DEPART) / (ARRIVEE - DEPART));
+    const bosse = (ms, c, l = .085) => Math.exp(-Math.pow((w(ms) - c) / l, 2));
+    // les bras ouverts : de 0 (repos) à 1 (à l'horizontale), puis ils retombent pour le salut
+    const ouvert = piste([[0, 0], [120, 0], [OUVRE, 1, 'out'], [ARRIVEE + 80, 1], [SALUT + 250, 0, 'io']]);
+    const m = (r, v) => (ms) => r + (v - r) * ouvert(ms);
+    return danse(DUREE, {
+      // la bosse de la vague : un pli du bras vers le haut (positif à gauche de l'écran, négatif à droite) ; la main
+      // se relève d'un coup de poignet quand la vague y passe ; les mains à plat, dans le prolongement des bras
+      aG: (ms) => m(P.aG, 182)(ms) + 10 * bosse(ms, .22), bG: (ms) => m(P.bG, 0)(ms) + 60 * bosse(ms, .2),
+      lgG: m(1, 1.3), pG: (ms) => m(P.pG, -14)(ms) + 45 * bosse(ms, .04, .06) - 20 * bosse(ms, .12, .05),
+      aD: (ms) => m(P.aD, -2)(ms) - 10 * bosse(ms, .78), bD: (ms) => m(P.bD, 0)(ms) - 60 * bosse(ms, .8),
+      lgD: m(1, 1.3), pD: (ms) => m(P.pD, 14)(ms) - 45 * bosse(ms, .96, .06) + 20 * bosse(ms, .88, .05),
+      mainG: [[0, 'pendante'], [200, 'ouverte'], [SALUT + 120, 'pendante']],
+      mainD: [[0, 'pendante'], [200, 'ouverte'], [SALUT + 120, 'pendante']],
+      // les épaules et la tête : le corps se soulève d'un côté puis de l'autre, la tête monte et penche au passage
+      pli: (ms) => 4 * bosse(ms, .36) - 4 * bosse(ms, .64),
+      rot: (ms) => -3 * bosse(ms, .36) + 3 * bosse(ms, .64) + 2.5 * Math.sin(Math.PI * Math.min(1, Math.max(0, (ms - SALUT) / 500))),
+      sy: (ms) => 1 + .05 * bosse(ms, .5, .12) - .04 * Math.sin(Math.PI * Math.min(1, Math.max(0, (ms - SALUT) / 500))),
+      teteY: (ms) => 22 * bosse(ms, .5, .07) - 12 * Math.sin(Math.PI * Math.min(1, Math.max(0, (ms - SALUT) / 500))),
+      teteRot: (ms) => -9 * bosse(ms, .42, .06) + 9 * bosse(ms, .58, .06) + 6 * Math.sin(Math.PI * Math.min(1, Math.max(0, (ms - SALUT) / 500))),
+      chapY: (ms) => 18 * bosse(ms, .52, .06),
+      // il suit la vague des yeux, puis salue, les yeux rieurs
+      regardX: (ms) => (ms < DEPART || ms > ARRIVEE + 100 ? 0 : -9 + 18 * Math.min(1, w(ms))),
+      sourcils: [[0, 0], [OUVRE, 8, 'out'], [ARRIVEE, 8], [DUREE, 0]],
+      joie: [[0, 0], [ARRIVEE + 60, 0], [ARRIVEE + 80, 1], [DUREE - 250, 1], [DUREE - 200, 0]],
+      etoiles: [[0, -1], [ARRIVEE - 100, 0], [ARRIVEE + 1000, 1, 'lin']],
+    });
+  })();
+
+  // 20. la guitare imaginaire : il gratte une guitare invisible (une main sur le manche, l'autre gratte devant le
+  //     ventre), les yeux fermés, la tête qui balance en rythme ; il arme un grand coup, frappe l'accord final, puis
+  //     lance le poing vers le ciel
+  DANSES.guitare = (() => {
+    const PRET = 340, ARME = 1950, ACCORD = 2250, CIEL = 2620, FIN = 3150, DUREE = 3650, T = 200;
+    const temps = (ms) => (ms - PRET) / T; // les temps, en croches
+    const joue = (ms) => ms >= PRET && ms < ARME;
+    const pli = piste([[0, 0], [PRET, -3, 'out'], [ARME, -3], [ACCORD - 80, -7, 'out'], [ACCORD, 3, 'in'], [CIEL, -5, 'out'], [FIN, -5], [DUREE - 60, 0, 'io']]);
+    const corps = (ms) => ({ ...POSE, pli: pli(ms), sy: sy(ms) });
+    const sy = (ms) => (joue(ms) ? 1 - .025 * Math.pow(Math.abs(Math.cos(Math.PI * temps(ms) / 2)), 4) : syFinal(ms));
+    const syFinal = piste([[0, 1], [ARME, 1], [ACCORD - 80, 1.05, 'out'], [ACCORD, .9, 'in'], [ACCORD + 300, 1, 'ressort'], [CIEL, 1.06, 'out'], [FIN, 1.03], [DUREE - 60, 1, 'io']]);
+    // la main qui gratte (main droite de Pom', à gauche de l'écran) : de haut en bas à chaque croche
+    function gratte(ms) {
+      if (ms < ARME) {
+        const k = joue(ms) ? .5 - .5 * Math.cos(Math.PI * temps(ms)) : 0;
+        return [448 + 14 * k, 640 + 58 * k, 64 + 26 * k];
+      }
+      if (ms < ACCORD - 120) { const k = EASE.out((ms - ARME) / (ACCORD - 120 - ARME)); return [448 - 96 * k, 640 - 264 * k, 64 - 184 * k]; }
+      if (ms < ACCORD) { const k = EASE.in((ms - ACCORD + 120) / 120); return [352 + 128 * k, 376 + 364 * k, -120 + 215 * k]; }
+      if (ms < CIEL - 150) return [480, 740, 95];
+      // le poing vers le ciel
+      const k = EASE.rebond(Math.min(1, (ms - CIEL + 150) / 300));
+      return [480 - 110 * k, 740 - 400 * k, 95 - 195 * k];
+    }
+    // la main sur le manche (à droite de l'écran) : elle glisse pour changer d'accord
+    const mx = piste([[0, 728], [1150, 728], [1230, 690, 'io'], [1550, 690], [1630, 728, 'io']]);
+    const my = piste([[0, 548], [1150, 548], [1230, 566, 'io'], [1550, 566], [1630, 548, 'io']]);
+    const entre = piste([[0, 0], [120, 0], [PRET, 1, 'out'], [FIN, 1], [DUREE - 60, 0, 'io']]);
+    const brasG = (ms) => { const [x, y, d] = gratte(ms); return bougerBras(brasRepos('G'), viserBras('G', corps(ms), x, y, d, -24), entre(ms)); };
+    const brasD = (ms) => bougerBras(brasRepos('D'), viserBras('D', corps(ms), mx(ms), my(ms), -24, 26), entre(ms));
+    // la tête balance : un hochement à chaque temps, et elle penche d'un côté puis de l'autre toutes les deux mesures
+    const hoche = (ms) => (joue(ms) ? Math.pow(Math.abs(Math.sin(Math.PI * temps(ms) / 2)), 3) : 0);
+    return danse(DUREE, {
+      ...pistesBras('G', brasG), ...pistesBras('D', brasD),
+      mainG: [[0, 'pendante'], [160, 'pouce-index'], [CIEL - 120, 'poing-leve'], [FIN + 120, 'pendante']],
+      mainD: [[0, 'pendante'], [160, 'poing-cote'], [FIN + 120, 'pendante']],
+      devantG: [[0, 0], [160, 1], [FIN + 250, 0]], devantD: [[0, 0], [160, 1], [FIN + 250, 0]],
+      pli, sy,
+      teteY: (ms) => -9 * hoche(ms) + (ms > ACCORD - 80 && ms < ACCORD + 300 ? -10 * Math.sin(Math.PI * (ms - ACCORD + 80) / 380) : 0),
+      teteRot: (ms) => (joue(ms) ? 9 * Math.sin(Math.PI * temps(ms) / 4) : 0) + rotFinale(ms),
+      chapY: (ms) => 7 * hoche(ms),
+      // les yeux fermés, à fond dans la musique ; grands ouverts pour l'accord final ; ravis vers le ciel
+      clinG: [[0, 0], [PRET - 80, 0], [PRET, 1], [ARME, 1], [ARME + 80, 0]],
+      clinD: [[0, 0], [PRET - 80, 0], [PRET, 1], [ARME, 1], [ARME + 80, 0]],
+      sourcils: [[0, 0], [PRET, 10, 'out'], [ARME, 10], [ARME + 150, 22, 'out'], [ACCORD, 14], [CIEL, 18, 'out'], [FIN, 14], [DUREE, 0]],
+      sourcilsPli: [[0, 0], [PRET, 6], [ARME, 6], [ARME + 100, 0]],
+      regardY: [[0, 0], [ARME, 0], [ARME + 150, -8, 'out'], [ACCORD - 60, -8], [ACCORD, 4, 'in'], [CIEL - 100, 0]],
+      joie: [[0, 0], [CIEL - 20, 0], [CIEL, 1], [FIN + 100, 1], [FIN + 150, 0]],
+      etoiles: [[0, -1], [CIEL - 60, 0], [CIEL + 1000, 1, 'lin']],
+      // le halo s'allume à l'accord final
+      halo: [[0, -1], [ACCORD - 1, -1], [ACCORD, .15], [ACCORD + 1300, 1, 'lin']],
+      choc: [[0, -1], [ACCORD - 1, -1], [ACCORD, 0], [ACCORD + 380, 1, 'out']], chocX: 470, chocY: 700,
+    });
+    function rotFinale(ms) { return ms < ARME ? 0 : piste([[ARME, 0], [ACCORD - 80, -8, 'out'], [ACCORD, 6, 'in'], [CIEL, -8, 'out'], [FIN, -8], [DUREE - 60, 0, 'io']])(ms); }
+  })();
+
+  // 21. le numéro de music-hall : il ouvre les bras en une longue pente ; d'un coup de tête, son chapeau saute sur sa
+  //     main gauche (à droite de l'écran), roule le long du bras, passe derrière ses épaules, descend l'autre bras
+  //     jusqu'à la main ; d'un coup de poignet, il le renvoie en l'air et le chapeau retombe pile sur sa tête. Ta-da !
+  DANSES.musichall = (() => {
+    const BRAS = 380, HOP = 520, SUR_MAIN = 900, ROULE = 950, AU_BOUT = 2400, LANCE = 2560, SUR_TETE_ = 3080, TADA = 3200, DUREE = 4250;
+    const PENTE = -14, LG = 1.45; // les bras alignés en pente : la main droite de l'écran en haut
+    // le chemin du chapeau sur les bras : de la main haute à l'épaule, d'une épaule à l'autre (derrière), jusqu'à l'autre
+    // main (les points où le bord du chapeau touche le bras)
+    const L = 138 * LG, c = Math.cos(rad(PENTE)), sn = Math.sin(rad(PENTE));
+    const CHEMIN = [[580 + L * c, 566 + L * sn - 7], [580, 559], [442, 573], [442 - L * c, 580 - L * sn - 7]];
+    const longueurs = CHEMIN.slice(1).map((p, i) => Math.hypot(p[0] - CHEMIN[i][0], p[1] - CHEMIN[i][1]));
+    const total = longueurs.reduce((a, b) => a + b, 0);
+    function surChemin(d) { // le point à la distance d du début
+      for (let i = 0; i < longueurs.length; i++) {
+        if (d <= longueurs[i] || i === longueurs.length - 1) {
+          const k = Math.min(1, d / longueurs[i]), [x0, y0] = CHEMIN[i], [x1, y1] = CHEMIN[i + 1];
+          return [x0 + (x1 - x0) * k, y0 + (y1 - y0) * k, Math.atan2(y0 - y1, x0 - x1) * 180 / Math.PI];
+        }
+        d -= longueurs[i];
+      }
+    }
+    const PIVOT = 33; // le pivot du chapeau, au-dessus du point de contact
+    const surTete = (teteY) => [508, (chapeauSurTete ? 259 : 193) - teteY];
+    const teteY = piste([[0, 0], [HOP - 80, -10, 'out'], [HOP + 40, 14, 'out'], [HOP + 260, 0, 'io'], [1600, 0], [1700, 10, 'out'], [2000, 10], [2150, 0, 'io'], [SUR_TETE_, 0], [SUR_TETE_ + 70, -10, 'out'], [SUR_TETE_ + 300, 0, 'ressort']]);
+    const teteRot = piste([[0, 0], [HOP - 80, -6, 'out'], [HOP + 60, 14, 'out'], [HOP + 300, 4, 'io'], [ROULE, 0, 'io']]);
+    // la distance parcourue : le chapeau prend de la vitesse en descendant
+    const dist = (ms) => total * EASE.in(Math.min(1, Math.max(0, (ms - ROULE) / (AU_BOUT - ROULE))) * .55 + .45 * Math.min(1, Math.max(0, (ms - ROULE) / (AU_BOUT - ROULE))));
+    function chapeau(ms) { // [x, y du pivot, rotation] ou null quand il est sur la tête
+      if (ms < HOP || ms >= SUR_TETE_) return null;
+      if (ms < SUR_MAIN) { // il saute de la tête sur la main
+        const k = EASE.io((ms - HOP) / (SUR_MAIN - HOP)), [x0, y0] = surTete(teteY(HOP)), [x1, y1] = CHEMIN[0];
+        return [x0 + (x1 - x0) * k, y0 + (y1 - PIVOT - y0) * k - 150 * Math.sin(Math.PI * k), (360 + PENTE) * k];
+      }
+      if (ms < LANCE) { // il roule sur son bord le long des bras (il se dandine en roulant)
+        const d = ms < ROULE ? 0 : dist(Math.min(ms, AU_BOUT)), [x, y, r] = surChemin(d);
+        return [x, y - PIVOT, 360 + r + 9 * Math.sin(d / 16) * Math.min(1, d / 30)];
+      }
+      // le coup de poignet : il vole, fait un tour, et retombe sur la tête
+      const k = (ms - LANCE) / (SUR_TETE_ - LANCE), [x0, y0, r0] = surChemin(total), [x1, y1] = surTete(teteY(SUR_TETE_));
+      return [x0 + (x1 - x0) * k, (y0 - PIVOT) + (y1 - y0 + PIVOT) * k - 300 * Math.sin(Math.PI * k), 360 + r0 + (-r0 - 360) * EASE.io(k)];
+    }
+    const cx = (ms) => { const h = chapeau(ms); return h ? h[0] : 508; };
+    return danse(DUREE, {
+      aD: [[0, P.aD], [120, P.aD], [BRAS, PENTE, 'out'], [LANCE + 60, PENTE], [TADA + 150, -30, 'rebond'], [3750, -30], [DUREE - 80, P.aD, 'io']],
+      aG: [[0, P.aG], [120, P.aG], [BRAS, 180 + PENTE, 'out'], [AU_BOUT, 180 + PENTE], [LANCE - 40, 180 + PENTE - 8, 'io'], [LANCE + 60, 212, 'out'], [TADA, 195, 'io'], [TADA + 150, 210, 'rebond'], [3750, 210], [DUREE - 80, P.aG, 'io']],
+      bD: [[0, P.bD], [BRAS, 0, 'out'], [TADA, 0], [TADA + 150, -16], [3750, -16], [DUREE - 80, P.bD, 'io']],
+      bG: [[0, P.bG], [BRAS, 0, 'out'], [TADA, 0], [TADA + 150, 16], [3750, 16], [DUREE - 80, P.bG, 'io']],
+      lgD: [[0, 1], [BRAS, LG, 'out'], [TADA, LG], [TADA + 150, 1.25], [3750, 1.25], [DUREE - 80, 1, 'io']],
+      lgG: [[0, 1], [BRAS, LG, 'out'], [TADA, LG], [TADA + 150, 1.25], [3750, 1.25], [DUREE - 80, 1, 'io']],
+      pD: [[0, P.pD], [BRAS, 0, 'out'], [DUREE - 80, 0], [DUREE, P.pD]],
+      pG: [[0, P.pG], [BRAS, 0, 'out'], [DUREE - 80, 0], [DUREE, P.pG]],
+      mainD: [[0, 'pendante'], [200, 'presente'], [DUREE - 250, 'pendante']],
+      mainG: [[0, 'pendante'], [200, 'presente'], [DUREE - 250, 'pendante']],
+      teteY, teteRot,
+      chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
+      chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
+      chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
+      chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
+      // derrière les épaules, il passe derrière Pom'
+      chapDerriere: (ms) => { const h = chapeau(ms); return h && ms > ROULE && ms < LANCE && h[0] < 655 && h[0] > 395 ? 1 : 0; },
+      chapY: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 80, -8, 'out'], [SUR_TETE_ + 260, 0, 'io']],
+      // il suit son chapeau des yeux
+      regardX: (ms) => (ms < HOP || ms > SUR_TETE_ ? 0 : Math.max(-9, Math.min(9, (cx(ms) - 508) / 18))),
+      regardY: (ms) => (ms < HOP || ms > SUR_TETE_ ? 0 : ms > LANCE ? -6 : 7),
+      sourcils: [[0, 0], [BRAS, 8, 'out'], [LANCE, 8], [LANCE + 150, 16, 'out'], [SUR_TETE_, 12], [DUREE, 0]],
+      joie: [[0, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [3800, 1], [3850, 0]],
+      sy: [[0, 1], [SUR_TETE_, 1], [SUR_TETE_ + 70, .95, 'out'], [SUR_TETE_ + 320, 1, 'ressort']],
+      etoiles: [[0, -1], [SUR_TETE_, 0], [SUR_TETE_ + 1100, 1, 'lin']],
+    });
+  })();
+
+  // 22. le basket : il lance son chapeau en l'air, le rattrape sur le bout de l'index et le fait tourner comme un
+  //     ballon, l'autre poing sur la hanche ; d'une pichenette, le chapeau s'envole et retombe pile sur sa tête. Les bras
+  //     au ciel !
+  DANSES.basket = (() => {
+    const LEVE = 300, LANCE = 330, RATTRAPE = 960, TAPE = 1620, PICHENETTE = 2350, SUR_TETE_ = 2950, TADA = 3050, DUREE = 4500;
+    const BOUT = [12, -125]; // le bout de l'index, par rapport au poignet (gant « index levé », doigt vers le haut)
+    const ENFONCE = 8; // le doigt entre sous le chapeau : le pivot du chapeau est un peu plus bas que le bout du doigt
+    const surTete = (teteY) => [508, (chapeauSurTete ? 259 : 193) - teteY];
+    const teteY = piste([[0, 0], [LANCE - 90, -10, 'out'], [LANCE + 30, 14, 'out'], [LANCE + 260, 0, 'io'], [SUR_TETE_, 0], [SUR_TETE_ + 70, -10, 'out'], [SUR_TETE_ + 320, 0, 'ressort']]);
+    // le poignet de la main qui tient le chapeau (main droite de Pom', à gauche de l'écran)
+    function poignet(ms) {
+      if (ms < RATTRAPE) return [292, 396 + (ms > 700 ? 18 * EASE.io(Math.min(1, (ms - 700) / 260)) : 0)];
+      if (ms < PICHENETTE - 80) { const t = ms - RATTRAPE; return [292 + 6 * Math.sin(t / 110), 414 - 18 * EASE.out(Math.min(1, t / 200)) + 5 * Math.sin(t / 85)]; }
+      return [292, 396 - 34 * Math.sin(Math.PI * Math.min(1, (ms - PICHENETTE + 80) / 200))];
+    }
+    const surDoigt = (ms) => { const [x, y] = poignet(ms); return [x + BOUT[0], y + BOUT[1] + ENFONCE]; };
+    // la rotation : elle tourne en l'air, puis de plus en plus vite sur le doigt (la main fait de petits cercles)
+    const tour = (ms) => {
+      if (ms < LANCE) return 0;
+      const t = ms - LANCE;
+      return t * .9 + (ms > TAPE ? (ms - TAPE) * .6 : 0); // degrés par ms
+    };
+    function chapeau(ms) {
+      if (ms < LANCE || ms >= SUR_TETE_) return null;
+      if (ms < RATTRAPE) { // lancé : il monte, redescend sur le doigt
+        const k = (ms - LANCE) / (RATTRAPE - LANCE), [x0, y0] = surTete(teteY(LANCE)), [x1, y1] = surDoigt(RATTRAPE);
+        return [x0 + (x1 - x0) * k, y0 + (y1 - y0) * k - 380 * Math.sin(Math.PI * k), 0];
+      }
+      if (ms < PICHENETTE) { const [x, y] = surDoigt(ms); return [x, y, 3 * Math.sin(ms / 70)]; }
+      const k = (ms - PICHENETTE) / (SUR_TETE_ - PICHENETTE), [x0, y0] = surDoigt(PICHENETTE), [x1, y1] = surTete(teteY(SUR_TETE_));
+      return [x0 + (x1 - x0) * k, y0 + (y1 - y0) * k - 260 * Math.sin(Math.PI * k), 0];
+    }
+    const repos = brasRepos;
+    const q = POSE;
+    const tada = { G: viserBras('G', q, 318, 330, -112, -20), D: viserBras('D', q, 702, 318, -68, 20) };
+    function brasG(ms) {
+      const [x, y] = poignet(ms), v = viserBras('G', q, x, y, -90, -26);
+      if (ms < LEVE) return bougerBras(repos('G'), v, EASE.out(ms / LEVE));
+      if (ms < PICHENETTE + 120) return v;
+      if (ms < TADA + 150) return bougerBras(v, tada.G, EASE.rebond(Math.min(1, (ms - PICHENETTE - 120) / (TADA + 150 - PICHENETTE - 120))));
+      if (ms < 3800) return tada.G;
+      return bougerBras(tada.G, repos('G'), EASE.io(Math.min(1, (ms - 3800) / 600)));
+    }
+    const hanche = viserBras('D', q, 628, 700, 160, -42); // le poing sur la hanche, le coude bien écarté
+    function brasD(ms) {
+      if (ms < LEVE + 200) return bougerBras(repos('D'), hanche, EASE.io(Math.min(1, ms / (LEVE + 200))));
+      if (ms < PICHENETTE) return hanche;
+      if (ms < TADA + 150) return bougerBras(hanche, tada.D, EASE.rebond(Math.min(1, (ms - PICHENETTE) / (TADA + 150 - PICHENETTE))));
+      if (ms < 3800) return tada.D;
+      return bougerBras(tada.D, repos('D'), EASE.io(Math.min(1, (ms - 3800) / 600)));
+    }
+    return danse(DUREE, {
+      ...pistesBras('G', brasG), ...pistesBras('D', brasD),
+      mainG: [[0, 'pendante'], [120, 'index-leve'], [PICHENETTE + 250, 'poing-leve'], [4100, 'pendante']],
+      mainD: [[0, 'pendante'], [200, 'poing-cote'], [PICHENETTE + 120, 'poing-leve'], [4100, 'pendante']],
+      // la main qui tient le chapeau reste derrière lui (l'index est caché dessous)
+      devantD: [[0, 0], [PICHENETTE, 1], [4200, 0]],
+      teteY,
+      teteRot: [[0, 0], [LANCE, 0], [RATTRAPE, -6, 'io'], [PICHENETTE, -6], [SUR_TETE_, 0, 'io']],
+      chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
+      chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
+      chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
+      chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
+      chapTour: (ms) => (chapeau(ms) ? tour(ms) : 0),
+      chapY: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 80, -8, 'out'], [SUR_TETE_ + 260, 0, 'io']],
+      // il ne quitte pas son chapeau des yeux ; ravi à l'arrivée
+      regardX: (ms) => { const h = chapeau(ms); return h ? Math.max(-9, Math.min(9, (h[0] - 508) / 14)) : 0; },
+      regardY: (ms) => { const h = chapeau(ms); return h ? Math.max(-9, Math.min(9, (h[1] - 330) / 25)) : 0; },
+      sourcils: [[0, 0], [LANCE, 10, 'out'], [RATTRAPE, 16, 'out'], [PICHENETTE, 14], [SUR_TETE_, 20, 'out'], [3800, 16], [DUREE, 0]],
+      joie: [[0, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [4000, 1], [4050, 0]],
+      sy: [[0, 1], [SUR_TETE_, 1], [SUR_TETE_ + 70, .94, 'out'], [SUR_TETE_ + 320, 1.04, 'ressort'], [3800, 1.02], [4400, 1, 'io']],
+      y: [[0, 0], [SUR_TETE_ + 60, 0], [SUR_TETE_ + 260, 40, 'out'], [SUR_TETE_ + 460, 0, 'in']],
+      etoiles: [[0, -1], [SUR_TETE_, 0], [SUR_TETE_ + 1450, 1, 'lin']],
+    });
+  })();
+
   // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
   // à 3, une pluie de confettis (elle part avec les étoiles et finit avec l'animation)
-  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, hourra: 2, reverence: 2, tape5: 2, chapeau: 3, dab: 3, floss: 3, toupie: 3 };
+  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, hourra: 2, reverence: 2, tape5: 2, guitare: 2, musichall: 2, chapeau: 3, dab: 3, floss: 3, toupie: 3, basket: 3 };
   for (const [nom, niveau] of Object.entries(NIVEAUX)) {
     const d = DANSES[nom], pose = d.pose;
     let t0 = 0;
@@ -1494,14 +1752,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     };
   }
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé' };
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé', vague: 'La vague', guitare: 'La guitare', musichall: 'Le music-hall', basket: 'Le basket' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
   const ANGLES = ['chapRot', 'tour', 'rot', 'aG', 'aD'];
-  const SANS_FONDU = ['etoiles', 'niveau', 'halo', 'confettis', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
+  const SANS_FONDU = ['chapDerriere', 'etoiles', 'niveau', 'halo', 'confettis', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
     for (const c in b) {
@@ -1551,7 +1809,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'tape5', 'pouce', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'tape5', 'pouce', 'vague', 'guitare', 'musichall', 'basket', 'endort']; lancer('bonjour'); });
   // le niveau de réussite de chaque animation, à côté de son nom
   document.querySelectorAll('.danse[data-danse]').forEach((b) => {
     const n = NIVEAUX[b.dataset.danse];
