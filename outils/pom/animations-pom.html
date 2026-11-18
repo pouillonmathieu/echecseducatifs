@@ -78,10 +78,12 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 .danse:active { transform: scale(.98); }
 .danse:focus-visible, .bascule button:focus-visible, .outil:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .danse.active { border-color: var(--accent); background: var(--accent-doux); }
-.danse .num { min-width: 34px; padding: 0 6px; width: auto; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--accent-doux); color: var(--accent); font-weight: 700; }
+.danse .num { min-width: 34px; padding: 0 6px; width: auto; display: grid; place-items: center; height: 34px; border-radius: 10px; background: var(--accent-doux); color: var(--accent); font-weight: 700; }
 .danse.active .num { background: var(--accent); color: var(--surface); }
 .danse b { font-size: 16px; }
 .danse { grid-template-columns: auto 1fr auto; }
+.danses .groupe { margin: 10px 0 0; font-size: 13px; font-weight: 700; color: var(--encre-douce); text-transform: uppercase; letter-spacing: .04em; }
+.danses .groupe:first-child { margin-top: 0; }
 .danse .niveau { color: #D99A00; font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
 .hasard { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .hasard span { color: var(--encre-douce); font-size: 14px; font-weight: 600; }
@@ -96,6 +98,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; overscroll-behavior-x: contain;
     margin-inline: -16px; padding: 2px 16px 8px; scroll-padding-inline: 16px; scrollbar-width: thin;
   }
+  .danses .groupe { display: none; }
   .danse { flex: 0 0 auto; scroll-snap-align: start; padding: 8px 12px 8px 8px; gap: 2px 8px; border-radius: 14px; }
   .danse .num { width: auto; min-width: 28px; height: 28px; font-size: 13px; border-radius: 8px; }
   .danse b { font-size: 15px; white-space: nowrap; }
@@ -321,29 +324,33 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 
     <div class="commandes">
       <div class="danses" id="danses">
-        <button class="danse" type="button" data-danse="hourra"><span class="num">1</span><b>Hop, hourra !</b></button>
-        <button class="danse" type="button" data-danse="chapeau"><span class="num">2</span><b>La danse du chapeau</b></button>
-        <button class="danse" type="button" data-danse="toupie"><span class="num">3</span><b>La toupie</b></button>
-        <button class="danse" type="button" data-danse="yes"><span class="num">4</span><b>Yes !</b></button>
-        <button class="danse" type="button" data-danse="bonjour"><span class="num">5</span><b>Bonjour !</b></button>
-        <button class="danse" type="button" data-danse="reflechit"><span class="num">6</span><b>Hmm…</b></button>
-        <button class="danse" type="button" data-danse="eureka"><span class="num">7</span><b>Eurêka !</b></button>
-        <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">6+7</span><b>Hmm… puis Eurêka !</b></button>
-        <button class="danse" type="button" data-danse="triste"><span class="num">8</span><b>Oh non…</b></button>
-        <button class="danse" type="button" data-danse="front"><span class="num">9</span><b>Oh là là !</b></button>
-        <button class="danse" type="button" data-suite="endort dort"><span class="num">10</span><b>Il s'endort… (puis il dort)</b></button>
-        <button class="danse" type="button" data-danse="reveil"><span class="num">11</span><b>Réveil !</b></button>
-        <button class="danse" type="button" data-danse="reverence"><span class="num">12</span><b>Quel beau coup !</b></button>
-        <button class="danse" type="button" data-danse="dab"><span class="num">13</span><b>Dab !</b></button>
-        <button class="danse" type="button" data-danse="floss"><span class="num">14</span><b>Le floss</b></button>
-        <button class="danse" type="button" data-danse="applaudit"><span class="num">15</span><b>Bravo !</b></button>
-        <button class="danse" type="button" data-danse="ok"><span class="num">16</span><b>Clin d'œil</b></button>
-        <button class="danse" type="button" data-danse="tape5"><span class="num">17</span><b>Tape-m'en cinq !</b></button>
-        <button class="danse" type="button" data-danse="pouce"><span class="num">18</span><b>Pouce levé</b></button>
-        <button class="danse" type="button" data-danse="vague"><span class="num">19</span><b>La vague</b></button>
-        <button class="danse" type="button" data-danse="guitare"><span class="num">20</span><b>La guitare</b></button>
-        <button class="danse" type="button" data-danse="musichall"><span class="num">21</span><b>Le music-hall</b></button>
-        <button class="danse" type="button" data-danse="basket"><span class="num">22</span><b>Le basket</b></button>
+        <p class="groupe">★ Réussite</p>
+        <button class="danse" type="button" data-danse="yes"><span class="num">1</span><b>Yes !</b></button>
+        <button class="danse" type="button" data-danse="pouce"><span class="num">2</span><b>Pouce levé</b></button>
+        <button class="danse" type="button" data-danse="ok"><span class="num">3</span><b>Clin d'œil</b></button>
+        <button class="danse" type="button" data-danse="applaudit"><span class="num">4</span><b>Bravo !</b></button>
+        <button class="danse" type="button" data-danse="vague"><span class="num">5</span><b>La vague</b></button>
+        <p class="groupe">★★ Belle réussite</p>
+        <button class="danse" type="button" data-danse="hourra"><span class="num">6</span><b>Hop, hourra !</b></button>
+        <button class="danse" type="button" data-danse="reverence"><span class="num">7</span><b>Quel beau coup !</b></button>
+        <button class="danse" type="button" data-danse="tape5"><span class="num">8</span><b>Tape-m'en cinq !</b></button>
+        <button class="danse" type="button" data-danse="guitare"><span class="num">9</span><b>La guitare</b></button>
+        <button class="danse" type="button" data-danse="musichall"><span class="num">10</span><b>Le music-hall</b></button>
+        <p class="groupe">★★★ Grande réussite</p>
+        <button class="danse" type="button" data-danse="chapeau"><span class="num">11</span><b>La danse du chapeau</b></button>
+        <button class="danse" type="button" data-danse="dab"><span class="num">12</span><b>Dab !</b></button>
+        <button class="danse" type="button" data-danse="floss"><span class="num">13</span><b>Le floss</b></button>
+        <button class="danse" type="button" data-danse="toupie"><span class="num">14</span><b>La toupie</b></button>
+        <button class="danse" type="button" data-danse="basket"><span class="num">15</span><b>Le basket</b></button>
+        <p class="groupe">Les autres moments</p>
+        <button class="danse" type="button" data-danse="bonjour"><span class="num">16</span><b>Bonjour !</b></button>
+        <button class="danse" type="button" data-danse="reflechit"><span class="num">17</span><b>Hmm…</b></button>
+        <button class="danse" type="button" data-danse="eureka"><span class="num">18</span><b>Eurêka !</b></button>
+        <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">17+18</span><b>Hmm… puis Eurêka !</b></button>
+        <button class="danse" type="button" data-danse="triste"><span class="num">19</span><b>Oh non…</b></button>
+        <button class="danse" type="button" data-danse="front"><span class="num">20</span><b>Oh là là !</b></button>
+        <button class="danse" type="button" data-suite="endort dort"><span class="num">21</span><b>Il s'endort… (puis il dort)</b></button>
+        <button class="danse" type="button" data-danse="reveil"><span class="num">22</span><b>Réveil !</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -1809,7 +1816,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'tape5', 'pouce', 'vague', 'guitare', 'musichall', 'basket', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'hourra', 'reverence', 'tape5', 'guitare', 'musichall', 'chapeau', 'dab', 'floss', 'toupie', 'basket', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
   // le niveau de réussite de chaque animation, à côté de son nom
   document.querySelectorAll('.danse[data-danse]').forEach((b) => {
     const n = NIVEAUX[b.dataset.danse];
