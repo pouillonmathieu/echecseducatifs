@@ -2057,6 +2057,11 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const SOL_DEBUT = ELAN - 80, SOL_FIN = FIN_ROUE + 160;
     const versSol = piste([[0, 55], [SOL_DEBUT, 55], [DEBUT + 300, 80, 'io'], [(DEBUT + FIN_ROUE) / 2, 90, 'io'], [FIN_ROUE - 300, 104, 'io'], [SOL_FIN, 124, 'io']]);
     const prendSol = piste([[0, 0], [SOL_DEBUT, 0], [DEBUT + 150, 1, 'io'], [FIN_ROUE - 100, 1], [SOL_FIN + 150, 0, 'io']]);
+    // le bras droit (à gauche de l'écran) passe lentement par-dessus la tête : il ne touche le sol que juste avant que
+    // la tête soit en bas
+    const MILIEU = (DEBUT + FIN_ROUE) / 2;
+    // (il reste levé au-dessus de la tête, et c'est la roue qui l'amène vers le sol ; il s'y pose au dernier moment)
+    const prendSolG = piste([[0, 0], [MILIEU - 330, 0], [MILIEU - 90, 1, 'io'], [FIN_ROUE - 100, 1], [SOL_FIN + 150, 0, 'io']]);
     // (les bras tournent dans le même sens que le corps : le bras gauche de l'écran passe par-dessus la tête ; ref,
     // s'il est donné, ramène l'angle au plus près d'une autre pose)
     function auSol(c, ms, ref) {
@@ -2069,7 +2074,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       if (ms < PREND) return bougerBras(r, tient(), EASE.io(ms / PREND));
       if (ms < LANCE) return bougerBras(tient(), lance, EASE.in((ms - PREND) / (LANCE - PREND)));
       const base = ms < SOL_FIN ? bougerBras(lance, V.G, EASE.io(Math.min(1, (ms - LANCE) / (DEBUT - LANCE)))) : V.G;
-      if (ms < SOL_FIN + 150) return bougerBras(base, auSol('G', ms), prendSol(ms));
+      if (ms < SOL_FIN + 150) return bougerBras(base, auSol('G', ms), prendSolG(ms));
       if (ms < SUR_TETE_ + 300) return bougerBras(V.G, tada.G, EASE.io((ms - SOL_FIN - 150) / (SUR_TETE_ + 300 - SOL_FIN - 150)));
       if (ms < RETOUR - 100) return tada.G;
       return bougerBras(tada.G, r, EASE.io(Math.min(1, (ms - RETOUR + 100) / 400)));
