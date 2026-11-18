@@ -2013,59 +2013,87 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
-  // 25. la roue : il prend son élan et fait une roue sur le côté, une main qui tient son chapeau, l'autre bras tendu ;
-  //     il retombe sur sa base, lève les bras (ta-da !), puis revient à sa place en deux petits bonds
+  // 25. la roue : il lance son chapeau en l'air (le chapeau tourne sur lui-même), fait une roue, lentement, les bras
+  //     tendus ; à la fin de la roue, le chapeau lui retombe pile sur la tête. Ta-da ! Puis il revient en deux bonds
   DANSES.roue = (() => {
-    const ELAN = 280, DEBUT = 300, FIN_ROUE = 1000, TADA = 1150, RETOUR = 1950, DUREE = 3150;
-    const LOIN = 200, R = 252; // la distance parcourue ; le centre du corps est à R au-dessus de la base
-    // le tour : il penche d'abord à contre-sens (l'élan), puis un tour complet, et un petit balancement à l'arrivée
-    const rot = piste([[0, 0], [ELAN, -10, 'out'], [DEBUT, -10], [FIN_ROUE, 360, 'io'], [FIN_ROUE + 120, 366, 'out'], [FIN_ROUE + 300, 360, 'io']]);
-    // le centre du corps : il avance, monte un peu pendant la roue ; puis deux bonds pour revenir
-    const X = piste([[0, 0], [DEBUT, -12, 'out'], [FIN_ROUE, LOIN, 'io'], [RETOUR, LOIN], [RETOUR + 450, LOIN / 2, 'io'], [RETOUR + 900, 0, 'io']]);
+    const PREND = 260, LANCE = 420, ELAN = 620, DEBUT = 700, FIN_ROUE = 2200, SUR_TETE_ = 2330, RETOUR = 3000, DUREE = 4200;
+    const LOIN = 170, R = 252; // la distance parcourue ; le centre du corps est à R au-dessus de la base
+    const rot = piste([[0, 0], [ELAN, 0], [DEBUT, -10, 'out'], [FIN_ROUE, 360, 'io'], [FIN_ROUE + 120, 365, 'out'], [FIN_ROUE + 320, 360, 'io']]);
+    const X = piste([[0, 0], [DEBUT, -10, 'out'], [FIN_ROUE, LOIN, 'io'], [RETOUR, LOIN], [RETOUR + 450, LOIN / 2, 'io'], [RETOUR + 900, 0, 'io']]);
     const H = (ms) => {
-      // (la tête en bas, il doit être assez haut pour que son chapeau ne touche pas le sol)
-      if (ms > DEBUT && ms < FIN_ROUE) return 250 * Math.sin(Math.PI * (ms - DEBUT) / (FIN_ROUE - DEBUT));
-      for (const t of [RETOUR, RETOUR + 450]) if (ms > t && ms < t + 450) return 50 * Math.sin(Math.PI * (ms - t) / 450);
+      // (la tête en bas, il reste assez haut pour ne pas toucher le sol : ses mains, elles, le frôlent)
+      if (ms > DEBUT && ms < FIN_ROUE) return 115 * Math.sin(Math.PI * (ms - DEBUT) / (FIN_ROUE - DEBUT));
+      for (const t of [RETOUR, RETOUR + 450]) if (ms > t && ms < t + 450) return 45 * Math.sin(Math.PI * (ms - t) / 450);
       return 0;
     };
-    // la base tourne autour du centre du corps : on déplace la base pour que le centre suive son chemin
+    // la base tourne autour du centre du corps : on la déplace pour que le centre suive son chemin
     const xP = (ms) => X(ms) - R * Math.sin(rad(rot(ms)));
     const yP = (ms) => H(ms) + R - R * Math.cos(rad(rot(ms)));
     const v = (ms) => (X(ms + 15) - X(ms - 15)) / 30;
-    // la main qui tient le chapeau (comme dans la glissade), l'autre bras tendu
-    const tient = () => viserBras('G', POSE, 346, (chapeauSurTete ? 262 : 196) + 38, -80, -30);
-    const tendu = { a: -50, b: -12, lg: 1.4, p: 0 };
-    const tada = { G: { a: 220, b: 16, lg: 1.3, p: 0 }, D: { a: -40, b: -16, lg: 1.3, p: 0 } };
+    // le chapeau, dans la scène (il ne suit pas Pom' qui tourne) : lancé tout droit, très haut, il retombe sur la tête
+    // une fois la roue finie
+    const SUR = () => (chapeauSurTete ? 259 : 193);
+    function chapeauScene(ms) {
+      if (ms < LANCE || ms >= SUR_TETE_) return null;
+      const k = (ms - LANCE) / (SUR_TETE_ - LANCE);
+      return [508 + LOIN * EASE.io(k), SUR() + (-380) * Math.sin(Math.PI * k) - 24 * Math.sin(Math.PI * Math.min(1, k * 6)) * (k < 1 / 6 ? 1 : 0), 6 * Math.sin(k * 9)];
+    }
+    // ramené dans le dessin de Pom' (qui est déplacé et tourné)
+    function chapeau(ms) {
+      const h = chapeauScene(ms);
+      if (!h) return null;
+      const r = rad(rot(ms)), dx = h[0] - BASE[0] - xP(ms), dy = h[1] - BASE[1] + yP(ms);
+      return [BASE[0] + dx * Math.cos(r) + dy * Math.sin(r), BASE[1] - dx * Math.sin(r) + dy * Math.cos(r), h[2] - rot(ms)];
+    }
+    // la main qui lance le chapeau (main droite de Pom', à gauche de l'écran) : elle le prend par le bord, puis le
+    // lance vers le ciel ; pendant la roue, les deux bras tendus en V ; ta-da à l'arrivée
+    const tient = () => viserBras('G', POSE, 346, SUR() + 38, -80, -30);
+    const lance = { a: 255, b: 0, lg: 1.45, p: 0 };
+    const V = { G: { a: 235, b: 0, lg: 1.5, p: 0 }, D: { a: -55, b: 0, lg: 1.5, p: 0 } };
+    const tada = { G: { a: 215, b: 16, lg: 1.3, p: 0 }, D: { a: -35, b: -16, lg: 1.3, p: 0 } };
     function brasG(ms) {
       const r = brasRepos('G');
-      if (ms < ELAN) return bougerBras(r, tient(), EASE.io(ms / ELAN));
-      if (ms < FIN_ROUE + 120) return tient();
-      if (ms < TADA + 120) return bougerBras(tient(), tada.G, EASE.rebond(Math.min(1, (ms - FIN_ROUE - 120) / 150)));
+      if (ms < PREND) return bougerBras(r, tient(), EASE.io(ms / PREND));
+      if (ms < LANCE) return bougerBras(tient(), lance, EASE.in((ms - PREND) / (LANCE - PREND)));
+      if (ms < DEBUT) return bougerBras(lance, V.G, EASE.io((ms - LANCE) / (DEBUT - LANCE)));
+      if (ms < FIN_ROUE) return V.G;
+      if (ms < SUR_TETE_ + 120) return bougerBras(V.G, tada.G, EASE.io((ms - FIN_ROUE) / (SUR_TETE_ + 120 - FIN_ROUE)));
       if (ms < RETOUR - 100) return tada.G;
       return bougerBras(tada.G, r, EASE.io(Math.min(1, (ms - RETOUR + 100) / 400)));
     }
     function brasD(ms) {
       const r = brasRepos('D');
-      if (ms < ELAN) return bougerBras(r, tendu, EASE.io(ms / ELAN));
-      if (ms < FIN_ROUE + 120) return tendu;
-      if (ms < TADA + 120) return bougerBras(tendu, tada.D, EASE.rebond(Math.min(1, (ms - FIN_ROUE - 120) / 150)));
+      if (ms < LANCE) return r;
+      if (ms < DEBUT) return bougerBras(r, V.D, EASE.io((ms - LANCE) / (DEBUT - LANCE)));
+      if (ms < FIN_ROUE) return V.D;
+      if (ms < SUR_TETE_ + 120) return bougerBras(V.D, tada.D, EASE.io((ms - FIN_ROUE) / (SUR_TETE_ + 120 - FIN_ROUE)));
       if (ms < RETOUR - 100) return tada.D;
       return bougerBras(tada.D, r, EASE.io(Math.min(1, (ms - RETOUR + 100) / 400)));
     }
     return danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
-      mainG: [[0, 'pendante'], [ELAN - 120, 'poing-cote'], [FIN_ROUE + 150, 'ouverte'], [RETOUR + 200, 'pendante']],
-      mainD: [[0, 'pendante'], [ELAN - 150, 'ouverte'], [RETOUR + 200, 'pendante']],
-      devantG: [[0, 0], [150, 1], [FIN_ROUE + 150, 0]],
+      mainG: [[0, 'pendante'], [PREND - 140, 'poing-cote'], [LANCE, 'ouverte'], [RETOUR + 200, 'pendante']],
+      mainD: [[0, 'pendante'], [LANCE + 100, 'ouverte'], [RETOUR + 200, 'pendante']],
+      devantG: [[0, 0], [120, 1], [LANCE + 80, 0]],
       x: xP, y: yP, rot,
-      sy: [[0, 1], [ELAN, .9, 'out'], [DEBUT + 60, 1.06, 'out'], [FIN_ROUE - 60, 1.02], [FIN_ROUE + 40, .88, 'out'], [FIN_ROUE + 300, 1, 'ressort'],
+      chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
+      chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
+      chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
+      chapLR: (ms) => { const h = chapeau(ms); return h ? h[2] : 0; },
+      // le chapeau tourne sur lui-même pendant son vol, de plus en plus lentement
+      chapTour: (ms) => (chapeau(ms) ? 1.4 * (ms - LANCE) - .00012 * Math.pow(ms - LANCE, 2) : 0),
+      chapVitesse: [[0, 0], [LANCE, 0], [LANCE + 150, .8, 'out'], [SUR_TETE_ - 300, .5], [SUR_TETE_, 0]],
+      chapY: [[0, 0], [SUR_TETE_, 0], [SUR_TETE_ + 80, -9, 'out'], [SUR_TETE_ + 260, 0, 'io']],
+      sy: [[0, 1], [LANCE - 80, .94, 'out'], [LANCE + 60, 1.04, 'out'], [ELAN, 1], [DEBUT, .9, 'out'], [DEBUT + 120, 1.05, 'out'], [FIN_ROUE - 80, 1.02], [FIN_ROUE + 40, .9, 'out'],
+        [SUR_TETE_, 1, 'io'], [SUR_TETE_ + 70, .94, 'out'], [SUR_TETE_ + 300, 1, 'ressort'],
         [RETOUR, 1], [RETOUR + 40, .92], [RETOUR + 120, 1.04, 'out'], [RETOUR + 420, 1, 'io'], [RETOUR + 450, .93], [RETOUR + 530, 1.04, 'out'], [RETOUR + 900, .94, 'io'], [RETOUR + 1100, 1, 'ressort']],
-      traine: (ms) => Math.max(-1, Math.min(1, v(ms) * 2.2)),
-      teteY: [[0, 0], [ELAN, -8, 'out'], [DEBUT + 100, 10, 'out'], [FIN_ROUE, 6], [FIN_ROUE + 60, -10, 'out'], [FIN_ROUE + 320, 0, 'ressort']],
-      // les yeux fermés de joie pendant la roue, grands ouverts pour le ta-da
-      joie: [[0, 0], [DEBUT - 20, 0], [DEBUT, 1], [FIN_ROUE + 60, 1], [FIN_ROUE + 80, 0]],
-      sourcils: [[0, 0], [ELAN, 10, 'out'], [FIN_ROUE, 10], [FIN_ROUE + 150, 18, 'out'], [RETOUR, 14], [DUREE, 0]],
-      etoiles: [[0, -1], [FIN_ROUE + 60, 0], [FIN_ROUE + 1300, 1, 'lin']],
+      traine: (ms) => (ms > DEBUT && ms < FIN_ROUE ? 0 : Math.max(-1, Math.min(1, v(ms) * 2.2))),
+      teteY: [[0, 0], [LANCE - 80, -8, 'out'], [LANCE + 60, 8, 'out'], [ELAN, 0, 'io'], [SUR_TETE_, 0], [SUR_TETE_ + 70, -10, 'out'], [SUR_TETE_ + 320, 0, 'ressort']],
+      // il suit son chapeau des yeux, ferme les yeux pendant la roue, et les rouvre, ravi, quand le chapeau retombe
+      regardY: [[0, 0], [LANCE, 0], [LANCE + 150, -9, 'out'], [DEBUT - 40, -9], [DEBUT, 0]],
+      joie: [[0, 0], [DEBUT - 20, 0], [DEBUT, 1], [FIN_ROUE, 1], [FIN_ROUE + 20, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [RETOUR, 1], [RETOUR + 40, 0]],
+      sourcils: [[0, 0], [LANCE, 12, 'out'], [FIN_ROUE, 10], [FIN_ROUE + 100, 20, 'out'], [RETOUR, 14], [DUREE, 0]],
+      etoiles: [[0, -1], [SUR_TETE_, 0], [SUR_TETE_ + 1400, 1, 'lin']],
     });
   })();
 
