@@ -2065,9 +2065,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // (les bras tournent dans le même sens que le corps : le bras gauche de l'écran passe par-dessus la tête ; ref,
     // s'il est donné, ramène l'angle au plus près d'une autre pose)
     function auSol(c, ms, ref) {
-      let a = versSol(ms) + (c === 'G' ? 14 + 360 : -14) - rot(ms);
+      // (le bras droit se pose plus loin, au-delà de la main gauche, dans le sens de la roue)
+      let a = versSol(ms) + (c === 'G' ? -38 + 360 : -10) - rot(ms);
       if (ref !== undefined) { while (a - ref > 180) a -= 360; while (a - ref < -180) a += 360; }
-      return { a, b: c === 'G' ? 10 : -10, lg: 1.5, p: 0 };
+      return { a, b: c === 'G' ? 10 : -10, lg: c === 'G' ? 1.62 : 1.5, p: 0 };
     }
     function brasG(ms) {
       const r = brasRepos('G');
