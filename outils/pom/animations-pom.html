@@ -1540,46 +1540,54 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
-  // 20. la guitare imaginaire : il gratte une guitare invisible (une main sur le manche, l'autre gratte devant le
-  //     ventre), les yeux fermés, la tête qui balance en rythme ; il arme un grand coup, frappe l'accord final, puis
+  // 20. la guitare imaginaire : penché sur son côté droit, il joue d'une guitare invisible (la main gauche sur le côté,
+  //     sur le manche, change d'accord ; la main droite, détendue, gratte les cordes en bas), les yeux fermés, la tête
+  //     qui balance en rythme ; il arme un grand coup, frappe l'accord final, puis
   //     lance le poing vers le ciel
   DANSES.guitare = (() => {
-    const PRET = 340, ARME = 1950, ACCORD = 2250, CIEL = 2620, FIN = 3150, DUREE = 3650, T = 200;
+    const PRET = 380, ARME = 2050, ACCORD = 2350, CIEL = 2720, FIN = 3250, DUREE = 3750, T = 200;
     const temps = (ms) => (ms - PRET) / T; // les temps, en croches
     const joue = (ms) => ms >= PRET && ms < ARME;
-    const pli = piste([[0, 0], [PRET, -3, 'out'], [ARME, -3], [ACCORD - 80, -7, 'out'], [ACCORD, 3, 'in'], [CIEL, -5, 'out'], [FIN, -5], [DUREE - 60, 0, 'io']]);
-    const corps = (ms) => ({ ...POSE, pli: pli(ms), sy: sy(ms) });
+    // il se penche sur son côté droit (à gauche de l'écran), comme un guitariste sur sa guitare
+    const penche = piste([[0, 0], [PRET, 1, 'out'], [ARME, 1], [ACCORD - 80, .3, 'out'], [ACCORD, 1.2, 'in'], [CIEL, -.4, 'out'], [FIN, -.4], [DUREE - 60, 0, 'io']]);
+    const pli = (ms) => 9 * penche(ms);
+    const rot = (ms) => -4 * penche(ms);
     const sy = (ms) => (joue(ms) ? 1 - .025 * Math.pow(Math.abs(Math.cos(Math.PI * temps(ms) / 2)), 4) : syFinal(ms));
     const syFinal = piste([[0, 1], [ARME, 1], [ACCORD - 80, 1.05, 'out'], [ACCORD, .9, 'in'], [ACCORD + 300, 1, 'ressort'], [CIEL, 1.06, 'out'], [FIN, 1.03], [DUREE - 60, 1, 'io']]);
-    // la main qui gratte (main droite de Pom', à gauche de l'écran) : de haut en bas à chaque croche
+    const corps = (ms) => ({ ...POSE, pli: pli(ms), sy: sy(ms) });
+    // la main droite de Pom' (à gauche de l'écran), détendue, en bas : elle gratte les cordes de haut en bas
     function gratte(ms) {
       if (ms < ARME) {
         const k = joue(ms) ? .5 - .5 * Math.cos(Math.PI * temps(ms)) : 0;
-        return [448 + 14 * k, 640 + 58 * k, 64 + 26 * k];
+        return [438 + 4 * k, 690 + 62 * k, 96];
       }
-      if (ms < ACCORD - 120) { const k = EASE.out((ms - ARME) / (ACCORD - 120 - ARME)); return [448 - 96 * k, 640 - 264 * k, 64 - 184 * k]; }
-      if (ms < ACCORD) { const k = EASE.in((ms - ACCORD + 120) / 120); return [352 + 128 * k, 376 + 364 * k, -120 + 215 * k]; }
-      if (ms < CIEL - 150) return [480, 740, 95];
-      // le poing vers le ciel
+      // l'accord final : il lève la main bien haut, puis l'abat sur les cordes
+      if (ms < ACCORD - 120) { const k = EASE.out((ms - ARME) / (ACCORD - 120 - ARME)); return [438 - 100 * k, 690 - 300 * k, 96 - 210 * k]; }
+      if (ms < ACCORD) { const k = EASE.in((ms - ACCORD + 120) / 120); return [338 + 100 * k, 390 + 380 * k, -114 + 210 * k]; }
+      if (ms < CIEL - 150) return [438, 770, 96];
+      // puis le poing vers le ciel
       const k = EASE.rebond(Math.min(1, (ms - CIEL + 150) / 300));
-      return [480 - 110 * k, 740 - 400 * k, 95 - 195 * k];
+      return [438 - 80 * k, 770 - 430 * k, 96 - 196 * k];
     }
-    // la main sur le manche (à droite de l'écran) : elle glisse pour changer d'accord
-    const mx = piste([[0, 728], [1150, 728], [1230, 690, 'io'], [1550, 690], [1630, 728, 'io']]);
-    const my = piste([[0, 548], [1150, 548], [1230, 566, 'io'], [1550, 566], [1630, 548, 'io']]);
+    // la main gauche (à droite de l'écran), sur le côté, sur le manche : pouce et index, elle se déplace d'un accord
+    // à l'autre le long du manche
+    const mx = piste([[0, 728], [700, 728], [780, 690, 'io'], [1100, 690], [1180, 752, 'io'], [1500, 752], [1580, 706, 'io'], [1850, 706], [1930, 728, 'io']]);
+    const my = (ms) => 548 + (mx(ms) - 728) * -.3; // le manche monte un peu vers l'extérieur
     const entre = piste([[0, 0], [120, 0], [PRET, 1, 'out'], [FIN, 1], [DUREE - 60, 0, 'io']]);
-    const brasG = (ms) => { const [x, y, d] = gratte(ms); return bougerBras(brasRepos('G'), viserBras('G', corps(ms), x, y, d, -24), entre(ms)); };
-    const brasD = (ms) => bougerBras(brasRepos('D'), viserBras('D', corps(ms), mx(ms), my(ms), -24, 26), entre(ms));
-    // la tête balance : un hochement à chaque temps, et elle penche d'un côté puis de l'autre toutes les deux mesures
+    const brasG = (ms) => { const [x, y, d] = gratte(ms); return bougerBras(brasRepos('G'), viserBras('G', corps(ms), x, y, d, -20), entre(ms)); };
+    const brasD = (ms) => bougerBras(brasRepos('D'), viserBras('D', corps(ms), mx(ms), my(ms), -30, 30), entre(ms));
+    // la tête balance : un hochement à chaque temps, penchée sur la guitare, d'un côté puis de l'autre
     const hoche = (ms) => (joue(ms) ? Math.pow(Math.abs(Math.sin(Math.PI * temps(ms) / 2)), 3) : 0);
+    const rotFinale = piste([[0, 0], [ARME, -10], [ACCORD - 80, -14, 'out'], [ACCORD, 4, 'in'], [CIEL, -8, 'out'], [FIN, -8], [DUREE - 60, 0, 'io']]);
     return danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
-      mainG: [[0, 'pendante'], [160, 'pouce-index'], [CIEL - 120, 'poing-leve'], [FIN + 120, 'pendante']],
-      mainD: [[0, 'pendante'], [160, 'poing-cote'], [FIN + 120, 'pendante']],
+      mainG: [[0, 'pendante'], [CIEL - 120, 'poing-leve'], [FIN + 120, 'pendante']],
+      mainD: [[0, 'pendante'], [170, 'pouce-index'], [FIN + 120, 'pendante']],
       devantG: [[0, 0], [160, 1], [FIN + 250, 0]], devantD: [[0, 0], [160, 1], [FIN + 250, 0]],
-      pli, sy,
+      pli, rot, sy,
       teteY: (ms) => -9 * hoche(ms) + (ms > ACCORD - 80 && ms < ACCORD + 300 ? -10 * Math.sin(Math.PI * (ms - ACCORD + 80) / 380) : 0),
-      teteRot: (ms) => (joue(ms) ? 9 * Math.sin(Math.PI * temps(ms) / 4) : 0) + rotFinale(ms),
+      teteRot: (ms) => (joue(ms) ? -10 * penche(ms) + 6 * Math.sin(Math.PI * temps(ms) / 4) : rotFinale(ms) * (ms < ARME ? penche(ms) : 1)),
+      teteX: (ms) => -6 * penche(ms),
       chapY: (ms) => 7 * hoche(ms),
       // les yeux fermés, à fond dans la musique ; grands ouverts pour l'accord final ; ravis vers le ciel
       clinG: [[0, 0], [PRET - 80, 0], [PRET, 1], [ARME, 1], [ARME + 80, 0]],
@@ -1591,9 +1599,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       etoiles: [[0, -1], [CIEL - 60, 0], [CIEL + 1000, 1, 'lin']],
       // le halo s'allume à l'accord final
       halo: [[0, -1], [ACCORD - 1, -1], [ACCORD, .15], [ACCORD + 1300, 1, 'lin']],
-      choc: [[0, -1], [ACCORD - 1, -1], [ACCORD, 0], [ACCORD + 380, 1, 'out']], chocX: 470, chocY: 700,
+      choc: [[0, -1], [ACCORD - 1, -1], [ACCORD, 0], [ACCORD + 380, 1, 'out']], chocX: 440, chocY: 720,
     });
-    function rotFinale(ms) { return ms < ARME ? 0 : piste([[ARME, 0], [ACCORD - 80, -8, 'out'], [ACCORD, 6, 'in'], [CIEL, -8, 'out'], [FIN, -8], [DUREE - 60, 0, 'io']])(ms); }
   })();
 
   // 21. le numéro de music-hall : il ouvre les bras en une longue pente ; d'un coup de tête, son chapeau saute sur sa
@@ -1664,6 +1671,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       joie: [[0, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [3800, 1], [3850, 0]],
       sy: [[0, 1], [SUR_TETE_, 1], [SUR_TETE_ + 70, .95, 'out'], [SUR_TETE_ + 320, 1, 'ressort']],
       etoiles: [[0, -1], [SUR_TETE_, 0], [SUR_TETE_ + 1100, 1, 'lin']],
+      // le halo brille dès le début du numéro
+      halo: [[0, -1], [60, -1], [70, 0], [DUREE - 60, 1, 'lin']],
     });
   })();
 
