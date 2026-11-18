@@ -341,14 +341,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="hourra"><span class="num">6</span><b>Hop, hourra !</b></button>
         <button class="danse" type="button" data-danse="reverence"><span class="num">7</span><b>Quel beau coup !</b></button>
         <button class="danse" type="button" data-danse="tape5"><span class="num">8</span><b>Tape-m'en cinq !</b></button>
-        <button class="danse" type="button" data-danse="guitare"><span class="num">9</span><b>La guitare</b></button>
-        <button class="danse" type="button" data-danse="musichall"><span class="num">10</span><b>Le music-hall</b></button>
+        <button class="danse" type="button" data-danse="musichall"><span class="num">9</span><b>Le music-hall</b></button>
         <p class="groupe">★★★ Grande réussite</p>
-        <button class="danse" type="button" data-danse="chapeau"><span class="num">11</span><b>La danse du chapeau</b></button>
-        <button class="danse" type="button" data-danse="dab"><span class="num">12</span><b>Dab !</b></button>
-        <button class="danse" type="button" data-danse="floss"><span class="num">13</span><b>Le floss</b></button>
-        <button class="danse" type="button" data-danse="toupie"><span class="num">14</span><b>La toupie</b></button>
-        <button class="danse" type="button" data-danse="basket"><span class="num">15</span><b>Le basket</b></button>
+        <button class="danse" type="button" data-danse="chapeau"><span class="num">10</span><b>La danse du chapeau</b></button>
+        <button class="danse" type="button" data-danse="dab"><span class="num">11</span><b>Dab !</b></button>
+        <button class="danse" type="button" data-danse="floss"><span class="num">12</span><b>Le floss</b></button>
+        <button class="danse" type="button" data-danse="toupie"><span class="num">13</span><b>La toupie</b></button>
+        <button class="danse" type="button" data-danse="basket"><span class="num">14</span><b>Le basket</b></button>
+        <button class="danse" type="button" data-danse="guitare"><span class="num">15</span><b>La guitare</b></button>
         <p class="groupe">Les autres moments</p>
         <button class="danse" type="button" data-danse="bonjour"><span class="num">16</span><b>Bonjour !</b></button>
         <button class="danse" type="button" data-danse="reflechit"><span class="num">17</span><b>Hmm…</b></button>
@@ -1178,13 +1178,16 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     const sxP = (ms) => 1 / Math.sqrt(syP(ms));
     const teteYP = piste([[0, 0], [450, 6, 'io'], [1000, -62, 'io'], [1250, -62], [1500, 6, 'out'], [1650, 0, 'io'], [SURSAUT, 0], [SURSAUT + 70, 16, 'out'], [SURSAUT + 340, 6], [SURSAUT + 540, 0, 'io'], [3050, 0], [3050, -10, 'io'], [3250, -10], [3750, 0, 'io']]);
     const teteRotP = piste([[0, 0], [1000, 10, 'io'], [1250, 10], [1500, -4, 'io'], [1700, 0, 'io'], [2850, 0], [3050, 6, 'io'], [3250, 6], [3750, 0, 'io']]);
+    // en s'inclinant, il penche la tête en avant
+    const pencheP = piste([[0, 0], [450, 0], [1000, 38, 'io'], [1250, 38], [1500, 0, 'io']]);
     const q = (ms) => ({ ...POSE, x: xP(ms), y: yP(ms), sx: sxP(ms), sy: syP(ms), teteY: teteYP(ms), teteRot: teteRotP(ms) });
     // le chapeau posé sur la tête, à l'instant ms : son pivot dans la scène, et sa rotation
     function surTete(ms, chapY = 0) {
       const p = q(ms);
       const [nx, ny] = pointCorps(p, 508, 458);
       const tx = nx - 508, ty = ny - 458 - 12 - p.teteY;
-      return [508 + tx + p.x, 205 + ty - (chapY - SUR_TETE) - p.y, p.teteRot];
+      // (la tête penchée en avant fait descendre le chapeau un peu)
+      return [508 + tx + p.x, 205 + ty - (chapY - SUR_TETE) - p.y + 110 * (1 - Math.cos(rad(pencheP(ms)))), p.teteRot];
     }
     // le chapeau libre : il tombe en tournoyant, rebondit, reste par terre, puis la main le remonte sur la tête
     const LACHE = 900, SOL = 1360, PRISE = 3200, POSE_ = 3800;
@@ -1252,7 +1255,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       const r = repos('G'); r.a += 30 * sursaut(ms); return r;
     }
     return danse(5200, {
-      x: xP, y: yP, sy: syP, sx: sxP, teteY: teteYP, teteRot: teteRotP,
+      x: xP, y: yP, sy: syP, sx: sxP, teteY: teteYP, teteRot: teteRotP, penche: pencheP,
       aD: (ms) => brasD(ms).a, bD: (ms) => brasD(ms).b, lgD: (ms) => brasD(ms).lg, pD: (ms) => brasD(ms).p,
       aG: (ms) => brasG(ms).a, bG: (ms) => brasG(ms).b, lgG: (ms) => brasG(ms).lg, pG: (ms) => brasG(ms).p,
       mainD: [[0, 'pendante'], [200, 'ouverte-cote'], [1620, 'pendante']],
@@ -1617,7 +1620,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     // la tête balance : un hochement à chaque temps, penchée sur la guitare, d'un côté puis de l'autre
     const hoche = (ms) => (joue(ms) ? Math.pow(Math.abs(Math.sin(Math.PI * temps(ms) / 2)), 3) : 0);
     const rotFinale = piste([[0, 0], [ARME, -10], [ACCORD - 80, -14, 'out'], [ACCORD, 4, 'in'], [CIEL, -8, 'out'], [FIN, -8], [DUREE - 60, 0, 'io']]);
-    return danse(DUREE, {
+    return Object.assign(danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
       mainG: [[0, 'pendante'], [CIEL - 120, 'poing-leve'], [FIN + 120, 'pendante']],
       mainD: [[0, 'pendante'], [170, 'pouce-index-dos'], [FIN + 120, 'pendante']],
@@ -1637,7 +1640,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       // les étoiles et le halo dès les premières notes, jusqu'à la fin
       etoiles: [[0, -1], [PRET - 120, 0], [DUREE - 80, 1, 'lin']],
       choc: [[0, -1], [ACCORD - 1, -1], [ACCORD, 0], [ACCORD + 380, 1, 'out']], chocX: 440, chocY: 720,
-    });
+    }), { debutConfettis: ACCORD }); // les confettis au dernier accord
   })();
 
   // 21. le numéro de music-hall : il ouvre les bras en une longue pente ; d'un coup de tête, son chapeau saute sur sa
@@ -1694,6 +1697,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       mainD: [[0, 'pendante'], [200, 'presente'], [DUREE - 250, 'pendante']],
       mainG: [[0, 'pendante'], [200, 'presente'], [DUREE - 250, 'pendante']],
       teteY, teteRot,
+      // il baisse la tête en avant pour laisser passer le chapeau derrière
+      penche: [[0, 0], [1520, 0], [1700, 32, 'io'], [2000, 32], [2180, 0, 'io']],
       chapLibre: (ms) => (chapeau(ms) ? 1 : 0),
       chapLX: (ms) => { const h = chapeau(ms); return h ? h[0] : 0; },
       chapLY: (ms) => { const h = chapeau(ms); return h ? h[1] : 0; },
@@ -1797,11 +1802,12 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 
   // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
   // à 3, une pluie de confettis (elle part avec les étoiles et finit avec l'animation)
-  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, hourra: 2, reverence: 2, tape5: 2, guitare: 2, musichall: 2, chapeau: 3, dab: 3, floss: 3, toupie: 3, basket: 3 };
+  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, hourra: 2, reverence: 2, tape5: 2, musichall: 2, chapeau: 3, dab: 3, floss: 3, toupie: 3, basket: 3, guitare: 3 };
   for (const [nom, niveau] of Object.entries(NIVEAUX)) {
     const d = DANSES[nom], pose = d.pose;
     let t0 = 0;
     for (let ms = 0; ms <= d.duree; ms += 10) if (pose(ms).etoiles >= 0) { t0 = ms; break; }
+    if (d.debutConfettis !== undefined) t0 = d.debutConfettis; // (une animation peut lancer ses confettis à un autre moment)
     const pluie = Math.max(1200, Math.min(2800, d.duree - t0));
     d.niveau = niveau;
     d.pose = (ms) => {
@@ -1869,7 +1875,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'hourra', 'reverence', 'tape5', 'guitare', 'musichall', 'chapeau', 'dab', 'floss', 'toupie', 'basket', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'hourra', 'reverence', 'tape5', 'musichall', 'chapeau', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'reflechit', 'eureka', 'triste', 'front', 'endort']; lancer('bonjour'); });
   // le niveau de réussite de chaque animation, à côté de son nom
   document.querySelectorAll('.danse[data-danse]').forEach((b) => {
     const n = NIVEAUX[b.dataset.danse];
