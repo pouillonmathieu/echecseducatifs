@@ -81,6 +81,11 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 .danse .num { min-width: 34px; padding: 0 6px; width: auto; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--accent-doux); color: var(--accent); font-weight: 700; }
 .danse.active .num { background: var(--accent); color: var(--surface); }
 .danse b { font-size: 16px; }
+.danse { grid-template-columns: auto 1fr auto; }
+.danse .niveau { color: #D99A00; font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
+.hasard { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.hasard span { color: var(--encre-douce); font-size: 14px; font-weight: 600; }
+.hasard .outil b { color: #D99A00; font-weight: 700; letter-spacing: 1px; }
 /* sur téléphone : Pom' moins haut, et les animations en une rangée qui défile juste en dessous, pour voir toute
    l'animation sans avoir à faire défiler la page */
 @media (max-width: 760px) {
@@ -123,6 +128,11 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     <div class="scene" id="scene" data-fond="clair">
       <svg viewBox="60 -300 900 1300" role="img" aria-label="Pom', le coach : une pièce d'échecs avec une pomme pour tête, un chapeau melon couronné d'une croix, des yeux, des sourcils et des bras gantés">
         <defs>
+          <radialGradient id="g-halo" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#FFD54A" stop-opacity=".75"/>
+            <stop offset=".55" stop-color="#FFD54A" stop-opacity=".28"/>
+            <stop offset="1" stop-color="#FFD54A" stop-opacity="0"/>
+          </radialGradient>
           <radialGradient id="g-pomme" cx="38%" cy="32%" r="75%">
             <stop offset="0" stop-color="#EE3B3F"/>
             <stop offset=".55" stop-color="#D21F27"/>
@@ -181,7 +191,10 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         </defs>
 
         <ellipse id="ombre" cx="510" cy="968" rx="210" ry="18"/>
+        <!-- la réussite : un halo doré (2 et 3 étoiles), les étoiles, et une pluie de confettis (3 étoiles) -->
+        <ellipse id="halo" cx="510" cy="520" rx="400" ry="560" fill="url(#g-halo)" opacity="0"/>
         <g id="etoiles"></g>
+        <g id="confettis"></g>
         <g id="zzz"><text class="zzz">Z</text><text class="zzz">Z</text><text class="zzz">Z</text></g>
         <g id="nuage" opacity="0">
           <g id="gouttes">
@@ -345,6 +358,12 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="outil" type="button" id="ralenti" aria-pressed="false">Ralenti ×½</button>
         <button class="outil" type="button" id="boucle" aria-pressed="false">En boucle</button>
         <button class="outil" type="button" id="toutes">Toutes à la suite</button>
+        <div class="hasard" role="group" aria-label="Une animation de réussite au hasard">
+          <span>Réussite, au hasard :</span>
+          <button class="outil" type="button" data-hasard="1" aria-label="1 étoile"><b>★</b></button>
+          <button class="outil" type="button" data-hasard="2" aria-label="2 étoiles"><b>★★</b></button>
+          <button class="outil" type="button" data-hasard="3" aria-label="3 étoiles"><b>★★★</b></button>
+        </div>
       </div>
     </div>
   </section>
@@ -426,7 +445,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, echelleG: 1, echelleD: 1, choc: -1, chocX: 0, chocY: 0, niveau: 1, confettis: -1, pupille: 1, exclam: 0, etincelle: 0, etincelleX: 592, etincelleY: 300, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -445,7 +464,17 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     bras: { G: $('bras-g'), D: $('bras-d') }, etoiles: $('etoiles'), pensee: $('pensee'), zzz: document.querySelectorAll('#zzz text'), nuage: $('nuage'), gouttes: document.querySelectorAll('#gouttes .goutte'), ampoule: $('ampoule'), rayons: $('ampoule-rayons'),
   };
   // les étoiles qui éclatent autour de Pom'
-  const ETOILES = [[250, 150, 1], [770, 90, .8], [200, 480, .7], [820, 420, .9], [330, -130, .65], [690, -190, .75], [850, 720, .6], [170, 780, .55]];
+  const ETOILES = [[250, 150, 1], [770, 90, .8], [200, 480, .7], [820, 420, .9], [330, -130, .65], [690, -190, .75], [850, 720, .6], [170, 780, .55],
+    [130, 270, .6], [905, 240, .65], [505, -250, .7], [140, 610, .5], [900, 580, .55], [400, -40, .45], [640, -30, .5], [700, 880, .45]];
+  // les niveaux de réussite : combien d'étoiles, leur taille ; à 3 étoiles, des couleurs en plus
+  const NIVEAU_ETOILES = { 1: { n: 5, t: .85 }, 2: { n: 10, t: 1.05 }, 3: { n: 16, t: 1.25 } };
+  const COULEURS_ETOILES = ['#F2B827', '#F2B827', '#FF8FC4', '#7CC8FF'];
+  const COULEURS_CONFETTIS = ['#E8443A', '#F2B827', '#3D8BE8', '#3DBE6E', '#E85CA8', '#8A5CE8'];
+  // les confettis : toujours les mêmes (tirage pseudo-aléatoire fixe)
+  let graine = 7;
+  const hasard = () => { graine = (graine * 16807) % 2147483647; return (graine - 1) / 2147483646; };
+  const CONFETTIS = Array.from({ length: 48 }, (_, i) => ({ x: 80 + 860 * hasard(), retard: .4 * hasard(), vrille: 6 + 8 * hasard(), balance: 14 + 22 * hasard(), couleur: COULEURS_CONFETTIS[i % COULEURS_CONFETTIS.length], l: 16 + 10 * hasard(), h: 9 + 5 * hasard() }));
+  $('confettis').innerHTML = CONFETTIS.map((c) => `<rect x="${-c.l / 2}" y="${-c.h / 2}" width="${c.l}" height="${c.h}" rx="2" fill="${c.couleur}" opacity="0"/>`).join('');
   $('choc').innerHTML = Array.from({ length: 7 }, () => '<line class="choc-trait"/>').join('');
   el.etoiles.innerHTML = ETOILES.map(() => '<use href="#etoile" class="etoile" opacity="0"/>').join('');
 
@@ -610,13 +639,28 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       });
     }
     // les étoiles : elles grandissent puis s'effacent
+    // (plus il y a d'étoiles, plus elles sont grandes ; elles apparaissent les unes après les autres)
+    const niv = NIVEAU_ETOILES[Math.round(p.niveau)] || NIVEAU_ETOILES[1];
     [...el.etoiles.children].forEach((s, i) => {
       const [sx, sy, t] = ETOILES[i];
-      const q = p.etoiles - i * .05;
-      if (q <= 0 || q >= 1) { s.setAttribute('opacity', 0); return; }
-      const e = Math.sin(Math.PI * q);
-      s.setAttribute('opacity', e);
-      s.setAttribute('transform', `translate(${sx} ${sy}) rotate(${q * 120}) scale(${t * (.4 + e)})`);
+      const q = (p.etoiles - .3 * i / (niv.n - 1)) / .7;
+      if (i >= niv.n || q <= 0 || q >= 1) { s.setAttribute('opacity', 0); return; }
+      // à 3 étoiles, elles scintillent et changent de couleur
+      const e = Math.sin(Math.PI * q) * (niv.n > 10 ? .8 + .2 * Math.sin(q * 6 * Math.PI) : 1);
+      s.setAttribute('opacity', Math.min(1, e));
+      s.style.fill = niv.n > 10 ? COULEURS_ETOILES[i % 4] : '';
+      s.setAttribute('transform', `translate(${sx} ${sy}) rotate(${q * 120}) scale(${niv.t * t * (.4 + e)})`);
+    });
+    // le halo doré, derrière Pom' (2 et 3 étoiles)
+    const qh = Math.max(0, Math.min(1, p.etoiles));
+    $('halo').setAttribute('opacity', p.niveau >= 1.5 && p.etoiles > 0 ? Math.sin(Math.PI * qh) * (p.niveau >= 2.5 ? 1 : .7) : 0);
+    // les confettis (3 étoiles) : ils tombent du haut en tournoyant et en se balançant
+    [...$('confettis').children].forEach((r, i) => {
+      const c = CONFETTIS[i], q = (p.confettis - c.retard) / .6;
+      if (p.confettis < 0 || q <= 0 || q >= 1) { r.setAttribute('opacity', 0); return; }
+      const x = c.x + c.balance * Math.sin(q * 7 + i), y = -330 + 1360 * q;
+      r.setAttribute('opacity', q > .85 ? (1 - q) / .15 : 1);
+      r.setAttribute('transform', `translate(${x} ${y}) rotate(${q * c.vrille * 60 + i * 37}) scale(1 ${Math.cos(q * c.vrille * 2 + i)})`);
     });
   }
 
@@ -1170,6 +1214,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       pupille: [[0, 1], [SURSAUT, 1], [SURSAUT + 50, .55, 'out'], [2420, .6], [2580, 1, 'io']],
       exclam: [[0, 0], [SURSAUT + 10, 0], [SURSAUT + 100, 1, 'out'], [2450, 1], [2560, 0]],
       joie: [[0, 0], [3950, 0], [4000, 1], [4250, 1], [4300, 0]],
+      // le chapeau est revenu sur sa tête : les étoiles de la réussite
+      etoiles: [[0, -1], [3920, 0], [5150, 1, 'lin']],
     });
   })();
   // 13. « Dab ! » : un double dab. Clac, vers la droite : un bras tendu en diagonale, l'autre courbé devant le visage, la
@@ -1335,6 +1381,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       sourcilD: [[0, 0], [LA, 6, 'out'], [TCHIK, 12, 'out'], [REDESCEND, 12], [DUREE, 0]],
       etincelle: [[0, 0], [TCHIK - 40, 0], [TCHIK + 110, 1, 'out'], [TCHIK + 420, 0, 'in']], etincelleX: 424, etincelleY: 322, // près de l'œil qui cligne
       sy: [[0, 1], [TCHIK - 60, 1], [TCHIK, .97, 'out'], [TCHIK + 260, 1, 'ressort']],
+      etoiles: [[0, -1], [TCHIK, 0], [TCHIK + 1400, 1, 'lin']],
     });
   })();
 
@@ -1423,6 +1470,23 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
+  // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
+  // à 3, une pluie de confettis (elle part avec les étoiles et finit avec l'animation)
+  const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, hourra: 2, reverence: 2, tape5: 2, chapeau: 3, dab: 3, floss: 3, toupie: 3 };
+  for (const [nom, niveau] of Object.entries(NIVEAUX)) {
+    const d = DANSES[nom], pose = d.pose;
+    let t0 = 0;
+    for (let ms = 0; ms <= d.duree; ms += 10) if (pose(ms).etoiles >= 0) { t0 = ms; break; }
+    const pluie = Math.max(1200, Math.min(2800, d.duree - t0));
+    d.niveau = niveau;
+    d.pose = (ms) => {
+      const p = pose(ms);
+      p.niveau = niveau;
+      if (niveau === 3) p.confettis = ms < t0 ? -1 : (ms - t0) / pluie;
+      return p;
+    };
+  }
+
   const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
@@ -1430,7 +1494,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   // les rotations prennent le chemin le plus court (un chapeau qui a fait un tour complet est déjà à l'endroit) ;
   // les effets (étoiles, bulles, étincelle, traits de vitesse) ne se mélangent pas : ils prennent tout de suite leur état
   const ANGLES = ['chapRot', 'tour', 'rot', 'aG', 'aD'];
-  const SANS_FONDU = ['etoiles', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
+  const SANS_FONDU = ['etoiles', 'niveau', 'confettis', 'choc', 'exclam', 'pensee', 'etincelle', 'vitesse', 'ampoule', 'rayons', 'nuage', 'pluie', 'zzz', 'zzzVisible'];
   function melange(a, b, k) {
     const p = {};
     for (const c in b) {
@@ -1481,6 +1545,18 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     file = []; lancer(b.dataset.danse);
   }));
   $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'tape5', 'pouce', 'endort']; lancer('bonjour'); });
+  // le niveau de réussite de chaque animation, à côté de son nom
+  document.querySelectorAll('.danse[data-danse]').forEach((b) => {
+    const n = NIVEAUX[b.dataset.danse];
+    if (n) b.insertAdjacentHTML('beforeend', `<span class="niveau" aria-label="${n} étoile${n > 1 ? 's' : ''}">${'★'.repeat(n)}</span>`);
+  });
+  // une animation de réussite au hasard, pour un niveau (jamais deux fois de suite la même)
+  let derniereHasard = null;
+  document.querySelectorAll('[data-hasard]').forEach((b) => b.addEventListener('click', () => {
+    const choix = Object.keys(NIVEAUX).filter((n) => NIVEAUX[n] === +b.dataset.hasard && n !== derniereHasard);
+    derniereHasard = choix[Math.floor(Math.random() * choix.length)];
+    file = []; lancer(derniereHasard);
+  }));
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
