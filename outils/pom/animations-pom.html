@@ -2021,7 +2021,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
   //     s'arrête net, repart en glissant de l'autre côté, revient au milieu, et finit en pointant le doigt vers
   //     l'enfant, avec un clin d'œil : « c'est toi le champion ! »
   DANSES.glissade = (() => {
-    const POSE_FIN = 2480, DUREE = 3700;
+    const POSE_FIN = 2900, FIN_POSE = 4250, DUREE = 4850; // (une transition tranquille vers la pose, qu'il garde longtemps)
     const xP = piste([[0, 0], [220, 0], [760, 150, 'io'], [1080, 150], [1680, -150, 'io'], [1980, -150], [2420, 0, 'io']]);
     const v = (ms) => (xP(ms + 15) - xP(ms - 15)) / 30; // la vitesse (en points par ms)
     const vRetard = (ms) => v(ms - 90); // le haut du corps suit avec un temps de retard
@@ -2031,8 +2031,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     function brasG(ms) {
       const r = brasRepos('G');
       if (ms < 220) return bougerBras(r, tient(), EASE.io(ms / 220));
-      if (ms < POSE_FIN - 60) return tient();
-      return bougerBras(tient(), r, EASE.io(Math.min(1, (ms - POSE_FIN + 60) / 380)));
+      if (ms < POSE_FIN - 420) return tient();
+      return bougerBras(tient(), r, EASE.io(Math.min(1, (ms - POSE_FIN + 420) / 560)));
     }
     // l'autre bras, un peu écarté pour l'équilibre ; puis il pointe le doigt vers l'enfant
     const ecarte = { a: 24, b: -10, lg: 1.15, p: 10 };
@@ -2041,31 +2041,31 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     function brasD(ms) {
       const r = brasRepos('D');
       if (ms < 220) return bougerBras(r, ecarte, EASE.io(ms / 220));
-      if (ms < POSE_FIN - 200) { const e = { ...ecarte }; e.a += 10 * vRetard(ms) * 3; return e; }
-      if (ms < POSE_FIN) return bougerBras(ecarte, pointe, EASE.out((ms - POSE_FIN + 200) / 200));
-      if (ms < 3250) return pointe;
-      return bougerBras(pointe, r, EASE.io(Math.min(1, (ms - 3250) / 380)));
+      if (ms < POSE_FIN - 480) { const e = { ...ecarte }; e.a += 10 * vRetard(ms) * 3; return e; }
+      if (ms < POSE_FIN) return bougerBras(ecarte, pointe, EASE.io((ms - POSE_FIN + 480) / 480));
+      if (ms < FIN_POSE) return pointe;
+      return bougerBras(pointe, r, EASE.io(Math.min(1, (ms - FIN_POSE) / 450)));
     }
     return danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
       mainG: [[0, 'pendante'], [140, 'poing-cote'], [POSE_FIN + 120, 'pendante']],
-      mainD: [[0, 'pendante'], [150, 'ouverte'], [POSE_FIN - 120, 'pointe-ecran'], [3350, 'pendante']],
-      devantG: [[0, 0], [150, 1], [POSE_FIN + 200, 0]], devantD: [[0, 0], [POSE_FIN - 150, 1], [3400, 0]],
-      echelleD: [[0, 1], [POSE_FIN - 200, 1], [POSE_FIN, 1.75, 'out'], [POSE_FIN + 120, 1.65, 'io'], [3250, 1.65], [3550, 1, 'io']],
+      mainD: [[0, 'pendante'], [150, 'ouverte'], [POSE_FIN - 330, 'pointe-ecran'], [FIN_POSE + 120, 'pendante']],
+      devantG: [[0, 0], [150, 1], [POSE_FIN + 200, 0]], devantD: [[0, 0], [POSE_FIN - 420, 1], [FIN_POSE + 200, 0]],
+      echelleD: [[0, 1], [POSE_FIN - 480, 1], [POSE_FIN, 1.75, 'io'], [POSE_FIN + 160, 1.65, 'io'], [FIN_POSE, 1.65], [FIN_POSE + 350, 1, 'io']],
       x: xP,
       // le corps penche à contre-sens de la glissade ; à l'arrêt, il bascule un peu en avant et se rattrape
       pli: (ms) => 15 * vRetard(ms),
       rot: (ms) => -5 * v(ms),
-      teteRot: (ms) => -14 * vRetard(ms) + (ms > POSE_FIN - 100 && ms < 3300 ? -6 * Math.min(1, (ms - POSE_FIN + 100) / 150) : 0),
+      teteRot: (ms) => -14 * vRetard(ms) + (ms > POSE_FIN - 400 && ms < FIN_POSE + 50 ? -6 * Math.min(1, (ms - POSE_FIN + 400) / 400) : 0),
       traine: (ms) => Math.max(-1, Math.min(1, v(ms) * 3.2)),
       // il regarde où il va ; à la fin, il regarde l'enfant et lui fait un clin d'œil
       regardX: (ms) => (ms < POSE_FIN - 100 ? Math.max(-9, Math.min(9, v(ms) * 40)) : 0),
-      sourcils: [[0, 0], [220, 8, 'out'], [POSE_FIN, 8], [POSE_FIN + 120, 14, 'out'], [3300, 12], [DUREE, 0]],
-      clinG: [[0, 0], [POSE_FIN, 0], [POSE_FIN + 80, 1, 'out'], [3150, 1], [3250, 0]],
-      sourcilG: [[0, 0], [POSE_FIN, 0], [POSE_FIN + 80, -4, 'out'], [3150, -4], [3250, 0]],
+      sourcils: [[0, 0], [220, 8, 'out'], [POSE_FIN, 8], [POSE_FIN + 120, 14, 'out'], [FIN_POSE + 50, 12], [DUREE, 0]],
+      clinG: [[0, 0], [POSE_FIN, 0], [POSE_FIN + 80, 1, 'out'], [FIN_POSE - 100, 1], [FIN_POSE, 0]],
+      sourcilG: [[0, 0], [POSE_FIN, 0], [POSE_FIN + 80, -4, 'out'], [FIN_POSE - 100, -4], [FIN_POSE, 0]],
       etincelle: [[0, 0], [POSE_FIN + 40, 0], [POSE_FIN + 190, 1, 'out'], [POSE_FIN + 500, 0, 'in']], etincelleX: 424, etincelleY: 322,
       sy: [[0, 1], [POSE_FIN - 60, 1], [POSE_FIN, .96, 'out'], [POSE_FIN + 260, 1, 'ressort']],
-      etoiles: [[0, -1], [POSE_FIN - 40, 0], [POSE_FIN + 1150, 1, 'lin']],
+      etoiles: [[0, -1], [POSE_FIN - 40, 0], [FIN_POSE + 300, 1, 'lin']],
       // le halo brille dès le début de la glissade
       halo: [[0, -1], [100, -1], [110, 0], [DUREE - 80, 1, 'lin']],
     });
