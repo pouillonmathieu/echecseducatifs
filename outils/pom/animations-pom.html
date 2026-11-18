@@ -1790,7 +1790,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       if (ms < 3800) return tada.D;
       return bougerBras(tada.D, repos('D'), EASE.io(Math.min(1, (ms - 3800) / 600)));
     }
-    return danse(DUREE, {
+    return Object.assign(danse(DUREE, {
       ...pistesBras('G', brasG), ...pistesBras('D', brasD),
       mainG: [[0, 'pendante'], [LEVE + 120, 'index-leve'], [PICHENETTE + 250, 'poing-leve'], [4100, 'pendante']],
       mainD: [[0, 'pendante'], [200, 'poing-cote'], [PICHENETTE + 120, 'poing-leve'], [4100, 'pendante']],
@@ -1812,8 +1812,9 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       joie: [[0, 0], [SUR_TETE_ + 40, 0], [SUR_TETE_ + 60, 1], [4000, 1], [4050, 0]],
       teteTour, y: yP,
       sy: [[0, 1], [ELAN, .88, 'out'], [ELAN + 90, 1.08, 'out'], [ATTERRIT - 40, 1.02], [ATTERRIT, .9, 'out'], [ATTERRIT + 220, 1, 'ressort'], [SUR_TETE_, 1], [SUR_TETE_ + 70, .94, 'out'], [SUR_TETE_ + 320, 1.04, 'ressort'], [3800, 1.02], [4400, 1, 'io']],
-      etoiles: [[0, -1], [SUR_TETE_, 0], [SUR_TETE_ + 1450, 1, 'lin']],
-    });
+      // les étoiles et le halo dès le début ; les confettis quand le chapeau retombe sur la tête
+      etoiles: [[0, -1], [ELAN, 0], [DUREE - 80, 1, 'lin']],
+    }), { debutConfettis: SUR_TETE_ });
   })();
 
   // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
