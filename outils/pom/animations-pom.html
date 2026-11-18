@@ -422,6 +422,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       .reflet-chap { fill: none; stroke: ${c.refletChap}; stroke-width: 8; stroke-linecap: round; opacity: .7; }
       .reflet-chap.fin { stroke-width: 4; opacity: .45; }
       .ruban { fill: ${c.ruban}; }
+      .croix-tranche { fill: ${nom === 'blanc' ? c.trait : c.ruban}; }
       .pomme { fill: url(#g-pomme); }
       .creux { fill: #B3161F; } .creux-fond { fill: #8E0F17; }
       .eclat { fill: #FFFFFF; opacity: .22; }
@@ -479,6 +480,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     bras: { G: $('bras-g'), D: $('bras-d') }, etoiles: $('etoiles'), pensee: $('pensee'), zzz: document.querySelectorAll('#zzz text'), nuage: $('nuage'), gouttes: document.querySelectorAll('#gouttes .goutte'), ampoule: $('ampoule'), rayons: $('ampoule-rayons'),
   };
   // les étoiles qui éclatent autour de Pom'
+  // l'épaisseur de la croix du chapeau : des copies de la croix, derrière elle
+  const EPAISSEUR = 22;
+  const TRANCHES = Array.from({ length: 20 }, () => {
+    const t = $('croix').cloneNode(true);
+    t.removeAttribute('id'); t.setAttribute('class', 'croix-tranche');
+    $('croix').parentNode.insertBefore(t, $('croix'));
+    return t;
+  });
   const ETOILES = [[250, 150, 1], [770, 90, .8], [200, 480, .7], [820, 420, .9], [330, -130, .65], [690, -190, .75], [850, 720, .6], [170, 780, .55],
     [130, 270, .6], [905, 240, .65], [505, -250, .7], [140, 610, .5], [900, 580, .55], [400, -40, .45], [640, -30, .5], [700, 880, .45]];
   // les niveaux de réussite : combien d'étoiles, leur taille ; à 3 étoiles, des couleurs en plus
@@ -570,8 +579,14 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     el.feuille.setAttribute('transform', `translate(500 0) scale(${Math.abs(c) < .05 ? .05 * Math.sign(c || 1) : c} 1) translate(-500 0)`);
     // le chapeau qui tourne sur lui-même (p.chapTour, quand il est libre) : il reste rond, mais la croix s'amincit et
     // s'élargit, le reflet glisse sur la calotte et disparaît derrière, et des lignes de vitesse l'entourent
-    const th = rad(p.chapLibre ? p.chapTour : 0), cc = Math.cos(rad(p.tour) + th);
-    el.croix.setAttribute('transform', `translate(507 0) scale(${Math.max(.16, Math.abs(cc))} 1) translate(-507 0)`);
+    // la croix a de l'épaisseur : des copies d'elle, de l'arrière vers l'avant, s'écartent quand elle tourne (on voit
+    // alors sa tranche) ; la face la plus proche est dessinée en dernier
+    const th = rad(p.chapLibre ? p.chapTour : 0), ang = rad(p.tour) + th, ca = Math.cos(ang), sa = Math.sin(ang);
+    const sc = Math.max(.035, Math.abs(ca)), sens = ca >= 0 ? 1 : -1, faces = [...TRANCHES, el.croix];
+    faces.forEach((f, i) => {
+      const z = sens * (-EPAISSEUR / 2 + EPAISSEUR * i / (faces.length - 1));
+      f.setAttribute('transform', `translate(${507 + z * sa} 0) scale(${sc} 1) translate(-507 0)`);
+    });
     const reflet = $('reflet-calotte');
     reflet.setAttribute('transform', `translate(${62 * Math.sin(th)} 0)`);
     reflet.setAttribute('opacity', th ? Math.max(0, Math.cos(th)) : 1);
