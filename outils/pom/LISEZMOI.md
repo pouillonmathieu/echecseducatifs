@@ -14,4 +14,6 @@
 - Les gants viennent des dessins de l'auteur (images non versionnées) : `gants-decalquer.py` décalque les deux
   gants du dessin d'origine (`gants2.json`), `mains-reperer.py` repère les 16 mains des planches (poignet,
   direction du bras), `mains-decalquer.py` les décalque (`gants16.json`). Le décalque utilise potracer
-  (`pip install potracer scipy`). Les mains « index sous le menton » et « main de profil » (pour applaudir) sont dessinées à la main dans la page.
+  (`pip install potracer scipy`). Les mains « index sous le menton » et « main de profil » (pour applaudir) sont dessinées à la main dans la page ;
+  « pouce et petit doigt, de dos » (la main sur le manche de la guitare) est le décalque de la paume, retourné, sans
+  la ligne de la paume ni le bas des doigts repliés.
