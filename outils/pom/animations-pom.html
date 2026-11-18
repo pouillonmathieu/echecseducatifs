@@ -321,6 +321,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="applaudit"><span class="num">15</span><b>Bravo !</b></button>
         <button class="danse" type="button" data-danse="ok"><span class="num">16</span><b>Clin d'œil</b></button>
         <button class="danse" type="button" data-danse="tape5"><span class="num">17</span><b>Tape-m'en cinq !</b></button>
+        <button class="danse" type="button" data-danse="pouce"><span class="num">18</span><b>Pouce levé</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -1357,7 +1358,46 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     });
   })();
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !' };
+  // 18. pouce levé : il tend le bras sur le côté, le pouce en l'air, hoche la tête deux fois en donnant deux petits
+  //     coups de pouce ; une étincelle brille au bout du pouce
+  DANSES.pouce = (() => {
+    const MONTE = 120, LA = 460, COUP1 = 560, COUP2 = 900, REDESCEND = 1550, DUREE = 2050;
+    const pli = piste([[0, 0], [MONTE, 0], [LA, 3, 'out'], [REDESCEND, 3], [DUREE - 80, 0, 'io']]);
+    const corps = (ms) => ({ ...POSE, pli: pli(ms) });
+    // deux petits coups de pouce : la main monte un peu et se redresse
+    const coup = (ms) => [COUP1, COUP2].reduce((s, t) => s + (ms > t - 80 && ms < t + 240 ? (ms < t ? EASE.out((ms - t + 80) / 80) : 1 - EASE.io((ms - t) / 240)) : 0), 0);
+    const repos = () => ({ a: P.aG, b: P.bG, lg: 1, p: P.pG });
+    function brasG(ms) {
+      const q = corps(ms), k = coup(ms), [ex, ey] = pointCorps(q, 442, 580), [x, y] = pointCorps(q, 336 - 4 * k, 496 - 14 * k);
+      const b = -22;
+      let a = Math.atan2(y - ey, x - ex) * 180 / Math.PI;
+      if (a < 0) a += 360;
+      const L = Math.hypot(x - ex, y - ey), t = Math.atan2(-b, L / 2) * 180 / Math.PI;
+      const v = { a, b, lg: L / 138, p: -150 + 10 * k - a - t }, r = repos();
+      const m = ms < MONTE ? 0 : ms < LA ? EASE.rebond((ms - MONTE) / (LA - MONTE)) : ms < REDESCEND ? 1 : 1 - EASE.io(Math.min(1, (ms - REDESCEND) / (DUREE - 80 - REDESCEND)));
+      return { a: r.a + (v.a - r.a) * m, b: r.b + (v.b - r.b) * m, lg: r.lg + (v.lg - r.lg) * m, p: r.p + (v.p - r.p) * m };
+    }
+    return danse(DUREE, {
+      aG: (ms) => brasG(ms).a, bG: (ms) => brasG(ms).b, lgG: (ms) => brasG(ms).lg, pG: (ms) => brasG(ms).p,
+      mainG: [[0, 'pendante'], [MONTE + 90, 'pouce'], [REDESCEND + 170, 'pendante']],
+      devantG: [[0, 0], [MONTE + 90, 1], [REDESCEND + 300, 0]],
+      pli,
+      // la tête penche vers le pouce et hoche à chaque coup
+      teteRot: [[0, 0], [MONTE, 0], [LA, -6, 'out'], [REDESCEND, -6], [DUREE - 80, 0, 'io']],
+      teteX: [[0, 0], [MONTE, 0], [LA, -4, 'out'], [REDESCEND, -4], [DUREE - 80, 0, 'io']],
+      teteY: (ms) => -7 * coup(ms),
+      chapY: (ms) => 4 * coup(ms),
+      sy: (ms) => 1 - .025 * coup(ms),
+      joie: [[0, 0], [COUP1 - 80, 0], [COUP1 - 60, 1], [REDESCEND, 1], [REDESCEND + 60, 0]],
+      sourcils: [[0, 0], [LA, 8, 'out'], [REDESCEND, 8], [DUREE, 0]],
+      etincelle: [[0, 0], [COUP1 - 40, 0], [COUP1 + 110, 1, 'out'], [COUP1 + 420, 0, 'in']], etincelleX: 300, etincelleY: 356,
+      etoiles: [[0, -1], [COUP1, 0], [COUP1 + 1300, 1, 'lin']],
+      // un pouce bien visible : la main un peu plus grande
+      echelleG: [[0, 1], [MONTE, 1], [LA, 1.3, 'out'], [REDESCEND, 1.3], [DUREE - 80, 1, 'io']],
+    });
+  })();
+
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -1414,7 +1454,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'tape5', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'applaudit', 'ok', 'tape5', 'pouce', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
