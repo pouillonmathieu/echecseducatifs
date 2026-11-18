@@ -303,6 +303,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="reveil"><span class="num">11</span><b>Réveil !</b></button>
         <button class="danse" type="button" data-danse="reverence"><span class="num">12</span><b>Quel beau coup !</b></button>
         <button class="danse" type="button" data-danse="dab"><span class="num">13</span><b>Dab !</b></button>
+        <button class="danse" type="button" data-danse="floss"><span class="num">14</span><b>Le floss</b></button>
       </div>
       <div class="reglages">
         <div class="bascule" role="group" aria-label="Couleur de Pom'">
@@ -341,7 +342,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
 
   // ---------- Couleurs des deux versions ----------
   const PALETTES = {
-    noir: { piece: '#272B32', claire: '#30353D', reflet: '#4D535D', trou: '#16181C', trait: '#14161A', gant: '#FFFFFF', gantTrait: '#1A1C20', bras: '#272B32', brasFond: '#272B32', chap: '#1E2228', refletChap: '#4A5059', ruban: '#2C313A', vitesse: '#8C95A2', zzz: '#5B7DB8', zzzBord: '#FFFFFF', ombre: '#D9D3C2' },
+    noir: { piece: '#272B32', claire: '#30353D', reflet: '#4D535D', trou: '#16181C', trait: '#14161A', gant: '#FFFFFF', gantTrait: '#1A1C20', bras: '#272B32', brasFond: '#4D535D', chap: '#1E2228', refletChap: '#4A5059', ruban: '#2C313A', vitesse: '#8C95A2', zzz: '#5B7DB8', zzzBord: '#FFFFFF', ombre: '#D9D3C2' },
     blanc: { piece: '#EFEADB', claire: '#E7E1CF', reflet: '#FFFFFF', trou: '#D3CCB6', trait: '#C9C0A6', gant: '#FFFFFF', gantTrait: '#CFC6AC', bras: '#EFEADB', brasFond: '#CFC6AC', chap: '#F1ECDE', refletChap: '#FFFFFF', ruban: '#E2DBC7', vitesse: '#B9C0CA', zzz: '#9DB8E6', zzzBord: '#20252C', ombre: '#C9C3B2' },
   };
   const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
@@ -354,7 +355,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       .trou { fill: ${c.trou}; }
       .reflet { fill: none; stroke: ${c.reflet}; stroke-width: 9; stroke-linecap: round; opacity: .8; }
       .bras { fill: none; stroke: ${c.bras}; stroke-width: 12; stroke-linecap: round; }
-      .bras-fond { fill: none; stroke: ${c.brasFond}; stroke-width: ${nom === 'blanc' ? 16 : 12}; stroke-linecap: round; }
+      .bras-fond { fill: none; stroke: ${c.brasFond}; stroke-width: 16; stroke-linecap: round; }
       .gant-fond { fill: ${c.gant}; }
       .gant-traits { fill: ${c.gantTrait}; fill-rule: evenodd; }
       .gant-dessin { fill: ${c.gant}; stroke: ${c.gantTrait}; stroke-width: 3.2; stroke-linejoin: round; }
@@ -400,7 +401,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     chapY: 0, chapX: 0, chapRot: 0, chapLibre: 0, chapLX: 0, chapLY: 0, chapLR: 0,
     aG: 126, bG: 30, pG: -8, mainG: 'pendante',
     aD: 54, bD: -30, pD: 8, mainD: 'pendante',
-    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
+    joie: 0, clinG: 0, clinD: 0, clinRieur: 0, etincelle: 0, tristesse: 0, grimace: 0, regardX: 0, regardY: 0, sourcils: 0, sourcilsPli: 0, sourcilG: 0, sourcilD: 0, pensee: 0, penche: 0, ampoule: 0, rayons: 0, nuage: 0, pluie: 0, zzz: -1, zzzVisible: 0, devantG: 0, devantD: 0, derriereG: 0, derriereD: 0, lgG: 1, lgD: 1, tapeG: 0, tapeD: 0, etoiles: -1,
   };
   const BASE = [510, 872];
   const SUR_TETE = 66; // de combien le chapeau descend pour se poser sur la pomme
@@ -435,7 +436,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     g.setAttribute('transform', `translate(510 0) scale(${Math.abs(c) < .02 ? .02 * Math.sign(c || 1) : c} 1) translate(-510 0) translate(${x} ${y}) rotate(${a})`);
     const devant = (cote === 'G' ? Math.sin(t) : -Math.sin(t)) >= -.001;
     const ordre = [...el.pom.children], i = ordre.indexOf(g);
-    const place = p['devant' + cote] ? 'tout' : devant ? 'devant' : 'derriere';
+    // derriereG / derriereD : le bras passe derrière le corps (le floss), même de face
+    const place = p['devant' + cote] ? 'tout' : p['derriere' + cote] > .5 ? 'derriere' : devant ? 'devant' : 'derriere';
     const bien = place === 'tout' ? i > ordre.indexOf(el.chapeau) : place === 'devant' ? i > ordre.indexOf(el.corps) && i < ordre.indexOf(el.tete) : i < ordre.indexOf(el.corps);
     if (!bien) {
       if (place === 'tout') el.pom.appendChild(g);
@@ -1156,7 +1158,40 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       etoiles: [[0, -1], [420, 0], [2300, 1, 'lin']],
     });
   })();
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !' };
+  // 14. le floss : les deux bras tendus, poings serrés, balancent d'un côté à l'autre en passant tour à tour devant et
+  //     derrière le corps, pendant que les hanches partent dans l'autre sens
+  DANSES.floss = (() => {
+    const DEBUT = 250, T = 270, N = 10, FIN = DEBUT + N * T, DUREE = FIN + 450;
+    // u : où sont les bras, de -1 (à gauche) à +1 (à droite) ; ils marquent un petit temps à chaque bout
+    const u = (ms) => {
+      if (ms <= DEBUT) return -1;
+      if (ms >= FIN) return N % 2 ? 1 : -1;
+      const c = -Math.cos(Math.PI * (ms - DEBUT) / T);
+      return Math.sign(c) * Math.pow(Math.abs(c), .55);
+    };
+    // A : l'ampleur, de 0 (repos) à 1 (floss), pour entrer et sortir en douceur
+    const A = piste([[0, 0], [DEBUT, 1, 'io'], [FIN, 1], [DUREE - 50, 0, 'io']]);
+    const melanger = (repos, cible) => (ms) => repos + (cible(u(ms)) - repos) * A(ms);
+    const enRythme = (f) => (ms) => f(u(ms)) * A(ms);
+    return danse(DUREE, {
+      aG: melanger(P.aG, (v) => 99 - 64 * v), aD: melanger(P.aD, (v) => 81 - 64 * v),
+      bG: melanger(P.bG, (v) => -6 * v), bD: melanger(P.bD, (v) => -6 * v),
+      lgG: melanger(1, () => 1.3), lgD: melanger(1, () => 1.3),
+      pG: melanger(P.pG, () => 0), pD: melanger(P.pD, () => 0),
+      mainG: [[0, 'pendante'], [DEBUT - 120, 'poing-bas'], [FIN + 150, 'pendante']],
+      mainD: [[0, 'pendante'], [DEBUT - 120, 'poing-bas'], [FIN + 150, 'pendante']],
+      // le bras du côté où vont les bras passe derrière le corps, l'autre en travers devant
+      derriereG: (ms) => (A(ms) > .3 && u(ms) < 0 ? 1 : 0), derriereD: (ms) => (A(ms) > .3 && u(ms) > 0 ? 1 : 0),
+      // les hanches dans l'autre sens, la tête qui suit les bras ; un petit rebond à chaque passage au milieu
+      x: enRythme((v) => -13 * v), pli: enRythme((v) => -6 * v), rot: enRythme((v) => 2 * v),
+      teteX: enRythme((v) => 7 * v), teteRot: enRythme((v) => 7 * v), chapRot: enRythme((v) => 4 * v),
+      y: enRythme((v) => 7 * (1 - Math.abs(v))), sy: (ms) => 1 - .035 * Math.abs(u(ms)) * A(ms),
+      joie: [[0, 0], [DEBUT, 1], [FIN + 100, 0]],
+      sourcils: [[0, 0], [DEBUT, 8, 'out'], [FIN, 8], [DUREE, 0]],
+    });
+  })();
+
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -1213,7 +1248,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); file = suite; lancer(premiere); return; }
     file = []; lancer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'endort']; lancer('bonjour'); });
+  $('toutes').addEventListener('click', () => { file = ['hourra', 'chapeau', 'toupie', 'yes', 'reflechit', 'eureka', 'triste', 'front', 'reverence', 'dab', 'floss', 'endort']; lancer('bonjour'); });
   $('ralenti').addEventListener('click', (e) => { vitesse = vitesse === 1 ? .5 : 1; e.currentTarget.setAttribute('aria-pressed', vitesse !== 1); });
   $('boucle').addEventListener('click', (e) => { boucle = !boucle; e.currentTarget.setAttribute('aria-pressed', boucle); });
 
