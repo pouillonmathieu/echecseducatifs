@@ -1195,7 +1195,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       // la tête reste droite et suit un peu les bras ; un petit rebond à chaque passage au milieu
       teteRot: enRythme((v) => -PENCHE * v + 4 * v), teteX: enRythme((v) => 6 * v), chapRot: enRythme((v) => 3 * v),
       y: enRythme((v) => 8 * (1 - Math.abs(v))), sy: (ms) => 1 - .04 * Math.abs(u(ms)) * A(ms),
-      joie: [[0, 0], [DEBUT, 1], [FIN + 100, 0]],
+      joie: [[0, 0], [DEBUT, 1], [FIN, 1], [FIN + 100, 0]],
       sourcils: [[0, 0], [DEBUT, 8, 'out'], [FIN, 8], [DUREE, 0]],
       // les petites étoiles de la réussite
       etoiles: [[0, -1], [DEBUT + 100, 0], [DEBUT + 2900, 1, 'lin']],
