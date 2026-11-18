@@ -1596,13 +1596,13 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       const k = EASE.rebond(Math.min(1, (ms - CIEL + 150) / 300));
       return [438 - 80 * k, 770 - 430 * k, 96 - 196 * k];
     }
-    // la main gauche (à droite de l'écran), sur le côté, sur le manche : pouce et index, elle se déplace d'un accord
-    // à l'autre le long du manche
+    // la main gauche (à droite de l'écran), sur le côté, sur le manche : le pouce et le petit doigt en haut, elle se
+    // déplace d'un accord à l'autre le long du manche
     const mx = piste([[0, 728], [700, 728], [780, 690, 'io'], [1100, 690], [1180, 752, 'io'], [1500, 752], [1580, 706, 'io'], [1850, 706], [1930, 728, 'io']]);
     const my = (ms) => 548 + (mx(ms) - 728) * -.3; // le manche monte un peu vers l'extérieur
     const entre = piste([[0, 0], [120, 0], [PRET, 1, 'out'], [FIN, 1], [DUREE - 60, 0, 'io']]);
     const brasG = (ms) => { const [x, y, d] = gratte(ms); return bougerBras(brasRepos('G'), viserBras('G', corps(ms), x, y, d, -20), entre(ms)); };
-    const brasD = (ms) => bougerBras(brasRepos('D'), viserBras('D', corps(ms), mx(ms), my(ms), -30, 30), entre(ms));
+    const brasD = (ms) => bougerBras(brasRepos('D'), viserBras('D', corps(ms), mx(ms), my(ms), -75, 30), entre(ms));
     // la tête balance : un hochement à chaque temps, penchée sur la guitare, d'un côté puis de l'autre
     const hoche = (ms) => (joue(ms) ? Math.pow(Math.abs(Math.sin(Math.PI * temps(ms) / 2)), 3) : 0);
     const rotFinale = piste([[0, 0], [ARME, -10], [ACCORD - 80, -14, 'out'], [ACCORD, 4, 'in'], [CIEL, -8, 'out'], [FIN, -8], [DUREE - 60, 0, 'io']]);
@@ -1623,9 +1623,8 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
       sourcilsPli: [[0, 0], [PRET, 6], [ARME, 6], [ARME + 100, 0]],
       regardY: [[0, 0], [ARME, 0], [ARME + 150, -8, 'out'], [ACCORD - 60, -8], [ACCORD, 4, 'in'], [CIEL - 100, 0]],
       joie: [[0, 0], [CIEL - 20, 0], [CIEL, 1], [FIN + 100, 1], [FIN + 150, 0]],
-      etoiles: [[0, -1], [CIEL - 60, 0], [CIEL + 1000, 1, 'lin']],
-      // le halo s'allume à l'accord final
-      halo: [[0, -1], [ACCORD - 1, -1], [ACCORD, .15], [ACCORD + 1300, 1, 'lin']],
+      // les étoiles et le halo dès les premières notes, jusqu'à la fin
+      etoiles: [[0, -1], [PRET - 120, 0], [DUREE - 80, 1, 'lin']],
       choc: [[0, -1], [ACCORD - 1, -1], [ACCORD, 0], [ACCORD + 380, 1, 'out']], chocX: 440, chocY: 720,
     });
   })();
