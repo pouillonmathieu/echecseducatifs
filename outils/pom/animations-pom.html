@@ -417,6 +417,7 @@ header p { margin: 6px 0 0; color: var(--encre-douce); line-height: 1.5; max-wid
         <button class="danse" type="button" data-danse="tournis"><span class="num">24</span><b>La tête qui tourne</b></button>
         <p class="groupe">Les autres moments</p>
         <button class="danse" type="button" data-danse="bonjour"><span class="num">25</span><b>Bonjour !</b></button>
+        <button class="danse" type="button" data-danse="bonjourGauche"><span class="num">25 bis</span><b>Bonjour ! (par la gauche)</b></button>
         <button class="danse" type="button" data-danse="reflechit"><span class="num">26</span><b>Hmm…</b></button>
         <button class="danse" type="button" data-danse="eureka"><span class="num">27</span><b>Eurêka !</b></button>
         <button class="danse" type="button" data-suite="reflechit eureka"><span class="num">26+27</span><b>Hmm… puis Eurêka !</b></button>
@@ -2358,6 +2359,32 @@ window.creerPom = function (svg, options = {}) {
     });
   })();
 
+  // une animation vue dans un miroir : ce qui va à droite va à gauche, et les deux bras échangent leurs gestes (le bras
+  // de gauche à l'écran fait ce que faisait celui de droite : son angle devient 180° moins l'autre, sa courbe et son
+  // poignet changent de sens). Le dessin de Pom' reste à l'endroit (la feuille, les yeux).
+  const OPPOSES = ['x', 'rot', 'tour', 'pli', 'teteX', 'teteRot', 'teteTour', 'chapX', 'chapRot', 'chapLX', 'chapLR', 'regardX', 'chocX', 'pionX', 'pionR', 'spiraleRot'];
+  function enMiroir(d) {
+    return {
+      ...d,
+      pose(ms) {
+        const p = d.pose(ms), q = { ...p };
+        for (const c of OPPOSES) if (typeof p[c] === 'number') q[c] = -p[c];
+        for (const c in p) {
+          if (!c.endsWith('G') || !((c.slice(0, -1) + 'D') in p)) continue;
+          const g = c, dr = c.slice(0, -1) + 'D', base = c.slice(0, -1);
+          const f = base === 'a' ? (v) => 180 - v : base === 'b' || base === 'p' ? (v) => -v : (v) => v;
+          q[g] = f(p[dr]); q[dr] = f(p[g]);
+        }
+        // les positions dans le dessin (autour de l'axe x = 510)
+        for (const c of ['questionX', 'etincelleX']) if (typeof p[c] === 'number') q[c] = 1020 - p[c];
+        return q;
+      },
+    };
+  }
+  // 5 bis. « Bonjour ! » par la gauche : le même bonjour, en miroir (Pom' arrive du bord gauche et salue de sa main
+  //    gauche, celle qui est du côté de la page) : c'est celui du site, où Pom' se tient à gauche de l'écran
+  DANSES.bonjourGauche = enMiroir(DANSES.bonjour);
+
   // les niveaux de réussite : 1, 2 ou 3 étoiles. Le niveau règle le nombre d'étoiles ; à partir de 2, un halo doré ;
   // à 3, une pluie de confettis (elle part avec les étoiles et finit avec l'animation)
   const NIVEAUX = { yes: 1, pouce: 1, ok: 1, applaudit: 1, vague: 1, tape5: 1, hourra: 2, reverence: 2, musichall: 2, glissade: 2, chapeau: 2, roue: 2, dab: 3, floss: 3, toupie: 3, basket: 3, guitare: 3, magie: 3 };
@@ -2376,7 +2403,7 @@ window.creerPom = function (svg, options = {}) {
     };
   }
 
-  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé', vague: 'La vague', guitare: 'La guitare', musichall: 'Le music-hall', basket: 'Le basket', magie: 'Le tour de magie', glissade: 'La glissade', roue: 'La roue', nonnon: 'Non, non, non !', gratte: 'Il se gratte la tête', cache: 'Oups !', tournis: 'La tête qui tourne' };
+  const NOMS = { hourra: 'Hop, hourra !', chapeau: 'La danse du chapeau', toupie: 'La toupie', yes: 'Yes !', bonjour: 'Bonjour !', bonjourGauche: 'Bonjour ! (par la gauche)', reflechit: 'Hmm…', eureka: 'Eurêka !', triste: 'Oh non…', front: 'Oh là là !', endort: 'Il s\'endort…', dort: 'Il dort', reveil: 'Réveil !', reverence: 'Quel beau coup !', dab: 'Dab !', floss: 'Le floss', applaudit: 'Bravo !', ok: 'Clin d\'œil', tape5: 'Tape-m\'en cinq !', pouce: 'Pouce levé', vague: 'La vague', guitare: 'La guitare', musichall: 'Le music-hall', basket: 'Le basket', magie: 'Le tour de magie', glissade: 'La glissade', roue: 'La roue', nonnon: 'Non, non, non !', gratte: 'Il se gratte la tête', cache: 'Oups !', tournis: 'La tête qui tourne' };
   // fondu : on part de la pose affichée (fin d'une danse, ou repos) et on glisse vers la suivante, sans à-coup
   const FONDU_DEBUT = 220, FONDU_FIN = 650;
   let derniere = null, fondu = null; // fondu = { depuis: pose, t0, duree }
@@ -2470,7 +2497,7 @@ window.creerPom = function (svg, options = {}) {
     if (b.dataset.suite) { const [premiere, ...suite] = b.dataset.suite.split(' '); pom.jouer(premiere, suite); return; }
     pom.jouer(b.dataset.danse);
   }));
-  $('toutes').addEventListener('click', () => { pom.jouer('bonjour', ['yes', 'pouce', 'ok', 'applaudit', 'vague', 'tape5', 'hourra', 'reverence', 'musichall', 'glissade', 'chapeau', 'roue', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'triste', 'front', 'nonnon', 'gratte', 'cache', 'tournis', 'reflechit', 'eureka', 'endort']); });
+  $('toutes').addEventListener('click', () => { pom.jouer('bonjour', ['bonjourGauche', 'yes', 'pouce', 'ok', 'applaudit', 'vague', 'tape5', 'hourra', 'reverence', 'musichall', 'glissade', 'chapeau', 'roue', 'dab', 'floss', 'toupie', 'basket', 'guitare', 'magie', 'triste', 'front', 'nonnon', 'gratte', 'cache', 'tournis', 'reflechit', 'eureka', 'endort']); });
   // le niveau de réussite de chaque animation, à côté de son nom
   document.querySelectorAll('.danse[data-danse]').forEach((b) => {
     const n = NIVEAUX[b.dataset.danse];

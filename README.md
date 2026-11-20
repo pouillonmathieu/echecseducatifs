@@ -204,7 +204,7 @@ possibilité (code commun : `Echiquier.annotations` dans `js/echiquier.js`) ; le
 ## Pom', le coach
 
 Pom' (une pièce d'échecs avec une pomme pour tête et un chapeau melon couronné d'une croix) est le personnage principal
-du site. Sur la page d'accueil, il dit bonjour dans sa bulle et fait une danse quand on le touche (il s'endort si on le
+du site. Sur la page d'accueil, il entre par la gauche et dit bonjour dans sa bulle et fait une danse quand on le touche (il s'endort si on le
 laisse, et se réveille quand on revient). Dans les jeux, il réagit : une bonne réponse, une animation de réussite à
 1 étoile (une série de 5 bonnes réponses d'affilée : 2 étoiles ; de 10 : 3 étoiles) ; une erreur, une animation d'erreur ;
 une partie gagnée (« Capture le roi », « Le cheval de la reine », le labyrinthe, la fin d'une partie de « Joue le coup »,
@@ -212,7 +212,7 @@ une ouverture rejouée, une victoire à « Dice chess »), l'animation du nombre
 (à 0 étoile, il encourage d'un pouce levé). Un indice : il réfléchit ; une solution : « Eurêka ! ». Dans un défi chrono,
 une réussite en cours n'est pas interrompue par la suivante. Dans « Comment ça s'appelle ? », il ne réagit qu'à la
 troisième lettre fausse (quand la lettre est montrée). Sur un grand écran, il se tient dans la marge en bas à gauche
-(il dit bonjour en arrivant, s'endort après 90 s sans jouer) ; sur un écran plus étroit, il surgit en bas à gauche le
+(il entre par la gauche et dit bonjour en arrivant, s'endort après 90 s sans jouer) ; sur un écran plus étroit, il surgit en bas à gauche le
 temps de réagir, puis repart. Il ne prend jamais les clics et passe devant la fenêtre des résultats. Il est noir sur
 fond clair et blanc en mode sombre ; si l'appareil demande moins d'animations, il reste immobile.
 Le réglage « Pom' dans les jeux » de la page d'accueil (clé `echecs.pom`) le retire des jeux.

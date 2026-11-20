@@ -162,8 +162,8 @@
       placer();
       window.addEventListener('resize', placer);
       surveillerSommeil();
-      // bonjour ! (sur un grand écran, en arrivant dans le jeu)
-      if (mode === 'pose' && !reduit.matches && !enAttente) setTimeout(() => { if (!moteur.enCours) jouer('bonjour'); }, 700);
+      // bonjour ! (sur un grand écran, en arrivant dans le jeu ; il entre par le bord gauche, le plus proche)
+      if (mode === 'pose' && !reduit.matches && !enAttente) setTimeout(() => { if (!moteur.enCours) jouer('bonjourGauche'); }, 700);
     }
     if (enAttente) { const f = enAttente; enAttente = null; f(); }
     document.dispatchEvent(new CustomEvent('pom-pret'));
