@@ -261,8 +261,9 @@
         if (a) ro.observe(a);
       }
       surveillerSommeil();
-      // bonjour ! (sur un grand écran, en arrivant dans le jeu ; il entre par le bord gauche, le plus proche)
-      if (mode === 'pose' && !reduit.matches && !enAttente) setTimeout(() => { if (!moteur.enCours) jouer('bonjourGauche'); }, 700);
+      // bonjour ! (sur un grand écran, en arrivant dans le jeu ; il entre par le bord gauche, le plus proche). Tout de
+      // suite, avant la première image : on ne le voit pas debout avant qu'il arrive (et l'animation part sans fondu)
+      if (mode === 'pose' && !reduit.matches && !enAttente) jouer('bonjourGauche');
     }
     if (enAttente) { const f = enAttente; enAttente = null; f(); }
     document.dispatchEvent(new CustomEvent('pom-pret'));
