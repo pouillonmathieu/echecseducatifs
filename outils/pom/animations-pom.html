@@ -888,10 +888,10 @@ window.creerPom = function (svg, options = {}) {
   // k : de 0 (en bas, angle aBas) à 1 (en haut, angle aHaut) ; b : la courbe du bras en bas
   function brasVersLAvant(cote, k, aBas, aHaut, b) {
     const x0 = Math.cos(rad(aBas)), y0 = Math.sin(rad(aBas)), x1 = Math.cos(rad(aHaut)), y1 = Math.sin(rad(aHaut));
-    const kk = Math.max(-.25, Math.min(1, k));
-    const x = x0 + (x1 - x0) * Math.max(0, kk);                         // l'écart sur le côté
-    const r = Math.abs(y0) + (Math.abs(y1) - Math.abs(y0)) * Math.max(0, kk); // la longueur dans le plan haut / avant
-    const phi = Math.PI * kk;                                          // 0 : vers le bas ; π / 2 : vers nous ; π : vers le haut
+    const kk = Math.max(-.25, Math.min(1.15, k)), k1 = Math.max(0, Math.min(1, kk)); // (un rebond peut dépasser un peu)
+    const x = x0 + (x1 - x0) * k1;                               // l'écart sur le côté
+    const r = Math.abs(y0) + (Math.abs(y1) - Math.abs(y0)) * k1;  // la longueur dans le plan haut / avant
+    const phi = Math.PI * kk;                                    // 0 : vers le bas ; π / 2 : vers nous ; π : vers le haut
     const y = r * Math.cos(phi);
     let a = Math.atan2(y, x) * 180 / Math.PI;
     if (cote === 'G' && a < 0) a += 360;
@@ -1059,8 +1059,19 @@ window.creerPom = function (svg, options = {}) {
       chapY: [[0, 0], [400, 50, 'out'], [580, 0, 'in'], [760, 70, 'out'], [960, 0, 'in'], [1800, 0], [1900, 8, 'out'], [2050, 0, 'in']],
       chapRot: [[0, 0], [400, -10], [580, 0], [760, -14], [960, 0]],
       // les bras : en haut jusqu'à 1,5 s, ils flottent un peu, puis retombent en accélérant et rebondissent à peine
-      aG: [[0, P.aG], [180, 222, 'out'], [380, 242, 'out'], [540, 226, 'in'], [720, 246, 'out'], [900, 228, 'in'], [1150, 236, 'io'], [1450, 232, 'io'], [1780, P.aG - 8, 'in'], [1960, P.aG + 4, 'out'], [2150, P.aG, 'io']],
-      bG: [[0, P.bG], [180, 20], [380, 6], [540, 22], [720, 4], [900, 20], [1450, 18], [1650, 55, 'in'], [1850, P.bG + 8, 'out'], [2150, P.bG]],
+      // le poing (bras droit de Pom') monte en passant par l'avant, comme en 3D, et redescend de même : en haut, le
+      // coude est retourné (plié vers l'extérieur)
+      ...(() => {
+        const K = piste([[0, 0], [180, .9, 'out'], [300, 1, 'out'], [1450, 1], [1780, 0, 'in'], [1960, -.08, 'out'], [2150, 0, 'io']]);
+        // les coups de poing en haut, et la courbe du bras en haut (en bas, celle du repos)
+        const HAUT = piste([[0, 222], [180, 222], [380, 242, 'out'], [540, 226, 'in'], [720, 246, 'out'], [900, 228, 'in'], [1150, 236, 'io'], [1450, 232, 'io']]);
+        const B_HAUT = piste([[0, -20], [180, -20], [380, -6], [540, -22], [720, -4], [900, -20], [1450, -18]]);
+        const g = (ms) => {
+          const r = brasVersLAvant('G', K(ms), P.aG, HAUT(ms), P.bG), c = r.b / P.bG; // c : le cosinus de la rotation
+          return { ...r, b: c >= 0 ? r.b : -c * B_HAUT(ms) };
+        };
+        return { aG: (ms) => g(ms).a, lgG: (ms) => g(ms).lg, bG: (ms) => g(ms).b };
+      })(),
       pG: [[0, P.pG], [380, 0], [1450, 0], [1650, 28, 'in'], [1850, -14, 'out'], [2150, P.pG, 'io']],
       aD: [[0, P.aD], [300, -62, 'out'], [1150, -68, 'io'], [1450, -64, 'io'], [1780, P.aD + 8, 'in'], [1960, P.aD - 4, 'out'], [2150, P.aD, 'io']],
       bD: [[0, P.bD], [300, 18], [1450, 18], [1650, -55, 'in'], [1850, P.bD - 8, 'out'], [2150, P.bD]],
@@ -1463,6 +1474,22 @@ window.creerPom = function (svg, options = {}) {
     // l'angle du bras gauche passe par le haut (300° = -60°) : on garde des valeurs continues
     d.aG = [[0, P.aG], [230, P.aG], [400, DROITE.aG, 'rebond'], [1080, DROITE.aG], [1350, 180 - DROITE.aD, 'rebond'], [1950, 180 - DROITE.aD], [2350, P.aG, 'io']];
     d.aD = [[0, P.aD], [230, P.aD], [400, DROITE.aD, 'rebond'], [1080, DROITE.aD], [1350, 180 - DROITE.aG, 'rebond'], [1950, 180 - DROITE.aG], [2350, P.aD, 'io']];
+    // les bras montent dans la pose en passant par l'avant (comme en 3D), et en redescendent de même ; entre les deux
+    // dabs, ils restent en haut et passent d'une pose à l'autre comme avant
+    const MONTEE = piste([[0, 0], [230, 0], [400, 1, 'rebond']]), DESCENTE = piste([[1950, 1], [2350, 0, 'io']]);
+    const bras = (c, ms) => {
+      const montee = ms <= 400, k = montee ? MONTEE(ms) : DESCENTE(ms), h = montee ? DROITE : GAUCHE;
+      const r = brasVersLAvant(c, k, P['a' + c], h['a' + c], P['b' + c]), cos = r.b / P['b' + c];
+      const k1 = Math.max(0, Math.min(1, k));
+      return {
+        a: r.a, b: cos >= 0 ? r.b : -cos * h['b' + c], lg: r.lg * (1 + (h['lg' + c] - 1) * k1),
+        p: P['p' + c] + (h['p' + c] - P['p' + c]) * k1,
+      };
+    };
+    for (const c of ['G', 'D']) for (const q of ['a', 'b', 'lg', 'p']) {
+      const avant = piste(d[q + c]);
+      d[q + c] = (ms) => (ms > 400 && ms < 1950 ? avant(ms) : bras(c, ms)[q]);
+    }
     return danse(2400, {
       ...d,
       mainD: [[0, 'pendante'], [300, 'ouverte'], [2150, 'pendante']], mainG: [[0, 'pendante'], [300, 'ouverte'], [2150, 'pendante']],
