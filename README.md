@@ -211,9 +211,11 @@ une partie gagnée (« Capture le roi », « Le cheval de la reine », le labyri
 une ouverture rejouée, une victoire à « Dice chess »), l'animation du nombre d'étoiles obtenues ; la fin d'un défi aussi
 (à 0 étoile, il encourage d'un pouce levé). Un indice : il réfléchit ; une solution : « Eurêka ! ». Dans un défi chrono,
 une réussite en cours n'est pas interrompue par la suivante. Dans « Comment ça s'appelle ? », il ne réagit qu'à la
-troisième lettre fausse (quand la lettre est montrée). Sur un grand écran, il se tient dans la marge en bas à gauche
-(il entre par la gauche et dit bonjour en arrivant, s'endort après 90 s sans jouer) ; sur un écran plus étroit, il surgit en bas à gauche le
-temps de réagir, puis repart. Il ne prend jamais les clics et passe devant la fenêtre des résultats. Il est noir sur
+troisième lettre fausse (quand la lettre est montrée). Sur un écran assez large, il se tient juste à gauche de
+l'échiquier (ou de la balance, des dés), les pieds au niveau de son bas, aussi grand que la place le permet (470 px au
+plus) ; il entre par la gauche et dit bonjour en arrivant, s'endort après 90 s sans jouer, et passe devant la fenêtre
+des résultats. Sur un écran plus étroit (téléphone, tablette en hauteur), il n'apparaît qu'à la fin d'une partie ou
+d'un défi, dans la fenêtre des résultats, sous les étoiles. Il ne prend jamais les clics. Il est noir sur
 fond clair et blanc en mode sombre ; si l'appareil demande moins d'animations, il reste immobile.
 Le réglage « Pom' dans les jeux » de la page d'accueil (clé `echecs.pom`) le retire des jeux.
 

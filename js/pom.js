@@ -3,10 +3,12 @@
    la page pour ne pas la ralentir.
 
    Dans les jeux, Pom' se place tout seul :
-   - sur un grand écran, il se tient dans la marge, en bas à gauche, flotte doucement, dit bonjour, s'endort quand on
-     ne joue plus depuis un moment et se réveille dès qu'on revient ;
-   - sur un écran plus étroit (téléphone, tablette), il surgit en bas à gauche le temps de réagir, puis repart.
-   Il ne prend jamais les clics (on joue à travers lui) et passe devant la fenêtre des résultats.
+   - sur un écran assez large, il se tient à gauche de l'échiquier, flotte doucement, dit bonjour, réagit à chaque
+     réponse, s'endort quand on ne joue plus depuis un moment et se réveille dès qu'on revient ; il passe devant la
+     fenêtre des résultats ;
+   - sur un écran plus étroit (téléphone, tablette en hauteur), il n'apparaît qu'à la fin d'une partie ou d'un défi,
+     dans la fenêtre des résultats, sous les étoiles.
+   Il ne prend jamais les clics (on joue à travers lui).
    Sur la page d'accueil, il est le personnage principal : il prend la place de l'élément #pom-accueil, et on peut le toucher.
 
    Les jeux l'appellent ainsi :
@@ -31,8 +33,8 @@
   let accueil = null;     // sur la page d'accueil : l'emplacement de Pom'
   let enAttente = null;   // ce qu'on lui a demandé avant qu'il soit prêt
   let serie = 0;          // les bonnes réponses d'affilée
-  let mode = null;        // 'pose' (dans la marge), 'surgit' (le temps de réagir) ou 'accueil'
-  let cacher = 0, dodo = 0, derniereActivite = Date.now();
+  let mode = null;        // 'pose' (à côté de l'échiquier), 'fenetre' (dans la fenêtre des résultats) ou 'accueil'
+  let dodo = 0, derniereActivite = Date.now();
 
   // ---------- Couleur : noir sur fond clair, blanc en mode sombre ----------
   function themeSombre() {
@@ -43,49 +45,83 @@
   const peindre = () => moteur && moteur.peindre(themeSombre() ? 'blanc' : 'noir');
 
   // ---------- Placement dans les jeux ----------
-  // la marge libre à gauche du jeu (le <main class="ecran"> est centré)
-  function margeLibre() {
-    const main = document.querySelector('main.ecran');
-    if (!main) return 0;
-    const r = main.getBoundingClientRect();
-    return r.left + parseFloat(getComputedStyle(main).paddingLeft || 0);
+  // Sur un écran assez large, Pom' se tient à gauche de l'échiquier (ou de ce qui en tient lieu), les pieds au niveau
+  // de son bas, aussi grand que la place le permet. Sinon (téléphone, tablette en hauteur), il n'apparaît que dans la
+  // fenêtre des résultats, sous les étoiles.
+  // Le dessin fait 900 × 1300 unités : le corps est centré en x = 510, ses bras au repos tiennent dans 430 unités de
+  // large, et son ombre (ses pieds) est à y = 968, soit 1268 unités sous le haut du dessin.
+  const ANCRES = ['#echiquier', '#cadre', '#balance', '.colonne-illus', '.ecran-des .milieu', '.jeu-mots', 'main.ecran'];
+  const ECART = 14, HAUTEUR_MAX = 470, HAUTEUR_MIN = 200;
+  function ancre() {
+    for (const sel of ANCRES) {
+      const a = document.querySelector(sel);
+      if (a && a.getClientRects().length) return a;
+    }
+    return null;
   }
   function placer() {
     if (!boite || mode === 'accueil') return;
-    const marge = margeLibre();
-    // le dessin fait 900 × 1300 unités ; le corps de Pom' (340 unités de large) se tient au milieu
-    if (marge >= 92 && window.innerHeight >= 560) {
-      const h = Math.min(300, marge * 2.3);
+    const a = ancre();
+    const r = a && a.getBoundingClientRect();
+    // la place libre à gauche de l'ancre ; l'échelle du dessin (en pixels par unité)
+    const libre = r ? r.left - ECART - 6 : 0;
+    const e = Math.min(HAUTEUR_MAX / 1300, Math.max(r ? r.height : 0, 300) * 1.05 / 1268, libre / 430);
+    if (r && 1300 * e >= HAUTEUR_MIN && window.innerHeight >= 560) {
       mode = 'pose';
-      boite.style.height = h + 'px';
-      boite.style.left = (marge / 2 - h * 900 / 1300 / 2) + 'px';
+      if (boite.parentNode !== document.body) document.body.appendChild(boite);
+      const centre = r.left - ECART - 215 * e; // le milieu du corps
+      boite.style.height = 1300 * e + 'px';
+      boite.style.left = centre - 450 * e + 'px';
+      boite.style.top = r.bottom - 1268 * e + 'px';
+      boite.classList.add('visible');
+      moteur.demarrer();
     } else {
-      mode = 'surgit';
-      boite.style.height = '';
-      boite.style.left = '';
+      if (mode === 'pose' || !mode) { boite.classList.remove('visible'); moteur.arreter(); }
+      mode = 'fenetre';
+      boite.style.height = boite.style.left = boite.style.top = '';
     }
     boite.dataset.mode = mode;
-    if (mode === 'pose') { boite.classList.add('visible'); moteur.demarrer(); }
-    else if (!moteur.enCours) { boite.classList.remove('visible'); moteur.arreter(); }
+  }
+
+  // ---------- Dans la fenêtre des résultats (petit écran) ----------
+  const visible = (el) => !!el && el.getClientRects().length > 0;
+  let attenteFenetre = 0, surveillance = 0;
+  // la fenêtre s'ouvre souvent un peu après la fin de la partie : on l'attend (1,5 s au plus)
+  function dansLaFenetre(f) {
+    clearInterval(attenteFenetre);
+    let n = 0;
+    const essayer = () => {
+      const carte = [...document.querySelectorAll('.carte-resultats')].find(visible);
+      if (!carte && ++n <= 15) return;
+      clearInterval(attenteFenetre);
+      if (!carte) return;
+      // sous les étoiles (ou, sans étoiles, avant le titre)
+      const etoiles = [...carte.querySelectorAll('.etoiles')].find(visible);
+      const titre = [...carte.querySelectorAll('.res-titre')].find(visible);
+      if (etoiles) etoiles.after(boite);
+      else if (titre) titre.before(boite);
+      else carte.prepend(boite);
+      boite.classList.add('visible');
+      moteur.demarrer();
+      f();
+      // la fenêtre fermée, il s'arrête
+      clearInterval(surveillance);
+      surveillance = setInterval(() => { if (!visible(boite)) { moteur.arreter(); clearInterval(surveillance); } }, 1000);
+    };
+    attenteFenetre = setInterval(essayer, 100);
+    essayer();
   }
 
   // ---------- Jouer une animation ----------
-  function jouer(nom, suite) {
+  // fenetre : une réaction de fin de partie ou de défi, qui a sa place dans la fenêtre des résultats ; sur petit
+  // écran, les autres réactions n'ont pas lieu
+  function jouer(nom, suite, fenetre) {
     if (!moteur || !nom) return;
-    clearTimeout(cacher);
-    if (mode === 'surgit') { boite.classList.add('visible'); moteur.demarrer(); }
+    if (mode === 'fenetre') { if (fenetre) dansLaFenetre(() => moteur.jouer(nom, suite)); return; }
     moteur.jouer(nom, suite);
   }
-  // quand une animation se termine : sur un écran étroit, il repart
   function quandChange(nom) {
     document.dispatchEvent(new CustomEvent('pom-change', { detail: nom }));
-    if (nom || mode !== 'surgit') return;
-    clearTimeout(cacher);
-    cacher = setTimeout(() => {
-      if (moteur.enCours) return;
-      boite.classList.remove('visible');
-      setTimeout(() => { if (!moteur.enCours && mode === 'surgit') moteur.arreter(); }, 500);
-    }, 350);
   }
   const niveauEnCours = () => (moteur && moteur.enCours ? moteur.NIVEAUX[moteur.enCours] || 0 : 0);
   const erreurEnCours = () => !!(moteur && moteur.enCours && moteur.ERREURS.includes(moteur.enCours));
@@ -94,7 +130,7 @@
   // bonnes réponses s'enchaînent vite) ; forcer : la fin d'une partie ou d'un défi passe avant tout
   function bravo(niveau, forcer) {
     if (!forcer && niveauEnCours() >= niveau) return;
-    jouer(moteur.auHasard(niveau));
+    jouer(moteur.auHasard(niveau), [], forcer);
   }
   function oups() {
     if (erreurEnCours()) return;
@@ -109,7 +145,7 @@
   function surveillerSommeil() {
     clearInterval(dodo);
     dodo = setInterval(() => {
-      if (!moteur || mode === 'surgit' || moteur.enCours || document.hidden) return;
+      if (!moteur || mode === 'fenetre' || moteur.enCours || document.hidden) return;
       if (Date.now() - derniereActivite > 90000) jouer('endort', ['dort']);
     }, 5000);
     ['pointerdown', 'keydown', 'wheel'].forEach((t) => window.addEventListener(t, activite, { passive: true, capture: true }));
@@ -117,14 +153,15 @@
 
   // ---------- Style ----------
   const STYLE = `
-    .pom-compagnon { position: fixed; z-index: 60; left: 0; bottom: 0; height: 190px; aspect-ratio: 900 / 1300;
-      pointer-events: none; opacity: 0; transform: translateY(60%); transition: opacity .3s, transform .45s cubic-bezier(.2, 1.3, .4, 1); }
-    .pom-compagnon[data-mode="surgit"] { left: -12px; bottom: env(safe-area-inset-bottom, 0px); }
-    .pom-compagnon.visible { opacity: 1; transform: none; }
+    .pom-compagnon { position: fixed; z-index: 60; left: 0; top: 0; height: 300px; aspect-ratio: 900 / 1300;
+      pointer-events: none; opacity: 0; transition: opacity .3s; }
+    .pom-compagnon.visible { opacity: 1; }
+    .pom-compagnon[data-mode="fenetre"] { position: relative; z-index: 2; flex: none; height: 170px; margin: -36px auto -12px; } /* (le haut du dessin est la place du chapeau lancé) */
+    @media (max-height: 640px) { .pom-compagnon[data-mode="fenetre"] { height: 130px; } }
     .pom-compagnon .pom-svg { display: block; width: 100%; height: 100%; overflow: visible; }
     .pom-compagnon .pom-svg #pom-ombre, #pom-accueil .pom-svg #pom-ombre { fill: rgba(0, 0, 0, .14); }
     .pom-compagnon .pom-svg *, #pom-accueil .pom-svg * { pointer-events: none; }
-    @media (max-width: 560px) { .pom-compagnon { height: 180px; } }`;
+`;
 
   // ---------- Chargement ----------
   function demarrer() {
@@ -161,6 +198,15 @@
       moteur.arreter();
       placer();
       window.addEventListener('resize', placer);
+      // (il est fixe à l'écran, pour que ses étoiles ne fassent jamais défiler la page : il suit l'échiquier qui défile)
+      window.addEventListener('scroll', () => { if (mode === 'pose') placer(); }, { passive: true });
+      // la page bouge (un panneau qui s'ouvre, l'échiquier qui se redimensionne) : il suit l'échiquier
+      if (window.ResizeObserver) {
+        const ro = new ResizeObserver(() => placer());
+        ro.observe(document.body);
+        const a = ancre();
+        if (a) ro.observe(a);
+      }
       surveillerSommeil();
       // bonjour ! (sur un grand écran, en arrivant dans le jeu ; il entre par le bord gauche, le plus proche)
       if (mode === 'pose' && !reduit.matches && !enAttente) setTimeout(() => { if (!moteur.enCours) jouer('bonjourGauche'); }, 700);
@@ -184,8 +230,8 @@
     get moteur() { return moteur; },
     bonneReponse: quandPret(() => { serie++; bravo(serie % 10 === 0 ? 3 : serie % 5 === 0 ? 2 : 1); }),
     erreur: quandPret(() => { serie = 0; oups(); }),
-    etoiles: (n) => quandPret(() => { if (n >= 1) bravo(Math.min(3, n), true); else { serie = 0; jouer(moteur.auHasard()); } })(),
-    resultat: (n) => quandPret(() => (n >= 1 ? bravo(Math.min(3, n), true) : jouer('pouce')))(),
+    etoiles: (n) => quandPret(() => { if (n >= 1) bravo(Math.min(3, n), true); else { serie = 0; jouer(moteur.auHasard(), [], true); } })(),
+    resultat: (n) => quandPret(() => (n >= 1 ? bravo(Math.min(3, n), true) : jouer('pouce', [], true)))(),
     hmm: quandPret(() => jouer('reflechit')),
     eureka: quandPret(() => jouer('eureka')),
     jouer: (nom, suite) => quandPret(() => jouer(nom, suite))(),
