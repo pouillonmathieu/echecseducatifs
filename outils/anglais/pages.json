@@ -136,7 +136,13 @@
   "Quiz des ouvertures": "Openings quiz",
   "Reconnais l'ouverture jouée sur l'échiquier.": "Recognise the opening played on the board.",
   "Mat en un": "Mate in one",
-  "Un champion vient de gaffer : trouve le mat !": "A champion just blundered: find the mate!"
+  "Un champion vient de gaffer : trouve le mat !": "A champion just blundered: find the mate!",
+  "Pom' dans les jeux": "Pom' in the games",
+  "Il t'encourage pendant que tu joues": "Cheers you on while you play",
+  "Pom', le coach : touche-le, il fait une danse !": "Pom', the coach: tap for a dance!",
+  "Touche-moi !": "Tap me!",
+  "Salut ! Moi, c'est": "Hi! I'm",
+  ". Choisis un jeu : je serai là pour t'encourager !": ". Pick a game: I'll be there to cheer you on!"
  },
  "identiques": [
   "CC BY-SA 3.0",
@@ -148,6 +154,7 @@
   "Lexend",
   "M",
   "Mathieu Pouillon",
+  "Pom'",
   "p"
  ],
  "jeux/balance/index.html": {

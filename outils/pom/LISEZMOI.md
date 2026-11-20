@@ -1,4 +1,15 @@
-# Pom', le coach (atelier, pas encore intégré au site)
+# Pom', le coach : l'atelier des animations
+
+Pom' est sur le site (voir le README principal, « Pom', le coach »). Cet atelier est la seule source de son dessin et de
+ses animations : après une modification, lancer `python3 outils/pom/construire.py`, qui fabrique `js/pom-moteur.js`
+(le dessin, sans les gants inutilisés et avec les gants décalqués allégés, et le bloc `<script id="moteur-pom">` repris
+tel quel), puis `python3 outils/version.py` et `python3 outils/anglais/generer.py`.
+
+- Le moteur (`window.creerPom(svg, options)`) ne dépend pas de la page : les ids du dessin commencent par `pom-` et
+  ses styles ne valent que dans `.pom-svg` (sauf ceux des gants et du pion, repris par des `<use>`, dont les noms
+  suffisent : `gant-…`, `pom-pion…`). Il rend `jouer(nom, suite)`, `auHasard(niveau)` (une réussite du niveau, ou une
+  erreur sans niveau ; jamais deux fois de suite la même), `peindre('noir' | 'blanc')`, `demarrer()`, `arreter()`, et
+  les listes `DANSES`, `NIVEAUX`, `ERREURS`, `NOMS`.
 
 - `animations-pom.html` : la page de test des animations de Pom' (publiée comme artefact Claude privé :
   « Animations de Pom' »). Pom' y est dessiné en SVG ; un petit moteur décrit chaque animation par des pistes

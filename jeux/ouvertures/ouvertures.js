@@ -185,6 +185,7 @@
     $('reponses').hidden = true;
     retour.hidden = false;
     if (juste) Sons.bravo(); else Sons.echec();
+    if (juste) window.Pom?.bonneReponse(); else window.Pom?.erreur();
     $('btn-suivant').firstChild.textContent = t('Suivant ', 'Next ');
     if (jeu.mode === 'libre') {
       jeu.total++;
@@ -262,6 +263,7 @@
     compterJusqua($('res-score'), score);
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
   }
 
   // ---------- Modes ----------
@@ -352,6 +354,7 @@
         : t(' sans aucune erreur !', ' without a single mistake!');
       message(t('Bravo, tu as rejoué toute l\'ouverture', 'Well done, you replayed the whole opening') + bilan, 'reussi');
       Sons.bravo();
+      window.Pom?.etoiles(ent.erreurs || ent.aides ? 2 : 3);
       return;
     }
     const camp = traitDe(ent.k) === 'blanc' ? t('des Blancs', 'for White') : t('des Noirs', 'for Black');
@@ -411,6 +414,7 @@
     ent.erreurs++;
     selectionner(null);
     Sons.refus();
+    window.Pom?.erreur();
     message(t('Ce n\'est pas le coup de l\'ouverture. Essaie encore !', 'That\'s not the move of the opening. Try again!'), 'erreur');
     plateau.classList.remove('secoue'); void plateau.offsetWidth; plateau.classList.add('secoue');
   }
@@ -441,6 +445,8 @@
     $('btn-indice-texte').textContent = ent.indice >= 1 ? t('Solution', 'Solution') : t('Indice', 'Hint');
     b.disabled = !peutJouer() || ent.indice >= 2;
   }
+  // Pom' réfléchit avec toi (un indice)
+  $('btn-indice').addEventListener('click', () => window.Pom?.hmm());
   $('btn-indice').addEventListener('click', () => {
     if (!peutJouer() || ent.indice >= 2) return;
     if (ent.indice === 0) ent.aides++;

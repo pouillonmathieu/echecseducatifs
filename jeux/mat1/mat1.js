@@ -355,6 +355,7 @@
     dessiner(jouerSur(p.apres, uci), uci, !glisse);
     Echiquier.dessinerAnnotations(plateau, fleches);
     Sons.refus();
+    window.Pom?.erreur();
     plateau.classList.remove('secoue'); void plateau.offsetWidth; plateau.classList.add('secoue');
     const court = !reglages.commentaires;
     if (jeu.mode === 'libre') {
@@ -380,6 +381,7 @@
     message('');
     const premier = jeu.essais === 0 && jeu.aide === 0;
     Sons.bravo();
+    window.Pom?.bonneReponse();
     if (jeu.mode === 'libre' && !jeu.rejoue) {
       jeu.total++;
       if (premier) jeu.justes++;
@@ -393,7 +395,7 @@
     arreterChrono();
     const p = jeu.p;
     montrerMat(p.mats[0], true);
-    if (tempsEcoule) { message(''); Sons.echec(); }
+    if (tempsEcoule) { message(''); Sons.echec(); window.Pom?.erreur(); }
     montrerRetour(false, p.mats[0], tempsEcoule);
   }
   function montrerMat(uci, anime) {
@@ -485,6 +487,8 @@
     $('btn-revoir').querySelector('.texte-choix').textContent = fini ? t('Rejouer', 'Play again') : t('Revoir le coup', 'Replay the move');
     $('btn-revoir').title = fini ? t('Refaire le même exercice', 'Do the same puzzle again') : t('Revoir le dernier coup de l\'adversaire', 'Replay the opponent\'s last move');
   }
+  // Pom' réfléchit avec toi (un indice)
+  $('btn-indice').addEventListener('click', () => window.Pom?.hmm());
   $('btn-indice').addEventListener('click', () => {
     if (jeu.mode !== 'libre' || jeu.etat === 'fini' || jeu.aide >= 2) return;
     jeu.aide++;
@@ -571,6 +575,7 @@
     compterJusqua($('res-score'), score);
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
   }
 
   // ---------- Modes ----------

@@ -261,6 +261,7 @@
     jeu.reponse = [c, juste, reponse === null, ecrit];
     montrerExplication(...jeu.reponse);
     if (juste) Sons.juste(); else Sons.echec();
+    if (juste) window.Pom?.bonneReponse(); else window.Pom?.erreur();
 
     if (jeu.mode === 'libre') {
       jeu.total++;
@@ -482,6 +483,7 @@
     compterJusqua($('res-score'), score);
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
   }
 
   // ---------- Modes ----------

@@ -414,6 +414,7 @@
     $('etat').textContent = titre;
     const rate = issue === 'temps' || (reglages.camp === 'reine' && issue !== 'dame-gagne') || (reglages.camp === 'cavalier' && issue === 'dame-gagne' && etoiles < 2);
     if (rate) Sons.echec(); else Sons.bravo();
+    window.Pom?.etoiles(rate ? 0 : deux() ? 2 : Math.max(1, etoiles));
     // défi : on note la partie et on passe à la suivante
     if (jeu.mode === 'defi') {
       defi.resultats.push({ etoiles, coups: mesCoupsJoues(), temps: (performance.now() - defi.debut) / 1000 });
@@ -495,6 +496,7 @@
     $('resultats').hidden = false;
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
     boutonsFin(true);
   }
   // fin de partie : « Nouvelle partie » en vert ; en défi, c'est « Rejouer » (le défi) qui l'est
@@ -509,6 +511,8 @@
   // ---------- Branchements ----------
   $('btn-nouvelle').addEventListener('click', () => nouvellePartie());
   $('btn-recommencer').addEventListener('click', () => nouvellePartie(true));
+  // Pom' a trouvé (la solution)
+  $('btn-solution').addEventListener('click', () => window.Pom?.eureka());
   $('btn-solution').addEventListener('click', solution);
   $('btn-nouvelle-res').addEventListener('click', () => nouvellePartie());
   $('btn-suivante').addEventListener('click', partieSuivante);

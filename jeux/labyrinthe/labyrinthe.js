@@ -642,6 +642,7 @@
       $('btn-res-nouveau').focus({ preventScroll: true });
       lancerPluie($('pluie'), etoiles === 3 ? 70 : 35);
       if (etoiles === 3) Sons.victoire(); else Sons.bravo();
+      window.Pom?.etoiles(etoiles);
     }, 450);
   }
 
@@ -700,6 +701,7 @@
     defi.resultats.push({ ok, n, opt, temps: (performance.now() - defi.debut) / 1000 });
     majPoints();
     if (ok) Sons.juste(); else Sons.echec();
+    if (ok) window.Pom?.bonneReponse(); else if (n === null) window.Pom?.erreur();
     $('verdict').innerHTML = (ok ? ICONE_JUSTE : ICONE_FAUX) +
       `<span>${tempsEcoule ? t('Temps écoulé !', 'Time\'s up!') : n === null ? t('Passé', 'Skipped') : ok ? t('Le plus court !', 'The shortest!') : t('Arrivé !', 'Made it!')}</span>`;
     $('retour-detail').innerHTML = EN
@@ -759,6 +761,7 @@
     compterJusqua($('res-score'), score);
     lancerPluie($('pluie-defi'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
   }
 
   // ---------- Modes ----------
@@ -808,6 +811,8 @@
   });
   $('btn-annuler').addEventListener('click', annuler);
   $('btn-recommencer').addEventListener('click', () => { if (!jeu.anim) demarrer(); });
+  // Pom' a trouvé (la solution)
+  $('btn-solution').addEventListener('click', () => window.Pom?.eureka());
   $('btn-solution').addEventListener('click', montrerSolution);
   $('btn-nouveau').addEventListener('click', nouveau);
   $('btn-res-nouveau').addEventListener('click', nouveau);

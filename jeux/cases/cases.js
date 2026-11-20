@@ -155,12 +155,14 @@
         jeu.verrou = true;
         marquer(b, 'juste');
         Sons.juste();
+        window.Pom?.bonneReponse();
         jeu.trouvees++;
         $('trouvees').textContent = jeu.trouvees;
         plusTard(nouvelleCible, 600);
       } else {
         marquer(b, 'fausse', 1100);
         Sons.refus();
+        window.Pom?.erreur();
         jeu.erreurs++;
         if (jeu.erreurs >= 2) caseDe(jeu.cible).classList.add('indice');
       }
@@ -171,8 +173,8 @@
       // défi : un seul essai par case
       jeu.verrou = true;
       defi.resultats.push({ cible: jeu.cible, ok: juste, temps: (performance.now() - defi.debut) / 1000 });
-      if (juste) { marquer(b, 'juste'); Sons.juste(); }
-      else { marquer(b, 'fausse'); caseDe(jeu.cible).classList.add('montre'); Sons.echec(); }
+      if (juste) { marquer(b, 'juste'); Sons.juste(); window.Pom?.bonneReponse(); }
+      else { marquer(b, 'fausse'); caseDe(jeu.cible).classList.add('montre'); Sons.echec(); window.Pom?.erreur(); }
       majPoints();
       plusTard(() => {
         defi.numero++;
@@ -187,12 +189,14 @@
       jeu.verrou = true;
       marquer(b, 'juste');
       Sons.juste();
+      window.Pom?.bonneReponse();
       defi.score++;
       $('compteur').textContent = defi.score;
       plusTard(() => { if (!defi.fini) nouvelleCible(); }, 220);
     } else {
       marquer(b, 'fausse', 700);
       Sons.refus();
+      window.Pom?.erreur();
       defi.erreurs++;
     }
   }
@@ -278,6 +282,7 @@
     compterJusqua($('res-score'), score);
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
   }
 
   // ---------- Changement de mode ----------

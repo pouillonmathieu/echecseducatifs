@@ -425,6 +425,7 @@
     }
     $('etat').textContent = titre;
     if (issue === 'capture') Sons.bravo(); else Sons.echec();
+    window.Pom?.etoiles(issue === 'capture' ? Math.max(1, etoiles) : 0);
     if (jeu.mode === 'defi') {
       defi.resultats.push({ etoiles, coups: jeu.coups, min: jeu.min, equipe: jeu.equipe, temps: (performance.now() - defi.debut) / 1000 });
       majPoints();
@@ -501,6 +502,7 @@
     $('resultats').hidden = false;
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
     boutonsFin(true);
   }
   // fin de partie : « Nouvelle partie » en vert ; en défi, c'est « Rejouer » (le défi) qui l'est
@@ -515,6 +517,8 @@
   // ---------- Branchements ----------
   $('btn-nouvelle').addEventListener('click', () => nouvellePartie());
   $('btn-recommencer').addEventListener('click', () => nouvellePartie(true));
+  // Pom' a trouvé (la solution)
+  $('btn-solution').addEventListener('click', () => window.Pom?.eureka());
   $('btn-solution').addEventListener('click', solution);
   $('btn-nouvelle-res').addEventListener('click', () => nouvellePartie());
   $('btn-suivante').addEventListener('click', partieSuivante);

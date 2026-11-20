@@ -10,6 +10,64 @@
 
 .cache-visuel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
+/* ---------- Pom', le personnage principal : il dit bonjour dans sa bulle ----------
+   #pom-accueil est la boîte de son corps (de quoi le toucher) ; son dessin, plus grand, déborde tout autour (le chapeau
+   qu'il lance, les étoiles, la roue…) sans prendre les clics. Le dessin fait 900 × 1300 unités, le corps tient dans
+   x 300 à 720 et y -20 à 990. */
+.bienvenue { display: flex; align-items: center; gap: 18px; padding-left: 8px; }
+.pom-accueil {
+  flex: none;
+  position: relative;
+  height: 172px;
+  aspect-ratio: 420 / 1010;
+  padding: 0;
+  border: 0;
+  border-radius: 40%;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pom-accueil .pom-svg {
+  position: absolute;
+  left: calc(-100% * 240 / 420);
+  top: calc(-100% * 280 / 1010);
+  width: calc(100% * 900 / 420);
+  height: calc(100% * 1300 / 1010);
+  overflow: visible;
+  pointer-events: none;
+}
+.pom-accueil:focus-visible { outline: 3px solid var(--accent); outline-offset: 6px; }
+.bulle {
+  position: relative;
+  margin: 0;
+  max-width: 460px;
+  padding: 14px 18px;
+  border: 1px solid var(--ligne);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .06);
+  font-size: 17px;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+/* la pointe de la bulle, vers Pom' */
+.bulle::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: calc(50% - 9px);
+  width: 16px;
+  height: 16px;
+  border-left: 1px solid var(--ligne);
+  border-bottom: 1px solid var(--ligne);
+  background: var(--surface);
+  transform: rotate(45deg);
+}
+.bulle strong { font-weight: 700; color: var(--accent); }
+.bulle.parle span { display: inline-block; animation: parle .35s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes parle { from { opacity: 0; transform: scale(.9); } }
+@media (prefers-reduced-motion: reduce) { .bulle.parle span { animation: none; } }
+
 /* ---------- Cartes des jeux ---------- */
 .jeux { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
 .grille-jeux { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
@@ -60,8 +118,17 @@
 .pied .credit-pieces { margin-top: 2px; font-size: 12px; }
 .pied .credit-pieces a { color: inherit; }
 
+/* écran pas très haut : Pom' et les icônes un peu plus petits, pour que tout reste visible sans faire défiler */
+@media (min-width: 761px) and (max-height: 900px) {
+  .accueil { gap: 12px; }
+  .pom-accueil { height: 150px; }
+  .icone-jeu { width: min(100%, 96px); border-radius: 20px; }
+  .carte-jeu { gap: 8px; padding: 12px 10px 14px; }
+}
 /* écran peu haut (ordinateur portable) : icônes plus petites */
 @media (min-width: 761px) and (max-height: 720px) {
+  .pom-accueil { height: 104px; }
+  .bulle { font-size: 15px; padding: 10px 14px; }
   .icone-jeu { width: min(100%, 92px); border-radius: 20px; }
   .carte-jeu { gap: 8px; padding: 14px 12px 16px; }
   .carte-texte h3 { font-size: 17px; }
@@ -77,6 +144,13 @@
   .icone-jeu svg { width: 84%; height: 84%; }
   .carte-texte h3 { font-size: 15.5px; }
   .carte-texte p { display: none; }
+  .bienvenue { gap: 14px; padding-left: 10px; }
+  .pom-accueil { height: 112px; }
+  .bulle { font-size: 14.5px; padding: 10px 13px; border-radius: 16px; }
+}
+@media (max-width: 760px) and (max-height: 700px) {
+  .pom-accueil { height: 84px; }
+  .bulle { font-size: 13.5px; }
 }
 @media (max-width: 360px) {
   .grille-jeux { gap: 8px; }

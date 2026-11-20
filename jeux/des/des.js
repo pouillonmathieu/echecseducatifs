@@ -223,6 +223,7 @@
     $('fin-victoire').hidden = false;
     lancerPluie($('pluie'), 70);
     Sons.victoire();
+    window.Pom?.etoiles(3);
     rendre();
   }
 

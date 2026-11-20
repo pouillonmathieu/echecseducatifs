@@ -410,6 +410,7 @@
     if (touche) { touche.classList.remove('mauvaise'); void touche.offsetWidth; touche.classList.add('mauvaise'); }
     Sons.refus();
     if (jeu.erreursIci >= 3) { b.textContent = attendu.c; b.classList.add('fantome'); }
+    if (jeu.erreursIci === 3) window.Pom?.erreur(); // (Pom' ne réagit qu'à la 3e lettre fausse : la lettre est alors montrée)
   }
 
   function terminer() {
@@ -431,6 +432,7 @@
     r.textContent = parfait ? t('Bravo, du premier coup !', 'Well done, first try!') : t('Bravo, tu l\'as trouvé !', 'Well done, you found it!');
     $('mot').classList.add('trouve');
     Sons.juste();
+    window.Pom?.bonneReponse();
     terminer();
     // le mot est lu juste après le son de réussite (sauf si le son est coupé)
     if (Sons.actif) { const n = jeu.numero; setTimeout(() => { if (jeu.numero === n && jeu.fini) lireMot(); }, 450); }
@@ -452,7 +454,7 @@
     r.className = 'retour-mot solution';
     r.textContent = tempsEcoule === true ? t('Temps écoulé ! Voici le mot.', "Time's up! Here's the word.")
       : t('Voici le mot. Tu le retrouveras plus tard !', "Here's the word. You'll get it next time!");
-    if (tempsEcoule === true) Sons.echec();
+    if (tempsEcoule === true) { Sons.echec(); window.Pom?.erreur(); }
     terminer();
   }
   function suivant() {
@@ -478,6 +480,7 @@
     allumerEtoiles($('etoiles'), etoiles);
     $('resultats').hidden = false;
     if (etoiles >= 2) { lancerPluie($('pluie'), 60); Sons.victoire(); }
+    window.Pom?.resultat(etoiles);
     $('btn-rejouer').focus({ preventScroll: true });
   }
   // fin d'un défi : 10 mots, un point par mot trouvé (les erreurs de lettres sont permises)
@@ -502,6 +505,7 @@
     $('resultats').hidden = false;
     lancerPluie($('pluie'), etoiles >= 1 ? 70 : 30);
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
     $('btn-rejouer').focus({ preventScroll: true });
   }
 
@@ -517,12 +521,16 @@
   $('btn-menu').addEventListener('click', nouvelleSerie);
 
   // ---------- Branchements ----------
+  // Pom' réfléchit avec toi (un indice)
+  $('btn-indice').addEventListener('click', () => window.Pom?.hmm());
   $('btn-indice').addEventListener('click', () => {
     if (jeu.fini || jeu.indice) return;
     jeu.indice = true;
     $('btn-indice').disabled = true;
     appliquerIndice();
   });
+  // Pom' a trouvé (la solution)
+  $('btn-solution').addEventListener('click', () => window.Pom?.eureka());
   $('btn-solution').addEventListener('click', () => montrerSolution(false));
   $('btn-suivant').addEventListener('click', suivant);
   $('btn-rejouer').addEventListener('click', () => (jeu.mode === 'defi' ? lancerDefi(defi.chrono) : nouvelleSerie()));

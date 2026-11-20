@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/commun.css?v=202611162116">
-<link rel="stylesheet" href="css/accueil.css?v=202611162116">
-<script src="js/commun.js?v=202611162116"></script>
+<link rel="stylesheet" href="css/commun.css?v=202611201359">
+<link rel="stylesheet" href="css/accueil.css?v=202611201359">
+<script src="js/commun.js?v=202611201359"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -72,9 +72,18 @@
             <button type="button" data-plateau="bois"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#F0D9B5"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#B58863"/></svg><small>Bois</small></button>
           </div>
         </div>
+        <button id="reg-pom" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 7.5c-1.6-1.3-5-1-5 2.6 0 2.4 1.6 4.4 3.3 4.3.8 0 1-.4 1.7-.4s.9.4 1.7.4c1.7.1 3.3-1.9 3.3-4.3 0-3.6-3.4-3.9-5-2.6Z"/><path d="M12 7.5c0-1.4-.5-2.6-1.4-3.4M12.3 6c.8-1.2 2.2-1.7 3.5-1.4"/><path d="M9.5 17h5l1.5 3.5H8Z"/></svg>
+          <span>Pom' dans les jeux<small>Il t'encourage pendant que tu joues</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
   </header>
+
+  <section class="bienvenue">
+    <button id="pom-accueil" class="pom-accueil" type="button" aria-label="Pom', le coach : touche-le, il fait une danse !" title="Touche-moi !"></button>
+    <p class="bulle" aria-live="polite"><span id="bulle-pom">Salut ! Moi, c'est <strong>Pom'</strong>. Choisis un jeu : je serai là pour t'encourager !</span></p>
+  </section>
 
   <section class="jeux" aria-labelledby="titre-jeux">
     <h2 id="titre-jeux" class="cache-visuel">Choisis un jeu</h2>
@@ -173,13 +182,55 @@
   </footer>
 </main>
 
-<script src="js/pieces.js?v=202611162116"></script>
+<script src="js/pieces.js?v=202611201359"></script>
+<script src="js/pom.js?v=202611201359"></script>
 <script>
   (function () {
+    const t = Commun.t;
     window.Echecs.injecterSprite();
     Commun.brancherBoutonTheme(document.getElementById('btn-theme'));
     Commun.brancherReglages(document.getElementById('btn-reglages'), document.getElementById('panneau-reglages'));
     Commun.brancherPlateau(document.getElementById('reg-plateau'));
+    Commun.brancherInterrupteur(document.getElementById('reg-pom'), Pom.present, (v) => { Pom.present = v; });
+
+    // Pom', le personnage principal : il dit bonjour, et danse quand on le touche
+    const bulle = document.getElementById('bulle-pom');
+    const bouton = document.getElementById('pom-accueil');
+    const BONJOUR = bulle.innerHTML;
+    const EXCLAMATIONS = [t('Youpi !', 'Yippee!'), t('Tu as vu ça ?', 'Did you see that?'), t('Ta-da !', 'Ta-da!'),
+      t('Encore ?', 'Again?'), t('Et hop !', 'Hop!'), t('Je m\'entraîne pour tes victoires !', 'I\'m practising for your wins!')];
+    let derniere = null;
+    function dire(html) {
+      bulle.parentNode.classList.remove('parle');
+      void bulle.offsetWidth; // (pour relancer la petite animation de la bulle)
+      bulle.innerHTML = html;
+      bulle.parentNode.classList.add('parle');
+    }
+    // tous les jeux restent visibles sans faire défiler : si la page dépasse de l'écran, Pom' se fait plus petit
+    function ajuster() {
+      bouton.style.height = '';
+      const trop = document.documentElement.scrollHeight - window.innerHeight;
+      if (trop > 0) bouton.style.height = Math.max(72, bouton.offsetHeight - trop) + 'px';
+    }
+    ajuster();
+    window.addEventListener('resize', ajuster);
+    document.fonts?.ready.then(ajuster);
+    document.addEventListener('pom-pret', () => setTimeout(() => Pom.jouer('bonjour'), 400));
+    bouton.addEventListener('click', () => {
+      const m = Pom.moteur;
+      if (!m || m.enCours === 'reveil') return; // il était en train de dormir : il se réveille d'abord
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const niveau = 1 + Math.floor(Math.random() * 3);
+      Pom.jouer(Pom.auHasard(niveau));
+      const choix = EXCLAMATIONS.filter((e) => e !== derniere);
+      derniere = choix[Math.floor(Math.random() * choix.length)];
+      dire(derniere);
+    });
+    // quand il a fini (ou qu'il dort), la bulle redit bonjour
+    document.addEventListener('pom-change', (e) => {
+      if (e.detail === 'endort') dire(t('Zzz… Touche-moi pour me réveiller.', 'Zzz… Tap me to wake me up.'));
+      else if (e.detail === null || e.detail === 'reveil') { if (bulle.innerHTML !== BONJOUR) dire(BONJOUR); }
+    });
   })();
 </script>
 </body>

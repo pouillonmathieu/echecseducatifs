@@ -248,6 +248,7 @@
   // ================= Récompense =================
   function feter() {
     Sons.bravo();
+    window.Pom?.bonneReponse();
     if (reduireMouvement) return;
     secouer($('onde'), 'onde-anime');
     const calque = $('confettis');
@@ -348,7 +349,7 @@
     jeu.statut = reussi ? 'reussi' : 'rate';
     defi.resultats.push({ ok: reussi, temps: (performance.now() - defi.debut) / 1000 });
     majPoints();
-    if (!reussi) { Sons.echec(); rendre(); }
+    if (!reussi) { Sons.echec(); window.Pom?.erreur(); rendre(); }
     defi.minuterie = setTimeout(() => {
       defi.numero++;
       if (defi.numero >= NB_DEFIS) montrerResultats();
@@ -424,6 +425,7 @@
       lancerPluie(score >= 4 ? 70 : 30);
     }
     Sons.victoire();
+    window.Pom?.resultat(etoiles);
   }
 
   function lancerPluie(n) {

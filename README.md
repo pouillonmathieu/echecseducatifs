@@ -201,6 +201,28 @@ refaire la même chose l'efface. Dans le jeu, ces dessins s'effacent quand la po
 possibilité (code commun : `Echiquier.annotations` dans `js/echiquier.js`) ; les dessins s'effacent quand la pièce bouge.
 « Mat ou pas mat ? » aussi ; les dessins s'effacent à chaque nouvelle position.
 
+## Pom', le coach
+
+Pom' (une pièce d'échecs avec une pomme pour tête et un chapeau melon couronné d'une croix) est le personnage principal
+du site. Sur la page d'accueil, il dit bonjour dans sa bulle et fait une danse quand on le touche (il s'endort si on le
+laisse, et se réveille quand on revient). Dans les jeux, il réagit : une bonne réponse, une animation de réussite à
+1 étoile (une série de 5 bonnes réponses d'affilée : 2 étoiles ; de 10 : 3 étoiles) ; une erreur, une animation d'erreur ;
+une partie gagnée (« Capture le roi », « Le cheval de la reine », le labyrinthe, la fin d'une partie de « Joue le coup »,
+une ouverture rejouée, une victoire à « Dice chess »), l'animation du nombre d'étoiles obtenues ; la fin d'un défi aussi
+(à 0 étoile, il encourage d'un pouce levé). Un indice : il réfléchit ; une solution : « Eurêka ! ». Dans un défi chrono,
+une réussite en cours n'est pas interrompue par la suivante. Dans « Comment ça s'appelle ? », il ne réagit qu'à la
+troisième lettre fausse (quand la lettre est montrée). Sur un grand écran, il se tient dans la marge en bas à gauche
+(il dit bonjour en arrivant, s'endort après 90 s sans jouer) ; sur un écran plus étroit, il surgit en bas à gauche le
+temps de réagir, puis repart. Il ne prend jamais les clics et passe devant la fenêtre des résultats. Il est noir sur
+fond clair et blanc en mode sombre ; si l'appareil demande moins d'animations, il reste immobile.
+Le réglage « Pom' dans les jeux » de la page d'accueil (clé `echecs.pom`) le retire des jeux.
+
+Le code : `js/pom.js` (le placement, les réactions, l'API `Pom.bonneReponse()`, `Pom.erreur()`, `Pom.etoiles(n)`,
+`Pom.resultat(n)`, `Pom.hmm()`, `Pom.eureka()`) charge après la page `js/pom-moteur.js` (le dessin et les animations, 64 Ko
+compressé). Ce dernier est **fabriqué** par `python3 outils/pom/construire.py` à partir de l'atelier
+`outils/pom/animations-pom.html`, la seule source des animations (voir `outils/pom/LISEZMOI.md`) : on règle une
+animation dans l'atelier, puis on relance le script.
+
 ## Réglages du site
 
 Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé dans le navigateur) :
@@ -212,9 +234,9 @@ Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé da
 
 ## Page d'accueil
 
-Une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans faire défiler : 6 colonnes sur
-ordinateur (icônes plus petites sur un écran peu haut), 4 sur tablette, 2 colonnes sur téléphone (icône à gauche du nom,
-sans la phrase).
+Pom' et sa bulle de bienvenue, puis une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans
+faire défiler : 6 colonnes sur ordinateur (icônes plus petites sur un écran peu haut), 4 sur tablette, 2 colonnes sur
+téléphone (icône à gauche du nom, sans la phrase). Si la page dépasse quand même de l'écran, Pom' se fait plus petit.
 
 ## Version anglaise
 
@@ -258,6 +280,9 @@ outils/mats-en-un.py  choisit les vraies gaffes et génère jeux/mat1/problemes.
 js/revoir.js          revoir les coups (⏮ ◀ ▶ ⏭, flèches du clavier, lecture automatique)
 js/glisser.js         glisser-déposer une pièce sur l'échiquier
 js/consigne.js        la consigne d'un jeu dans une fenêtre (au lancement, « Compris », à revoir dans les réglages)
+js/pom.js             Pom', le coach : sa place dans la page et ses réactions (charge js/pom-moteur.js)
+js/pom-moteur.js      le dessin de Pom' et ses animations (fabriqué par outils/pom/construire.py, ne pas modifier)
+outils/pom/           l'atelier des animations de Pom' et ses outils (voir son LISEZMOI)
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js ; le quiz des ouvertures a aussi fiche.html)
 ```
 

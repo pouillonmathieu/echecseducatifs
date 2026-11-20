@@ -319,6 +319,7 @@
     Sons.refus();
     if (!legal) { consigne(t('Ce coup n\'est pas possible.', 'That move isn\'t possible.'), reglages.niveau === 'facile' || jeu.montre ? coupEcrit(jeu.san[jeu.ply], jeu.couleur) : '', t('Essaie un autre coup.', 'Try another move.')); return; }
     jeu.erreurs++;
+    window.Pom?.erreur();
     if (reglages.niveau === 'facile' || jeu.montre) consigne(t('Ce n\'est pas ce coup-là.', 'That\'s not the one.'), coupEcrit(jeu.san[jeu.ply], jeu.couleur), t('Regarde bien la pièce et la case écrites.', 'Look carefully at the piece and the square written.'));
     else consigne(EN ? `That's not ${possessif(nomCourt())} move.` : `Ce n'est pas le coup de ${nomCourt()}.`, '', jeu.erreurs >= 2 && !jeu.indice ? t('Un indice : la pièce qui doit bouger brille.', 'A hint: the piece that has to move is glowing.') : t('Essaie encore !', 'Try again!'));
     if (jeu.erreurs >= 2 && !jeu.indice) donnerIndice();
@@ -331,6 +332,7 @@
     jeu.resultats[ply] = r;
     jeu.etat = 'anim';
     Sons.bravo();
+    window.Pom?.bonneReponse();
     const titre = r === 'premier' ? t('Bravo, du premier coup !', 'Well done, first try!') : r === 'aide' ? t('Bravo !', 'Well done!') : t('C\'est ça !', 'That\'s it!');
     const ex = expliquer(ply);
     consigne(titre, coupEcrit(jeu.san[ply], jeu.couleur), ex.html, true);
@@ -816,6 +818,7 @@
     $('consigne').hidden = true;
     $('fin').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     if (premiers === total) Sons.bravo();
+    window.Pom?.etoiles(premiers === total ? 3 : premiers >= total * .7 ? 2 : 1);
     $('btn-autre').focus({ preventScroll: true });
   }
 
@@ -936,6 +939,8 @@
     jeu.etat = 'lecture';
     planifier();
   });
+  // Pom' réfléchit avec toi (un indice)
+  $('btn-indice').addEventListener('click', () => window.Pom?.hmm());
   $('btn-indice').addEventListener('click', () => { donnerIndice(); if (reglages.niveau === 'difficile' && !jeu.montre) consigne(t('Un indice', 'A hint'), '', t('La pièce qui doit bouger brille.', 'The piece that has to move is glowing.')); });
   $('btn-montrer').addEventListener('click', montrer);
   $('btn-continuer').addEventListener('click', continuer);
