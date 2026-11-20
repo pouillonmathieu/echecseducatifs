@@ -199,6 +199,8 @@ Dans l'atelier comme dans le jeu, le clic droit dessine sur l'échiquier : gliss
 colorée. La touche tenue choisit la couleur (sans touche : vert, Maj : orange, Ctrl ou Cmd : rouge, Alt : gris) et
 refaire la même chose l'efface. Dans le jeu, ces dessins s'effacent quand la position change. Le labyrinthe a la même
 possibilité (code commun : `Echiquier.annotations` dans `js/echiquier.js`) ; les dessins s'effacent quand la pièce bouge.
+Sur un échiquier dessiné par `Echiquier.dessiner`, les dessins sont oubliés dès que la position change (un coup joué) : ils
+ne reviennent pas au dessin suivant (« Le cheval de la reine », « Capture le roi »…).
 « Mat ou pas mat ? » aussi ; les dessins s'effacent à chaque nouvelle position.
 
 ## Pom', le coach

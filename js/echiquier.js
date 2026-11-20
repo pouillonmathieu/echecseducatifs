@@ -62,6 +62,14 @@
     conteneur.classList.toggle('avec-dessins', !!TP);
     conteneur.setAttribute('role', 'grid');
     conteneur.replaceChildren(f);
+    // les dessins au clic droit (annotations) : la position a changé, ils sont oubliés ; sinon, on les remet
+    const a = conteneur._annotations;
+    if (a) {
+      const position = fen.split(' ')[0];
+      if (a.position !== position) a.liste = [];
+      a.position = position;
+      if (a.liste.length) dessinerAnnotations(conteneur, a.liste);
+    }
   }
 
   function marquer(conteneur, cases, classe) {
@@ -112,9 +120,11 @@
     }
     conteneur.insertAdjacentHTML('beforeend', h + '</svg>');
   }
-  // branche le clic droit sur un échiquier ; renvoie { effacer() } pour tout effacer (quand la position change)
+  // branche le clic droit sur un échiquier ; renvoie { effacer() } pour tout effacer. Sur un échiquier dessiné par
+  // dessiner(), les dessins sont aussi oubliés dès que la position change (un coup joué), même sans effacer().
   function annotations(conteneur) {
-    let liste = [], depart = null;
+    const a = conteneur._annotations = { liste: [], position: null };
+    let depart = null;
     conteneur.addEventListener('contextmenu', (e) => e.preventDefault());
     conteneur.addEventListener('pointerdown', (e) => {
       if (e.button !== 2) return;
@@ -129,14 +139,15 @@
       const c = sous && sous.closest('.case-e');
       if (!c || !conteneur.contains(c)) return;
       const u = c.dataset.case === de ? de : de + c.dataset.case, g = couleurTouche(e);
+      const liste = a.liste;
       const i = liste.findIndex(x => x[0] === u);
       if (i >= 0 && liste[i][1] === g) liste.splice(i, 1);
       else if (i >= 0) liste[i] = [u, g];
       else liste.push([u, g]);
       dessinerAnnotations(conteneur, liste);
     });
-    window.addEventListener('resize', () => { if (liste.length) dessinerAnnotations(conteneur, liste); });
-    return { effacer() { liste = []; dessinerAnnotations(conteneur, liste); } };
+    window.addEventListener('resize', () => { if (a.liste.length) dessinerAnnotations(conteneur, a.liste); });
+    return { effacer() { a.liste = []; dessinerAnnotations(conteneur, a.liste); } };
   }
 
   window.Echiquier = { lireFen, dessiner, marquer, effacer, nomPiece, dessinerAnnotations, annotations };
