@@ -214,8 +214,10 @@ une réussite en cours n'est pas interrompue par la suivante. Dans « Comment ç
 troisième lettre fausse (quand la lettre est montrée). Sur un écran assez large, il se tient juste à gauche de
 l'échiquier (ou de la balance, des dés), les pieds au niveau de son bas, aussi grand que la place le permet (470 px au
 plus) ; il entre par la gauche et dit bonjour en arrivant, s'endort après 90 s sans jouer, et passe devant la fenêtre
-des résultats. Sur un écran plus étroit (téléphone, tablette en hauteur), il n'apparaît qu'à la fin d'une partie ou
-d'un défi, dans la fenêtre des résultats, sous les étoiles. Il ne prend jamais les clics. Il est noir sur
+des résultats. Sur un écran plus étroit (téléphone, tablette en hauteur), il surgit au milieu de l'échiquier le temps
+d'une petite réaction à chaque réponse (70 % de la taille de l'échiquier ; il s'efface dès qu'on touche l'écran) ; à la
+fin d'une partie ou d'un défi, il apparaît dans la fenêtre des résultats, sous les étoiles (sans fenêtre, sur
+l'échiquier). Il ne prend jamais les clics. Il est noir sur
 fond clair et blanc en mode sombre ; si l'appareil demande moins d'animations, il reste immobile.
 Le réglage « Pom' dans les jeux » de la page d'accueil (clé `echecs.pom`) le retire des jeux.
 

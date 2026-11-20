@@ -6,8 +6,9 @@
    - sur un écran assez large, il se tient à gauche de l'échiquier, flotte doucement, dit bonjour, réagit à chaque
      réponse, s'endort quand on ne joue plus depuis un moment et se réveille dès qu'on revient ; il passe devant la
      fenêtre des résultats ;
-   - sur un écran plus étroit (téléphone, tablette en hauteur), il n'apparaît qu'à la fin d'une partie ou d'un défi,
-     dans la fenêtre des résultats, sous les étoiles.
+   - sur un écran plus étroit (téléphone, tablette en hauteur), il surgit au milieu de l'échiquier le temps d'une
+     petite réaction à chaque réponse (il s'efface dès qu'on touche l'écran) ; à la fin d'une partie ou d'un défi, il
+     apparaît dans la fenêtre des résultats, sous les étoiles.
    Il ne prend jamais les clics (on joue à travers lui).
    Sur la page d'accueil, il est le personnage principal : il prend la place de l'élément #pom-accueil, et on peut le toucher.
 
@@ -78,7 +79,8 @@
     } else {
       if (mode === 'pose' || !mode) { boite.classList.remove('visible'); moteur.arreter(); }
       mode = 'fenetre';
-      boite.style.height = boite.style.left = boite.style.top = '';
+      if (boite.classList.contains('sur-tapis')) placerSurLeTapis();
+      else boite.style.height = boite.style.left = boite.style.top = '';
     }
     boite.dataset.mode = mode;
   }
@@ -94,7 +96,9 @@
       const carte = [...document.querySelectorAll('.carte-resultats')].find(visible);
       if (!carte && ++n <= 15) return;
       clearInterval(attenteFenetre);
-      if (!carte) return;
+      if (!carte) { surLeTapis(f); return; } // pas de fenêtre (une partie d'un défi) : au milieu de l'échiquier
+      cacherDuTapis(true);
+      boite.classList.remove('sur-tapis');
       // sous les étoiles (ou, sans étoiles, avant le titre)
       const etoiles = [...carte.querySelectorAll('.etoiles')].find(visible);
       const titre = [...carte.querySelectorAll('.res-titre')].find(visible);
@@ -112,19 +116,64 @@
     essayer();
   }
 
+  // ---------- Au milieu de l'échiquier (petit écran) : une petite réaction à chaque réponse ----------
+  // Pom' surgit, centré sur l'échiquier, fait son animation et repart ; il s'efface dès qu'on touche l'écran, pour ne
+  // jamais empêcher de voir le jeu.
+  let finTapis = 0;
+  function placerSurLeTapis() {
+    const a = ancre();
+    if (!a) return false;
+    const r = a.getBoundingClientRect();
+    // le corps (du haut de la croix aux pieds : 970 unités, son milieu à x = 510, y = 484) fait 70 % de l'échiquier
+    const e = Math.min(r.width, r.height, window.innerHeight * .8) * .7 / 970;
+    boite.style.height = 1300 * e + 'px';
+    boite.style.left = r.left + r.width / 2 - 450 * e + 'px';
+    boite.style.top = r.top + r.height / 2 - 784 * e + 'px';
+    return true;
+  }
+  function surLeTapis(f) {
+    clearTimeout(finTapis);
+    if (boite.parentNode !== document.body) document.body.appendChild(boite);
+    boite.classList.add('sur-tapis');
+    if (!placerSurLeTapis()) { boite.classList.remove('sur-tapis'); return; }
+    void boite.offsetWidth;
+    boite.classList.add('visible');
+    moteur.demarrer();
+    f();
+  }
+  function cacherDuTapis(vite) {
+    if (!boite || !boite.classList.contains('sur-tapis')) return;
+    boite.classList.remove('visible');
+    clearTimeout(finTapis);
+    finTapis = setTimeout(() => {
+      if (boite.classList.contains('visible')) return;
+      boite.classList.remove('sur-tapis');
+      boite.style.height = boite.style.left = boite.style.top = '';
+      moteur.arreter();
+    }, vite ? 0 : 350);
+  }
+  const surLeTapisVisible = () => !!boite && boite.classList.contains('sur-tapis') && boite.classList.contains('visible');
+
   // ---------- Jouer une animation ----------
   // fenetre : une réaction de fin de partie ou de défi, qui a sa place dans la fenêtre des résultats ; sur petit
   // écran, les autres réactions n'ont pas lieu
   function jouer(nom, suite, fenetre) {
     if (!moteur || !nom) return;
-    if (mode === 'fenetre') { if (fenetre) dansLaFenetre(() => moteur.jouer(nom, suite)); return; }
+    if (mode === 'fenetre') {
+      if (fenetre) dansLaFenetre(() => moteur.jouer(nom, suite));
+      else surLeTapis(() => moteur.jouer(nom, suite));
+      return;
+    }
     moteur.jouer(nom, suite);
   }
   function quandChange(nom) {
     document.dispatchEvent(new CustomEvent('pom-change', { detail: nom }));
+    if (!nom) cacherDuTapis(); // l'animation est finie : il repart de l'échiquier
   }
-  const niveauEnCours = () => (moteur && moteur.enCours ? moteur.NIVEAUX[moteur.enCours] || 0 : 0);
-  const erreurEnCours = () => !!(moteur && moteur.enCours && moteur.ERREURS.includes(moteur.enCours));
+  // (sur l'échiquier, une animation qu'on a fait disparaître en touchant l'écran ne compte plus)
+  const enCours = () => (moteur && moteur.enCours && (mode !== 'fenetre' || surLeTapisVisible() || !boite.classList.contains('sur-tapis')) ? moteur.enCours : null);
+  const niveauEnCours = () => (enCours() ? moteur.NIVEAUX[enCours()] || 0 : 0);
+  const erreurEnCours = () => !!(enCours() && moteur.ERREURS.includes(enCours()));
 
   // une réussite : si une réussite au moins aussi belle est déjà en cours, on la laisse finir (défi chrono : les
   // bonnes réponses s'enchaînent vite) ; forcer : la fin d'une partie ou d'un défi passe avant tout
@@ -138,8 +187,9 @@
   }
 
   // ---------- Il s'endort quand on ne joue plus (grand écran) ----------
-  function activite() {
+  function activite(ev) {
     derniereActivite = Date.now();
+    if (ev && ev.type !== 'wheel' && surLeTapisVisible()) cacherDuTapis();
     if (moteur && (moteur.enCours === 'endort' || moteur.enCours === 'dort')) jouer('reveil');
   }
   function surveillerSommeil() {
@@ -156,8 +206,11 @@
     .pom-compagnon { position: fixed; z-index: 60; left: 0; top: 0; height: 300px; aspect-ratio: 900 / 1300;
       pointer-events: none; opacity: 0; transition: opacity .3s; }
     .pom-compagnon.visible { opacity: 1; }
-    .pom-compagnon[data-mode="fenetre"] { position: relative; z-index: 2; flex: none; height: 170px; margin: -36px auto -12px; } /* (le haut du dessin est la place du chapeau lancé) */
-    @media (max-height: 640px) { .pom-compagnon[data-mode="fenetre"] { height: 130px; } }
+    .pom-compagnon.sur-tapis { position: fixed; z-index: 40; margin: 0; transform: scale(.4) translateY(30%); transform-origin: 50% 70%;
+      transition: opacity .25s, transform .4s cubic-bezier(.2, 1.4, .4, 1); }
+    .pom-compagnon.sur-tapis.visible { transform: none; }
+    .pom-compagnon[data-mode="fenetre"]:not(.sur-tapis) { position: relative; z-index: 2; flex: none; height: 170px; margin: -36px auto -12px; } /* (le haut du dessin est la place du chapeau lancé) */
+    @media (max-height: 640px) { .pom-compagnon[data-mode="fenetre"]:not(.sur-tapis) { height: 130px; } }
     .pom-compagnon .pom-svg { display: block; width: 100%; height: 100%; overflow: visible; }
     .pom-compagnon .pom-svg #pom-ombre, #pom-accueil .pom-svg #pom-ombre { fill: rgba(0, 0, 0, .14); }
     .pom-compagnon .pom-svg *, #pom-accueil .pom-svg * { pointer-events: none; }
@@ -199,7 +252,7 @@
       placer();
       window.addEventListener('resize', placer);
       // (il est fixe à l'écran, pour que ses étoiles ne fassent jamais défiler la page : il suit l'échiquier qui défile)
-      window.addEventListener('scroll', () => { if (mode === 'pose') placer(); }, { passive: true });
+      window.addEventListener('scroll', () => { if (mode === 'pose') placer(); else if (surLeTapisVisible()) placerSurLeTapis(); }, { passive: true });
       // la page bouge (un panneau qui s'ouvre, l'échiquier qui se redimensionne) : il suit l'échiquier
       if (window.ResizeObserver) {
         const ro = new ResizeObserver(() => placer());
