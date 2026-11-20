@@ -14,7 +14,7 @@ tel quel), puis `python3 outils/version.py` et `python3 outils/anglais/generer.p
 - `animations-pom.html` : la page de test des animations de Pom' (publiée comme artefact Claude privé :
   « Animations de Pom' »). Pom' y est dessiné en SVG ; un petit moteur décrit chaque animation par des pistes
   (valeurs clés dans le temps) pour le corps, la tête, les yeux, les sourcils, le chapeau et les bras.
-  Animations : Hop, hourra ! ; La danse du chapeau ; La toupie ; Yes ! ; Bonjour ! ; Hmm… ; Eurêka ! ;
+  Animations : Hop, hourra ! (les bras se lèvent en passant par l'avant) ; La danse du chapeau ; La toupie ; Yes ! ; Bonjour ! ; Hmm… ; Eurêka ! ;
   Bonjour ! par la gauche (le même, en miroir : celui du site) ; Hmm… puis Eurêka ! ; Oh non… ; Oh là là ! ; Quel beau coup ! (révérence, chapeau qui tombe) ; Dab ! (double dab, tête penchée) ; Le floss (bras devant et derrière le corps) ; Bravo ! (il applaudit) ; Clin d'œil (avec le signe OK) ; Tape-m'en cinq ! (high-five vers l'écran) ; Pouce levé ; La vague ; La guitare (imaginaire) ; Le music-hall (le chapeau roule le long des bras) ;
   Le basket (le chapeau tourne sur l'index) ; Le tour de magie (un pion sort du chapeau) ; La glissade ; La roue ; Il s'endort… (puis il dort, en boucle) ; Réveil !
 - Niveaux de réussite (pour les exercices) : 1 étoile (Yes !, Pouce levé, Clin d'œil, Bravo !, La vague, Tape-m'en cinq !),

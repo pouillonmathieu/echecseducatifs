@@ -420,6 +420,21 @@ window.creerPom = function (svg, options = {}) {
   const brasRepos = (c) => ({ a: P['a' + c], b: P['b' + c], lg: 1, p: P['p' + c] });
   const bougerBras = (u, v, k) => ({ a: u.a + (v.a - u.a) * k, b: u.b + (v.b - u.b) * k, lg: u.lg + (v.lg - u.lg) * k, p: u.p + (v.p - u.p) * k });
   const pistesBras = (c, f) => ({ ['a' + c]: (ms) => f(ms).a, ['b' + c]: (ms) => f(ms).b, ['lg' + c]: (ms) => f(ms).lg, ['p' + c]: (ms) => f(ms).p });
+  // un bras qui se lève (ou s'abaisse) en tournant vers l'avant, comme en 3D, et non à plat sur le côté : il passe devant
+  // le corps, raccourci quand il pointe vers nous, et arrive en haut avec le coude retourné (plié vers l'extérieur). La
+  // main, elle, garde son sens : en haut, la paume face à nous, le pouce vers la tête.
+  // k : de 0 (en bas, angle aBas) à 1 (en haut, angle aHaut) ; b : la courbe du bras en bas
+  function brasVersLAvant(cote, k, aBas, aHaut, b) {
+    const x0 = Math.cos(rad(aBas)), y0 = Math.sin(rad(aBas)), x1 = Math.cos(rad(aHaut)), y1 = Math.sin(rad(aHaut));
+    const kk = Math.max(-.25, Math.min(1, k));
+    const x = x0 + (x1 - x0) * Math.max(0, kk);                         // l'écart sur le côté
+    const r = Math.abs(y0) + (Math.abs(y1) - Math.abs(y0)) * Math.max(0, kk); // la longueur dans le plan haut / avant
+    const phi = Math.PI * kk;                                          // 0 : vers le bas ; π / 2 : vers nous ; π : vers le haut
+    const y = r * Math.cos(phi);
+    let a = Math.atan2(y, x) * 180 / Math.PI;
+    if (cote === 'G' && a < 0) a += 360;
+    return { a, lg: Math.max(.35, Math.hypot(x, y)), b: b * Math.cos(phi) };
+  }
 
   const DANSES = {
     // 1. il se tasse, bondit, le chapeau s'envole en tournant et retombe sur la pomme
@@ -430,9 +445,17 @@ window.creerPom = function (svg, options = {}) {
       teteY: [[0, 0], [260, -14, 'out'], [420, 26, 'out'], [900, 10], [1260, -20, 'out'], [1500, 6, 'out'], [1950, 0, 'ressort']],
       chapY: [[0, 0], [300, -10], [560, 110, 'out'], [1020, 140, 'out'], [1360, 0, 'in'], [1460, -14, 'out'], [1700, 0, 'ressort']],
       chapRot: [[0, 0], [380, 0], [1300, 360, 'io'], [2600, 360]],
-      aG: [[0, P.aG], [260, 150, 'out'], [420, 222, 'out'], [1200, 228], [1300, 175, 'out'], [2000, P.aG, 'ressort']],
-      aD: [[0, P.aD], [260, 15, 'out'], [420, -62, 'out'], [1200, -66], [1300, -40, 'out'], [2000, P.aD, 'ressort']],
-      bG: [[0, P.bG], [420, 34], [1200, 30], [2000, P.bG]],
+      // les bras se lèvent en tournant vers l'avant (ils passent devant le corps), puis redescendent de même
+      ...(() => {
+        const K = piste([[0, 0], [260, .22, 'out'], [440, 1, 'out'], [1200, 1], [1480, .2, 'in'], [2000, 0, 'ressort']]);
+        const HAUT = piste([[0, 222], [440, 222], [1200, 228]]);
+        const g = (ms) => brasVersLAvant('G', K(ms), P.aG, HAUT(ms), 34);
+        const d = (ms) => brasVersLAvant('D', K(ms), P.aD, 180 - HAUT(ms), -34);
+        return {
+          aG: (ms) => g(ms).a, lgG: (ms) => g(ms).lg, bG: (ms) => g(ms).b,
+          aD: (ms) => d(ms).a, lgD: (ms) => d(ms).lg, bD: (ms) => d(ms).b,
+        };
+      })(),
       mainG: [[0, 'pendante'], [260, 'paume'], [1500, 'pendante']], mainD: [[0, 'pendante'], [260, 'paume'], [1500, 'pendante']],
       joie: [[0, 0], [300, 1, 'out'], [1900, 1], [2200, 0]],
       pG: (ms) => (ms < 400 || ms > 1250 ? P.pG : 25 * Math.sin((ms - 400) / 850 * 4 * Math.PI)),
