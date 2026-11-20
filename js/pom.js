@@ -13,7 +13,7 @@
    Sur la page d'accueil, il est le personnage principal : il prend la place de l'élément #pom-accueil, et on peut le toucher.
 
    Les jeux l'appellent ainsi :
-     Pom.bonneReponse()  une bonne réponse (1 étoile ; une série de 5 bonnes réponses : 2 étoiles, de 10 : 3 étoiles)
+     Pom.bonneReponse()  une bonne réponse (1 étoile ; à partir de 5 bonnes réponses d'affilée : 2 étoiles, de 10 : 3)
      Pom.erreur()        une erreur (la série repart de zéro)
      Pom.etoiles(n)      une partie gagnée avec n étoiles (1 à 3) ; 0 : perdue
      Pom.resultat(n)     la fin d'un défi, avec n étoiles (0 à 3 ; à 0, il encourage)
@@ -62,6 +62,7 @@
   }
   function placer() {
     if (!boite || mode === 'accueil') return;
+    if (!present) { masquer(); return; }
     const a = ancre();
     const r = a && a.getBoundingClientRect();
     // la place libre à gauche de l'ancre ; l'échelle du dessin (en pixels par unité)
@@ -97,8 +98,10 @@
       if (!carte && ++n <= 15) return;
       clearInterval(attenteFenetre);
       if (!carte) { surLeTapis(f); return; } // pas de fenêtre (une partie d'un défi) : au milieu de l'échiquier
-      cacherDuTapis(true);
+      // (il était peut-être au milieu de l'échiquier, pour la dernière réponse : il quitte sa place)
+      clearTimeout(finTapis);
       boite.classList.remove('sur-tapis');
+      boite.style.height = boite.style.left = boite.style.top = '';
       // sous les étoiles (ou, sans étoiles, avant le titre)
       const etoiles = [...carte.querySelectorAll('.etoiles')].find(visible);
       const titre = [...carte.querySelectorAll('.res-titre')].find(visible);
@@ -195,7 +198,7 @@
   function surveillerSommeil() {
     clearInterval(dodo);
     dodo = setInterval(() => {
-      if (!moteur || mode === 'fenetre' || moteur.enCours || document.hidden) return;
+      if (!moteur || (mode !== 'pose' && mode !== 'accueil') || moteur.enCours || document.hidden) return;
       if (Date.now() - derniereActivite > 90000) jouer('endort', ['dort']);
     }, 5000);
     ['pointerdown', 'keydown', 'wheel'].forEach((t) => window.addEventListener(t, activite, { passive: true, capture: true }));
@@ -209,8 +212,10 @@
     .pom-compagnon.sur-tapis { position: fixed; z-index: 40; margin: 0; transform: scale(.4) translateY(30%); transform-origin: 50% 70%;
       transition: opacity .25s, transform .4s cubic-bezier(.2, 1.4, .4, 1); }
     .pom-compagnon.sur-tapis.visible { transform: none; }
-    .pom-compagnon[data-mode="fenetre"]:not(.sur-tapis) { position: relative; z-index: 2; flex: none; height: 170px; margin: -36px auto -12px; } /* (le haut du dessin est la place du chapeau lancé) */
-    @media (max-height: 640px) { .pom-compagnon[data-mode="fenetre"]:not(.sur-tapis) { height: 130px; } }
+    /* dans la fenêtre des résultats : aussi grand que l'écran le permet ; le haut du dessin (23 %) est la place du
+       chapeau lancé, il remonte donc derrière les étoiles */
+    .pom-compagnon[data-mode="fenetre"]:not(.sur-tapis) { --h: clamp(160px, 31vh, 270px); position: relative; z-index: 2; flex: none;
+      height: var(--h); margin: calc(var(--h) * -.21) auto -12px; }
     .pom-compagnon .pom-svg { display: block; width: 100%; height: 100%; overflow: visible; }
     .pom-compagnon .pom-svg #pom-ombre, #pom-accueil .pom-svg #pom-ombre { fill: rgba(0, 0, 0, .14); }
     .pom-compagnon .pom-svg *, #pom-accueil .pom-svg * { pointer-events: none; }
@@ -222,11 +227,43 @@
     st.textContent = STYLE;
     document.head.appendChild(st);
     accueil = document.getElementById('pom-accueil');
-    if (!accueil && !present) return;
+    if (accueil || present) charger();
+  }
+  let charge = false;
+  function charger() {
+    if (charge) return;
+    charge = true;
     const s = document.createElement('script');
     s.src = SRC_MOTEUR;
     s.onload = installer;
     document.head.appendChild(s);
+  }
+  // masqué (le réglage) : il disparaît tout de suite, où qu'il soit
+  function masquer() {
+    if (!boite || mode === 'accueil') return;
+    clearInterval(attenteFenetre);
+    clearTimeout(finTapis);
+    boite.classList.remove('visible', 'sur-tapis');
+    boite.style.height = boite.style.left = boite.style.top = '';
+    if (boite.parentNode !== document.body) document.body.appendChild(boite);
+    moteur.arreter();
+    mode = 'cache';
+    boite.dataset.mode = mode;
+  }
+
+  // ---------- Le réglage « Pom' » dans le panneau de réglages de chaque jeu ----------
+  function ajouterReglage() {
+    const panneau = document.getElementById('panneau-reglages');
+    if (!panneau || document.getElementById('pom-accueil') || document.getElementById('reg-pom') || !window.Commun) return;
+    const b = document.createElement('button');
+    b.id = 'reg-pom';
+    b.className = 'ligne-reglage';
+    b.type = 'button';
+    b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 7.5c-1.6-1.3-5-1-5 2.6 0 2.4 1.6 4.4 3.3 4.3.8 0 1-.4 1.7-.4s.9.4 1.7.4c1.7.1 3.3-1.9 3.3-4.3 0-3.6-3.4-3.9-5-2.6Z"/><path d="M12 7.5c0-1.4-.5-2.6-1.4-3.4M12.3 6c.8-1.2 2.2-1.7 3.5-1.4"/><path d="M9.5 17h5l1.5 3.5H8Z"/></svg>' +
+      `<span>${EN ? 'Pom\', the coach' : 'Pom\', le coach'}</span><span class="interrupteur" aria-hidden="true"></span>`;
+    const son = document.getElementById('reg-son');
+    if (son && son.parentNode === panneau) panneau.insertBefore(b, son); else panneau.appendChild(b);
+    window.Commun.brancherInterrupteur(b, present, (v) => { window.Pom.present = v; });
   }
   function installer() {
     if (!window.creerPom || !window.POM_DESSIN) return;
@@ -271,7 +308,7 @@
 
   // chaque demande attend que Pom' soit prêt (seule la dernière compte) ; rien si on préfère moins d'animations
   const quandPret = (f) => () => {
-    if (reduit.matches) return;
+    if (reduit.matches || (!present && !accueil)) return;
     if (moteur) f(); else enAttente = f;
   };
 
@@ -280,9 +317,14 @@
     set present(v) {
       present = !!v;
       try { localStorage.setItem('echecs.pom', present ? 'oui' : 'non'); } catch (e) { /* rien */ }
+      // dans un jeu, le réglage vaut tout de suite
+      if (document.getElementById('pom-accueil') || !document.getElementById('panneau-reglages')) return;
+      if (!present) masquer();
+      else if (moteur) { mode = null; placer(); }
+      else charger();
     },
     get moteur() { return moteur; },
-    bonneReponse: quandPret(() => { serie++; bravo(serie % 10 === 0 ? 3 : serie % 5 === 0 ? 2 : 1); }),
+    bonneReponse: quandPret(() => { serie++; bravo(serie >= 10 ? 3 : serie >= 5 ? 2 : 1); }),
     erreur: quandPret(() => { serie = 0; oups(); }),
     etoiles: (n) => quandPret(() => { if (n >= 1) bravo(Math.min(3, n), true); else { serie = 0; jouer(moteur.auHasard(), [], true); } })(),
     resultat: (n) => quandPret(() => (n >= 1 ? bravo(Math.min(3, n), true) : jouer('pouce', [], true)))(),
@@ -293,6 +335,8 @@
     t: (fr, en) => (EN ? en : fr),
   };
 
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ajouterReglage);
+  else ajouterReglage();
   if (document.readyState === 'complete') demarrer();
   else window.addEventListener('load', demarrer);
 })();

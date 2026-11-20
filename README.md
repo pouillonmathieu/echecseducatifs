@@ -206,7 +206,7 @@ possibilité (code commun : `Echiquier.annotations` dans `js/echiquier.js`) ; le
 Pom' (une pièce d'échecs avec une pomme pour tête et un chapeau melon couronné d'une croix) est le personnage principal
 du site. Sur la page d'accueil, il entre par la gauche et dit bonjour dans sa bulle et fait une danse quand on le touche (il s'endort si on le
 laisse, et se réveille quand on revient). Dans les jeux, il réagit : une bonne réponse, une animation de réussite à
-1 étoile (une série de 5 bonnes réponses d'affilée : 2 étoiles ; de 10 : 3 étoiles) ; une erreur, une animation d'erreur ;
+1 étoile (à partir de 5 bonnes réponses d'affilée : 2 étoiles ; à partir de 10 : 3 étoiles) ; une erreur, une animation d'erreur ;
 une partie gagnée (« Capture le roi », « Le cheval de la reine », le labyrinthe, la fin d'une partie de « Joue le coup »,
 une ouverture rejouée, une victoire à « Dice chess »), l'animation du nombre d'étoiles obtenues ; la fin d'un défi aussi
 (à 0 étoile, il encourage d'un pouce levé). Un indice : il réfléchit ; une solution : « Eurêka ! ». Dans un défi chrono,
@@ -219,7 +219,9 @@ d'une petite réaction à chaque réponse (70 % de la taille de l'échiquier ; i
 fin d'une partie ou d'un défi, il apparaît dans la fenêtre des résultats, sous les étoiles (sans fenêtre, sur
 l'échiquier). Il ne prend jamais les clics. Il est noir sur
 fond clair et blanc en mode sombre ; si l'appareil demande moins d'animations, il reste immobile.
-Le réglage « Pom' dans les jeux » de la page d'accueil (clé `echecs.pom`) le retire des jeux.
+Le réglage « Pom' dans les jeux » de la page d'accueil, ou « Pom', le coach » dans les réglages de chaque jeu (ajouté
+par `js/pom.js`, avant « Son »), le retire des jeux (clé `echecs.pom`) ; dans un jeu, il disparaît ou revient tout de suite.
+Sur l'accueil, il arrive de hors de l'écran (ses bonds y sont allongés, il y est plus petit).
 
 Le code : `js/pom.js` (le placement, les réactions, l'API `Pom.bonneReponse()`, `Pom.erreur()`, `Pom.etoiles(n)`,
 `Pom.resultat(n)`, `Pom.hmm()`, `Pom.eureka()`) charge après la page `js/pom-moteur.js` (le dessin et les animations, 64 Ko

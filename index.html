@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/commun.css?v=202611201424">
-<link rel="stylesheet" href="css/accueil.css?v=202611201424">
-<script src="js/commun.js?v=202611201424"></script>
+<link rel="stylesheet" href="css/commun.css?v=202611201437">
+<link rel="stylesheet" href="css/accueil.css?v=202611201437">
+<script src="js/commun.js?v=202611201437"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -182,8 +182,8 @@
   </footer>
 </main>
 
-<script src="js/pieces.js?v=202611201424"></script>
-<script src="js/pom.js?v=202611201424"></script>
+<script src="js/pieces.js?v=202611201437"></script>
+<script src="js/pom.js?v=202611201437"></script>
 <script>
   (function () {
     const t = Commun.t;
@@ -216,8 +216,16 @@
     window.addEventListener('resize', ajuster);
     document.fonts?.ready.then(ajuster);
     // il entre par la gauche (il se tient à gauche de la page) et dit bonjour
-    // (tout de suite, avant sa première image : on ne le voit pas debout avant qu'il arrive)
-    document.addEventListener('pom-pret', () => Pom.jouer('bonjourGauche'));
+    // il entre par la gauche et dit bonjour : tout de suite, avant sa première image (on ne le voit pas debout avant
+    // qu'il arrive), et de plus loin que dans les jeux (il est plus petit ici) : ses bonds sont allongés pour qu'il parte
+    // de hors de l'écran (le bonjour le fait partir à 760 unités du dessin à gauche de sa place ; son corps, bras
+    // compris, fait 430 unités de large ; #pom-accueil fait 1010 unités de haut)
+    document.addEventListener('pom-pret', () => {
+      const m = Pom.moteur, d = m.DANSES.bonjourGauche, r = bouton.getBoundingClientRect();
+      const e = r.height / 1010, k = Math.max(1, (r.left + r.width / 2 + 215 * e + 12) / (760 * e));
+      m.DANSES.bonjourLoin = { ...d, pose: (ms) => { const p = d.pose(ms); return { ...p, x: p.x * k }; } };
+      Pom.jouer('bonjourLoin');
+    });
     bouton.addEventListener('click', () => {
       const m = Pom.moteur;
       if (!m || m.enCours === 'reveil') return; // il était en train de dormir : il se réveille d'abord
