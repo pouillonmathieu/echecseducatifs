@@ -68,7 +68,8 @@
     // la place libre à gauche de l'ancre ; l'échelle du dessin (en pixels par unité)
     const libre = r ? r.left - ECART - 6 : 0;
     const e = Math.min(HAUTEUR_MAX / 1300, Math.max(r ? r.height : 0, 300) * 1.05 / 1268, libre / 430);
-    if (r && 1300 * e >= HAUTEUR_MIN && window.innerHeight >= 560) {
+    // (sur téléphone, jamais à côté de l'échiquier : il apparaît dans la fenêtre des résultats ou sur l'échiquier)
+    if (r && 1300 * e >= HAUTEUR_MIN && window.innerHeight >= 560 && window.innerWidth > 760) {
       mode = 'pose';
       if (boite.parentNode !== document.body) document.body.appendChild(boite);
       const centre = r.left - ECART - 215 * e; // le milieu du corps
@@ -218,7 +219,7 @@
     .pom-compagnon.sur-tapis.visible { transform: none; }
     /* dans la fenêtre des résultats : aussi grand que l'écran le permet ; le haut du dessin (23 %) est la place du
        chapeau lancé, il remonte donc derrière les étoiles */
-    .pom-compagnon[data-mode="fenetre"]:not(.sur-tapis) { --h: clamp(160px, 31vh, 270px); position: relative; z-index: 2; flex: none;
+    .carte-resultats .pom-compagnon[data-mode="fenetre"]:not(.sur-tapis) { --h: clamp(160px, 31vh, 270px); position: relative; z-index: 2; flex: none;
       height: var(--h); margin: calc(var(--h) * -.21) auto -12px; }
     .pom-compagnon .pom-svg { display: block; width: 100%; height: 100%; overflow: visible; }
     .pom-compagnon .pom-svg #pom-ombre, #pom-accueil .pom-svg #pom-ombre { fill: rgba(0, 0, 0, .14); }
