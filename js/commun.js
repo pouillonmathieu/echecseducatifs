@@ -234,8 +234,16 @@
       el.style.maxWidth = '';
       if (window.innerWidth > 760 || !el.getClientRects().length) return;
       // (trois passes au plus : la page ne rétrécit pas toujours d'autant que l'échiquier)
+      // les crédits du bas de page (signature, crédits des photos) peuvent passer sous l'écran : on les compte à part
+      const credits = [...document.querySelectorAll('.signature, .credits-photos')];
+      const depasse = () => {
+        credits.forEach((c) => { c.dataset.affichage = c.style.display; c.style.display = 'none'; });
+        const d = document.documentElement.scrollHeight - window.innerHeight;
+        credits.forEach((c) => { c.style.display = c.dataset.affichage; delete c.dataset.affichage; });
+        return d;
+      };
       for (let i = 0; i < 3; i++) {
-        const trop = document.documentElement.scrollHeight - window.innerHeight;
+        const trop = depasse();
         if (trop <= 0) return;
         // (la largeur du contenu : sans les marges intérieures, si l'élément en a)
         const st = getComputedStyle(el), largeur = parseFloat(st.width);

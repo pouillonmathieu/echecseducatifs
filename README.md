@@ -229,7 +229,8 @@ doucement pour qu'on le remarque. Dice chess ouvre ses règles illustrées, qui 
   style de chaque jeu). « Note le coup » ne montre que les deux derniers coups de la feuille, et le x est sur la
   rangée des pièces du clavier.
 - En dernier recours, si la page dépasse encore de l'écran, l'échiquier (ou l'illustration : l'élément `[data-ajuste]`
-  de chaque jeu) rétrécit juste ce qu'il faut, sans descendre sous 210 px (`js/commun.js`). Ce réglage se refait seulement
+  de chaque jeu) rétrécit juste ce qu'il faut, sans descendre sous 210 px (`js/commun.js`). Les crédits du bas de
+  page (« Créé par… », « Crédits des photos ») ne comptent pas : ils peuvent passer sous le bas de l'écran. Ce réglage se refait seulement
   quand la largeur change (rotation) : la barre d'adresse du téléphone, qui apparaît et disparaît, ne change que la
   hauteur, et ne doit pas faire rétrécir l'échiquier pendant qu'une explication est affichée.
 - Vérifié : les 12 jeux tiennent sans défiler sur 390 × 844, 360 × 740, 375 × 667 et sur ordinateur, avec l'échiquier
