@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../css/commun.css?v=202611221602">
-<link rel="stylesheet" href="../../css/jeux.css?v=202611221602">
-<link rel="stylesheet" href="../../css/echiquier.css?v=202611221602">
-<link rel="stylesheet" href="labyrinthe.css?v=202611221602">
-<script src="../../js/commun.js?v=202611221602"></script>
+<link rel="stylesheet" href="../../css/commun.css?v=202611221633">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611221633">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611221633">
+<link rel="stylesheet" href="labyrinthe.css?v=202611221633">
+<script src="../../js/commun.js?v=202611221633"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- obstacles (une case chacun), maison et icônes -->
@@ -144,7 +144,7 @@
   <section class="jeu-laby">
     <div class="colonne-plateau">
       <!-- choix de la pièce et des obstacles (au hasard par défaut) -->
-      <div class="choix-jeu">
+      <div class="choix-jeu" data-une-ligne>
         <div class="choix-ligne seulement-libre" id="choix-piece" role="group" aria-label="Pièce">
           <button type="button" data-valeur="cavalier" aria-label="Cavalier" title="Cavalier"><svg viewBox="0 0 100 100"><use href="#piece-cavalier-noir"/></svg></button>
           <button type="button" data-valeur="fou" aria-label="Fou" title="Fou"><svg viewBox="0 0 100 100"><use href="#piece-fou-noir"/></svg></button>
@@ -165,28 +165,10 @@
           <button type="button" data-niveau="difficile" aria-label="Difficile : 6 à 10 coups" title="Difficile (6 à 10 coups)"><svg viewBox="0 0 24 24" class="barres"><rect x="3" y="16" width="5" height="5" rx="1.5" class="pleine"/><rect x="10" y="11" width="5" height="10" rx="1.5" class="pleine"/><rect x="17" y="6" width="5" height="15" rx="1.5" class="pleine"/></svg></button>
         </div>
       </div>
-      <div id="echiquier" class="plateau-laby"></div>
+      <div data-ajuste id="echiquier" class="plateau-laby"></div>
     </div>
 
     <div class="panneau-laby">
-      <p class="question" aria-live="polite">
-        <svg class="maison-question" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-maison"/></svg>
-        <span id="consigne">Ramène la pièce à sa maison</span>
-      </p>
-      <!-- pour le cavalier : il saute par-dessus les obstacles -->
-      <div class="bulle-cavalier" id="bulle-cavalier" hidden>
-        <svg class="bulle-dessin" viewBox="0 0 136 60" aria-hidden="true">
-          <rect x="2" y="18" width="40" height="40" rx="6" style="fill:var(--plateau-claire)"/>
-          <rect x="48" y="18" width="40" height="40" rx="6" style="fill:var(--plateau-foncee)"/>
-          <rect x="94" y="18" width="40" height="40" rx="6" style="fill:var(--plateau-claire)"/>
-          <use href="#piece-cavalier-noir" x="5" y="21" width="34" height="34"/>
-          <svg id="bulle-obstacle" x="49" y="19" width="38" height="38" viewBox="298 398 104 104"></svg>
-          <circle cx="114" cy="38" r="9" fill="none" stroke="#2E7D5B" stroke-width="2.5" stroke-dasharray="4 3"/>
-          <path d="M24 17C40 -3 92 -3 110 17" fill="none" stroke="#2E7D5B" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 5"/>
-          <path d="M103 13l8 5 1-9" fill="none" stroke="#2E7D5B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <p>Le cavalier <b>saute par‑dessus</b> les obstacles, mais ne peut pas s'arrêter dessus.</p>
-      </div>
       <div class="compteurs">
         <div class="compteur">
           <span class="c-val" id="nb-coups">0</span>
@@ -311,12 +293,12 @@
   </div>
 </div>
 
-<script src="../../js/pieces.js?v=202611221602"></script>
-<script src="../../js/sons.js?v=202611221602"></script>
-<script src="../../js/ui.js?v=202611221602"></script>
-<script src="../../js/echiquier.js?v=202611221602"></script>
-<script src="../../js/aide.js?v=202611221602"></script>
-<script src="../../js/pom.js?v=202611221602"></script>
-<script src="labyrinthe.js?v=202611221602"></script>
+<script src="../../js/pieces.js?v=202611221633"></script>
+<script src="../../js/sons.js?v=202611221633"></script>
+<script src="../../js/ui.js?v=202611221633"></script>
+<script src="../../js/echiquier.js?v=202611221633"></script>
+<script src="../../js/aide.js?v=202611221633"></script>
+<script src="../../js/pom.js?v=202611221633"></script>
+<script src="labyrinthe.js?v=202611221633"></script>
 </body>
 </html>

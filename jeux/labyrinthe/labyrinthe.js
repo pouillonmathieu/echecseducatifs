@@ -437,15 +437,8 @@
       .replace(/id="([^"]+)"/g, `id="$1-${suffixe}"`).replace(/url\(#([^)]+)\)/g, `url(#$1-${suffixe})`);
     return contenu;
   }
-  // bulle d'explication pour le cavalier (avec la matière en cours)
-  function majBulle() {
-    const cavalier = jeu.laby.piece === 'cavalier';
-    $('bulle-cavalier').hidden = !cavalier;
-    if (cavalier && $('bulle-obstacle').dataset.theme !== jeu.theme) {
-      $('bulle-obstacle').innerHTML = imageObstacle(jeu.theme, 'bulle');
-      $('bulle-obstacle').dataset.theme = jeu.theme;
-    }
-  }
+  // (le saut du cavalier par-dessus les obstacles est expliqué dans l'aide « ? »)
+  function majBulle() { }
   function poserPiece(c) {
     const ancienne = plateau.querySelector('.piece-laby');
     if (ancienne) ancienne.remove();
@@ -494,7 +487,6 @@
     $('resultats').hidden = true;
     $('pluie').innerHTML = '';
     $('retour').hidden = true;
-    $('consigne').textContent = EN ? `Bring the ${NAMES[jeu.laby.piece]} back home` : `Ramène ${NOMS[jeu.laby.piece]} à sa maison`;
     $('nb-optimal').textContent = jeu.laby.optimal;
     dessiner();
   }

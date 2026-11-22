@@ -85,9 +85,7 @@ body.presse #minuteur-barre { background: var(--alerte); }
 }
 /* petit téléphone : le titre passe sous les boutons pour ne pas être écrasé */
 @media (max-width: 420px) {
-  .barre { flex-wrap: wrap; row-gap: 6px; }
-  .barre .titre { order: 9; flex: 1 0 100%; margin: 0 2px; font-size: 20px; }
-  .barre .bouton-defis { margin-left: auto; }
+  /* (le titre reste à côté des boutons : il n'y a plus de boutons de langue ni de thème) */
 }
 
 /* revoir les coups : sous l'échiquier */

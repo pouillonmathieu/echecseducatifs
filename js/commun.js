@@ -149,5 +149,117 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', suivantToujoursVisible);
   else suivantToujoursVisible();
 
+  // ---------- Les choix au-dessus de l'échiquier, sur une seule ligne ----------
+  // Dans un <div class="choix-jeu" data-une-ligne>, si les groupes de boutons (.choix-ligne) ne tiennent pas sur une
+  // ligne, les plus larges se replient un à un : un groupe replié ne montre que le choix en cours (et une petite
+  // flèche) ; le toucher ouvre un menu avec tous les choix, par-dessus la page. Le jeu, lui, ne voit que des boutons.
+  function choixSurUneLigne() {
+    document.querySelectorAll('.choix-jeu[data-une-ligne]').forEach((zone) => {
+      const groupes = [...zone.querySelectorAll(':scope > .choix-ligne')];
+      let ouvert = null, place = null;
+      const visibles = () => groupes.filter((g) => g.getClientRects().length);
+      const tientSurUneLigne = () => {
+        const v = visibles();
+        // tous sur la même ligne, aucun qui déborde, et aucun groupe qui passe lui-même à la ligne (plus haut que les autres)
+        const surUneLigne = (g) => { const b = [...g.querySelectorAll('button')].find((x) => x.getClientRects().length); return !b || g.getBoundingClientRect().height < b.getBoundingClientRect().height * 1.6; };
+        return v.every((g) => Math.abs(g.offsetTop - v[0].offsetTop) < 4) && zone.scrollWidth <= zone.clientWidth + 1 && v.every(surUneLigne);
+      };
+      function fermer() {
+        if (!ouvert) return;
+        ouvert.classList.remove('ouvert');
+        ouvert.style.left = ouvert.style.top = ouvert.style.maxWidth = '';
+        if (place) place.remove();
+        ouvert = place = null;
+      }
+      function ouvrir(g) {
+        fermer();
+        const r = g.getBoundingClientRect(), z = zone.getBoundingClientRect();
+        place = document.createElement('span');
+        place.className = 'choix-place';
+        place.style.width = r.width + 'px';
+        place.style.height = r.height + 'px';
+        g.before(place);
+        g.classList.add('ouvert');
+        g.style.maxWidth = Math.min(window.innerWidth - 24, 420) + 'px';
+        // le menu s'ouvre sous le choix, sans sortir de l'écran
+        const largeur = g.getBoundingClientRect().width;
+        const gauche = Math.max(12 - z.left, Math.min(r.left - z.left, window.innerWidth - 12 - z.left - largeur));
+        g.style.left = gauche + 'px';
+        g.style.top = (r.top - z.top) + 'px';
+        ouvert = g;
+      }
+      function ajuster() {
+        fermer();
+        groupes.forEach((g) => g.classList.remove('replie'));
+        if (tientSurUneLigne()) return;
+        // les plus larges d'abord
+        const parTaille = visibles().sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width);
+        for (const g of parTaille) {
+          g.classList.add('replie');
+          if (tientSurUneLigne()) break;
+        }
+      }
+      groupes.forEach((g) => {
+        // groupe replié et fermé : le toucher ouvre le menu (le jeu ne reçoit pas ce clic)
+        g.addEventListener('click', (e) => {
+          if (!g.classList.contains('replie')) return;
+          if (g !== ouvert) { e.stopImmediatePropagation(); e.preventDefault(); ouvrir(g); return; }
+          // un choix dans le menu : le jeu le reçoit, puis le menu se referme
+          setTimeout(fermer, 0);
+        }, true);
+      });
+      document.addEventListener('click', (e) => { if (ouvert && !ouvert.contains(e.target)) fermer(); });
+      document.addEventListener('keydown', (e) => { if (ouvert && e.key === 'Escape') fermer(); });
+      window.addEventListener('resize', ajuster);
+      // (un groupe peut apparaître ou disparaître : mode libre ou défi, réglé par une classe du <body>)
+      new MutationObserver(() => { if (!ouvert) requestAnimationFrame(ajuster); }).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-mode'] });
+      ajuster();
+      document.fonts?.ready.then(ajuster);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', choixSurUneLigne);
+  else choixSurUneLigne();
+
+  // ---------- Sur un téléphone, le jeu tient dans l'écran ----------
+  // Si la page dépasse de l'écran, l'échiquier (ou l'illustration : l'élément [data-ajuste] de la page) rétrécit
+  // juste ce qu'il faut, sans descendre sous 210 px. Réglé au chargement, quand l'écran change de taille et quand le
+  // mode change (libre, défi) ; pas pendant le jeu (une explication qui s'ajoute après une réponse ne le fait pas
+  // rétrécir : le bouton « Suivant » reste à portée, voir plus haut).
+  function ajusterAuTelephone() {
+    const el = document.querySelector('[data-ajuste]');
+    if (!el) return;
+    let attente = 0;
+    function ajuster() {
+      attente = 0;
+      el.style.maxWidth = '';
+      if (window.innerWidth > 760 || !el.getClientRects().length) return;
+      // (trois passes au plus : la page ne rétrécit pas toujours d'autant que l'échiquier)
+      for (let i = 0; i < 3; i++) {
+        const trop = document.documentElement.scrollHeight - window.innerHeight;
+        if (trop <= 0) return;
+        // (la largeur du contenu : sans les marges intérieures, si l'élément en a)
+        const st = getComputedStyle(el), largeur = parseFloat(st.width);
+        const contenu = st.boxSizing === 'border-box' ? largeur : largeur;
+        if (el.getBoundingClientRect().width <= 210) return;
+        el.style.maxWidth = Math.max(st.boxSizing === 'border-box' ? 210 : 190, Math.floor(contenu - trop - 1)) + 'px';
+      }
+    }
+    const plusTard = () => { if (!attente) attente = requestAnimationFrame(ajuster); };
+    window.addEventListener('resize', plusTard);
+    // l'échiquier peut n'apparaître qu'après un choix (le champion, dans « Joue le coup ») : on règle quand il apparaît
+    let visible = false;
+    if (window.ResizeObserver) new ResizeObserver(() => {
+      const v = el.getClientRects().length > 0;
+      if (v && !visible) plusTard();
+      visible = v;
+    }).observe(el);
+    new MutationObserver(plusTard).observe(document.body, { attributes: true, attributeFilter: ['data-mode'] });
+    document.fonts?.ready.then(plusTard);
+    window.addEventListener('load', plusTard);
+    plusTard();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ajusterAuTelephone);
+  else ajusterAuTelephone();
+
   window.Commun = { EN, t, Prefs, PLATEAUX, choisirPlateau, brancherPlateau, themeEffectif, brancherBoutonTheme, brancherTheme, brancherReglages, brancherInterrupteur };
 })();

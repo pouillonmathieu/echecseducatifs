@@ -225,6 +225,18 @@ svg.illus { display: block; fill: none; stroke: none; }
 .choix-ligne button.avec-texte { display: flex; align-items: center; gap: 8px; width: auto; padding: 4px 12px 4px 5px; font-size: 15px; font-weight: 600; white-space: nowrap; }
 .choix-ligne button.avec-texte > svg { flex: none; width: 32px; height: 32px; }
 .choix-ligne button.avec-texte .interrupteur { margin-left: 4px; }
+/* les choix qui doivent tenir sur une ligne (data-une-ligne, js/commun.js) : un groupe replié ne montre que le choix
+   en cours, avec une petite flèche ; ouvert, c'est un menu par-dessus la page */
+.choix-jeu[data-une-ligne] { position: relative; flex-wrap: nowrap; align-items: flex-start; max-width: 100%; }
+.choix-ligne.replie { position: relative; padding-right: 20px; cursor: pointer; }
+.choix-ligne.replie::after {
+  content: ''; position: absolute; right: 8px; top: 50%; width: 6px; height: 6px; margin-top: -5px;
+  border-right: 2px solid var(--encre-douce); border-bottom: 2px solid var(--encre-douce); transform: rotate(45deg);
+}
+.choix-ligne.replie:not(.ouvert) button:not([aria-pressed="true"]) { display: none; }
+.choix-ligne.replie.ouvert { position: absolute; z-index: 30; flex-wrap: wrap; padding-right: 4px; box-shadow: var(--ombre-carte); }
+.choix-ligne.replie.ouvert::after { display: none; }
+.choix-place { flex: none; }
 /* niveau : barres pleines ou vides */
 .choix-niveau button:not(.avec-texte) { width: 40px; }
 .barres .pleine { fill: var(--accent); }

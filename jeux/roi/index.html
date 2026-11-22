@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../css/commun.css?v=202611221602">
-<link rel="stylesheet" href="../../css/jeux.css?v=202611221602">
-<link rel="stylesheet" href="../../css/echiquier.css?v=202611221602">
-<link rel="stylesheet" href="roi.css?v=202611221602">
-<script src="../../js/commun.js?v=202611221602"></script>
+<link rel="stylesheet" href="../../css/commun.css?v=202611221633">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611221633">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611221633">
+<link rel="stylesheet" href="roi.css?v=202611221633">
+<script src="../../js/commun.js?v=202611221633"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- illustrations des boutons : le roi noir et une tour sur un petit échiquier -->
@@ -80,7 +80,7 @@
 
   <section class="jeu-roi">
     <div class="colonne-plateau">
-      <div class="choix-jeu seulement-libre">
+      <div class="choix-jeu seulement-libre" data-une-ligne>
         <div class="choix-ligne choix-equipe" id="reg-equipe" role="group" aria-label="Équipe blanche">
           <button type="button" data-equipe="tours" title="Avec deux tours" aria-label="Avec deux tours"><span class="equipe-pieces" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#piece-tour-blanc"/></svg><svg viewBox="0 0 100 100"><use href="#piece-tour-blanc"/></svg></span></button>
           <button type="button" data-equipe="tour-fous" title="Avec une tour et deux fous" aria-label="Avec une tour et deux fous"><span class="equipe-pieces" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#piece-tour-blanc"/></svg><svg viewBox="0 0 100 100"><use href="#piece-fou-blanc"/></svg><svg viewBox="0 0 100 100"><use href="#piece-fou-blanc"/></svg></span></button>
@@ -97,7 +97,7 @@
           <button type="button" class="avec-texte" data-niveau="difficile" title="Le roi noir joue parfaitement"><svg viewBox="0 0 24 24" class="barres" aria-hidden="true"><rect x="3" y="16" width="5" height="5" rx="1.5" class="pleine"/><rect x="10" y="11" width="5" height="10" rx="1.5" class="pleine"/><rect x="17" y="6" width="5" height="15" rx="1.5" class="pleine"/></svg><span class="texte-choix">Difficile</span></button>
         </div>
       </div>
-      <div id="echiquier" class="plateau-roi"></div>
+      <div data-ajuste id="echiquier" class="plateau-roi"></div>
       <div class="navigation-coups" id="navigation" role="group" aria-label="Revoir les coups">
         <button type="button" class="bouton-icone" data-nav="debut" aria-label="Position de départ" title="Départ"><svg viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6Z"/></svg></button>
         <button type="button" class="bouton-icone" data-nav="prec" aria-label="Coup précédent" title="Coup précédent"><svg viewBox="0 0 24 24"><path d="M15 6l-7 6 7 6"/></svg></button>
@@ -110,7 +110,7 @@
     <div class="panneau-roi">
       <div class="compteur">
         <p class="compteur-nombre"><span id="coups">0</span> <span id="coups-mot">coup</span></p>
-        <p class="etat" id="etat" aria-live="polite">À toi de jouer : choisis une pièce.</p>
+        <p class="etat" id="etat" aria-live="polite"></p>
       </div>
       <p class="bareme" id="bareme"></p>
       <p class="etoiles-partie seulement-defi" id="etoiles-partie" aria-live="polite"></p>
@@ -204,15 +204,15 @@
   </div>
 </div>
 
-<script src="../../js/pieces.js?v=202611221602"></script>
-<script src="../../js/sons.js?v=202611221602"></script>
-<script src="../../js/ui.js?v=202611221602"></script>
-<script src="../../js/echiquier.js?v=202611221602"></script>
-<script src="../../js/revoir.js?v=202611221602"></script>
-<script src="../../js/glisser.js?v=202611221602"></script>
-<script src="../../js/aide.js?v=202611221602"></script>
-<script src="../../js/pom.js?v=202611221602"></script>
-<script src="tables.js?v=202611221602"></script>
-<script src="roi.js?v=202611221602"></script>
+<script src="../../js/pieces.js?v=202611221633"></script>
+<script src="../../js/sons.js?v=202611221633"></script>
+<script src="../../js/ui.js?v=202611221633"></script>
+<script src="../../js/echiquier.js?v=202611221633"></script>
+<script src="../../js/revoir.js?v=202611221633"></script>
+<script src="../../js/glisser.js?v=202611221633"></script>
+<script src="../../js/aide.js?v=202611221633"></script>
+<script src="../../js/pom.js?v=202611221633"></script>
+<script src="tables.js?v=202611221633"></script>
+<script src="roi.js?v=202611221633"></script>
 </body>
 </html>

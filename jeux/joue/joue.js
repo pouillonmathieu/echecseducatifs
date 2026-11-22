@@ -208,7 +208,7 @@
     dessiner(0);
     window.scrollTo({ top: 0 });
     jeu.etat = 'lecture';
-    consigne(t('Regarde la partie…', 'Watch the game…'), '', EN ? `It stops ${jeu.moments.size} times: at those moments, you play for ${nomCourt()}.` : `Elle s'arrête ${jeu.moments.size} fois : à ces moments-là, c'est toi qui joues pour ${nomCourt()}.`);
+    consigne('', '', ''); // (pas de consigne : elle est dans l'aide « ? »)
     majBoutons();
     jeu.minuterie = setTimeout(planifier, 1200);
   }
@@ -304,10 +304,12 @@
   }
 
   function consigneMoment() {
+    // (pas de consigne « À toi de jouer » : l'échiquier s'entoure de vert ; au niveau facile, le coup à jouer est écrit)
     const san = jeu.san[jeu.ply];
-    if (reglages.niveau === 'facile' || jeu.montre) consigne(t('À toi de jouer !', 'Your turn!'), coupEcrit(san, jeu.couleur), jeu.montre ? t('Voici le coup : joue-le sur l\'échiquier.', 'Here is the move: play it on the board.') : EN ? `Play this move by ${nomCourt()} on the board.` : `Joue ce coup de ${nomCourt()} sur l'échiquier.`);
-    else consigne(t('À toi de jouer !', 'Your turn!'), '', (EN ? `Find the move ${nomCourt()} played.` : `Trouve le coup joué par ${nomCourt()}.`) + (jeu.uniques.has(jeu.ply) ? t(' Attention : ici, un seul coup est vraiment bon !', ' Careful: here, only one move is really good!') : t(' Touche une pièce pour voir où elle peut aller.', ' Tap a piece to see where it can go.')));
+    if (reglages.niveau === 'facile' || jeu.montre) consigne('', coupEcrit(san, jeu.couleur), '');
+    else consigne('', '', jeu.uniques.has(jeu.ply) ? t('Attention : ici, un seul coup est vraiment bon !', 'Careful: here, only one move is really good!') : '');
   }
+
 
   function tenter(de, a) {
     if (jeu.etat !== 'moment') return;
@@ -359,7 +361,7 @@
     jeu.fleches = [];
     dessinerFleches();
     jeu.etat = 'lecture';
-    if (jeu.ply < jeu.coups.length) consigne(t('La partie continue…', 'The game goes on…'), '', '');
+    if (jeu.ply < jeu.coups.length) consigne('', '', '');
     majBoutons();
     planifier();
   }
@@ -831,6 +833,9 @@
     else $('consigne-detail').textContent = detail || '';
     if (!html) $('btn-continuer').hidden = true;
     $('consigne').classList.toggle('a-toi', jeu.etat === 'moment');
+    // vide, le cadre disparaît ; quand c'est à l'enfant de jouer, l'échiquier s'entoure de vert
+    $('consigne').hidden = !titre && !coup && !detail;
+    document.body.classList.toggle('a-toi', jeu.etat === 'moment');
   }
 
   function majBoutons() {
@@ -882,7 +887,7 @@
     if (document.body.dataset.ecran !== 'partie') return;
     n = Math.max(0, Math.min(jeu.ply, n));
     if (n === jeu.ply) { direct(); return; }
-    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne(t('Partie en pause', 'Game paused'), '', ''); majBoutons(); }
+    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); majBoutons(); }
     jeu.anim++;
     deselectionner();
     jeu.vue = n;
@@ -922,8 +927,8 @@
   // ---------- Boutons ----------
   $('btn-lecture').addEventListener('click', () => {
     if (jeu.vue !== null && jeu.etat === 'pause') direct();
-    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); consigne(t('Partie en pause', 'Game paused'), '', ''); }
-    else if (jeu.etat === 'pause') { jeu.etat = 'lecture'; consigne(t('La partie continue…', 'The game goes on…'), '', ''); planifier(); }
+    if (jeu.etat === 'lecture') { jeu.etat = 'pause'; clearTimeout(jeu.minuterie); }
+    else if (jeu.etat === 'pause') { jeu.etat = 'lecture'; planifier(); }
     majBoutons();
   });
   // « À moi ! » : on avance directement jusqu'au prochain moment (ou jusqu'à la fin s'il n'y en a plus)
@@ -941,6 +946,8 @@
   });
   // Pom' réfléchit avec toi (un indice)
   $('btn-indice').addEventListener('click', () => window.Pom?.hmm());
+  // (téléphone : l'histoire de la partie, repliée sur trois lignes, se déplie quand on la touche)
+  $('intro-partie').addEventListener('click', () => $('intro-partie').classList.toggle('ouverte'));
   $('btn-indice').addEventListener('click', () => { donnerIndice(); if (reglages.niveau === 'difficile' && !jeu.montre) consigne(t('Un indice', 'A hint'), '', t('La pièce qui doit bouger brille.', 'The piece that has to move is glowing.')); });
   $('btn-montrer').addEventListener('click', montrer);
   $('btn-continuer').addEventListener('click', continuer);

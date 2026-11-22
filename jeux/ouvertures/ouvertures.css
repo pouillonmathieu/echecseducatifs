@@ -211,7 +211,8 @@ body[data-vue="entrainement"] .plateau-ouv .case-e { cursor: pointer; }
   #btn-indice-texte { display: none; }
   .barre-plateau .choix-ligne #btn-indice { padding: 4px 8px; }
   /* le titre passe sous les boutons, sur toute la largeur */
-  .ecran-ouv > .barre { flex-wrap: wrap; row-gap: 4px; }
-  .ecran-ouv > .barre .titre { order: 10; flex-basis: 100%; margin: 0; font-size: 21px; }
-  .ecran-ouv > .barre > a.bouton-icone:first-child, .ecran-ouv > .barre > #btn-retour { margin-right: auto; }
+  /* (le titre reste à côté des boutons : il n'y a plus de boutons de langue ni de thème) */
 }
+
+/* pas de consigne sous l'échiquier : elle est dans l'aide « ? » (js/aide.js) */
+#question { display: none !important; }

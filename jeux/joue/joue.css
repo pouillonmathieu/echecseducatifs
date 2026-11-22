@@ -51,8 +51,8 @@ body[data-ecran="partie"] .seulement-choix { display: none !important; }
   gap: 28px;
 }
 .plateau-joue {
-  width: min(100%, 600px, calc(100vh - 210px));
-  width: min(100%, 600px, calc(100dvh - 210px));
+  width: min(100%, 600px, calc(100vh - 300px));
+  width: min(100%, 600px, calc(100dvh - 300px)); /* (sous l'échiquier : les flèches, les crédits ; tout tient sur l'écran) */
   touch-action: none;
 }
 .panneau-joue { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
@@ -222,4 +222,15 @@ body.en-arriere .plateau-joue { box-shadow: 0 0 0 3px var(--accent), 0 12px 30px
 @media (max-width: 420px) {
   .grille-champions { grid-template-columns: repeat(2, 1fr); }
   .outil { font-size: 11px; padding: 8px 2px 6px; }
+}
+
+/* c'est à l'enfant de jouer : l'échiquier s'entoure de vert (il n'y a plus de consigne écrite) */
+body.a-toi .plateau-joue { box-shadow: 0 0 0 4px var(--accent), 0 12px 30px rgba(0, 0, 0, .10); animation: a-toi-plateau 1.6s ease-in-out 2; }
+@keyframes a-toi-plateau { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 45%, transparent), 0 12px 30px rgba(0, 0, 0, .10); } }
+.consigne[hidden] { display: none; }
+
+/* téléphone : l'histoire de la partie tient en trois lignes ; la toucher la déplie */
+@media (max-width: 560px) {
+  .intro-texte { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; cursor: pointer; }
+  .intro-partie.ouverte .intro-texte { display: block; -webkit-line-clamp: unset; }
 }

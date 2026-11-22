@@ -159,3 +159,6 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .badge-diese.barre::after { width: 15px; }
   body.avec-pat .reponse { flex-direction: column; gap: 6px; padding: 10px 6px; font-size: 15px; text-align: center; }
 }
+
+/* pas de consigne sous l'échiquier : elle est dans l'aide « ? » (js/aide.js) */
+#question { display: none !important; }

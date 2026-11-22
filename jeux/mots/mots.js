@@ -363,7 +363,7 @@
     construireClavier();
     appliquerIndice();
     majApercu();
-    $('consigne').textContent = t(`Comment ça s'appelle ${EN_LANGUE[reglages.langue][0]} ?`, `What's it called ${EN_LANGUE[reglages.langue][1]}?`);
+    // (pas de consigne : elle est dans l'aide « ? »)
     $('progres').textContent = `${jeu.numero + 1} / ${jeu.serie.length}`;
     const r = $('retour');
     r.textContent = '';

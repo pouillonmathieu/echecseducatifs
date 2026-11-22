@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../css/commun.css?v=202611221602">
-<link rel="stylesheet" href="../../css/jeux.css?v=202611221602">
-<link rel="stylesheet" href="../../css/echiquier.css?v=202611221602">
-<link rel="stylesheet" href="notation.css?v=202611221602">
-<script src="../../js/commun.js?v=202611221602"></script>
+<link rel="stylesheet" href="../../css/commun.css?v=202611221633">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611221633">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611221633">
+<link rel="stylesheet" href="notation.css?v=202611221633">
+<script src="../../js/commun.js?v=202611221633"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- illustrations pour les non-lecteurs : un coup sur l'échiquier et la feuille de partie -->
@@ -98,24 +98,26 @@
 
   <section class="jeu-note">
     <div class="colonne-plateau">
-      <!-- niveau (mode libre) -->
-      <div class="choix-jeu seulement-libre">
-        <div class="choix-ligne choix-niveau" id="reg-niveau" role="group" aria-label="Niveau">
+      <!-- niveau (mode libre) et « revoir le coup » -->
+      <div class="choix-jeu">
+        <div class="choix-ligne choix-niveau seulement-libre" id="reg-niveau" role="group" aria-label="Niveau">
           <button type="button" class="avec-texte" data-niveau="facile" title="Coups simples"><svg viewBox="0 0 24 24" class="barres" aria-hidden="true"><rect x="3" y="16" width="5" height="5" rx="1.5" class="pleine"/><rect x="10" y="11" width="5" height="10" rx="1.5" class="vide"/><rect x="17" y="6" width="5" height="15" rx="1.5" class="vide"/></svg>Facile</button>
           <button type="button" class="avec-texte" data-niveau="difficile" title="Échec, mat, roque, promotion…"><svg viewBox="0 0 24 24" class="barres" aria-hidden="true"><rect x="3" y="16" width="5" height="5" rx="1.5" class="pleine"/><rect x="10" y="11" width="5" height="10" rx="1.5" class="pleine"/><rect x="17" y="6" width="5" height="15" rx="1.5" class="pleine"/></svg>Difficile</button>
         </div>
-      </div>
-      <div id="echiquier" class="plateau-note"></div>
-    </div>
-
-    <div class="panneau-note">
-      <p class="question" id="question" aria-live="polite">
-        <svg class="roi-question" viewBox="0 0 100 100" aria-hidden="true"><use id="roi-question" href="#piece-roi-blanc"/></svg>
-        <span id="question-texte">Écris le coup des Blancs</span>
         <button id="btn-revoir" class="bouton-icone revoir" type="button" aria-label="Revoir le dernier coup" title="Revoir le coup">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/><path d="M10.5 9.5v5l4-2.5Z" class="plein"/></svg>
         </button>
-      </p>
+        <p class="score-libre seulement-libre" aria-live="polite">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          <span id="score-libre">0 / 0</span>
+        </p>
+      </div>
+      <div data-ajuste id="echiquier" class="plateau-note"></div>
+    </div>
+
+    <div class="panneau-note">
+      <!-- (la phrase de consigne reste dans la page, cachée : elle est dans l'aide « ? ») -->
+      <p class="question" id="question" hidden><svg class="roi-question" viewBox="0 0 100 100" aria-hidden="true"><use id="roi-question" href="#piece-roi-blanc"/></svg><span id="question-texte"></span></p>
 
       <!-- feuille de partie : les 3 coups d'avant et une case vide pour le dernier -->
       <div class="feuille">
@@ -156,10 +158,6 @@
         </button>
       </div>
 
-      <p class="score-libre seulement-libre" aria-live="polite">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-        <span id="score-libre">0 / 0</span>
-      </p>
     </div>
   </section>
 
@@ -217,14 +215,14 @@
   </div>
 </div>
 
-<script src="../../js/pieces.js?v=202611221602"></script>
-<script src="../../js/sons.js?v=202611221602"></script>
-<script src="../../js/ui.js?v=202611221602"></script>
-<script src="../../js/echiquier.js?v=202611221602"></script>
-<script src="../../js/tout-petits.js?v=202611221602"></script>
-<script src="../../js/aide.js?v=202611221602"></script>
-<script src="../../js/pom.js?v=202611221602"></script>
-<script src="coups.js?v=202611221602"></script>
-<script src="notation.js?v=202611221602"></script>
+<script src="../../js/pieces.js?v=202611221633"></script>
+<script src="../../js/sons.js?v=202611221633"></script>
+<script src="../../js/ui.js?v=202611221633"></script>
+<script src="../../js/echiquier.js?v=202611221633"></script>
+<script src="../../js/tout-petits.js?v=202611221633"></script>
+<script src="../../js/aide.js?v=202611221633"></script>
+<script src="../../js/pom.js?v=202611221633"></script>
+<script src="coups.js?v=202611221633"></script>
+<script src="notation.js?v=202611221633"></script>
 </body>
 </html>

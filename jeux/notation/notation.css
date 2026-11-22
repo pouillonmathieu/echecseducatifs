@@ -108,7 +108,8 @@ body:not(.difficile) .seulement-difficile { display: none !important; }
 /* clavier des tout-petits */
 .clavier { display: flex; flex-direction: column; gap: 6px; }
 .rangee-touches { display: grid; gap: 6px; }
-.rangee-touches.pieces { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.rangee-touches.pieces { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+body:not(.difficile) .rangee-touches.symboles { display: none; }
 .rangee-touches.huit { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 .rangee-touches.symboles { display: flex; justify-content: center; }
 .rangee-touches.symboles .touche { flex: 1 1 0; max-width: 96px; }
@@ -227,7 +228,12 @@ body.presse #minuteur-barre { background: var(--alerte); }
 .clavier:not(.dessins) .touche.piece small { font-size: 10px; }
 @media (max-width: 560px) {
   .clavier.dessins .rangee-touches.huit { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .touche { min-height: 46px; }
+  .touche { min-height: 40px; }
+  /* sur un téléphone, tout tient sur l'écran : la feuille ne montre que le coup d'avant et celui à écrire */
+  #feuille tr:not(:nth-last-child(-n+2)) { display: none; }
+  .feuille thead th { padding: 2px 4px 4px; }
+  .feuille thead svg { width: 22px; height: 22px; }
+  .feuille th, .feuille td { padding: 4px; }
 }
 
 /* Mode sombre : les petites pièces (en-tête de la feuille, notation dessinée) sur une pastille claire,
@@ -248,3 +254,20 @@ body.presse #minuteur-barre { background: var(--alerte); }
 }
 :root[data-theme="dark"] .feuille thead svg { padding: 2px; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .feuille thead svg { padding: 2px; } }
+
+/* pas de consigne sous l'échiquier : elle est dans l'aide « ? » (js/aide.js) */
+#question { display: none !important; }
+
+/* au-dessus de l'échiquier, sur une ligne : le niveau, « revoir le coup » et le score */
+.jeu-note .choix-jeu { flex-wrap: nowrap; align-items: center; }
+@media (max-width: 420px) {
+  .jeu-note .choix-ligne button.avec-texte { gap: 5px; padding: 3px 9px 3px 4px; font-size: 13.5px; }
+  .jeu-note .choix-ligne button.avec-texte > svg { width: 26px; height: 26px; }
+  .jeu-note .choix-jeu .score-libre { font-size: 16px; }
+}
+/* téléphone peu haut : un clavier un peu plus serré */
+@media (max-width: 560px) and (max-height: 760px) {
+  .touche { min-height: 36px; }
+  .clavier { gap: 5px; }
+}
+.jeu-note .choix-jeu .score-libre { white-space: nowrap; }

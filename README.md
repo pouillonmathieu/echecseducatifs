@@ -207,11 +207,29 @@ ne reviennent pas au dessin suivant (« Le cheval de la reine », « Capture le 
 
 ## L'aide des jeux
 
-Les jeux n'affichent plus de consigne (ni fenêtre au lancement, ni ligne d'astuce sous le jeu). À côté du bouton des
+Les jeux n'affichent plus de consigne : ni fenêtre au lancement, ni ligne d'astuce, ni phrase du type « Ramène le fou
+à sa maison », « À toi de jouer : choisis une pièce », « Écris le coup des Blancs », « Quelle est cette ouverture ? »,
+« Comment ça s'appelle en français ? ». Les boutons qui étaient dans ces blocs ont changé de place : « Revoir le coup »
+(Note le coup) est au-dessus de l'échiquier, à côté du niveau et du score ; le haut-parleur et le compteur (Comment ça
+s'appelle ?) sont en haut de la carte du mot. Dans « Joue le coup », quand c'est à l'enfant de jouer, l'échiquier
+s'entoure de vert (au niveau facile, le coup à jouer reste écrit), et l'histoire de la partie est repliée sur trois
+lignes sur téléphone. Dans « Mat ou pas mat ? », le camp concerné se voit à la couleur du roi des boutons de réponse. À côté du bouton des
 réglages, un petit bouton « ? » ouvre un tutoriel en quelques étapes (3 à 5 : le but, comment jouer, l'aide, les
 étoiles et les défis, les raccourcis du clavier), avec « Précédent » / « Suivant » (ou les flèches du clavier ; Échap
 ferme). Tout est dans `js/aide.js` (textes français et anglais). La première fois qu'on ouvre un jeu, le « ? » bat
 doucement pour qu'on le remarque. Dice chess ouvre ses règles illustrées, qui existaient déjà.
+
+## Sur téléphone, tout tient sur l'écran
+
+- Les choix au-dessus de l'échiquier du labyrinthe et de « Capture le roi » tiennent sur une ligne : si la place
+  manque, les groupes les plus larges se replient (seul le choix en cours, avec une petite flèche) et s'ouvrent en menu
+  quand on les touche (`data-une-ligne`, `js/commun.js`).
+- Si la page dépasse de l'écran, l'échiquier (ou l'illustration : l'élément `[data-ajuste]` de chaque jeu) rétrécit
+  juste ce qu'il faut, sans descendre sous 210 px (`js/commun.js`). Sur un téléphone peu haut, les espacements sont
+  un peu plus serrés. « Note le coup » ne montre que les deux derniers coups de la feuille sur téléphone, et le x est
+  sur la rangée des pièces du clavier.
+- Vérifié : les 12 jeux tiennent sans défiler sur 390 × 844 et sur ordinateur ; sur 360 × 740, « Note le coup » et
+  « Comment ça s'appelle ? » dépassent encore un peu (l'échiquier est à sa taille minimale).
 
 ## « Suivant » toujours à portée
 

@@ -244,7 +244,7 @@
     if (jeu.fini) return;
     let e;
     if (deux()) e = jeu.trait === 'dame' ? t('Au tour de la dame.', 'Queen to move.') : t('Au tour du cavalier.', 'Knight to move.');
-    else if (humain(jeu.trait)) e = t('À toi de jouer.', 'Your move.');
+    else if (humain(jeu.trait)) e = ''; // (pas de consigne : elle est dans l'aide « ? »)
     else e = jeu.trait === 'dame' ? t('La dame réfléchit…', 'The queen is thinking…') : t('Le cavalier réfléchit…', 'The knight is thinking…');
     $('etat').textContent = e;
   }

@@ -182,7 +182,7 @@
       defi.debut = performance.now();
       if (defi.chrono) demarrerChrono();
     }
-    $('etat').textContent = t('À toi de jouer : choisis une pièce.', 'Your move: pick a piece.');
+    $('etat').textContent = ''; // (pas de consigne : elle est dans l'aide « ? »)
   }
 
   function fen(ph) {
@@ -321,7 +321,7 @@
     jeu.trait = 'blanc';
     revoir.ajouter(photo());
     afficher();
-    $('etat').textContent = j >= 0 ? t('Aïe, le roi a pris une pièce ! À toi.', 'Ouch, the king took a piece! Your move.') : t('À toi de jouer.', 'Your move.');
+    $('etat').textContent = j >= 0 ? t('Aïe, le roi a pris une pièce !', 'Ouch, the king took a piece!') : '';
     if (jeu.mode === 'defi' && defi.chrono) demarrerChrono();
   }
 

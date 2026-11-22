@@ -220,8 +220,9 @@
       : `<b>${LETTRES[langue()][l]}</b><small>${NOM[l]}</small>`, NOM[l], 'piece')).join('');
     const colonnes = Object.keys(ANIMAUX).map(l => touche(l, tp ? `${animal(l)}<b>${l}</b>` : `<b>${l}</b>`, tp ? `${l} ${t('comme', 'as in')} ${ANIMAUX[l].nom}` : l, 'lettre')).join('');
     const chiffres = [1, 2, 3, 4, 5, 6, 7, 8].map(n => touche(String(n), tp ? `${mains(n)}<b>${n}</b>` : `<b>${n}</b>`, String(n), 'chiffre')).join('');
+    // (le x est sur la rangée des pièces : au niveau facile, il n'y a pas d'autre symbole, et le clavier a une rangée de moins)
+    const prise = touche('x', `<b>x</b><small>${t('prend', 'takes')}</small>`, t('x : prend', 'x: takes'), 'symbole');
     const symboles =
-      touche('x', `<b>x</b><small>${t('prend', 'takes')}</small>`, t('x : prend', 'x: takes'), 'symbole') +
       touche('+', `<b>+</b><small>${t('échec', 'check')}</small>`, t('+ : échec', '+: check'), 'symbole seulement-difficile') +
       touche('#', `<b>#</b><small>${t('mat', 'mate')}</small>`, t('# : échec et mat', '#: checkmate'), 'symbole seulement-difficile') +
       touche('O-O', `<b>O-O</b><small>${t('petit roque', 'short castling')}</small>`, t('petit roque', 'short castling'), 'symbole seulement-difficile') +
@@ -230,7 +231,7 @@
     const effacer = `<button type="button" class="touche effacer" data-val="effacer" aria-label="${t('Effacer', 'Delete')}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11v14H9l-6-7Z"/><path d="M12 9.5l5 5M17 9.5l-5 5"/></svg></button>`;
     $('clavier').classList.toggle('dessins', tp);
     $('clavier').innerHTML =
-      `<div class="rangee-touches pieces">${pieces}${effacer}</div>` +
+      `<div class="rangee-touches pieces">${pieces}${prise}${effacer}</div>` +
       `<div class="rangee-touches huit">${colonnes}</div>` +
       `<div class="rangee-touches huit">${chiffres}</div>` +
       `<div class="rangee-touches symboles">${symboles}</div>`;
