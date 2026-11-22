@@ -563,9 +563,7 @@
   "Il joue moins bien quand il gagne et se défend mieux quand il perd": "It plays worse when it's winning and defends better when it's losing",
   "Clavier à l'écran": "On-screen keyboard",
   "Sinon, celui de l'appareil": "Otherwise, the device's own",
-  "Échiquier caché": "Hidden board",
   "Coup d'œil": "Peek",
-  "Coup": "Move",
   "Jouer": "Play",
   "Reprendre": "Take back",
   "Abandonner": "Resign",
@@ -596,6 +594,8 @@
   "Une nouvelle partie": "A new game",
   "Ordinateur : Stockfish": "Computer: Stockfish",
   "Code source de Stockfish.js (licence GPL v3)": "Stockfish.js source code (GPL v3 licence)",
-  "Créé par Mathieu Pouillon ·": "Made by Mathieu Pouillon ·"
+  "Créé par Mathieu Pouillon ·": "Made by Mathieu Pouillon ·",
+  "Garder la partie en cours": "Keep the game in progress",
+  "Pour la continuer en revenant": "To continue it when you come back"
  }
 }

@@ -24,22 +24,12 @@
   position: absolute;
   inset: 0;
   z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-radius: 14px;
-  background:
-    repeating-linear-gradient(45deg, transparent 0 14px, rgba(255, 255, 255, .035) 14px 28px),
-    linear-gradient(160deg, #3B4250, #262B35);
-  color: #C9CFDA;
-  font-weight: 600;
-  box-shadow: 0 0 0 1px var(--ligne), 0 12px 30px rgba(0, 0, 0, .12);
   transition: opacity .12s;
   user-select: none;
 }
-.cache-plateau svg { width: 22%; max-width: 72px; height: auto; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+.plateau-vide { width: 100%; }
+/* les lettres et les chiffres de l'échiquier vide : toujours là (même sans le réglage « Lettres et chiffres »), plus grands */
+.plateau-vide .coord, .sans-coordonnees .plateau-vide .coord { visibility: visible; font-size: 3.6cqi; font-weight: 700; opacity: .95; }
 body.oeil .cache-plateau, body.fini .cache-plateau { opacity: 0; pointer-events: none; }
 
 /* ---------- Coup d'œil ---------- */
@@ -69,7 +59,6 @@ body.fini .btn-oeil { opacity: .5; }
 
 /* ---------- Feuille de partie : toute la partie, la fin toujours visible ---------- */
 .feuille-aveugle { height: min(30vh, 230px); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; }
-.feuille-aveugle thead th { position: sticky; top: 0; z-index: 1; background: var(--surface); }
 .feuille-aveugle td { font-size: 19px; }
 .feuille-aveugle td.coup-ordi { color: var(--encre-douce); }
 .feuille-aveugle tbody tr:last-child td:not(.vide):not(.a-remplir):not(.attente) { color: var(--encre); }
@@ -131,7 +120,6 @@ body.fini .saisie, body.fini .clavier { display: none; }
      la place qui reste (il est caché : il peut être petit) */
   .feuille-aveugle { height: 112px; }
   :root .ecran .cadre-aveugle { width: min(100%, 480px, max(100px, calc(100dvh - 562px))); min-width: 0; }
-  .cache-plateau { gap: 2px; font-size: 13px; }
   .jeu-aveugle { gap: 8px; }
   .panneau-aveugle { gap: 6px; }
   .barre-oeil { gap: 6px; }

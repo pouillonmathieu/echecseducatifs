@@ -9,12 +9,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../../css/commun.css?v=202611222310">
-<link rel="stylesheet" href="../../../css/jeux.css?v=202611222310">
-<link rel="stylesheet" href="../../../css/echiquier.css?v=202611222310">
-<link rel="stylesheet" href="../../../jeux/notation/notation.css?v=202611222310">
-<link rel="stylesheet" href="../../../jeux/aveugle/aveugle.css?v=202611222310">
-<script src="../../../js/commun.js?v=202611222310"></script>
+<link rel="stylesheet" href="../../../css/commun.css?v=202611222337">
+<link rel="stylesheet" href="../../../css/jeux.css?v=202611222337">
+<link rel="stylesheet" href="../../../css/echiquier.css?v=202611222337">
+<link rel="stylesheet" href="../../../jeux/notation/notation.css?v=202611222337">
+<link rel="stylesheet" href="../../../jeux/aveugle/aveugle.css?v=202611222337">
+<script src="../../../js/commun.js?v=202611222337"></script>
 </head>
 <body data-mode="libre" data-chrono="non" class="difficile">
 
@@ -46,6 +46,10 @@
         <button id="reg-adaptatif" class="ligne-reglage" type="button">
           <svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
           <span>Adaptive computer<small>It plays worse when it's winning and defends better when it's losing</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-garder" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6Z"/><path d="M9 3v5h6V3M9 21v-6h6v6"/></svg>
+          <span>Keep the game in progress<small>To continue it when you come back</small></span><span class="interrupteur" aria-hidden="true"></span>
         </button>
         <button id="reg-clavier" class="ligne-reglage" type="button">
           <svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 9.5h1M9.5 9.5h1M13 9.5h1M16.5 9.5h1M6 12.5h1M9.5 12.5h1M13 12.5h1M16.5 12.5h1M8 15.5h8"/></svg>
@@ -83,9 +87,9 @@
       <!-- l'échiquier, caché : on le voit seulement pendant le « coup d'œil » -->
       <div class="cadre-aveugle" id="cadre-aveugle">
         <div id="echiquier" class="plateau-aveugle"></div>
+        <!-- par-dessus : un échiquier vide, avec ses lettres et ses chiffres, pour se repérer -->
         <div class="cache-plateau" id="cache-plateau" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.8"/><path d="M4 4l16 16"/></svg>
-          <span>Hidden board</span>
+          <div id="echiquier-vide" class="plateau-vide"></div>
         </div>
       </div>
 
@@ -106,13 +110,6 @@
       <!-- feuille de partie : toute la partie ; la case vide est le coup à jouer -->
       <div class="feuille feuille-aveugle" id="cadre-feuille">
         <table>
-          <thead>
-            <tr>
-              <th class="num" scope="col"><span class="visuellement-cache">Move</span></th>
-              <th scope="col"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-blanc"/></svg><span class="visuellement-cache">White</span></th>
-              <th scope="col"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-noir"/></svg><span class="visuellement-cache">Black</span></th>
-            </tr>
-          </thead>
           <tbody id="feuille"></tbody>
         </table>
       </div>
@@ -192,15 +189,15 @@
   </div>
 </div>
 
-<script src="../../../js/pieces.js?v=202611222310"></script>
-<script src="../../../js/sons.js?v=202611222310"></script>
-<script src="../../../js/ui.js?v=202611222310"></script>
-<script src="../../../js/echiquier.js?v=202611222310"></script>
-<script src="../../../js/aide.js?v=202611222310"></script>
-<script src="../../../js/pom.js?v=202611222310"></script>
-<script src="../../../jeux/aveugle/lib/chess.js?v=202611222310"></script>
-<script src="../../../jeux/aveugle/moteur.js?v=202611222310"></script>
-<script src="../../../jeux/aveugle/voix.js?v=202611222310"></script>
-<script src="../../../jeux/aveugle/aveugle.js?v=202611222310"></script>
+<script src="../../../js/pieces.js?v=202611222337"></script>
+<script src="../../../js/sons.js?v=202611222337"></script>
+<script src="../../../js/ui.js?v=202611222337"></script>
+<script src="../../../js/echiquier.js?v=202611222337"></script>
+<script src="../../../js/aide.js?v=202611222337"></script>
+<script src="../../../js/pom.js?v=202611222337"></script>
+<script src="../../../jeux/aveugle/lib/chess.js?v=202611222337"></script>
+<script src="../../../jeux/aveugle/moteur.js?v=202611222337"></script>
+<script src="../../../jeux/aveugle/voix.js?v=202611222337"></script>
+<script src="../../../jeux/aveugle/aveugle.js?v=202611222337"></script>
 </body>
 </html>

@@ -20,10 +20,18 @@
   const moteur = new window.MoteurAveugle.Moteur(`${BASE}stockfish/stockfish-18-lite-single.js${VERSION ? '?v=' + VERSION : ''}`);
   const PAUSE_ORDI = 700; // l'ordinateur ne répond pas instantanément : on a le temps de voir que c'est son tour
 
+  // (Prefs ne garde que des oui/non : le niveau, la couleur et la partie en cours sont rangés à part, en texte)
+  const Stock = {
+    lire(cle, defaut) { try { const v = localStorage.getItem(cle); return v === null ? defaut : JSON.parse(v); } catch (e) { return defaut; } },
+    ecrire(cle, valeur) { try { if (valeur === null) localStorage.removeItem(cle); else localStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage indisponible */ } },
+  };
+  const niveauLu = Stock.lire('echecs.aveugle.niveau', 1);
+  const couleurLue = Stock.lire('echecs.aveugle.couleur', 'blanc');
   const reglages = {
     anglais: EN || Prefs.lire('echecs.aveugle.anglais', false),
-    niveau: Prefs.lire('echecs.aveugle.niveau', 1),
-    couleur: Prefs.lire('echecs.aveugle.couleur', 'blanc'),
+    niveau: [1, 2, 3, 4].includes(niveauLu) ? niveauLu : 1,
+    couleur: ['blanc', 'noir', 'hasard'].includes(couleurLue) ? couleurLue : 'blanc',
+    garder: Prefs.lire('echecs.aveugle.garder', true),
     lire: Prefs.lire('echecs.aveugle.lire', true),
     adaptatif: Prefs.lire('echecs.aveugle.adaptatif', false),
     clavier: Prefs.lire('echecs.aveugle.clavier', true),
@@ -106,6 +114,8 @@
     const d = h[h.length - 1];
     if (d) { Echiquier.marquer(plateau, [d.from], 'depart'); Echiquier.marquer(plateau, [d.to], 'arrivee'); }
   }
+  // par-dessus l'échiquier caché : un échiquier vide, vu du même côté, avec ses lettres et ses chiffres
+  const dessinerVide = () => Echiquier.dessiner($('echiquier-vide'), '8/8/8/8/8/8/8/8 w - - 0 1', { orientation: couleurDe(jeu.joueur) });
   function coupDOeil(v) {
     if (v === jeu.oeilEnCours) return;
     jeu.oeilEnCours = v;
@@ -271,6 +281,7 @@
     apresCoup();
   }
   function apresCoup() {
+    sauver();
     dessinerPlateau();
     if (verifierFin()) return;
     if (jeu.chess.turn() !== jeu.joueur) tourOrdi();
@@ -327,6 +338,7 @@
   };
   function terminer(gagnant, raison) {
     jeu.fin = { gagnant, raison };
+    sauver(); // (une partie finie n'est plus gardée)
     jeu.reflechit = false;
     document.body.classList.add('fini');
     dessinerPlateau();
@@ -352,6 +364,40 @@
     }, raison === 'abandon' ? 200 : 1300);
   }
 
+  // ---------- La partie en cours, gardée quand on quitte le jeu ----------
+  const CLE_PARTIE = 'echecs.aveugle.partie';
+  function sauver() {
+    const coups = jeu.chess.history();
+    // (gardée seulement si le joueur a déjà joué, et pas finie)
+    if (!reglages.garder || !enCours()) { Stock.ecrire(CLE_PARTIE, null); return; }
+    Stock.ecrire(CLE_PARTIE, { coups, joueur: jeu.joueur, oeil: jeu.oeil, dernierOrdi: jeu.dernierOrdi, date: Date.now() });
+  }
+  // la partie gardée, rejouée (null si elle est illisible ou s'il n'y en a pas)
+  function partieGardee() {
+    const p = reglages.garder && Stock.lire(CLE_PARTIE, null);
+    if (!p || !Array.isArray(p.coups) || !p.coups.length || !['w', 'b'].includes(p.joueur)) return null;
+    const c = new Chess();
+    try { for (const san of p.coups) c.move(san); } catch (e) { return null; }
+    if (c.isGameOver()) return null;
+    return { ...p, chess: c };
+  }
+  function reprendrePartie(p) {
+    jeu.gen++;
+    jeu.chess = p.chess;
+    jeu.joueur = p.joueur;
+    jeu.fin = null; jeu.reflechit = false; jeu.jetons = []; jeu.erreurs = 0;
+    jeu.oeil = +p.oeil || 0;
+    jeu.dernierOrdi = p.dernierOrdi || null;
+    $('compte-oeil').textContent = jeu.oeil;
+    document.body.classList.remove('fini');
+    message('');
+    dessinerVide();
+    dessinerPlateau();
+    dessinerFeuille();
+  }
+  window.addEventListener('pagehide', sauver);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) sauver(); });
+
   // ---------- Parties ----------
   function nouvellePartie() {
     jeu.gen++;
@@ -367,26 +413,35 @@
     document.body.classList.remove('fini');
     message('');
     moteur.nouvellePartie().catch(() => {});
+    sauver(); // (plus de partie gardée)
+    dessinerVide();
     dessinerPlateau();
     if (jeu.joueur === 'b') tourOrdi();
     else dessinerFeuille();
   }
   // une partie commencée (le joueur a déjà joué) et pas finie
   const enCours = () => !jeu.fin && jeu.chess.history().length >= (jeu.joueur === 'w' ? 1 : 2);
-  function demander(titre, texte, oui, quoi) {
-    if (!enCours()) { quoi(); return; }
+  // une question oui / non dans une petite fenêtre ; non : ce que fait l'autre bouton (rien, par défaut)
+  function poser(titre, texte, oui, quoi, { non = t('Non, je continue', 'No, keep playing'), sinon = null } = {}) {
     $('confirmation-titre').textContent = titre;
     $('confirmation-texte').textContent = texte;
     $('btn-confirmer').textContent = oui;
+    $('btn-annuler-confirmation').textContent = non;
     $('confirmation').hidden = false;
-    $('btn-annuler-confirmation').focus({ preventScroll: true });
+    (sinon ? $('btn-confirmer') : $('btn-annuler-confirmation')).focus({ preventScroll: true });
     confirmer = quoi;
+    refuser = sinon;
   }
-  let confirmer = null;
-  const fermerConfirmation = () => { $('confirmation').hidden = true; confirmer = null; };
+  function demander(titre, texte, oui, quoi) {
+    if (!enCours()) { quoi(); return; }
+    poser(titre, texte, oui, quoi);
+  }
+  let confirmer = null, refuser = null;
+  const fermerConfirmation = () => { $('confirmation').hidden = true; confirmer = null; refuser = null; };
   $('btn-confirmer').addEventListener('click', () => { const f = confirmer; fermerConfirmation(); if (f) f(); });
-  $('btn-annuler-confirmation').addEventListener('click', fermerConfirmation);
-  $('confirmation').addEventListener('click', (e) => { if (e.target === e.currentTarget) fermerConfirmation(); });
+  $('btn-annuler-confirmation').addEventListener('click', () => { const f = refuser; fermerConfirmation(); if (f) f(); });
+  // (cliquer à côté : comme « non », sauf pour la question du retour, qui attend une vraie réponse)
+  $('confirmation').addEventListener('click', (e) => { if (e.target === e.currentTarget && !refuser) fermerConfirmation(); });
 
   const demanderNouvelle = (apres) => demander(t('Nouvelle partie ?', 'New game?'), t('La partie en cours sera perdue.', 'The current game will be lost.'), t('Oui, nouvelle partie', 'Yes, new game'), () => { if (apres) apres(); nouvellePartie(); });
   $('btn-nouvelle').addEventListener('click', () => demanderNouvelle());
@@ -420,6 +475,7 @@
       return;
     }
     jeu.jetons = [];
+    sauver();
     message(t('Coup repris : à toi de rejouer.', 'Move taken back: your turn again.'));
     dessinerPlateau();
     dessinerFeuille();
@@ -504,7 +560,7 @@
   $('clavier').addEventListener('mousedown', (e) => e.preventDefault());
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (!$('confirmation').hidden) { if (e.key === 'Escape') fermerConfirmation(); return; }
+    if (!$('confirmation').hidden) { if (e.key === 'Escape' && !refuser) fermerConfirmation(); return; }
     if (!$('resultats').hidden) return;
     if (e.target.closest('textarea, .panneau, select')) return;
     const dansChamp = !!e.target.closest('input');
@@ -540,7 +596,7 @@
   const majNiveau = () => segNiveau.forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.niveau === reglages.niveau)));
   segNiveau.forEach((b) => b.addEventListener('click', () => {
     reglages.niveau = +b.dataset.niveau;
-    Prefs.ecrire('echecs.aveugle.niveau', reglages.niveau);
+    Stock.ecrire('echecs.aveugle.niveau', reglages.niveau);
     majNiveau();
     // (le nouveau niveau compte dès le prochain coup de l'ordinateur)
   }));
@@ -550,12 +606,13 @@
     if (b.dataset.couleur === reglages.couleur && !jeu.fin) return;
     demanderNouvelle(() => {
       reglages.couleur = b.dataset.couleur;
-      Prefs.ecrire('echecs.aveugle.couleur', reglages.couleur);
+      Stock.ecrire('echecs.aveugle.couleur', reglages.couleur);
       majCouleur();
     });
   }));
 
   brancherInterrupteur($('reg-lire'), reglages.lire, (v) => { reglages.lire = v; Prefs.ecrire('echecs.aveugle.lire', v); if (!v) window.speechSynthesis?.cancel(); });
+  brancherInterrupteur($('reg-garder'), reglages.garder, (v) => { reglages.garder = v; Prefs.ecrire('echecs.aveugle.garder', v); sauver(); });
   brancherInterrupteur($('reg-adaptatif'), reglages.adaptatif, (v) => { reglages.adaptatif = v; Prefs.ecrire('echecs.aveugle.adaptatif', v); });
   function appliquerClavier() {
     document.body.classList.toggle('sans-clavier', !reglages.clavier);
@@ -584,7 +641,17 @@
   majCouleur();
   appliquerClavier();
   appliquerCoord();
-  nouvellePartie();
+  // une partie était en cours : on la montre, et on demande s'il faut la continuer ou en commencer une nouvelle
+  const gardee = partieGardee();
+  if (gardee) {
+    reprendrePartie(gardee);
+    const n = Math.ceil(gardee.coups.length / 2);
+    poser(t('Une partie est en cours', 'A game is in progress'),
+      t(`Tu en étais au coup ${n}. Tu veux la continuer ?`, `You were at move ${n}. Do you want to continue it?`),
+      t('Continuer la partie', 'Continue the game'),
+      () => { if (jeu.chess.turn() !== jeu.joueur) tourOrdi(); else dessinerFeuille(); },
+      { non: t('Nouvelle partie', 'New game'), sinon: nouvellePartie });
+  } else nouvellePartie();
   // pour les tests : l'état de la partie
   window.__aveugle = { jeu, trouverCoup, reglages };
 })();

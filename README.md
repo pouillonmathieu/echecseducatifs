@@ -157,7 +157,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   (sélection dans `outils/mats-en-un.json`), puis écrit `jeux/mat1/problemes.js` en vérifiant chaque mat, avec la
   raison de chaque coup qui ne mate pas et les explications (français et anglais).
 - **À l'aveugle** (`jeux/aveugle/`) : une partie complète contre l'ordinateur, sans voir l'échiquier. Il est caché en
-  permanence ; le bouton « Coup d'œil », entre l'échiquier et la feuille de partie, le montre tant qu'on le garde
+  permanence par un échiquier vide, vu du même côté, dont les lettres et les chiffres restent toujours affichés (pour se
+  repérer dans les cases) ; le bouton « Coup d'œil », entre l'échiquier et la feuille de partie, le montre tant qu'on le garde
   appuyé (ou la barre d'espace ; sur un petit écran, il s'affiche en grand par-dessus le haut de la page) et compte les
   coups d'œil. Les coups s'écrivent sur la feuille de partie comme dans « Note le coup » (clavier à l'écran ou de
   l'appareil, notation française ou anglaise ; on accepte aussi 0-0, e2e4, les + et # oubliés), ou se disent au micro
@@ -170,7 +171,10 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   navigateurs, alors on recommence sans ; application Android 13+ : `EXTRA_BIASING_STRINGS`). Le coup compris est écrit
   dans la case, avec ce qui a été entendu, et on appuie sur « Jouer ». Un coup impossible ou ambigu est expliqué. Les coups de l'ordinateur
   s'écrivent sur la feuille et sont lus à voix haute (réglage « Lire les coups de l'ordinateur », le haut-parleur les
-  répète). Reprendre son coup, abandonner, nouvelle partie ; à la fin, l'échiquier est montré (victoire 3 étoiles,
+  répète). La feuille de partie n'a pas d'en-tête (pas de rois blanc et noir, contrairement à « Note le coup »).
+  La partie en cours est gardée dans le navigateur dès que le joueur a joué un coup (réglage « Garder la partie en
+  cours », activé par défaut ; clé `echecs.aveugle.partie`) : en revenant, une fenêtre propose de la continuer ou d'en
+  commencer une nouvelle. Le niveau et la couleur choisis sont gardés aussi. Reprendre son coup, abandonner, nouvelle partie ; à la fin, l'échiquier est montré (victoire 3 étoiles,
   nulle 2, défaite 1). L'ordinateur est **Stockfish 18** (Stockfish.js, version « lite » sur un seul fil, 7 Mo, dans
   un Web Worker ; `moteur.js`, protocole UCI) : 4 niveaux, le « Skill Level » de Stockfish 3, 6, 9 et 12, avec une
   recherche limitée en profondeur et en temps. Réglage « Ordinateur adaptatif » : avant chaque coup, une courte
