@@ -43,8 +43,8 @@ import java.util.Locale;
  *   une vraie adresse https, pour que tout marche comme sur le site (fetch des tables de « Capture le roi »,
  *   réglages gardés dans le localStorage).
  * - Chaque page reçoit assets/appli/appli.js (ajouté dans son <head>) : la voix du téléphone pour « Comment ça
- *   s'appelle ? » (la synthèse vocale du navigateur n'existe pas dans une WebView) et la couleur du fond pour les
- *   barres du système.
+ *   s'appelle ? » et « À l'aveugle » (la synthèse vocale du navigateur n'existe pas dans une WebView), sa dictée pour
+ *   « À l'aveugle » (Dictee.java) et la couleur du fond pour les barres du système.
  * - La police Lexend, demandée à Google Fonts par les pages, est servie depuis l'application (assets/appli/polices).
  * - Les liens vers d'autres sites (Lichess, Wikimedia…) s'ouvrent dans le navigateur du téléphone. L'application n'a
  *   pas la permission d'aller sur Internet : rien ne sort du téléphone.
@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
     private WebView web;
     private FrameLayout cadre;
     private Voix voix;
+    private Dictee dictee;
     private WebViewAssetLoader chargeur;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -100,6 +101,7 @@ public class MainActivity extends Activity {
                 .build();
         web.setWebViewClient(new Client());
         voix = new Voix(this, web);
+        dictee = new Dictee(this, web);
         web.addJavascriptInterface(new Pont(), "EchecsAndroid");
 
         // le bouton retour : la page précédente, sinon on quitte
@@ -160,6 +162,7 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         voix.arreter();
+        dictee.arreter();
         web.onPause();
     }
 
@@ -169,9 +172,17 @@ public class MainActivity extends Activity {
         web.onResume();
     }
 
+    /** La réponse à la demande du micro (dictée de « À l'aveugle »). */
+    @Override
+    public void onRequestPermissionsResult(int code, String[] permissions, int[] resultats) {
+        super.onRequestPermissionsResult(code, permissions, resultats);
+        if (code == Dictee.DEMANDE_MICRO) dictee.permission(resultats.length > 0 && resultats[0] == android.content.pm.PackageManager.PERMISSION_GRANTED);
+    }
+
     @Override
     protected void onDestroy() {
         voix.fermer();
+        dictee.fermer();
         web.destroy();
         super.onDestroy();
     }
@@ -210,6 +221,10 @@ public class MainActivity extends Activity {
         @JavascriptInterface public String voix() { return voix.liste(); }
         @JavascriptInterface public void parler(String id, String texte, String langue, float vitesse) { voix.parler(id, texte, langue, vitesse); }
         @JavascriptInterface public void arreter() { voix.arreter(); }
+        /** La dictée (window.SpeechRecognition, dans appli.js). */
+        @JavascriptInterface public boolean dicteePossible() { return dictee.possible(); }
+        @JavascriptInterface public void ecouter(String id, String langue, int max) { dictee.ecouter(id, langue, max); }
+        @JavascriptInterface public void arreterEcoute() { dictee.arreter(); }
         /** La couleur du fond de la page (#rrggbb) : derrière les barres du système, avec des icônes lisibles. */
         @JavascriptInterface public void fond(String couleur, boolean sombre) {
             runOnUiThread(() -> {
@@ -240,6 +255,8 @@ public class MainActivity extends Activity {
             }
             // les fichiers .gz du site sont rangés en .gzip (voir app/build.gradle)
             if (chemin.endsWith(".gz")) return asset(chemin.substring("/assets/".length()) + "ip", "application/octet-stream");
+            // le moteur d'échecs (Stockfish, « À l'aveugle ») : le navigateur veut le bon type pour du WebAssembly
+            if (chemin.endsWith(".wasm")) return asset(chemin.substring("/assets/".length()), "application/wasm");
             return chargeur.shouldInterceptRequest(u);
         }
 

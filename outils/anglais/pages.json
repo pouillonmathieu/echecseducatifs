@@ -146,7 +146,9 @@
   "Thème": "Theme",
   "Automatique": "Automatic",
   "Clair": "Light",
-  "Sombre": "Dark"
+  "Sombre": "Dark",
+  "À l'aveugle": "Blindfold",
+  "Joue une partie contre l'ordinateur sans voir l'échiquier.": "Play a game against the computer without seeing the board."
  },
  "identiques": [
   "Auto",
@@ -162,7 +164,8 @@
   "Mathieu Pouillon",
   "Pom'",
   "Pom'chess",
-  "p"
+  "p",
+  "GPL v3"
  ],
  "jeux/balance/index.html": {
   "La balance des pièces": "The piece scales",
@@ -551,5 +554,48 @@
   "Montrer les coups possibles<small>Des points sur les cases où la pièce choisie peut aller</small>": "Show possible moves<small>Dots on the squares the chosen piece can go to</small>",
   "Commentaires": "Comments",
   "Les explications et l'histoire de la partie ; sans eux, tout tient sur un écran de téléphone": "The explanations and the story of the game; without them, everything fits on one phone screen"
+ },
+ "jeux/aveugle/index.html": {
+  "À l'aveugle": "Blindfold",
+  "Lire les coups de l'ordinateur": "Read the computer's moves",
+  "À voix haute": "Out loud",
+  "Ordinateur adaptatif": "Adaptive computer",
+  "Il joue moins bien quand il gagne et se défend mieux quand il perd": "It plays worse when it's winning and defends better when it's losing",
+  "Clavier à l'écran": "On-screen keyboard",
+  "Sinon, celui de l'appareil": "Otherwise, the device's own",
+  "Échiquier caché": "Hidden board",
+  "Coup d'œil": "Peek",
+  "Coup": "Move",
+  "Jouer": "Play",
+  "Reprendre": "Take back",
+  "Abandonner": "Resign",
+  "Nouvelle partie ?": "New game?",
+  "La partie en cours sera perdue.": "The current game will be lost.",
+  "Oui": "Yes",
+  "Non, je continue": "No, keep playing",
+  "Victoire !": "Victory!",
+  "Voir l'échiquier": "See the board",
+  "Niveau de l'ordinateur": "Computer level",
+  "Niveau 1": "Level 1",
+  "Niveau 2": "Level 2",
+  "Niveau 3": "Level 3",
+  "Niveau 4": "Level 4",
+  "Ta couleur": "Your colour",
+  "Tu joues les Blancs": "You play White",
+  "Tu joues les Noirs": "You play Black",
+  "Couleur au hasard": "Random colour",
+  "Garde le doigt appuyé pour voir l'échiquier": "Keep your finger pressed to see the board",
+  "Coups d'œil dans cette partie": "Peeks in this game",
+  "Réécouter le coup de l'ordinateur": "Hear the computer's move again",
+  "Dire ton coup à voix haute": "Say your move out loud",
+  "Dire ton coup": "Say your move",
+  "Afficher ou masquer le clavier à l'écran": "Show or hide the on-screen keyboard",
+  "Clavier": "Keyboard",
+  "Reprendre ton dernier coup": "Take back your last move",
+  "Abandonner la partie": "Resign the game",
+  "Une nouvelle partie": "A new game",
+  "Ordinateur : Stockfish": "Computer: Stockfish",
+  "Code source de Stockfish.js (licence GPL v3)": "Stockfish.js source code (GPL v3 licence)",
+  "Créé par Mathieu Pouillon ·": "Made by Mathieu Pouillon ·"
  }
 }

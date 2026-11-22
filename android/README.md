@@ -23,8 +23,12 @@ les réglages sont gardés.
   (Lichess, Wikimedia…) dans le navigateur, sert la police Lexend depuis l'application (`assets/appli/polices`, licence
   SIL OFL) à la place de Google Fonts, et laisse les barres du système prendre la couleur du fond de la page.
 - `assets/appli/appli.js` est ajouté dans le `<head>` de chaque page : il donne aux pages un `speechSynthesis` qui
-  utilise la voix du téléphone (`Voix.java`, TextToSpeech), pour « Comment ça s'appelle ? », et transmet la couleur du
-  fond (thème clair ou sombre).
+  utilise la voix du téléphone (`Voix.java`, TextToSpeech), pour « Comment ça s'appelle ? » et « À l'aveugle », un
+  `SpeechRecognition` qui utilise la reconnaissance vocale du téléphone (`Dictee.java`, SpeechRecognizer) pour la
+  dictée des coups de « À l'aveugle », et transmet la couleur du fond (thème clair ou sombre). La permission du micro
+  (RECORD_AUDIO) n'est demandée que la première fois qu'on touche le micro ; la reconnaissance est faite par le
+  service du téléphone (souvent l'appli Google), l'application elle-même n'a toujours pas accès à Internet.
+- Le moteur d'échecs de « À l'aveugle » (Stockfish, fichier `.wasm`) est servi avec le type `application/wasm`.
 - Si le moteur web du téléphone (« Android System WebView ») est plus ancien que Chrome 90, un message propose de le
   mettre à jour depuis le Play Store (avec un moteur trop ancien, l'échiquier ne s'afficherait pas). Dans
   l'application, le pied de page de l'accueil dit « Les réglages restent sur ce téléphone ».

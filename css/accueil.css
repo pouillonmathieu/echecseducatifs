@@ -70,7 +70,7 @@
 
 /* ---------- Cartes des jeux ---------- */
 .jeux { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
-.grille-jeux { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.grille-jeux { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 14px; }
 @media (min-width: 761px) and (max-width: 999px) { .grille-jeux { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .carte-jeu {
   display: flex;
@@ -109,6 +109,7 @@
 .icone-jeu .signe-icone { font-family: var(--police); font-size: 15px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; }
 .icone-jeu .texte-icone { font-family: var(--police); font-size: 10.5px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; }
 .icone-jeu .texte-icone.sombre { fill: #2A2E38; }
+.icone-jeu .oeil-ferme { fill: none; stroke: #FFFFFF; stroke-width: 2.4; stroke-linecap: round; }
 .icone-jeu .lettre-icone { font-family: var(--police); font-size: 13px; font-weight: 700; fill: #1A1E27; text-anchor: middle; }
 
 .pied { padding: 4px 0 0; color: var(--encre-douce); font-size: 13px; text-align: center; }
@@ -181,4 +182,18 @@
   .panneau-site .ligne-reglage-bloc { gap: 6px; padding-inline: 6px; }
   .panneau-site .ligne-titre { gap: 8px; font-size: 14.5px; }
   .panneau-site .segments button, .panneau-site .segments a { padding-inline: 7px; }
+}
+
+/* 13 jeux : 7 colonnes sur ordinateur, 5 sur tablette ; sur téléphone, des cartes un peu plus serrées (7 rangées) */
+@media (min-width: 761px) and (max-width: 999px) { .grille-jeux { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (min-width: 761px) and (max-width: 1399px) {
+  .grille-jeux { gap: 12px; }
+  .carte-jeu { padding-inline: 8px; }
+  .carte-texte h3 { font-size: 16.5px; }
+  .carte-texte p { font-size: 13px; }
+}
+@media (max-width: 760px) {
+  .grille-jeux { gap: 8px; }
+  .carte-jeu { padding: 7px 8px; gap: 9px; }
+  .icone-jeu { width: 52px; }
 }

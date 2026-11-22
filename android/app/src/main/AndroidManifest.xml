@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pas de permission Internet : tout le site est dans l'application, rien ne sort du téléphone.
+<!-- Pas de permission Internet : tout le site est dans l'application, rien ne sort du téléphone
+     (la dictée de « À l'aveugle » passe par le service de reconnaissance vocale du téléphone).
      Les liens vers d'autres sites s'ouvrent dans le navigateur. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- le micro, seulement pour la dictée des coups dans « À l'aveugle » (demandé la première fois qu'on s'en sert) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- la voix du téléphone (TextToSpeech) : Android 11+ demande de déclarer ce qu'on cherche -->
     <queries>
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
         </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />

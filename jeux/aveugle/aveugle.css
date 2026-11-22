@@ -1,0 +1,171 @@
+/* Jeu : à l'aveugle
+   L'échiquier (caché) à gauche, avec le coup d'œil dessous ; la feuille de partie, la saisie et le clavier à droite
+   (l'un sous l'autre sur téléphone). Les styles de la feuille et du clavier viennent de ../notation/notation.css. */
+.ecran-aveugle { max-width: 1060px; }
+
+.jeu-aveugle {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  align-items: center;
+  gap: 28px;
+}
+.panneau-aveugle { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+/* ---------- L'échiquier caché ---------- */
+.cadre-aveugle {
+  position: relative;
+  width: min(100%, 540px, calc(100vh - 250px));
+  width: min(100%, 540px, calc(100dvh - 250px));
+  min-width: min(100%, 260px);
+}
+.plateau-aveugle { width: 100%; }
+.cache-plateau {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 14px, rgba(255, 255, 255, .035) 14px 28px),
+    linear-gradient(160deg, #3B4250, #262B35);
+  color: #C9CFDA;
+  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--ligne), 0 12px 30px rgba(0, 0, 0, .12);
+  transition: opacity .12s;
+  user-select: none;
+}
+.cache-plateau svg { width: 22%; max-width: 72px; height: auto; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+body.oeil .cache-plateau, body.fini .cache-plateau { opacity: 0; pointer-events: none; }
+
+/* ---------- Coup d'œil ---------- */
+.barre-oeil { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.btn-oeil {
+  flex: 0 1 300px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+.btn-oeil svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+body.oeil .btn-oeil { transform: scale(.97); filter: brightness(.9); }
+body.fini .btn-oeil { opacity: .5; }
+.compte-oeil {
+  min-width: 34px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--encre-douce);
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.compte-oeil::before { content: "👁 "; font-size: .85em; }
+#btn-reecouter:disabled { opacity: .35; cursor: default; }
+
+/* ---------- Feuille de partie : toute la partie, la fin toujours visible ---------- */
+.feuille-aveugle { height: min(30vh, 230px); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; }
+.feuille-aveugle thead th { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+.feuille-aveugle td { font-size: 19px; }
+.feuille-aveugle td.coup-ordi { color: var(--encre-douce); }
+.feuille-aveugle tbody tr:last-child td:not(.vide):not(.a-remplir):not(.attente) { color: var(--encre); }
+.feuille-aveugle .attente { color: var(--encre-douce); }
+.points-attente { display: inline-flex; gap: 4px; padding: 0 6px; }
+.points-attente i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: attente 1s ease-in-out infinite; }
+.points-attente i:nth-child(2) { animation-delay: .15s; }
+.points-attente i:nth-child(3) { animation-delay: .3s; }
+@keyframes attente { 50% { opacity: .2; transform: translateY(-3px); } }
+/* (sur téléphone, « Note le coup » ne montre que deux rangées : ici, toutes, en faisant défiler la feuille) */
+.feuille-aveugle #feuille tr { display: table-row !important; }
+
+/* ---------- Message ---------- */
+.message { margin: 0; padding: 7px 12px; border-radius: 12px; background: var(--surface-2); color: var(--encre); font-size: 14px; line-height: 1.4; }
+.message.erreur { background: color-mix(in srgb, var(--alerte) 16%, var(--surface)); }
+.message.ecoute { background: var(--accent-doux); color: var(--accent); font-weight: 600; }
+.message.fin { background: var(--surface-2); font-weight: 700; }
+.message.fin.gagne { background: var(--accent-doux); color: var(--accent); }
+
+/* ---------- Saisie ---------- */
+/* après un coup refusé : le texte est « sélectionné », la prochaine touche le remplace */
+.a-remplacer .saisie-tp { color: var(--alerte); }
+.a-remplacer .saisie-tp .curseur { display: none; }
+.saisie .bouton-principal:disabled { opacity: .5; cursor: default; }
+#btn-dictee[aria-pressed="true"] { border-color: var(--alerte); background: color-mix(in srgb, var(--alerte) 15%, var(--surface)); color: var(--alerte); animation: micro 1s ease-in-out infinite; }
+#btn-dictee:disabled { opacity: .4; cursor: default; }
+@keyframes micro { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--alerte) 25%, transparent); } }
+body.fini .saisie, body.fini .clavier { display: none; }
+
+/* ---------- Boutons de la partie ---------- */
+/* le dessin au-dessus d'un petit texte, comme les outils du labyrinthe */
+.actions-aveugle { display: flex; gap: 8px; }
+:root .ecran .actions-aveugle .bouton-secondaire { flex: 1 1 0; flex-direction: column; gap: 2px; min-width: 0; min-height: 0; padding: 6px 4px 5px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.actions-aveugle button:disabled { opacity: .4; cursor: default; }
+.actions-aveugle svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Choix au-dessus de l'échiquier : niveau (4 barres) et couleur ---------- */
+.choix-couleur button svg { width: 100%; height: 100%; }
+.choix-couleur svg.de { width: 72%; height: 72%; }
+
+/* ---------- Fenêtres ---------- */
+.carte-confirmation { text-align: center; }
+.carte-confirmation h2 { margin: 0 0 4px; font-size: 22px; }
+.res-detail { margin: 0; color: var(--encre-douce); line-height: 1.45; text-wrap: balance; }
+.res-stats { display: flex; justify-content: center; gap: 22px; margin: 6px 0 8px; padding: 0; list-style: none; }
+.res-stats li { display: flex; flex-direction: column; align-items: center; }
+.res-stats b { font-size: 26px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.res-stats span { font-size: 13px; color: var(--encre-douce); }
+.res-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 900px) {
+  .jeu-aveugle { grid-template-columns: 1fr; gap: 12px; align-content: start; }
+  .cadre-aveugle { width: min(100%, 480px, max(200px, calc(100dvh - 720px))); min-width: 0; justify-self: center; }
+  .feuille-aveugle { height: 140px; }
+  .panneau-aveugle { width: min(100%, 520px); justify-self: center; }
+}
+@media (max-width: 560px) {
+  /* la feuille garde la même hauteur toute la partie (trois rangées, on la fait défiler) ; l'échiquier caché prend
+     la place qui reste (il est caché : il peut être petit) */
+  .feuille-aveugle { height: 112px; }
+  :root .ecran .cadre-aveugle { width: min(100%, 480px, max(100px, calc(100dvh - 562px))); min-width: 0; }
+  .cache-plateau { gap: 2px; font-size: 13px; }
+  .jeu-aveugle { gap: 8px; }
+  .panneau-aveugle { gap: 6px; }
+  .barre-oeil { gap: 6px; }
+  .feuille-aveugle td { font-size: 17px; }
+  .message { padding: 5px 10px; font-size: 13px; }
+  .actions-aveugle { gap: 6px; }
+}
+/* téléphone peu haut : clavier plus bas, et les boutons de la partie en dessins seuls (le nom est dans le title) */
+@media (max-width: 560px) and (max-height: 760px) {
+  .clavier:not(.dessins) .touche { min-height: 32px; }
+  :root .ecran .actions-aveugle .bouton-secondaire { padding: 7px 4px; }
+  .actions-aveugle .texte-bouton { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+/* le coup d'œil en grand (petit écran) : l'échiquier par-dessus le haut de la page */
+body.oeil-grand.oeil .plateau-aveugle {
+  position: fixed;
+  z-index: 70;
+  top: max(10px, env(safe-area-inset-top, 0px));
+  left: 50%;
+  width: min(calc(100vw - 20px), 520px);
+  transform: translateX(-50%);
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px var(--ligne), 0 18px 48px rgba(0, 0, 0, .35);
+}
+/* téléphone : le message s'affiche par-dessus la feuille (il ne pousse pas la page) */
+@media (max-width: 560px) {
+  .panneau-aveugle { position: relative; }
+  .message { position: absolute; z-index: 3; left: 0; right: 0; top: 0; box-shadow: 0 8px 20px rgba(0, 0, 0, .15); }
+}
+/* partie finie : plus de saisie ni de clavier, l'échiquier (montré) reprend la place */
+@media (max-width: 560px) {
+  :root body.fini .ecran .cadre-aveugle { width: min(100%, 480px, max(200px, calc(100dvh - 345px))); }
+}
+@media (min-width: 561px) and (max-width: 900px) {
+  body.fini .cadre-aveugle { width: min(100%, 480px, max(200px, calc(100dvh - 420px))); }
+}
+.signature a { color: inherit; }

@@ -1,6 +1,7 @@
 /* Ajouté par l'application Android dans le <head> de chaque page du site (voir MainActivity.java).
    - window.speechSynthesis et SpeechSynthesisUtterance : la synthèse vocale du navigateur n'existe pas dans une
      WebView ; on la remplace par la voix du téléphone (pont window.EchecsAndroid), avec la même interface.
+   - window.SpeechRecognition : de même, la dictée du téléphone (pour « À l'aveugle »).
    - La couleur du fond de la page est transmise à l'application, pour les barres du système (thème clair ou sombre).
    - Le pied de page de l'accueil dit « Les réglages restent sur ce téléphone ». */
 (function () {
@@ -46,6 +47,41 @@
       const u = enCours.get(id);
       enCours.delete(id);
       if (u && u.onend) u.onend({ type: 'end' });
+    };
+  }
+
+  // ---------- La dictée (« À l'aveugle ») ----------
+  // La WebView n'a pas la reconnaissance vocale du navigateur : celle du téléphone la remplace (Dictee.java).
+  let dicteePossible = false;
+  try { dicteePossible = pont.dicteePossible && pont.dicteePossible(); } catch (e) { /* ancienne application */ }
+  if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window) && dicteePossible) {
+    let numero = 0;
+    const ecoutes = new Map();
+    class Reconnaissance {
+      constructor() { this.lang = ''; this.maxAlternatives = 1; this.continuous = false; this.interimResults = false; this.onresult = this.onerror = this.onend = this.onstart = null; this.id = null; }
+      start() {
+        this.id = 'd' + (++numero);
+        ecoutes.set(this.id, this);
+        pont.ecouter(this.id, this.lang || document.documentElement.lang, this.maxAlternatives || 1);
+        if (this.onstart) this.onstart({ type: 'start' });
+      }
+      stop() { pont.arreterEcoute(); }
+      abort() { pont.arreterEcoute(); }
+    }
+    window.SpeechRecognition = Reconnaissance;
+    window.__dictee = (quoi, id, valeur) => {
+      const r = ecoutes.get(id);
+      if (!r) return;
+      if (quoi === 'resultats') {
+        const alternatives = (valeur || []).map((t) => ({ transcript: t, confidence: 1 }));
+        const resultat = Object.assign(alternatives, { isFinal: true });
+        if (r.onresult) r.onresult({ type: 'result', resultIndex: 0, results: [resultat] });
+      } else if (quoi === 'erreur') {
+        if (r.onerror) r.onerror({ type: 'error', error: valeur });
+      } else if (quoi === 'fin') {
+        ecoutes.delete(id);
+        if (r.onend) r.onend({ type: 'end' });
+      }
     };
   }
 

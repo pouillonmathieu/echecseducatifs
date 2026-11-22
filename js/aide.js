@@ -149,6 +149,23 @@
         t('Le motif du mat, et ce qui s\'est passé dans la vraie partie. Défis : 10 positions (un seul essai), ou 30 secondes par position.',
           'The mating pattern, and what happened in the real game. Challenges: 10 positions (one try only), or 30 seconds per position.')],
     ],
+    aveugle: [
+      [t('À l\'aveugle', 'Blindfold'),
+        t('Une vraie partie contre l\'ordinateur… sans voir l\'échiquier ! Il faut se souvenir de la position dans sa tête.',
+          'A real game against the computer… without seeing the board! You have to keep the position in your head.')],
+      [t('Joue ton coup', 'Play your move'),
+        t('Écris-le sur la feuille de partie, comme dans « Note le coup » : Cf3, e4, Fxc4, O-O… puis « Jouer ». Tu peux aussi le dire avec le micro : « cavalier f3 ».',
+          'Write it on the score sheet, like in “Write the move”: Nf3, e4, Bxc4, O-O… then “Play”. You can also say it with the microphone: “knight f3”.')],
+      [t('Écoute l\'ordinateur', 'Listen to the computer'),
+        t('L\'ordinateur répond tout de suite : son coup s\'écrit sur la feuille et il le dit à voix haute. Le haut-parleur le fait répéter.',
+          'The computer answers right away: its move is written on the sheet and read aloud. The speaker repeats it.')],
+      [t('Un coup d\'œil', 'A quick peek'),
+        t('Garde le doigt appuyé sur « Coup d\'œil » (ou la barre d\'espace) pour voir l\'échiquier un instant. Le compteur dit combien de fois tu as regardé !',
+          'Hold your finger on “Peek” (or the space bar) to see the board for a moment. The counter shows how many times you looked!')],
+      [t('Niveaux', 'Levels'),
+        t('En haut : le niveau de l\'ordinateur (1 à 4) et ta couleur. Dans les réglages, l\'ordinateur « adaptatif » joue moins bien quand il gagne et se défend mieux quand il perd.',
+          'At the top: the computer\'s level (1 to 4) and your colour. In the settings, the “adaptive” computer plays worse when it\'s winning and defends better when it\'s losing.')],
+    ],
   };
 
   const Aide = window.Aide = { objectif: null, ouvrir };

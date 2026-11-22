@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Mathieu Pouillon">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>À l'aveugle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../css/commun.css?v=202611222259">
+<link rel="stylesheet" href="../../css/jeux.css?v=202611222259">
+<link rel="stylesheet" href="../../css/echiquier.css?v=202611222259">
+<link rel="stylesheet" href="../notation/notation.css?v=202611222259">
+<link rel="stylesheet" href="aveugle.css?v=202611222259">
+<script src="../../js/commun.js?v=202611222259"></script>
+</head>
+<body data-mode="libre" data-chrono="non" class="difficile">
+
+<main class="ecran ecran-aveugle">
+  <header class="barre">
+    <a class="bouton-icone" href="../../index.html" aria-label="Retour à l'accueil" title="Accueil" data-hors-artifact>
+      <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>
+    </a>
+    <h1 class="titre" id="titre">À l'aveugle</h1>
+    <div class="reglages">
+      <button id="btn-reglages" class="bouton-icone" type="button" aria-label="Réglages" title="Réglages" aria-controls="panneau-reglages" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+      </button>
+      <div id="panneau-reglages" class="panneau" hidden>
+        <div class="ligne-reglage-bloc">
+          <span class="ligne-titre">
+            <svg viewBox="0 0 24 24"><path d="M4 6h10M9 4v2M6 6c0 4 3 7 7 8M12 6c0 3-3 7-7 9"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>
+            Notation
+          </span>
+          <div class="segments" id="reg-langue" role="group" aria-label="Langue de la notation">
+            <button type="button" data-langue="fr">Français<small>R D T F C</small></button>
+            <button type="button" data-langue="en">Anglais<small>K Q R B N</small></button>
+          </div>
+        </div>
+        <button id="reg-lire" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+          <span>Lire les coups de l'ordinateur<small>À voix haute</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-adaptatif" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
+          <span>Ordinateur adaptatif<small>Il joue moins bien quand il gagne et se défend mieux quand il perd</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-clavier" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 9.5h1M9.5 9.5h1M13 9.5h1M16.5 9.5h1M6 12.5h1M9.5 12.5h1M13 12.5h1M16.5 12.5h1M8 15.5h8"/></svg>
+          <span>Clavier à l'écran<small>Sinon, celui de l'appareil</small></span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-coordonnees" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3.5 6v2M3.5 11v2M10 21h2M15 21h2"/></svg>
+          <span>Lettres et chiffres</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+        <button id="reg-son" class="ligne-reglage" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+          <span>Son</span><span class="interrupteur" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="jeu-aveugle">
+    <div class="colonne-plateau">
+      <!-- niveau de l'ordinateur et couleur du joueur -->
+      <div class="choix-jeu" data-une-ligne>
+        <div class="choix-ligne choix-niveau" id="reg-niveau" role="group" aria-label="Niveau de l'ordinateur">
+          <button type="button" data-niveau="1" title="Niveau 1"><svg viewBox="0 0 24 24" class="barres" aria-hidden="true"><rect x="2" y="17" width="4" height="4" rx="1.2" class="pleine"/><rect x="7.5" y="13" width="4" height="8" rx="1.2" class="vide"/><rect x="13" y="9" width="4" height="12" rx="1.2" class="vide"/><rect x="18.5" y="5" width="4" height="16" rx="1.2" class="vide"/></svg></button>
+          <button type="button" data-niveau="2" title="Niveau 2"><svg viewBox="0 0 24 24" class="barres" aria-hidden="true"><rect x="2" y="17" width="4" height="4" rx="1.2" class="pleine"/><rect x="7.5" y="13" width="4" height="8" rx="1.2" class="pleine"/><rect x="13" y="9" width="4" height="12" rx="1.2" class="vide"/><rect x="18.5" y="5" width="4" height="16" rx="1.2" class="vide"/></svg></button>
+          <button type="button" data-niveau="3" title="Niveau 3"><svg viewBox="0 0 24 24" class="barres" aria-hidden="true"><rect x="2" y="17" width="4" height="4" rx="1.2" class="pleine"/><rect x="7.5" y="13" width="4" height="8" rx="1.2" class="pleine"/><rect x="13" y="9" width="4" height="12" rx="1.2" class="pleine"/><rect x="18.5" y="5" width="4" height="16" rx="1.2" class="vide"/></svg></button>
+          <button type="button" data-niveau="4" title="Niveau 4"><svg viewBox="0 0 24 24" class="barres" aria-hidden="true"><rect x="2" y="17" width="4" height="4" rx="1.2" class="pleine"/><rect x="7.5" y="13" width="4" height="8" rx="1.2" class="pleine"/><rect x="13" y="9" width="4" height="12" rx="1.2" class="pleine"/><rect x="18.5" y="5" width="4" height="16" rx="1.2" class="pleine"/></svg></button>
+        </div>
+        <div class="choix-ligne choix-couleur" id="reg-couleur" role="group" aria-label="Ta couleur">
+          <button type="button" data-couleur="blanc" title="Tu joues les Blancs"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-blanc"/></svg></button>
+          <button type="button" data-couleur="noir" title="Tu joues les Noirs"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-noir"/></svg></button>
+          <button type="button" data-couleur="hasard" title="Couleur au hasard"><svg viewBox="0 0 24 24" class="de" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.6" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></button>
+        </div>
+      </div>
+
+      <!-- l'échiquier, caché : on le voit seulement pendant le « coup d'œil » -->
+      <div class="cadre-aveugle" id="cadre-aveugle">
+        <div id="echiquier" class="plateau-aveugle"></div>
+        <div class="cache-plateau" id="cache-plateau" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.8"/><path d="M4 4l16 16"/></svg>
+          <span>Échiquier caché</span>
+        </div>
+      </div>
+
+      <!-- entre l'échiquier et la notation : le coup d'œil (tant qu'on appuie) et réécouter -->
+      <div class="barre-oeil">
+        <button id="btn-oeil" class="bouton-principal btn-oeil" type="button" title="Garde le doigt appuyé pour voir l'échiquier">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.8"/></svg>
+          <span>Coup d'œil</span>
+        </button>
+        <span class="compte-oeil" id="compte-oeil" aria-live="polite" title="Coups d'œil dans cette partie">0</span>
+        <button id="btn-reecouter" class="bouton-icone" type="button" aria-label="Réécouter le coup de l'ordinateur" title="Réécouter le coup de l'ordinateur">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="panneau-aveugle">
+      <!-- feuille de partie : toute la partie ; la case vide est le coup à jouer -->
+      <div class="feuille feuille-aveugle" id="cadre-feuille">
+        <table>
+          <thead>
+            <tr>
+              <th class="num" scope="col"><span class="visuellement-cache">Coup</span></th>
+              <th scope="col"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-blanc"/></svg><span class="visuellement-cache">Blancs</span></th>
+              <th scope="col"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#piece-roi-noir"/></svg><span class="visuellement-cache">Noirs</span></th>
+            </tr>
+          </thead>
+          <tbody id="feuille"></tbody>
+        </table>
+      </div>
+
+      <p class="message" id="message" aria-live="polite" hidden></p>
+
+      <form id="form-saisie" class="saisie" autocomplete="off">
+        <button id="btn-valider" class="bouton-principal" type="submit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          Jouer
+        </button>
+        <button id="btn-dictee" class="bouton-icone" type="button" aria-label="Dire ton coup à voix haute" title="Dire ton coup" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>
+        </button>
+        <button id="btn-clavier" class="bouton-icone" type="button" aria-label="Afficher ou masquer le clavier à l'écran" title="Clavier à l'écran">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 9.5h1M9.5 9.5h1M13 9.5h1M16.5 9.5h1M6 12.5h1M9.5 12.5h1M13 12.5h1M16.5 12.5h1M8 15.5h8"/></svg>
+        </button>
+      </form>
+
+      <!-- clavier à l'écran (rempli par aveugle.js) -->
+      <div id="clavier" class="clavier" aria-label="Clavier"></div>
+
+      <div class="actions-partie actions-aveugle" data-icones-si-besoin>
+        <button id="btn-reprendre" class="bouton-secondaire" type="button" title="Reprendre ton dernier coup">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+          <span class="texte-bouton">Reprendre</span>
+        </button>
+        <button id="btn-abandonner" class="bouton-secondaire" type="button" title="Abandonner la partie">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>
+          <span class="texte-bouton">Abandonner</span>
+        </button>
+        <button id="btn-nouvelle" class="bouton-secondaire" type="button" title="Une nouvelle partie">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="texte-bouton">Nouvelle partie</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="signature">Créé par Mathieu Pouillon · <a href="https://github.com/nmrugg/stockfish.js" title="Code source de Stockfish.js (licence GPL v3)">Ordinateur : Stockfish</a> (<a href="https://github.com/nmrugg/stockfish.js/blob/master/Copying.txt">GPL v3</a>)</footer>
+</main>
+
+<!-- confirmation (nouvelle partie, abandon) -->
+<div id="confirmation" class="voile" hidden>
+  <div class="carte-choix carte-confirmation" role="dialog" aria-modal="true" aria-labelledby="confirmation-titre">
+    <h2 id="confirmation-titre">Nouvelle partie ?</h2>
+    <p class="carte-choix-intro" id="confirmation-texte">La partie en cours sera perdue.</p>
+    <div class="res-actions">
+      <button id="btn-confirmer" class="bouton-principal" type="button">Oui</button>
+      <button id="btn-annuler-confirmation" class="bouton-secondaire" type="button">Non, je continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- fin de la partie -->
+<div id="resultats" class="voile" hidden>
+  <div class="pluie" id="pluie" aria-hidden="true"></div>
+  <div class="carte-resultats" role="dialog" aria-modal="true" aria-labelledby="res-titre">
+    <div class="etoiles" id="etoiles" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8Z"/></svg>
+    </div>
+    <h2 id="res-titre" class="res-titre">Victoire !</h2>
+    <p class="res-detail" id="res-detail"></p>
+    <ul class="res-stats" id="res-stats"></ul>
+    <div class="res-actions">
+      <button id="btn-res-nouvelle" class="bouton-principal" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Nouvelle partie
+      </button>
+      <button id="btn-res-voir" class="bouton-secondaire" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.8"/></svg>
+        Voir l'échiquier
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/pieces.js?v=202611222259"></script>
+<script src="../../js/sons.js?v=202611222259"></script>
+<script src="../../js/ui.js?v=202611222259"></script>
+<script src="../../js/echiquier.js?v=202611222259"></script>
+<script src="../../js/aide.js?v=202611222259"></script>
+<script src="../../js/pom.js?v=202611222259"></script>
+<script src="lib/chess.js?v=202611222259"></script>
+<script src="moteur.js?v=202611222259"></script>
+<script src="voix.js?v=202611222259"></script>
+<script src="aveugle.js?v=202611222259"></script>
+</body>
+</html>

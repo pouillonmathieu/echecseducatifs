@@ -156,6 +156,25 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   perdue d'après l'évaluation Lichess ou Stockfish), au plus 3 par joueur, les parties de blitz et de rapide en premier
   (sélection dans `outils/mats-en-un.json`), puis écrit `jeux/mat1/problemes.js` en vérifiant chaque mat, avec la
   raison de chaque coup qui ne mate pas et les explications (français et anglais).
+- **À l'aveugle** (`jeux/aveugle/`) : une partie complète contre l'ordinateur, sans voir l'échiquier. Il est caché en
+  permanence ; le bouton « Coup d'œil », entre l'échiquier et la feuille de partie, le montre tant qu'on le garde
+  appuyé (ou la barre d'espace ; sur un petit écran, il s'affiche en grand par-dessus le haut de la page) et compte les
+  coups d'œil. Les coups s'écrivent sur la feuille de partie comme dans « Note le coup » (clavier à l'écran ou de
+  l'appareil, notation française ou anglaise ; on accepte aussi 0-0, e2e4, les + et # oubliés), ou se disent au micro
+  (« cavalier f3 », « e prend d5 », « petit roque » ; `voix.js` transforme la phrase entendue en notation, puis le
+  coup est écrit et on appuie sur « Jouer »). Un coup impossible ou ambigu est expliqué. Les coups de l'ordinateur
+  s'écrivent sur la feuille et sont lus à voix haute (réglage « Lire les coups de l'ordinateur », le haut-parleur les
+  répète). Reprendre son coup, abandonner, nouvelle partie ; à la fin, l'échiquier est montré (victoire 3 étoiles,
+  nulle 2, défaite 1). L'ordinateur est **Stockfish 18** (Stockfish.js, version « lite » sur un seul fil, 7 Mo, dans
+  un Web Worker ; `moteur.js`, protocole UCI) : 4 niveaux, le « Skill Level » de Stockfish 3, 6, 9 et 12, avec une
+  recherche limitée en profondeur et en temps. Réglage « Ordinateur adaptatif » : avant chaque coup, une courte
+  évaluation à pleine force ; s'il gagne de plus de 1,5 pion, il baisse son Skill Level (jusqu'à 0), s'il perd, il
+  le monte (jusqu'à +8) et cherche plus loin. Les règles (coups possibles, mat, pat, nulles) viennent de
+  [chess.js](https://github.com/jhlywa/chess.js) 1.4.0 (licence BSD, `lib/chess.js`, transformé en script classique).
+  Stockfish est sous licence GPL v3 : voir `jeux/aveugle/stockfish/LISEZMOI.md` (licence, code source exact) ; le
+  bas de la page renvoie au code source et à la licence. Dans l'application Android, la lecture passe par la voix du
+  téléphone et la dictée par sa reconnaissance vocale (`Dictee.java`, permission micro demandée la première fois) ;
+  dans un navigateur, la dictée dépend du navigateur (Chrome, Edge, Safari ; souvent avec une connexion Internet).
 
 ## Sources
 
@@ -237,7 +256,7 @@ doucement pour qu'on le remarque. Dice chess ouvre ses règles illustrées, qui 
   page (« Créé par… », « Crédits des photos ») ne comptent pas : ils peuvent passer sous le bas de l'écran. Ce réglage se refait seulement
   quand la largeur change (rotation) : la barre d'adresse du téléphone, qui apparaît et disparaît, ne change que la
   hauteur, et ne doit pas faire rétrécir l'échiquier pendant qu'une explication est affichée.
-- Vérifié : les 12 jeux tiennent sans défiler sur 390 × 844, 360 × 740, 375 × 667 et sur ordinateur, avec l'échiquier
+- Vérifié : les 13 jeux tiennent sans défiler sur 390 × 844, 360 × 740, 375 × 667 et sur ordinateur, avec l'échiquier
   en pleine largeur (sauf « Note le coup » sur 375 × 667, dont le clavier prend de la place).
 
 ## « Suivant » toujours à portée
@@ -296,7 +315,7 @@ couleurs d'échiquier ne montrent que leur dessin, et leur nom est en info-bulle
 ## Page d'accueil
 
 Pom' et sa bulle de bienvenue, puis une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans
-faire défiler : 6 colonnes sur ordinateur (icônes plus petites sur un écran peu haut), 4 sur tablette, 2 colonnes sur
+faire défiler : 7 colonnes sur ordinateur (icônes plus petites sur un écran peu haut), 5 sur tablette, 2 colonnes sur
 téléphone (icône à gauche du nom, sans la phrase). Si la page dépasse quand même de l'écran, Pom' se fait plus petit.
 
 ## Version anglaise
