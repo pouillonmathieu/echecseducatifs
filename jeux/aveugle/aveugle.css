@@ -30,6 +30,33 @@
 .plateau-vide { width: 100%; }
 /* les lettres et les chiffres de l'échiquier vide : toujours là (même sans le réglage « Lettres et chiffres »), plus grands */
 .plateau-vide .coord, .sans-coordonnees .plateau-vide .coord { visibility: visible; font-size: 3.6cqi; font-weight: 700; opacity: .95; }
+/* au milieu de l'échiquier vide : « Échiquier masqué » */
+.etiquette-masque {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  max-width: 86%;
+  padding: .45em .9em;
+  border-radius: 999px;
+  background: rgba(38, 43, 53, .82);
+  color: #FFFFFF;
+  font-size: clamp(11px, 4.2cqi, 18px);
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+}
+.etiquette-masque svg { flex: none; width: 1.3em; height: 1.3em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cache-plateau { container-type: inline-size; }
+/* petit échiquier (petit téléphone) : l'étiquette sur deux lignes, sans l'œil */
+@container (max-width: 190px) {
+  .etiquette-masque { gap: 0; padding: .35em .7em; border-radius: 10px; font-size: 10.5px; line-height: 1.15; white-space: normal; text-align: center; width: min-content; }
+  .etiquette-masque svg { display: none; }
+}
 body.oeil .cache-plateau, body.fini .cache-plateau { opacity: 0; pointer-events: none; }
 
 /* ---------- Coup d'œil ---------- */

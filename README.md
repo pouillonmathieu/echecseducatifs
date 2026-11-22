@@ -158,7 +158,7 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   raison de chaque coup qui ne mate pas et les explications (français et anglais).
 - **À l'aveugle** (`jeux/aveugle/`) : une partie complète contre l'ordinateur, sans voir l'échiquier. Il est caché en
   permanence par un échiquier vide, vu du même côté, dont les lettres et les chiffres restent toujours affichés (pour se
-  repérer dans les cases) ; le bouton « Coup d'œil », entre l'échiquier et la feuille de partie, le montre tant qu'on le garde
+  repérer dans les cases), avec l'étiquette « Échiquier masqué » au milieu ; le bouton « Coup d'œil », entre l'échiquier et la feuille de partie, le montre tant qu'on le garde
   appuyé (ou la barre d'espace ; sur un petit écran, il s'affiche en grand par-dessus le haut de la page) et compte les
   coups d'œil. Les coups s'écrivent sur la feuille de partie comme dans « Note le coup » (clavier à l'écran ou de
   l'appareil, notation française ou anglaise ; on accepte aussi 0-0, e2e4, les + et # oubliés), ou se disent au micro
