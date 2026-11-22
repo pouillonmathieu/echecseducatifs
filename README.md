@@ -257,6 +257,12 @@ script signale tout texte sans traduction. Les textes générés ont aussi leur 
 commentaires du coach (`texte_en`, `fin_en` dans `outils/commentaires-coach.json`). Dans « Note le coup » et « Joue le
 coup », la version anglaise n'utilise que la notation anglaise.
 
+## Application Android
+
+Le dossier `android/` contient l'application Android : tout le site embarqué, hors ligne (voir `android/README.md`).
+Elle est reconstruite par GitHub à chaque modification du site et publiée dans la version « android » du dépôt
+(<https://github.com/pouillonmathieu/echecseducatifs/releases/tag/android>, fichier `mini-jeux-echecs.apk`).
+
 ## Cache des navigateurs
 
 Les fichiers CSS et JS sont appelés avec un numéro de version (`?v=AAAAMMJJHHMM`). Après une modification, lancer
@@ -291,6 +297,7 @@ js/consigne.js        la consigne d'un jeu dans une fenêtre (au lancement, « C
 js/pom.js             Pom', le coach : sa place dans la page et ses réactions (charge js/pom-moteur.js)
 js/pom-moteur.js      le dessin de Pom' et ses animations (fabriqué par outils/pom/construire.py, ne pas modifier)
 outils/pom/           l'atelier des animations de Pom' et ses outils (voir son LISEZMOI)
+android/              l'application Android (le site embarqué ; voir android/README.md)
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js ; le quiz des ouvertures a aussi fiche.html)
 ```
 

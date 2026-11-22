@@ -1,0 +1,17 @@
+// L'application Android des mini-jeux d'échecs : le site entier, embarqué dans l'application (voir README.md).
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = 'echecs-educatifs'
+include ':app'

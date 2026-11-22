@@ -1,0 +1,81 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Le site (pages, styles, scripts, jeux, version anglaise) est copié dans l'application à chaque construction :
+// l'application est toujours à jour avec le site, et marche sans connexion.
+def racineSite = rootProject.projectDir.parentFile
+def dossierSite = layout.buildDirectory.dir('site')
+def copierSite = tasks.register('copierSite', Sync) {
+    from(racineSite) {
+        include 'index.html', 'css/**', 'js/**', 'jeux/**', 'en/**'
+        // les fichiers .gz (tables de « Capture le roi ») : Android les décompresserait et changerait leur nom ;
+        // ils sont rangés en .gzip, et l'application les rend sous leur vrai nom (MainActivity)
+        rename '(.*)\\.gz$', '$1.gzip'
+    }
+    into dossierSite.map { it.dir('site') }
+}
+
+android {
+    namespace 'io.github.pouillonmathieu.echecs'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'io.github.pouillonmathieu.echecs'
+        minSdk 24
+        targetSdk 36
+        // sur GitHub, chaque construction a un numéro de plus (une nouvelle version s'installe par-dessus l'ancienne)
+        def numero = (System.getenv('NUMERO_VERSION') ?: '1') as int
+        versionCode numero
+        versionName "1.${numero}"
+    }
+
+    // Les versions de test sont signées avec la clé de test du projet (android/cle-de-test.jks, mot de passe connu :
+    // elle ne protège rien). Elle permet d'installer une nouvelle version par-dessus l'ancienne, quelle que soit la
+    // machine qui l'a construite. Pour le Play Store, il faudra une vraie clé, gardée secrète (voir README.md).
+    signingConfigs {
+        test {
+            storeFile rootProject.file('cle-de-test.jks')
+            storePassword 'echecs-test'
+            keyAlias 'test'
+            keyPassword 'echecs-test'
+        }
+        if (System.getenv('CLE_FICHIER')) {
+            publication {
+                storeFile file(System.getenv('CLE_FICHIER'))
+                storePassword System.getenv('CLE_MOT_DE_PASSE')
+                keyAlias System.getenv('CLE_ALIAS')
+                keyPassword System.getenv('CLE_MOT_DE_PASSE')
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.test
+        }
+        release {
+            minifyEnabled false
+            signingConfig System.getenv('CLE_FICHIER') ? signingConfigs.publication : signingConfigs.test
+        }
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs += [dossierSite]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// le site est copié avant que les fichiers de l'application soient rassemblés
+tasks.named('preBuild') { dependsOn copierSite }
+tasks.configureEach { t -> if (t.name.contains('Assets') && t.name != 'copierSite') t.dependsOn copierSite }
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.18.0'
+}
