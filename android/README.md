@@ -25,7 +25,18 @@ les réglages sont gardés.
 - `assets/appli/appli.js` est ajouté dans le `<head>` de chaque page : il donne aux pages un `speechSynthesis` qui
   utilise la voix du téléphone (`Voix.java`, TextToSpeech), pour « Comment ça s'appelle ? », et transmet la couleur du
   fond (thème clair ou sombre).
+- Si le moteur web du téléphone (« Android System WebView ») est plus ancien que Chrome 90, un message propose de le
+  mettre à jour depuis le Play Store (avec un moteur trop ancien, l'échiquier ne s'afficherait pas). Dans
+  l'application, le pied de page de l'accueil dit « Les réglages restent sur ce téléphone ».
 - L'icône : Pom', sur un fond jaune pâle (`app/src/main/res/mipmap-*`, et `icone-512.png` pour le Play Store).
+
+## Vérifications faites
+
+Dans un téléphone Android 11 simulé (sans accélération : la seule possible ici) : l'application s'installe, s'ouvre
+sur l'accueil (police Lexend, contenu sous la barre d'état), ouvre un jeu, revient avec le bouton retour, rouvre dans
+la dernière langue choisie, et prévient que le moteur web est trop ancien (version 83 sur cette image, sans mise à
+jour). Le jeu lui-même n'a pas pu y être vu, à cause de ce vieux moteur. La voix, la police et la couleur du fond ont
+été vérifiées dans Chromium, avec un pont Android simulé.
 
 ## La construire soi-même
 

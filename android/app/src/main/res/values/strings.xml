@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="nom">Mini-jeux d\'échecs</string>
+    <string name="moteur_titre">Une mise à jour est nécessaire</string>
+    <string name="moteur_texte">Le moteur web de ce téléphone (« Android System WebView », version %1$s) est trop ancien pour les jeux : l\'échiquier ne s\'afficherait pas. Mets-le à jour depuis le Play Store.</string>
+    <string name="moteur_mettre_a_jour">Mettre à jour</string>
+    <string name="moteur_plus_tard">Plus tard</string>
 </resources>

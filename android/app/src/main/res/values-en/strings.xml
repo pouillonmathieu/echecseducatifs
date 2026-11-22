@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="nom">Chess mini-games</string>
+    <string name="moteur_titre">An update is needed</string>
+    <string name="moteur_texte">This phone\'s web engine (“Android System WebView”, version %1$s) is too old for the games: the board would not show. Please update it from the Play Store.</string>
+    <string name="moteur_mettre_a_jour">Update</string>
+    <string name="moteur_plus_tard">Later</string>
 </resources>

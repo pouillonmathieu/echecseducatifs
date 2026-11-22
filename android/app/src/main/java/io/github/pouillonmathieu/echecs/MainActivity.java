@@ -2,6 +2,8 @@ package io.github.pouillonmathieu.echecs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.pm.PackageInfo;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +26,7 @@ import android.widget.FrameLayout;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.webkit.WebViewAssetLoader;
+import androidx.webkit.WebViewCompat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,6 +52,7 @@ import java.util.Locale;
 public class MainActivity extends Activity {
     static final String HOTE = "appassets.androidplatform.net";
     static final String SITE = "https://" + HOTE + "/assets/site/";
+    static final int MOTEUR_MINIMUM = 90;
 
     private WebView web;
     private FrameLayout cadre;
@@ -104,6 +108,28 @@ public class MainActivity extends Activity {
         }
 
         if (etat == null || web.restoreState(etat) == null) web.loadUrl(pageDAccueil());
+        if (etat == null) verifierMoteur();
+    }
+
+    /** Les jeux demandent un moteur web récent (Chrome 90 ou plus) : sinon, on propose de le mettre à jour. */
+    private void verifierMoteur() {
+        PackageInfo p = WebViewCompat.getCurrentWebViewPackage(this);
+        if (p == null || p.versionName == null) return;
+        int majeure;
+        try { majeure = Integer.parseInt(p.versionName.split("\\.")[0]); } catch (NumberFormatException e) { return; }
+        if (majeure >= MOTEUR_MINIMUM) return;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.moteur_titre)
+                .setMessage(getString(R.string.moteur_texte, p.versionName))
+                .setPositiveButton(R.string.moteur_mettre_a_jour, (d, w) -> {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + p.packageName)));
+                    } catch (ActivityNotFoundException e) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + p.packageName)));
+                    }
+                })
+                .setNegativeButton(R.string.moteur_plus_tard, null)
+                .show();
     }
 
     /** La page d'accueil : celle de la dernière langue utilisée, sinon celle du téléphone. */

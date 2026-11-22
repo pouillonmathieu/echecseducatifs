@@ -61,6 +61,11 @@
   // (le fond change en douceur, en 0,25 s : on le relit une fois la transition finie)
   const apresTransition = () => { envoyerFond(); setTimeout(envoyerFond, 350); };
   document.addEventListener('DOMContentLoaded', () => {
+    // dans l'application, les réglages restent sur le téléphone (et non « dans ce navigateur »)
+    document.querySelectorAll('.pied p').forEach((p) => {
+      if (p.children.length || !/ce navigateur|this browser/.test(p.textContent)) return; // (seulement cette phrase-là, sans lien)
+      p.textContent = p.textContent.replace('restent dans ce navigateur', 'restent sur ce téléphone').replace('stay in this browser', 'stay on this phone');
+    });
     envoyerFond();
     new MutationObserver(apresTransition).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', apresTransition);
