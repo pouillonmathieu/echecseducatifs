@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="author" content="Mathieu Pouillon">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mini-jeux d'échecs</title>
+<title>Pom'chess</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/commun.css?v=202611201643">
-<link rel="stylesheet" href="css/accueil.css?v=202611201643">
-<script src="js/commun.js?v=202611201643"></script>
+<link rel="stylesheet" href="css/commun.css?v=202611221544">
+<link rel="stylesheet" href="css/accueil.css?v=202611221544">
+<script src="js/commun.js?v=202611221544"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -38,18 +38,34 @@
     <span class="logo" aria-hidden="true">
       <svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="8"/><path d="M9 9h7v7H9zM16 16h7v7h-7z"/></svg>
     </span>
-    <h1 class="titre">Mini-jeux d'échecs</h1>
-    <a class="bouton-icone bouton-langue" href="en/index.html" hreflang="en" lang="en" aria-label="English version" title="English" data-hors-artifact>EN</a>
-    <button id="btn-theme" class="bouton-icone bouton-theme" type="button">
-      <svg class="icone-lune" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
-      <svg class="icone-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
-    </button>
+    <h1 class="titre">Pom'chess</h1>
     <div class="reglages">
       <button id="btn-reglages" class="bouton-icone" type="button" aria-label="Réglages" title="Réglages" aria-controls="panneau-reglages" aria-expanded="false">
         <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
       </button>
       <div id="panneau-reglages" class="panneau panneau-site" hidden>
         <p class="note-reglages">Pour tous les jeux du site</p>
+        <div class="ligne-reglage-bloc">
+          <span class="ligne-titre">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c-3 3.2-3 13.8 0 17M12 3.5c3 3.2 3 13.8 0 17"/></svg>
+            Langue
+          </span>
+          <div class="segments" id="reg-langue" role="group" aria-label="Langue">
+            <a data-langue="fr" href="index.html" lang="fr" data-hors-artifact><small>Français</small></a>
+            <a data-langue="en" href="en/index.html" lang="en" data-hors-artifact><small>English</small></a>
+          </div>
+        </div>
+        <div class="ligne-reglage-bloc">
+          <span class="ligne-titre">
+            <svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
+            Thème
+          </span>
+          <div class="segments" id="reg-theme" role="group" aria-label="Thème">
+            <button type="button" data-theme-choix="auto"><small>Automatique</small></button>
+            <button type="button" data-theme-choix="light"><small>Clair</small></button>
+            <button type="button" data-theme-choix="dark"><small>Sombre</small></button>
+          </div>
+        </div>
         <div class="ligne-reglage-bloc">
           <span class="ligne-titre">
             <svg viewBox="0 0 24 24"><use href="#piece-cavalier-blanc" width="24" height="24"/></svg>
@@ -182,13 +198,20 @@
   </footer>
 </main>
 
-<script src="js/pieces.js?v=202611201643"></script>
-<script src="js/pom.js?v=202611201643"></script>
+<script src="js/pieces.js?v=202611221544"></script>
+<script src="js/pom.js?v=202611221544"></script>
 <script>
   (function () {
     const t = Commun.t;
     window.Echecs.injecterSprite();
-    Commun.brancherBoutonTheme(document.getElementById('btn-theme'));
+    Commun.brancherTheme(document.getElementById('reg-theme'));
+    // la langue : la page française ou anglaise de l'accueil (depuis l'une ou l'autre)
+    document.querySelectorAll('#reg-langue a').forEach((a) => {
+      const ici = a.dataset.langue === (Commun.EN ? 'en' : 'fr');
+      a.href = a.dataset.langue === 'en' ? (Commun.EN ? 'index.html' : 'en/index.html') : (Commun.EN ? '../index.html' : 'index.html');
+      a.setAttribute('aria-pressed', ici ? 'true' : 'false');
+      if (ici) a.setAttribute('aria-current', 'page');
+    });
     Commun.brancherReglages(document.getElementById('btn-reglages'), document.getElementById('panneau-reglages'));
     Commun.brancherPlateau(document.getElementById('reg-plateau'));
     Commun.brancherInterrupteur(document.getElementById('reg-pom'), Pom.present, (v) => { Pom.present = v; });

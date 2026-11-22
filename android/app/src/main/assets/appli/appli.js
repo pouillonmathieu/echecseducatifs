@@ -2,7 +2,7 @@
    - window.speechSynthesis et SpeechSynthesisUtterance : la synthèse vocale du navigateur n'existe pas dans une
      WebView ; on la remplace par la voix du téléphone (pont window.EchecsAndroid), avec la même interface.
    - La couleur du fond de la page est transmise à l'application, pour les barres du système (thème clair ou sombre).
-   - Le bouton « EN » / « FR » change de langue dans l'application (sans le marquer comme lien externe). */
+   - Le pied de page de l'accueil dit « Les réglages restent sur ce téléphone ». */
 (function () {
   const pont = window.EchecsAndroid;
   if (!pont) return;

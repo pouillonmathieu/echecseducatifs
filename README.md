@@ -1,4 +1,6 @@
-# Échecs éducatifs
+# Pom'chess
+
+Le site et l'application des petits jeux d'échecs éducatifs, avec Pom', leur personnage.
 
 Créé par **Mathieu Pouillon**.
 
@@ -203,6 +205,13 @@ Sur un échiquier dessiné par `Echiquier.dessiner`, les dessins sont oubliés d
 ne reviennent pas au dessin suivant (« Le cheval de la reine », « Capture le roi »…).
 « Mat ou pas mat ? » aussi ; les dessins s'effacent à chaque nouvelle position.
 
+## « Suivant » toujours à portée
+
+Après une réussite, on passe à la suite sans faire défiler : si le bouton « Suivant » (« Partie suivante »,
+« Continuer ») est hors de l'écran, sous une longue explication sur téléphone, une copie de ce bouton flotte en bas de
+l'écran (`js/commun.js`, pour tous les jeux) ; elle disparaît dès que le vrai bouton est visible. Les fenêtres de
+résultats tiennent dans l'écran (Pom' y rapetisse s'il le faut).
+
 ## Pom', le coach
 
 Pom' (une pièce d'échecs avec une pomme pour tête et un chapeau melon couronné d'une croix) est le personnage principal
@@ -211,7 +220,7 @@ laisse, et se réveille quand on revient). Dans les jeux, il réagit : une bonne
 1 étoile (à partir de 5 bonnes réponses d'affilée : 2 étoiles ; à partir de 10 : 3 étoiles) ; une erreur, une animation d'erreur ;
 une partie gagnée (« Capture le roi », « Le cheval de la reine », le labyrinthe, la fin d'une partie de « Joue le coup »,
 une ouverture rejouée, une victoire à « Dice chess »), l'animation du nombre d'étoiles obtenues ; la fin d'un défi aussi
-(à 0 étoile, il encourage d'un pouce levé). Un indice : il réfléchit ; une solution : « Eurêka ! ». Dans un défi chrono,
+(à 0 étoile, il encourage d'un pouce levé). Un indice : il réfléchit ; une solution : « Eurêka ! » (sur grand écran seulement : sur téléphone, il cacherait l'échiquier). Dans un défi chrono,
 une réussite en cours n'est pas interrompue par la suivante. Dans « Comment ça s'appelle ? », il ne réagit qu'à la
 troisième lettre fausse (quand la lettre est montrée). Sur un écran assez large, il se tient juste à gauche de
 l'échiquier (ou de la balance, des dés), les pieds au niveau de son bas, aussi grand que la place le permet (470 px au
@@ -233,7 +242,10 @@ animation dans l'atelier, puis on relance le script.
 
 ## Réglages du site
 
-Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé dans le navigateur) :
+Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé dans le navigateur) ; la langue et le
+thème ne se choisissent que là (les jeux n'ont plus ces boutons) :
+- **Langue** : français ou anglais (liens vers `index.html` et `en/index.html`, réglés par le script de l'accueil) ;
+- **Thème** : automatique (celui de l'appareil), clair ou sombre (`Commun.brancherTheme`, clé `echecs.theme`) ;
 - **Pièces** : classiques (dessin Cburnett) ou simples (`js/pieces.js`, clé `echecs.pieces.classiques`) ;
   les petits pions des icônes (symbole `#mini-pion`) suivent le même choix ;
 - **Échiquier** : vert, bleu, rouge ou bois (`js/commun.js`, clé `echecs.plateau`, attribut `data-plateau` de `<html>`).
@@ -251,7 +263,7 @@ téléphone (icône à gauche du nom, sans la phrase). Si la page dépasse quand
 Les pages anglaises (dossier `en/`) sont générées par `python3 outils/anglais/generer.py` à partir des pages
 françaises et du dictionnaire `outils/anglais/pages.json` : on ne les modifie pas à la main. Elles utilisent les mêmes
 fichiers CSS et JS que le site français ; le code des jeux choisit sa langue avec `document.documentElement.lang`
-(`Commun.t('texte français', 'English text')`). Un jeu est traduit quand sa page française a le bouton « EN » ; le
+(`Commun.t('texte français', 'English text')`). Une page est traduite quand elle a son entrée dans `pages.json` (toutes le sont) ; le
 script signale tout texte sans traduction. Les textes générés ont aussi leur version anglaise : explications de « Mat ou pas mat ? »
 (`outils/positions-mat.js`), introductions des parties célèbres (`titre_en`, `texte_en` dans `jeux/joue/intros.js`) et
 commentaires du coach (`texte_en`, `fin_en` dans `outils/commentaires-coach.json`). Dans « Note le coup » et « Joue le
@@ -261,7 +273,7 @@ coup », la version anglaise n'utilise que la notation anglaise.
 
 Le dossier `android/` contient l'application Android : tout le site embarqué, hors ligne (voir `android/README.md`).
 Elle est reconstruite par GitHub à chaque modification du site et publiée dans la version « android » du dépôt
-(<https://github.com/pouillonmathieu/echecseducatifs/releases/tag/android>, fichier `mini-jeux-echecs.apk`).
+(<https://github.com/pouillonmathieu/echecseducatifs/releases/tag/android>, fichier `pomchess.apk`).
 
 ## Cache des navigateurs
 

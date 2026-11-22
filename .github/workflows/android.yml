@@ -1,6 +1,6 @@
 # L'application Android : construite à chaque modification du site (ou de l'application) sur main, puis publiée dans
 # la version « android » du dépôt : https://github.com/pouillonmathieu/echecseducatifs/releases/tag/android
-# (le fichier à installer : mini-jeux-echecs.apk). Voir android/README.md.
+# (le fichier à installer : pomchess.apk). Voir android/README.md.
 name: Application Android
 
 on:
@@ -40,12 +40,12 @@ jobs:
           NUMERO_VERSION: ${{ github.run_number }}
         run: |
           ./gradlew assembleRelease --no-daemon
-          cp app/build/outputs/apk/release/app-release.apk ../mini-jeux-echecs.apk
+          cp app/build/outputs/apk/release/app-release.apk ../pomchess.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: mini-jeux-echecs
-          path: mini-jeux-echecs.apk
+          name: pomchess
+          path: pomchess.apk
 
       - name: Publier dans la version « android » du dépôt
         env:
@@ -53,6 +53,9 @@ jobs:
         run: |
           if ! gh release view android >/dev/null 2>&1; then
             gh release create android --title "Application Android" --latest=false \
-              --notes "L'application Android des mini-jeux d'échecs (tout le site, hors ligne). Sur le téléphone : télécharger mini-jeux-echecs.apk, puis l'ouvrir pour l'installer (autoriser l'installation depuis le navigateur si Android le demande). Refaite automatiquement à chaque modification du site."
+              --notes "Pom'chess, l'application Android (tout le site, hors ligne). Sur le téléphone : télécharger pomchess.apk, puis l'ouvrir pour l'installer (autoriser l'installation depuis le navigateur si Android le demande). Refaite automatiquement à chaque modification du site."
           fi
-          gh release upload android mini-jeux-echecs.apk --clobber
+          gh release edit android --title "Pom'chess pour Android"
+          gh release upload android pomchess.apk --clobber
+          # (l'ancien nom de l'application)
+          gh release delete-asset android mini-jeux-echecs.apk -y 2>/dev/null || true

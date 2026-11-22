@@ -17,7 +17,7 @@
      Pom.erreur()        une erreur (la série repart de zéro)
      Pom.etoiles(n)      une partie gagnée avec n étoiles (1 à 3) ; 0 : perdue
      Pom.resultat(n)     la fin d'un défi, avec n étoiles (0 à 3 ; à 0, il encourage)
-     Pom.hmm() / Pom.eureka()   il réfléchit (un indice), il a trouvé (la solution)
+     Pom.hmm() / Pom.eureka()   il réfléchit (un indice), il a trouvé (la solution) : sur grand écran seulement
    Le réglage « Pom' » de la page d'accueil (clé echecs.pom) le retire des jeux. */
 (function () {
   const EN = document.documentElement.lang === 'en';
@@ -109,6 +109,10 @@
       else if (titre) titre.before(boite);
       else carte.prepend(boite);
       boite.classList.add('visible');
+      // la fenêtre doit tenir dans l'écran, boutons compris : sinon, Pom' se fait plus petit (jusqu'à 100 px)
+      boite.style.removeProperty('--h');
+      const trop = carte.getBoundingClientRect().height - (window.innerHeight - 32);
+      if (trop > 0) boite.style.setProperty('--h', Math.max(100, boite.getBoundingClientRect().height - trop) + 'px');
       moteur.demarrer();
       f();
       // la fenêtre fermée, il s'arrête
@@ -328,8 +332,10 @@
     erreur: quandPret(() => { serie = 0; oups(); }),
     etoiles: (n) => quandPret(() => { if (n >= 1) bravo(Math.min(3, n), true); else { serie = 0; jouer(moteur.auHasard(), [], true); } })(),
     resultat: (n) => quandPret(() => (n >= 1 ? bravo(Math.min(3, n), true) : jouer('pouce', [], true)))(),
-    hmm: quandPret(() => jouer('reflechit')),
-    eureka: quandPret(() => jouer('eureka')),
+    // un indice, une solution : seulement quand Pom' est à côté de l'échiquier (grand écran) ; sur un petit écran, il
+    // apparaîtrait sur l'échiquier et cacherait justement ce qu'on veut voir
+    hmm: quandPret(() => { if (mode === 'pose') jouer('reflechit'); }),
+    eureka: quandPret(() => { if (mode === 'pose') jouer('eureka'); }),
     jouer: (nom, suite) => quandPret(() => jouer(nom, suite))(),
     auHasard: (niveau) => (moteur ? moteur.auHasard(niveau) : null),
     t: (fr, en) => (EN ? en : fr),

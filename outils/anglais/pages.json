@@ -59,7 +59,6 @@
   "Compris": "Got it"
  },
  "index.html": {
-  "Mini-jeux d'échecs": "Chess mini-games",
   "Les échecs, en petits jeux.": "Chess, in little games.",
   "Pour découvrir l'échiquier et les pièces tout en faisant des maths, du repérage et un peu de hasard. À essayer seul, en famille ou en classe.": "Discover the board and the pieces while doing some maths, finding your way around and enjoying a bit of luck. Play alone, with your family or in class.",
   "Choisis un jeu": "Pick a game",
@@ -142,7 +141,12 @@
   "Pom', le coach : touche-le, il fait une danse !": "Pom', the coach: tap for a dance!",
   "Touche-moi !": "Tap me!",
   "Salut ! Moi, c'est": "Hi! I'm",
-  ". Choisis un jeu : je serai là pour t'encourager !": ". Pick a game: I'll be there to cheer you on!"
+  ". Choisis un jeu : je serai là pour t'encourager !": ". Pick a game: I'll be there to cheer you on!",
+  "Langue": "Language",
+  "Thème": "Theme",
+  "Automatique": "Automatic",
+  "Clair": "Light",
+  "Sombre": "Dark"
  },
  "identiques": [
   "CC BY-SA 3.0",
@@ -151,10 +155,12 @@
   "EN",
   "English",
   "English version",
+  "Français",
   "Lexend",
   "M",
   "Mathieu Pouillon",
   "Pom'",
+  "Pom'chess",
   "p"
  ],
  "jeux/balance/index.html": {

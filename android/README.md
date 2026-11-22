@@ -1,6 +1,6 @@
 # L'application Android
 
-L'application « Mini-jeux d'échecs » (« Chess mini-games » sur un téléphone en anglais) : tout le site, embarqué dans
+L'application « Pom'chess » : tout le site, embarqué dans
 l'application. Elle marche sans connexion et n'a même pas la permission d'aller sur Internet ; les réglages et les
 records restent sur le téléphone. Android 7.0 ou plus récent.
 
@@ -8,7 +8,7 @@ records restent sur le téléphone. Android 7.0 ou plus récent.
 
 À chaque modification du site sur `main`, GitHub reconstruit l'application (`.github/workflows/android.yml`) et la
 publie ici : <https://github.com/pouillonmathieu/echecseducatifs/releases/tag/android>.
-Sur le téléphone, télécharger `mini-jeux-echecs.apk`, l'ouvrir et accepter l'installation (Android demande
+Sur le téléphone, télécharger `pomchess.apk`, l'ouvrir et accepter l'installation (Android demande
 d'autoriser le navigateur à installer des applications). Une nouvelle version s'installe par-dessus l'ancienne :
 les réglages sont gardés.
 
@@ -28,7 +28,7 @@ les réglages sont gardés.
 - Si le moteur web du téléphone (« Android System WebView ») est plus ancien que Chrome 90, un message propose de le
   mettre à jour depuis le Play Store (avec un moteur trop ancien, l'échiquier ne s'afficherait pas). Dans
   l'application, le pied de page de l'accueil dit « Les réglages restent sur ce téléphone ».
-- L'icône : Pom', sur un fond jaune pâle (`app/src/main/res/mipmap-*`, et `icone-512.png` pour le Play Store).
+- L'icône : la tête et le chapeau de Pom', sur le fond clair des pages (`app/src/main/res/mipmap-*`, et `icone-512.png` pour le Play Store).
 
 ## Vérifications faites
 

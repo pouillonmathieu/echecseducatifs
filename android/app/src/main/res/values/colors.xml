@@ -2,5 +2,5 @@
 <resources>
     <!-- le fond des pages du site (variable « fond » de css/commun.css), clair et sombre -->
     <color name="fond">#F3F4F6</color>
-    <color name="icone_fond">#F6E7B8</color>
+    <color name="icone_fond">#F3F4F6</color>
 </resources>

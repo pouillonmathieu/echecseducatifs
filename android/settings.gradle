@@ -1,4 +1,4 @@
-// L'application Android des mini-jeux d'échecs : le site entier, embarqué dans l'application (voir README.md).
+// Pom'chess, l'application Android : le site entier, embarqué dans l'application (voir README.md).
 pluginManagement {
     repositories {
         google()

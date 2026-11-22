@@ -50,6 +50,7 @@
   }
 
   function brancherBoutonTheme(bouton) {
+    if (!bouton) return; // (le thème se choisit dans les réglages de la page d'accueil)
     const maj = () => {
       const sombre = themeEffectif() === 'dark';
       const label = sombre ? t('Passer en mode clair', 'Switch to light mode') : t('Passer en mode sombre', 'Switch to dark mode');
@@ -68,8 +69,24 @@
     maj();
   }
 
+  // le choix du thème dans les réglages de l'accueil : boutons data-theme-choix="auto" | "light" | "dark"
+  function brancherTheme(groupe) {
+    if (!groupe) return;
+    const boutons = groupe.querySelectorAll('[data-theme-choix]');
+    const actuel = () => racine.getAttribute('data-theme') || 'auto';
+    const maj = () => boutons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.themeChoix === actuel() ? 'true' : 'false'));
+    boutons.forEach((b) => b.addEventListener('click', () => {
+      const v = b.dataset.themeChoix;
+      if (v === 'auto') racine.removeAttribute('data-theme'); else racine.setAttribute('data-theme', v);
+      try { if (v === 'auto') localStorage.removeItem('echecs.theme'); else localStorage.setItem('echecs.theme', v); } catch (e) { /* rien */ }
+      maj();
+    }));
+    maj();
+  }
+
   // ---------- Panneau de réglages (s'ouvre sous un bouton) ----------
   function brancherReglages(bouton, panneau) {
+    if (!bouton || !panneau) return;
     const ouvrir = (oui) => {
       panneau.hidden = !oui;
       bouton.setAttribute('aria-expanded', oui ? 'true' : 'false');
@@ -97,5 +114,40 @@
     return { definir: maj };
   }
 
-  window.Commun = { EN, t, Prefs, PLATEAUX, choisirPlateau, brancherPlateau, themeEffectif, brancherBoutonTheme, brancherReglages, brancherInterrupteur };
+  // ---------- « Suivant » toujours à portée ----------
+  // Après une réussite, on doit pouvoir passer à la suite sans faire défiler la page. Quand le bouton qui fait passer à
+  // la suite (Suivant, Partie suivante, Continuer) est affiché mais hors de l'écran (sous l'explication, sur un
+  // téléphone), une copie de ce bouton flotte en bas de l'écran ; elle disparaît dès que le vrai bouton est visible.
+  const SUIVANTS = ['#btn-suivant:not(.outil)', '#btn-suivante', '#btn-continuer'];
+  function suivantToujoursVisible() {
+    let copie = null, source = null, attente = 0;
+    const affiche = (el) => el.getClientRects().length > 0 && !el.disabled;
+    const hors = (el) => { const r = el.getBoundingClientRect(); return r.bottom > window.innerHeight - 4 || r.top < 0; };
+    const fenetreOuverte = () => [...document.querySelectorAll('.voile')].some((v) => !v.hidden && v.getClientRects().length);
+    function maj() {
+      attente = 0;
+      const el = SUIVANTS.map((sel) => document.querySelector(sel)).find((b) => b && affiche(b));
+      const montrer = !!el && hors(el) && !fenetreOuverte();
+      if (!montrer) { if (copie) copie.hidden = true; return; }
+      if (!copie) {
+        copie = document.createElement('button');
+        copie.type = 'button';
+        copie.className = 'bouton-principal suivant-flottant';
+        copie.addEventListener('click', () => { if (source) source.click(); });
+        document.body.appendChild(copie);
+      }
+      source = el;
+      if (copie.innerHTML !== el.innerHTML) copie.innerHTML = el.innerHTML;
+      copie.hidden = false;
+    }
+    const plusTard = () => { if (!attente) attente = requestAnimationFrame(maj); };
+    new MutationObserver(plusTard).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'class', 'disabled'] });
+    window.addEventListener('scroll', plusTard, { passive: true });
+    window.addEventListener('resize', plusTard);
+    plusTard();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', suivantToujoursVisible);
+  else suivantToujoursVisible();
+
+  window.Commun = { EN, t, Prefs, PLATEAUX, choisirPlateau, brancherPlateau, themeEffectif, brancherBoutonTheme, brancherTheme, brancherReglages, brancherInterrupteur };
 })();

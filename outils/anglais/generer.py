@@ -13,8 +13,8 @@ PAGES = ['index.html'] + sorted('jeux/%s/%s' % (d, f) for d in os.listdir(os.pat
                                 if os.path.isdir(os.path.join(RACINE, 'jeux', d))
                                 for f in os.listdir(os.path.join(RACINE, 'jeux', d)) if f.endswith('.html'))
 DICO = json.load(open(os.path.join(os.path.dirname(__file__), 'pages.json'), encoding='utf-8'))
-# pages déjà traduites (celles qui ont le bouton « EN ») ; les autres ne sont pas générées
-TRADUITES = [p for p in PAGES if 'bouton-langue' in open(os.path.join(RACINE, p), encoding='utf-8').read()]
+# pages traduites : celles qui ont leur entrée dans pages.json (toutes, aujourd'hui) ; les autres ne sont pas générées
+TRADUITES = [p for p in PAGES if p in DICO]
 IDENTIQUES = set(DICO.get('identiques', []))  # textes qui s'écrivent pareil en anglais
 
 MASQUE = re.compile(r'<script\b.*?</script>|<style\b.*?</style>|<!--.*?-->', re.S)
@@ -85,13 +85,7 @@ def traduire_page(page):
         return m.group(0)
     html = re.sub(r'(?<=<a )class="carte-jeu" href="([^"]+)"', lambda m: 'class="carte-jeu" ' + lien(m), html)
     html = html.replace('<html lang="fr">', '<html lang="en">', 1)
-    # bouton de langue : retour vers la page française
-    retour = os.path.relpath(page, dossier_en).replace(os.sep, '/')
-    html, n = re.subn(r'<a class="bouton-icone bouton-langue"[^>]*>EN</a>',
-                      '<a class="bouton-icone bouton-langue" href="%s" hreflang="fr" lang="fr" aria-label="Version française" '
-                      'title="Français" data-hors-artifact>FR</a>' % retour, html)
-    if n != 1:
-        manquants.append('(bouton de langue introuvable)')
+    # (la langue se choisit dans les réglages de la page d'accueil : son script règle les liens selon la langue)
     entete = '<!-- Généré par outils/anglais/generer.py depuis %s : ne pas modifier à la main. -->\n' % page
     html = html.replace('<html lang="en">', entete + '<html lang="en">', 1) if html.startswith('<!doctype html>\n') is False else \
         html.replace('<!doctype html>\n', '<!doctype html>\n' + entete, 1)
