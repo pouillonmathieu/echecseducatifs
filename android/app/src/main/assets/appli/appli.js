@@ -58,11 +58,12 @@
     let numero = 0;
     const ecoutes = new Map();
     class Reconnaissance {
-      constructor() { this.lang = ''; this.maxAlternatives = 1; this.continuous = false; this.interimResults = false; this.onresult = this.onerror = this.onend = this.onstart = null; this.id = null; }
+      constructor() { this.lang = ''; this.maxAlternatives = 1; this.continuous = false; this.interimResults = false; this.onresult = this.onerror = this.onend = this.onstart = null; this.id = null; this.indices = []; }
       start() {
         this.id = 'd' + (++numero);
         ecoutes.set(this.id, this);
-        pont.ecouter(this.id, this.lang || document.documentElement.lang, this.maxAlternatives || 1);
+        // indices : les phrases attendues (les coups possibles), que la reconnaissance du téléphone favorise
+        pont.ecouter(this.id, this.lang || document.documentElement.lang, this.maxAlternatives || 1, JSON.stringify(this.indices || []));
         if (this.onstart) this.onstart({ type: 'start' });
       }
       stop() { pont.arreterEcoute(); }

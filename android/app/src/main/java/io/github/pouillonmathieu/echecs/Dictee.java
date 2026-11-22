@@ -27,7 +27,7 @@ class Dictee {
     private final WebView web;
     private SpeechRecognizer reco;
     private String idEnCours;
-    private String enAttente, langueEnAttente; // une écoute qui attend la permission du micro
+    private String enAttente, langueEnAttente, indicesEnAttente; // une écoute qui attend la permission du micro
     private int maxEnAttente;
 
     Dictee(Activity activite, WebView web) {
@@ -38,14 +38,14 @@ class Dictee {
     boolean possible() { return SpeechRecognizer.isRecognitionAvailable(activite); }
 
     /** Commence à écouter ; les phrases entendues sont envoyées à la page (window.__dictee). */
-    void ecouter(String id, String langue, int max) {
+    void ecouter(String id, String langue, int max, String indices) {
         activite.runOnUiThread(() -> {
             if (activite.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                enAttente = id; langueEnAttente = langue; maxEnAttente = max;
+                enAttente = id; langueEnAttente = langue; maxEnAttente = max; indicesEnAttente = indices;
                 activite.requestPermissions(new String[] { Manifest.permission.RECORD_AUDIO }, DEMANDE_MICRO);
                 return;
             }
-            demarrer(id, langue, max);
+            demarrer(id, langue, max, indices);
         });
     }
 
@@ -54,11 +54,11 @@ class Dictee {
         String id = enAttente;
         enAttente = null;
         if (id == null) return;
-        if (accordee) demarrer(id, langueEnAttente, maxEnAttente);
+        if (accordee) demarrer(id, langueEnAttente, maxEnAttente, indicesEnAttente);
         else { envoyer("erreur", id, "\"not-allowed\""); envoyer("fin", id, null); }
     }
 
-    private void demarrer(String id, String langue, int max) {
+    private void demarrer(String id, String langue, int max, String indices) {
         arreterReco();
         idEnCours = id;
         try {
@@ -92,6 +92,15 @@ class Dictee {
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, langue);
         i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, Math.max(1, max));
         i.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false);
+        // Android 13+ : les phrases attendues (les coups possibles, dits à voix haute) sont favorisées
+        if (android.os.Build.VERSION.SDK_INT >= 33 && indices != null) {
+            try {
+                JSONArray a = new JSONArray(indices);
+                ArrayList<String> liste = new ArrayList<>();
+                for (int k = 0; k < a.length() && k < 300; k++) liste.add(a.getString(k));
+                if (!liste.isEmpty()) i.putStringArrayListExtra(RecognizerIntent.EXTRA_BIASING_STRINGS, liste);
+            } catch (org.json.JSONException e) { /* pas de phrases favorisées */ }
+        }
         reco.startListening(i);
     }
 

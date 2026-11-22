@@ -161,8 +161,14 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   appuyé (ou la barre d'espace ; sur un petit écran, il s'affiche en grand par-dessus le haut de la page) et compte les
   coups d'œil. Les coups s'écrivent sur la feuille de partie comme dans « Note le coup » (clavier à l'écran ou de
   l'appareil, notation française ou anglaise ; on accepte aussi 0-0, e2e4, les + et # oubliés), ou se disent au micro
-  (« cavalier f3 », « e prend d5 », « petit roque » ; `voix.js` transforme la phrase entendue en notation, puis le
-  coup est écrit et on appuie sur « Jouer »). Un coup impossible ou ambigu est expliqué. Les coups de l'ordinateur
+  (« cavalier f3 », « e prend d5 », « petit roque »). La reconnaissance vocale écrit des phrases ordinaires (« e prend
+  d6 » devient « je prends des six ») : `voix.js` lit d'abord la phrase comme un coup, et sinon compare sa prononciation
+  à celle de chaque coup possible dans la position (« e prend dé six », « pion prend dé six »… ; clé phonétique
+  simplifiée du français ou de l'anglais, distance d'édition) et garde le plus proche ; si deux coups sont presque aussi
+  proches, il propose les deux en boutons. Les façons de dire les coups possibles sont aussi données à la reconnaissance
+  pour qu'elle les favorise, là où c'est possible (Chrome : `SpeechRecognition.phrases`, refusées par certains
+  navigateurs, alors on recommence sans ; application Android 13+ : `EXTRA_BIASING_STRINGS`). Le coup compris est écrit
+  dans la case, avec ce qui a été entendu, et on appuie sur « Jouer ». Un coup impossible ou ambigu est expliqué. Les coups de l'ordinateur
   s'écrivent sur la feuille et sont lus à voix haute (réglage « Lire les coups de l'ordinateur », le haut-parleur les
   répète). Reprendre son coup, abandonner, nouvelle partie ; à la fin, l'échiquier est montré (victoire 3 étoiles,
   nulle 2, défaite 1). L'ordinateur est **Stockfish 18** (Stockfish.js, version « lite » sur un seul fil, 7 Mo, dans

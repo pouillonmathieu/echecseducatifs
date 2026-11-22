@@ -223,7 +223,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void arreter() { voix.arreter(); }
         /** La dictée (window.SpeechRecognition, dans appli.js). */
         @JavascriptInterface public boolean dicteePossible() { return dictee.possible(); }
-        @JavascriptInterface public void ecouter(String id, String langue, int max) { dictee.ecouter(id, langue, max); }
+        @JavascriptInterface public void ecouter(String id, String langue, int max, String indices) { dictee.ecouter(id, langue, max, indices); }
         @JavascriptInterface public void arreterEcoute() { dictee.arreter(); }
         /** La couleur du fond de la page (#rrggbb) : derrière les barres du système, avec des icônes lisibles. */
         @JavascriptInterface public void fond(String couleur, boolean sombre) {

@@ -205,11 +205,31 @@
   }
 
   // ---------- Messages ----------
-  function message(texte, genre = '') {
+  // choix : des coups à proposer en boutons (dictée hésitante) ; toucher un bouton l'écrit dans la case
+  function message(texte, genre = '', choix = []) {
     const m = $('message');
     m.textContent = texte;
+    if (choix.length) {
+      const boutons = document.createElement('span');
+      boutons.className = 'choix-dictee';
+      for (const c of choix) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'bouton-secondaire';
+        b.textContent = traduire(c.san);
+        b.addEventListener('click', () => { proposer(c); message(t(`${traduire(c.san)} : appuie sur « Jouer ».`, `${traduire(c.san)}: press "Play".`)); $('btn-valider').focus({ preventScroll: true }); });
+        boutons.appendChild(b);
+      }
+      m.appendChild(boutons);
+    }
     m.className = `message ${genre}`;
     m.hidden = !texte;
+  }
+  // écrit un coup dans la case (les jetons sont en notation anglaise, comme ceux du clavier à l'écran)
+  function proposer(coup) {
+    jeu.jetons = [...coup.san.replace(/[+#]/g, '')];
+    jeu.remplacer = false;
+    majSaisie();
   }
   const effacerMessage = () => { if (!$('message').classList.contains('fixe')) message(''); };
   function secouer() {
@@ -436,7 +456,8 @@
     message(t('Je t\'écoute : dis ton coup (par exemple « cavalier f3 »).', 'I\'m listening: say your move (for example "knight f3").'), 'ecoute');
     let phrases = [];
     const gen = jeu.gen;
-    try { phrases = await Voix.ecouter(); }
+    const legaux = jeu.chess.moves({ verbose: true });
+    try { phrases = await Voix.ecouter(Voix.phrasesAttendues(legaux)); }
     catch (e) {
       document.body.classList.remove('ecoute');
       dictee.setAttribute('aria-pressed', 'false');
@@ -448,7 +469,9 @@
     document.body.classList.remove('ecoute');
     dictee.setAttribute('aria-pressed', 'false');
     if (gen !== jeu.gen || !aMoi()) return;
-    let meilleur = null, ambigu = null;
+    // 1) la phrase est déjà un coup clair (« cavalier f3 ») ; 2) sinon, le coup possible qui se prononce le plus
+    // pareil (« je prends des six » -> e prend d6, voix.js)
+    let meilleur = null, ambigu = null, autre = null;
     for (const p of phrases) {
       const n = Voix.versNotation(p);
       if (!n) continue;
@@ -456,11 +479,15 @@
       if (r.coup) { meilleur = r.coup; break; }
       if (!ambigu && (r.erreur === 'ambigu' || r.erreur === 'promotion')) ambigu = r;
     }
+    if (!meilleur && phrases.length) {
+      const c = Voix.choisirCoup(phrases, legaux);
+      if (c && c.score <= 0.45) { meilleur = c.coup; autre = c.autre; ambigu = null; }
+    }
     if (meilleur) {
-      // (les jetons sont en notation anglaise, comme ceux du clavier à l'écran)
-      jeu.jetons = [...meilleur.san.replace(/[+#]/g, '')];
-      majSaisie();
-      message(t(`J'ai compris : ${traduire(meilleur.san)}. Appuie sur « Jouer ».`, `I understood: ${traduire(meilleur.san)}. Press "Play".`));
+      proposer(meilleur);
+      const entendu = phrases[0] ? t(`J'ai entendu « ${phrases[0]} » : `, `I heard "${phrases[0]}": `) : '';
+      if (autre) message(entendu + t(`${traduire(meilleur.san)} ou ${traduire(autre.san)} ?`, `${traduire(meilleur.san)} or ${traduire(autre.san)}?`), '', [meilleur, autre]);
+      else message(entendu + t(`${traduire(meilleur.san)}. Appuie sur « Jouer ».`, `${traduire(meilleur.san)}. Press "Play".`));
       $('btn-valider').focus({ preventScroll: true });
     } else if (ambigu) {
       message(t(`Plusieurs coups possibles : ${listeCoups(ambigu.options)}. Précise lequel.`, `Several moves are possible: ${listeCoups(ambigu.options)}. Say which one.`), 'erreur');
