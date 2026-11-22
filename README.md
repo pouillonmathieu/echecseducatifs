@@ -228,6 +228,10 @@ doucement pour qu'on le remarque. Dice chess ouvre ses règles illustrées, qui 
   les compteurs, les claviers et les textes qui se font petits (fin de `css/jeux.css`, et la fin de la feuille de
   style de chaque jeu). « Note le coup » ne montre que les deux derniers coups de la feuille, et le x est sur la
   rangée des pièces du clavier.
+- Les rangées de boutons « Recommencer / Nouvelle partie / Solution » (Capture le roi, Le cheval de la reine) et les
+  outils du labyrinthe ont l'attribut `data-icones-si-besoin` : si un texte ne tient pas dans son bouton (petit écran,
+  ou « Solution » en plus au niveau difficile), toute la rangée ne montre plus que les dessins (`js/commun.js`) ; le
+  texte reste pour les lecteurs d'écran, et le title des boutons le montre au survol.
 - En dernier recours, si la page dépasse encore de l'écran, l'échiquier (ou l'illustration : l'élément `[data-ajuste]`
   de chaque jeu) rétrécit juste ce qu'il faut, sans descendre sous 210 px (`js/commun.js`). Les crédits du bas de
   page (« Créé par… », « Crédits des photos ») ne comptent pas : ils peuvent passer sous le bas de l'écran. Ce réglage se refait seulement
@@ -284,6 +288,10 @@ thème ne se choisissent que là (les jeux n'ont plus ces boutons) :
 - **Échiquier** : vert, bleu, rouge ou bois (`js/commun.js`, clé `echecs.plateau`, attribut `data-plateau` de `<html>`).
   Les couleurs sont les variables `--plateau-claire` et `--plateau-foncee` de `css/commun.css` (avec leur version
   pour le mode sombre) ; tous les échiquiers et toutes les icônes d'échiquier s'en servent.
+
+Chaque réglage tient sur une ligne : son nom à gauche, ses choix à droite (`css/accueil.css`). Les pièces et les
+couleurs d'échiquier ne montrent que leur dessin, et leur nom est en info-bulle. « Automatique » s'écrit « Auto »
+(son nom complet est en info-bulle), et la phrase sous « Pom' dans les jeux » passe en info-bulle.
 
 ## Page d'accueil
 

@@ -296,3 +296,7 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .touche .mains { height: 20px; }
   .touche.effacer svg { width: 22px; height: 22px; }
 }
+/* très petit téléphone : les petits mots sous les lettres (roi, cavalier…) tiennent dans leur touche */
+@media (max-width: 360px) {
+  .touche small { font-size: 7.5px; letter-spacing: -.02em; }
+}

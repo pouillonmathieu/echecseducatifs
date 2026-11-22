@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../css/commun.css?v=202611221820">
-<link rel="stylesheet" href="../css/accueil.css?v=202611221820">
-<script src="../js/commun.js?v=202611221820"></script>
+<link rel="stylesheet" href="../css/commun.css?v=202611222234">
+<link rel="stylesheet" href="../css/accueil.css?v=202611222234">
+<script src="../js/commun.js?v=202611222234"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -62,7 +62,7 @@
             Theme
           </span>
           <div class="segments" id="reg-theme" role="group" aria-label="Theme">
-            <button type="button" data-theme-choix="auto"><small>Automatic</small></button>
+            <button type="button" data-theme-choix="auto" title="Automatic"><small>Auto</small></button>
             <button type="button" data-theme-choix="light"><small>Light</small></button>
             <button type="button" data-theme-choix="dark"><small>Dark</small></button>
           </div>
@@ -73,8 +73,8 @@
             Pieces
           </span>
           <div class="segments" id="reg-pieces" role="group" aria-label="Piece style">
-            <button type="button" data-pieces="classiques"><small>Classic</small></button>
-            <button type="button" data-pieces="simples"><small>Simple</small></button>
+            <button type="button" data-pieces="classiques" title="Classic"><small>Classic</small></button>
+            <button type="button" data-pieces="simples" title="Simple"><small>Simple</small></button>
           </div>
         </div>
         <div class="ligne-reglage-bloc">
@@ -83,13 +83,13 @@
             Board
           </span>
           <div class="segments segments-plateau" id="reg-plateau" role="group" aria-label="Board colour">
-            <button type="button" data-plateau="vert"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#ECECD7"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#739A62"/></svg><small>Green</small></button>
-            <button type="button" data-plateau="bleu"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#E3EAF1"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#7898B8"/></svg><small>Blue</small></button>
-            <button type="button" data-plateau="rouge"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#F4E1D9"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#CB726B"/></svg><small>Red</small></button>
-            <button type="button" data-plateau="bois"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#F0D9B5"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#B58863"/></svg><small>Wood</small></button>
+            <button type="button" data-plateau="vert" title="Green"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#ECECD7"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#739A62"/></svg><small>Green</small></button>
+            <button type="button" data-plateau="bleu" title="Blue"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#E3EAF1"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#7898B8"/></svg><small>Blue</small></button>
+            <button type="button" data-plateau="rouge" title="Red"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#F4E1D9"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#CB726B"/></svg><small>Red</small></button>
+            <button type="button" data-plateau="bois" title="Wood"><svg viewBox="0 0 2 2" width="26" height="26" aria-hidden="true"><rect width="2" height="2" style="fill:#F0D9B5"/><path d="M1 0h1v1H1zM0 1h1v1H0z" style="fill:#B58863"/></svg><small>Wood</small></button>
           </div>
         </div>
-        <button id="reg-pom" class="ligne-reglage" type="button">
+        <button id="reg-pom" class="ligne-reglage" type="button" title="Cheers you on while you play">
           <svg viewBox="0 0 24 24"><path d="M12 7.5c-1.6-1.3-5-1-5 2.6 0 2.4 1.6 4.4 3.3 4.3.8 0 1-.4 1.7-.4s.9.4 1.7.4c1.7.1 3.3-1.9 3.3-4.3 0-3.6-3.4-3.9-5-2.6Z"/><path d="M12 7.5c0-1.4-.5-2.6-1.4-3.4M12.3 6c.8-1.2 2.2-1.7 3.5-1.4"/><path d="M9.5 17h5l1.5 3.5H8Z"/></svg>
           <span>Pom' in the games<small>Cheers you on while you play</small></span><span class="interrupteur" aria-hidden="true"></span>
         </button>
@@ -199,8 +199,8 @@
   </footer>
 </main>
 
-<script src="../js/pieces.js?v=202611221820"></script>
-<script src="../js/pom.js?v=202611221820"></script>
+<script src="../js/pieces.js?v=202611222234"></script>
+<script src="../js/pom.js?v=202611222234"></script>
 <script>
   (function () {
     const t = Commun.t;

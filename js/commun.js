@@ -269,6 +269,35 @@
     window.addEventListener('load', plusTard);
     plusTard();
   }
+  // ---------- Des boutons qui tiennent dans leur rangée ----------
+  // Dans une rangée [data-icones-si-besoin] : si un texte ne tient pas dans son bouton (petit écran, ou un bouton de plus,
+  // comme « Solution » au niveau difficile), tous les boutons de la rangée ne montrent plus que leur dessin ; le texte
+  // reste pour les lecteurs d'écran, et le title du bouton le montre au survol.
+  function iconesSiBesoin() {
+    const rangees = [...document.querySelectorAll('[data-icones-si-besoin]')];
+    if (!rangees.length) return;
+    let attente = 0;
+    const regler = () => {
+      attente = 0;
+      rangees.forEach((r) => {
+        r.classList.remove('icones');
+        if (!r.getClientRects().length) return;
+        const deborde = r.scrollWidth > r.clientWidth + 1 ||
+          [...r.querySelectorAll('button')].some((b) => b.getClientRects().length && b.scrollWidth > b.clientWidth + 1);
+        r.classList.toggle('icones', deborde);
+      });
+    };
+    const plusTard = () => { if (!attente) attente = requestAnimationFrame(regler); };
+    window.addEventListener('resize', plusTard);
+    rangees.forEach((r) => new MutationObserver(plusTard).observe(r, { subtree: true, attributes: true, attributeFilter: ['hidden'] }));
+    new MutationObserver(plusTard).observe(document.body, { attributes: true, attributeFilter: ['data-mode', 'class'] });
+    document.fonts?.ready.then(plusTard);
+    window.addEventListener('load', plusTard);
+    plusTard();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iconesSiBesoin);
+  else iconesSiBesoin();
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ajusterAuTelephone);
   else ajusterAuTelephone();
 

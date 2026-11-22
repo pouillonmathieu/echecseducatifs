@@ -262,3 +262,9 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .tout-petits .etiquette .mains { height: 8.4cqi; }
   .tout-petits .etiquette .animal { width: 9cqi; height: 9cqi; }
 }
+
+/* téléphone : le dessin « au hasard » tient dans son bouton, plus petit */
+@media (max-width: 560px) {
+  .choix-orientation [data-orientation="hasard"] .pion-icone svg { width: 26px; height: 24px; }
+  .choix-orientation .pion-icone svg { width: 20px; height: 24px; }
+}

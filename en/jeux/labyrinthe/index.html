@@ -9,11 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="../../../css/commun.css?v=202611221820">
-<link rel="stylesheet" href="../../../css/jeux.css?v=202611221820">
-<link rel="stylesheet" href="../../../css/echiquier.css?v=202611221820">
-<link rel="stylesheet" href="../../../jeux/labyrinthe/labyrinthe.css?v=202611221820">
-<script src="../../../js/commun.js?v=202611221820"></script>
+<link rel="stylesheet" href="../../../css/commun.css?v=202611222234">
+<link rel="stylesheet" href="../../../css/jeux.css?v=202611222234">
+<link rel="stylesheet" href="../../../css/echiquier.css?v=202611222234">
+<link rel="stylesheet" href="../../../jeux/labyrinthe/labyrinthe.css?v=202611222234">
+<script src="../../../js/commun.js?v=202611222234"></script>
 </head>
 <body data-mode="libre" data-chrono="non">
 <!-- obstacles (une case chacun), maison et icônes -->
@@ -189,22 +189,22 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </button>
       </div>
-      <div class="actions-laby seulement-libre">
+      <div class="actions-laby seulement-libre" data-icones-si-besoin>
         <button id="btn-annuler" class="outil" type="button" aria-label="Undo the last move" title="Undo">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
-          <span>Undo</span>
+          <span class="texte-bouton">Undo</span>
         </button>
         <button id="btn-recommencer" class="outil" type="button" aria-label="Restart this maze" title="Restart">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4h4"/></svg>
-          <span>Restart</span>
+          <span class="texte-bouton">Restart</span>
         </button>
         <button id="btn-solution" class="outil" type="button" aria-label="Show the shortest path" title="Solution">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z"/></svg>
-          <span>Solution</span>
+          <span class="texte-bouton">Solution</span>
         </button>
         <button id="btn-nouveau" class="outil principal" type="button" aria-label="New maze" title="New maze">
           <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-hasard"/></svg>
-          <span>New</span>
+          <span class="texte-bouton">New</span>
         </button>
       </div>
       <div class="actions-laby seulement-defi" id="actions-defi">
@@ -294,12 +294,12 @@
   </div>
 </div>
 
-<script src="../../../js/pieces.js?v=202611221820"></script>
-<script src="../../../js/sons.js?v=202611221820"></script>
-<script src="../../../js/ui.js?v=202611221820"></script>
-<script src="../../../js/echiquier.js?v=202611221820"></script>
-<script src="../../../js/aide.js?v=202611221820"></script>
-<script src="../../../js/pom.js?v=202611221820"></script>
-<script src="../../../jeux/labyrinthe/labyrinthe.js?v=202611221820"></script>
+<script src="../../../js/pieces.js?v=202611222234"></script>
+<script src="../../../js/sons.js?v=202611222234"></script>
+<script src="../../../js/ui.js?v=202611222234"></script>
+<script src="../../../js/echiquier.js?v=202611222234"></script>
+<script src="../../../js/aide.js?v=202611222234"></script>
+<script src="../../../js/pom.js?v=202611222234"></script>
+<script src="../../../jeux/labyrinthe/labyrinthe.js?v=202611222234"></script>
 </body>
 </html>

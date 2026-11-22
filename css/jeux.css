@@ -284,3 +284,10 @@ svg.illus { display: block; fill: none; stroke: none; }
   :root .ecran [data-ajuste], :root .ecran .cadre-plateau { width: min(100%, 520px); min-width: 0; }
   :root .ecran .cadre-plateau [data-ajuste] { width: 100%; margin-inline: auto; }
 }
+
+/* une rangée de boutons trop étroite pour leurs textes (js/commun.js, data-icones-si-besoin) : seulement les dessins */
+.icones .texte-bouton {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.icones button { gap: 0; }
+:root .icones button svg { width: 24px; height: 24px; }
