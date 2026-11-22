@@ -91,8 +91,8 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   calculée au chargement (analyse rétrograde : avec un jeu parfait, la dame attrape toujours le cavalier en 5 coups au
   plus) ; facile, le cavalier fuit au hasard vers une case sûre et la dame ne joue le meilleur coup qu'une fois sur deux.
   On joue en glissant sa pièce jusqu'à la case voulue (souris ou doigt, `js/glisser.js`) ou en clic-clic.
-  La consigne s'affiche dans une fenêtre au lancement (et quand on change de pièce), avec « Compris » ; on la revoit
-  depuis les réglages. Même chose dans « Capture le roi », où la pièce jouée n'est plus choisie après son coup.
+  L'objectif du moment (selon la pièce jouée) est la première étape de l'aide « ? ». Dans « Capture le roi », c'est
+  celui de l'équipe choisie ; la pièce jouée n'y est plus choisie après son coup.
   Réglage « Cases dangereuses » : les coups où l'adversaire peut te prendre sont marqués en rouge. Sous l'échiquier,
   des boutons font revoir les coups (`js/revoir.js`) ; « Recommencer » reprend la même position ; « Solution » (difficile)
   déroule une partie parfaite des deux côtés. Le panneau rappelle le meilleur nombre de coups possible pour la position
@@ -205,6 +205,14 @@ Sur un échiquier dessiné par `Echiquier.dessiner`, les dessins sont oubliés d
 ne reviennent pas au dessin suivant (« Le cheval de la reine », « Capture le roi »…).
 « Mat ou pas mat ? » aussi ; les dessins s'effacent à chaque nouvelle position.
 
+## L'aide des jeux
+
+Les jeux n'affichent plus de consigne (ni fenêtre au lancement, ni ligne d'astuce sous le jeu). À côté du bouton des
+réglages, un petit bouton « ? » ouvre un tutoriel en quelques étapes (3 à 5 : le but, comment jouer, l'aide, les
+étoiles et les défis, les raccourcis du clavier), avec « Précédent » / « Suivant » (ou les flèches du clavier ; Échap
+ferme). Tout est dans `js/aide.js` (textes français et anglais). La première fois qu'on ouvre un jeu, le « ? » bat
+doucement pour qu'on le remarque. Dice chess ouvre ses règles illustrées, qui existaient déjà.
+
 ## « Suivant » toujours à portée
 
 Après une réussite, on passe à la suite sans faire défiler : si le bouton « Suivant » (« Partie suivante »,
@@ -305,7 +313,7 @@ outils/mats-en-un-chesscom.py  la même chose dans les parties en ligne des gran
 outils/mats-en-un.py  choisit les vraies gaffes et génère jeux/mat1/problemes.js
 js/revoir.js          revoir les coups (⏮ ◀ ▶ ⏭, flèches du clavier, lecture automatique)
 js/glisser.js         glisser-déposer une pièce sur l'échiquier
-js/consigne.js        la consigne d'un jeu dans une fenêtre (au lancement, « Compris », à revoir dans les réglages)
+js/aide.js            l'aide des jeux : le bouton « ? » et le tutoriel de chaque jeu, en étapes (français et anglais)
 js/pom.js             Pom', le coach : sa place dans la page et ses réactions (charge js/pom-moteur.js)
 js/pom-moteur.js      le dessin de Pom' et ses animations (fabriqué par outils/pom/construire.py, ne pas modifier)
 outils/pom/           l'atelier des animations de Pom' et ses outils (voir son LISEZMOI)

@@ -217,10 +217,11 @@
 
   function majTextes() {
     const camp = reglages.camp;
-    $('piece-question').setAttribute('href', camp === 'cavalier' ? '#piece-cavalier-blanc' : '#piece-dame-blanc');
-    $('question-titre').textContent = camp === 'reine' ? t('Attrape le cavalier !', 'Catch the knight!')
+    // l'objectif du moment (selon la pièce jouée) : la première étape de l'aide (le bouton « ? », js/aide.js)
+    jeu.objectif = {};
+    jeu.objectif.titre = camp === 'reine' ? t('Attrape le cavalier !', 'Catch the knight!')
       : camp === 'cavalier' ? t('Échappe à la dame !', 'Escape from the queen!') : t('À deux : la dame contre le cavalier', 'Two players: queen against knight');
-    $('question-texte').textContent = camp === 'reine'
+    jeu.objectif.texte = camp === 'reine'
       ? t('Le cheval de la reine s\'est enfui : aide la dame à le rattraper en le moins de coups possible. Attention, le cavalier peut prendre ta dame !',
         'The queen\'s horse has run away: help the queen catch it in as few moves as possible. Careful, the knight can take your queen!')
       : camp === 'cavalier'
@@ -546,7 +547,7 @@
   };
   // en mode 2 joueurs : pas de niveau ni de défis
   const appliquerCamp = () => document.body.classList.toggle('deux-joueurs', deux());
-  choix('reg-camp', 'camp', () => { appliquerCamp(); nouvellePartie(); consigne.ouvrir(); });
+  choix('reg-camp', 'camp', () => { appliquerCamp(); nouvellePartie(); });
   choix('reg-niveau', 'niveau', nouvellePartie);
 
   brancherBoutonTheme($('btn-theme'));
@@ -559,13 +560,11 @@
   // pour les tests
   window.Cheval = { etat: () => jeu, defi: () => defi, AVEC_DAME, AVEC_CAVALIER, coupsDame, CAVALIER, jouer: (c) => jouer(typeof c === 'string' ? numero(c) : c) };
 
-  // la consigne : dans une fenêtre au lancement, et depuis les réglages
-  const consigne = window.Consigne({ voile: $('consigne'), compris: $('btn-compris'), rouvrir: $('reg-consigne') });
+  if (window.Aide) window.Aide.objectif = () => jeu.objectif;
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
   appliquerCamp();
   lancerLibre();
-  consigne.ouvrir();
 })();

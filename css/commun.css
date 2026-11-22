@@ -326,6 +326,42 @@ body {
 .suivant-flottant kbd, .suivant-flottant .touche { display: none; }
 @keyframes suivant-arrive { from { opacity: 0; transform: translate(-50%, 20px); } }
 
+/* ---------- L'aide des jeux : le bouton « ? » et son tutoriel en étapes (js/aide.js) ---------- */
+.bouton-aide span { font-size: 21px; font-weight: 700; line-height: 1; }
+.bouton-aide.a-voir { border-color: var(--accent); color: var(--accent); animation: aide-bat 1.6s ease-in-out 3; }
+@keyframes aide-bat { 50% { transform: scale(1.12); box-shadow: 0 0 0 6px var(--accent-doux); } }
+.carte-aide {
+  box-sizing: border-box;
+  width: min(440px, 100%);
+  padding: 14px 18px 18px;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--ombre-carte);
+  animation: aide-arrive .35s cubic-bezier(.2, 1.2, .4, 1) both;
+}
+@keyframes aide-arrive { from { opacity: 0; transform: translateY(24px) scale(.96); } }
+.aide-tete { display: flex; align-items: center; justify-content: space-between; }
+.aide-compteur { margin: 0; color: var(--encre-douce); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.aide-corps { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 2px 4px 6px; text-align: center; }
+.aide-numero {
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+  background: var(--accent-doux); color: var(--accent); font-size: 26px; font-weight: 700;
+}
+.aide-corps h2 { margin: 4px 0 0; font-size: 23px; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
+.aide-texte { margin: 0; min-height: 4.6em; color: var(--encre); font-size: 16.5px; line-height: 1.5; text-wrap: pretty; }
+.aide-texte kbd { padding: 1px 6px; border: 1px solid var(--ligne); border-radius: 6px; background: var(--fond); font: inherit; font-size: 13px; font-weight: 600; }
+.aide-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.aide-nav button { min-height: 46px; padding: 0 18px; border-radius: 14px; font: inherit; font-weight: 600; cursor: pointer; }
+.aide-nav button:disabled { visibility: hidden; }
+.aide-points { display: flex; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.aide-points li { width: 9px; height: 9px; border-radius: 50%; background: var(--ligne); transition: transform .2s, background .2s; }
+.aide-points li.vu { background: var(--accent); opacity: .5; }
+.aide-points li.actuel { background: var(--accent); transform: scale(1.3); }
+@media (max-width: 400px) {
+  .carte-aide { padding: 12px 14px 14px; }
+  .aide-nav button { padding: 0 12px; }
+}
+
 /* Signature en bas de chaque jeu, discrète */
 .signature {
   margin-top: -6px;

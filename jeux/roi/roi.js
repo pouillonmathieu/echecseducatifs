@@ -228,15 +228,14 @@
   // étoiles : plus on est proche du minimum théorique, mieux c'est
   const marges = () => [Math.max(1, Math.round(jeu.min * 0.25)), Math.max(3, Math.round(jeu.min * 0.75))];
   function majTextes() {
-    $('question-titre').textContent = t('Capture le roi !', 'Capture the king!');
-    $('question-texte').textContent = t(`Avec ${NOMS_EQUIPES[jeu.equipe][0]}, attrape le roi noir. Il doit bouger à chaque coup : coince-le, puis prends-le. Attention, il peut prendre une pièce qui n'est pas protégée !`,
-      `With ${NOMS_EQUIPES[jeu.equipe][1]}, catch the black king. It has to move every turn: trap it, then take it. Careful, it can take a piece that isn't protected!`);
+    // l'objectif du moment : la première étape de l'aide (le bouton « ? », js/aide.js)
+    jeu.objectif = { titre: t('Capture le roi !', 'Capture the king!'), texte: t(`Avec ${NOMS_EQUIPES[jeu.equipe][0]}, attrape le roi noir en le moins de coups possible.`,
+      `With ${NOMS_EQUIPES[jeu.equipe][1]}, catch the black king in as few moves as possible.`) };
     // au niveau facile, le roi se trompe souvent : le minimum suppose qu'il se défend parfaitement
     $('bareme').textContent = reglages.niveau === 'difficile'
       ? t(`Le plus court possible : ${coupsTexte(jeu.min)}.`, `The shortest possible: ${coupsTexte(jeu.min)}.`)
       : t(`Le plus court possible si le roi se défend parfaitement : ${coupsTexte(jeu.min)}.`, `The shortest possible if the king defends perfectly: ${coupsTexte(jeu.min)}.`);
     $('btn-solution').hidden = reglages.niveau !== 'difficile';
-    document.querySelectorAll('.equipe-question').forEach(e => { e.innerHTML = EQUIPES[jeu.equipe].map(tp => `<svg viewBox="0 0 100 100"><use href="#piece-${NOMS[tp]}-blanc"/></svg>`).join(''); });
   }
 
   // ---------- Coups du joueur ----------
@@ -565,12 +564,10 @@
   // pour les tests
   window.CaptureRoi = { etat: () => jeu, defi: () => defi, valeur, coupsPiece, valeurNoire, coupsNoirs, jouer, EQUIPES };
 
-  // la consigne : dans une fenêtre au lancement, et depuis les réglages
-  const consigne = window.Consigne({ voile: $('consigne'), compris: $('btn-compris'), rouvrir: $('reg-consigne') });
+  if (window.Aide) window.Aide.objectif = () => jeu.objectif;
 
   // ---------- Démarrage ----------
   window.Echecs.injecterSprite();
   appliquerCoordonnees();
   lancerLibre();
-  consigne.ouvrir();
 })();
