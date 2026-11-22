@@ -105,3 +105,15 @@ body.presse #minuteur-barre { background: var(--alerte); }
 
 /* fin de partie : « Nouvelle partie » (en vert) tient sur une ligne */
 .res-actions > button { white-space: nowrap; }
+
+/* téléphone : le compteur, le barème et les boutons se font petits, pour laisser toute la largeur à l'échiquier */
+@media (max-width: 560px) {
+  .panneau-cheval { gap: 6px; }
+  .compteur { align-items: center; padding: 0 2px; }
+  .compteur-nombre { font-size: 15px; }
+  #coups { font-size: 26px; }
+  .etat { font-size: 15px; }
+  .bareme { padding: 5px 10px; border-radius: 10px; font-size: 12.5px; line-height: 1.35; }
+  .actions-partie { flex-wrap: nowrap; gap: 6px; }
+  .actions-partie button { flex: 1 1 0; min-width: 0; padding: 0 8px; font-size: 15px; white-space: nowrap; }
+}

@@ -216,3 +216,13 @@ body[data-vue="entrainement"] .plateau-ouv .case-e { cursor: pointer; }
 
 /* pas de consigne sous l'échiquier : elle est dans l'aide « ? » (js/aide.js) */
 #question { display: none !important; }
+
+/* téléphone : les propositions se font petites, pour laisser toute la largeur à l'échiquier */
+@media (max-width: 560px) {
+  .jeu-ouv { gap: 8px; }
+  .panneau-ouv { gap: 6px; }
+  .reponses-ouv { gap: 5px; }
+  .choix-ouv { gap: 6px; padding: 5px 8px; border-radius: 12px; font-size: 13px; line-height: 1.2; }
+  .num-choix { width: 20px; height: 20px; font-size: 11px; }
+  .liste-coups { font-size: 14px; line-height: 1.5; }
+}

@@ -212,3 +212,15 @@ body[data-mode="defi"] .retour:not([hidden]) ~ #actions-defi { display: none; }
 .case-e.visee::after { opacity: 1; box-shadow: inset 0 0 0 .7cqi var(--accent); background: rgba(47, 163, 107, .15); }
 .case-e.visee.bloquee::after { box-shadow: inset 0 0 0 .7cqi var(--alerte); background: rgba(214, 69, 50, .15); }
 .case-e.possible.visee::after { background: radial-gradient(circle, rgba(24, 30, 40, .32) 0 16%, transparent 18%), rgba(47, 163, 107, .2); }
+
+/* téléphone : compteurs et outils plus petits, pour laisser toute la largeur à l'échiquier */
+@media (max-width: 560px) {
+  .panneau-laby { gap: 6px; }
+  .compteurs { gap: 6px; }
+  .compteur { padding: 3px 8px; border-radius: 12px; align-items: baseline; }
+  .c-val { font-size: 20px; }
+  .c-lab { font-size: 12px; }
+  .actions-laby { gap: 6px; }
+  .actions-laby .outil { min-width: 0; gap: 1px; padding: 4px 0 3px; border-radius: 12px; font-size: 10.5px; letter-spacing: -.01em; white-space: nowrap; }
+  .actions-laby .outil svg { width: 18px; height: 18px; }
+}

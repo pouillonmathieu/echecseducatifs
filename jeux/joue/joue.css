@@ -234,3 +234,29 @@ body.a-toi .plateau-joue { box-shadow: 0 0 0 4px var(--accent), 0 12px 30px rgba
   .intro-texte { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; cursor: pointer; }
   .intro-partie.ouverte .intro-texte { display: block; -webkit-line-clamp: unset; }
 }
+
+/* téléphone : le duel, les outils et les crédits se font petits, pour laisser toute la largeur à l'échiquier */
+@media (max-width: 560px) {
+  .jeu-joue { gap: 8px; }
+  .panneau-joue { gap: 6px; }
+  .duel { gap: 8px; }
+  .duel-portrait { width: 34px; height: 34px; border-radius: 9px; }
+  .duel-texte { gap: 0; }
+  .duel-texte b { font-size: 15px; line-height: 1.2; }
+  .duel-texte > span { font-size: 12px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .camp { font-size: 11px; padding: 0 6px; }
+  .actions-joue { gap: 5px; }
+  .outil { min-width: 0; gap: 1px; padding: 4px 1px 3px; border-radius: 12px; font-size: 11px; white-space: nowrap; }
+  .outil svg { width: 18px; height: 18px; }
+  .moments { gap: 8px; }
+  .moments-titre { font-size: 12px; }
+  .points-moments li { width: 18px; height: 18px; }
+  .points-moments svg { width: 12px; height: 12px; }
+  .consigne { padding: 8px 12px; gap: 4px; border-radius: 14px; }
+  .consigne-coup { font-size: 22px; }
+  .consigne-coup .fig { width: 30px; height: 30px; }
+  .intro-partie { padding: 7px 10px; border-radius: 12px; }
+  .intro-texte { font-size: 13px; line-height: 1.35; }
+  .nav-pos { min-width: 120px; font-size: 13px; }
+  .credits-photos { margin-top: 0; font-size: 12px; }
+}

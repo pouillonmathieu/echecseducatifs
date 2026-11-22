@@ -251,3 +251,35 @@ svg.illus { display: block; fill: none; stroke: none; }
 .carte-consigne { display: flex; flex-direction: column; gap: 18px; }
 .carte-consigne .question { padding: 0; border: none; background: none; }
 .carte-consigne .bouton-principal svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Téléphone : l'échiquier prend toute la largeur, ce sont les boutons et les textes qui se font petits ----------
+   (le jeu tient sur l'écran sans défilement ; si vraiment il manque de la place, js/commun.js réduit l'échiquier, en dernier recours) */
+@media (max-width: 560px) {
+  :root .ecran { gap: 8px; padding-block: 8px 10px; }
+  :root .barre { gap: 5px; }
+  :root .barre .titre { font-size: 18px; margin-left: 4px; }
+  :root .barre .bouton-icone { width: 38px; height: 38px; border-radius: 11px; }
+  :root .barre .bouton-icone svg { width: 20px; height: 20px; }
+  :root .bouton-defis { height: 38px; border-radius: 11px; }
+  :root .bouton-defis svg.illus, :root .bouton-icone.bouton-illus svg.illus { width: 28px; height: 28px; }
+  :root .colonne-plateau { gap: 8px; }
+  :root .choix-jeu { gap: 6px; }
+  :root .choix-ligne { gap: 2px; padding: 2px; border-radius: 12px; }
+  :root .choix-ligne button { width: 36px; height: 36px; padding: 3px; border-radius: 10px; }
+  :root .choix-ligne button.avec-texte { width: auto; height: 36px; gap: 5px; padding: 2px 9px 2px 3px; font-size: 13.5px; }
+  :root .choix-ligne button.avec-texte > svg { width: 26px; height: 26px; }
+  :root .choix-niveau button:not(.avec-texte) { width: 34px; }
+  :root .choix-ligne.replie { padding-right: 17px; }
+  :root .choix-ligne.replie::after { right: 6px; }
+  :root .navigation-coups, :root .navigation { gap: 4px; }
+  :root .navigation-coups .bouton-icone, :root .navigation .bouton-icone { width: 34px; height: 34px; border-radius: 10px; }
+  :root .navigation-coups .bouton-icone svg, :root .navigation .bouton-icone svg { width: 18px; height: 18px; }
+  :root .nav-numero { min-width: 64px; font-size: 15px; }
+  :root .ecran .bouton-principal, :root .ecran .bouton-secondaire { min-height: 40px; padding: 0 14px; border-radius: 12px; font-size: 16px; gap: 6px; }
+  :root .ecran .bouton-principal svg, :root .ecran .bouton-secondaire svg { flex: none; width: 18px; height: 18px; }
+  :root .signature { margin-top: -4px; font-size: 11px; }
+  :root .score-libre { font-size: 16px; }
+  /* l'échiquier : toute la largeur */
+  :root .ecran [data-ajuste], :root .ecran .cadre-plateau { width: min(100%, 520px); min-width: 0; }
+  :root .ecran .cadre-plateau [data-ajuste] { width: 100%; margin-inline: auto; }
+}

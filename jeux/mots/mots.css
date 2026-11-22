@@ -246,3 +246,29 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .clavier { gap: 5px; }
   .panneau-mots { gap: 10px; }
 }
+
+/* téléphone : la carte du mot, le clavier et les boutons se font petits, pour laisser de la place à l'illustration */
+@media (max-width: 560px) {
+  .jeu-mots { gap: 8px; }
+  .colonne-illus { gap: 8px; }
+  .panneau-mots { gap: 6px; }
+  .choix-langue { padding: 2px 6px 2px 8px; }
+  .choix-langue > svg { width: 18px; height: 18px; }
+  .choix-langue select { height: 36px; font-size: 14px; }
+  .carte-mot { gap: 4px; padding: 6px 8px 4px; border-radius: 14px; }
+  .tete-mot { margin: 0; min-height: 0; }
+  .btn-lire { width: 30px; height: 30px; border-radius: 9px; }
+  .btn-lire svg { width: 18px; height: 18px; }
+  .progres { padding: 2px 8px; font-size: 12px; }
+  .mot { --taille: 34px; }
+  .mot.long { --taille: 28px; }
+  .mot.tres-long { --taille: 24px; }
+  .retour-mot { min-height: 1.2em; font-size: 14px; }
+  .apercu { font-size: 20px; }
+  .clavier { gap: 4px; }
+  .rangee-touches { gap: 4px; }
+  .touche { height: 34px; font-size: 16px; border-radius: 8px; }
+  .clavier.tuiles .touche { height: 44px; font-size: 24px; }
+  .actions-mot { gap: 6px; }
+  .actions-mot button { min-width: 0; }
+}

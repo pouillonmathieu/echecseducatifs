@@ -224,12 +224,14 @@ doucement pour qu'on le remarque. Dice chess ouvre ses règles illustrées, qui 
 - Les choix au-dessus de l'échiquier du labyrinthe et de « Capture le roi » tiennent sur une ligne : si la place
   manque, les groupes les plus larges se replient (seul le choix en cours, avec une petite flèche) et s'ouvrent en menu
   quand on les touche (`data-une-ligne`, `js/commun.js`).
-- Si la page dépasse de l'écran, l'échiquier (ou l'illustration : l'élément `[data-ajuste]` de chaque jeu) rétrécit
-  juste ce qu'il faut, sans descendre sous 210 px (`js/commun.js`). Sur un téléphone peu haut, les espacements sont
-  un peu plus serrés. « Note le coup » ne montre que les deux derniers coups de la feuille sur téléphone, et le x est
-  sur la rangée des pièces du clavier.
-- Vérifié : les 12 jeux tiennent sans défiler sur 390 × 844 et sur ordinateur ; sur 360 × 740, « Note le coup » et
-  « Comment ça s'appelle ? » dépassent encore un peu (l'échiquier est à sa taille minimale).
+- Sur téléphone (≤ 560 px de large), l'échiquier prend toute la largeur de l'écran : ce sont les boutons, les choix,
+  les compteurs, les claviers et les textes qui se font petits (fin de `css/jeux.css`, et la fin de la feuille de
+  style de chaque jeu). « Note le coup » ne montre que les deux derniers coups de la feuille, et le x est sur la
+  rangée des pièces du clavier.
+- En dernier recours, si la page dépasse encore de l'écran, l'échiquier (ou l'illustration : l'élément `[data-ajuste]`
+  de chaque jeu) rétrécit juste ce qu'il faut, sans descendre sous 210 px (`js/commun.js`).
+- Vérifié : les 12 jeux tiennent sans défiler sur 390 × 844, 360 × 740, 375 × 667 et sur ordinateur, avec l'échiquier
+  en pleine largeur (sauf « Note le coup » sur 375 × 667, dont le clavier prend de la place).
 
 ## « Suivant » toujours à portée
 

@@ -271,3 +271,28 @@ body.presse #minuteur-barre { background: var(--alerte); }
   .clavier { gap: 5px; }
 }
 .jeu-note .choix-jeu .score-libre { white-space: nowrap; }
+
+/* téléphone : la feuille, la saisie et le clavier se font petits, pour laisser le plus de place possible à l'échiquier */
+@media (max-width: 560px) {
+  .jeu-note { gap: 8px; }
+  .panneau-note { gap: 6px; }
+  .feuille { padding: 2px 10px 4px; border-radius: 14px; }
+  .feuille thead th { padding: 1px 4px 2px; }
+  .feuille thead svg { width: 18px; height: 18px; }
+  .feuille th, .feuille td { padding: 2px 4px; }
+  .feuille td { font-size: 17px; }
+  .feuille .num { font-size: 15px; }
+  .saisie-tp { min-height: 1.4em; padding: 1px 8px; }
+  #btn-clavier { width: 44px; border-radius: 12px; }
+  #btn-clavier svg { width: 20px; height: 20px; }
+  .clavier { gap: 4px; }
+  .rangee-touches { gap: 4px; }
+  .touche { min-height: 34px; padding: 2px 1px; border-radius: 9px; }
+  .clavier:not(.dessins) .touche { min-height: 34px; }
+  .clavier:not(.dessins) .touche b { font-size: 17px; }
+  .touche small { font-size: 8.5px; }
+  .touche .fig-touche { width: 26px; height: 26px; }
+  .touche .animal { width: 24px; height: 24px; }
+  .touche .mains { height: 20px; }
+  .touche.effacer svg { width: 22px; height: 22px; }
+}
