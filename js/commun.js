@@ -245,7 +245,10 @@
       }
     }
     const plusTard = () => { if (!attente) attente = requestAnimationFrame(ajuster); };
-    window.addEventListener('resize', plusTard);
+    // seulement quand la largeur change (rotation, fenêtre) : sur téléphone, la barre d'adresse qui apparaît ou disparaît
+    // change la hauteur à tout moment, et une explication affichée sous l'échiquier ferait alors rétrécir l'échiquier
+    let largeur = window.innerWidth;
+    window.addEventListener('resize', () => { if (window.innerWidth !== largeur) { largeur = window.innerWidth; plusTard(); } });
     // l'échiquier peut n'apparaître qu'après un choix (le champion, dans « Joue le coup ») : on règle quand il apparaît
     let visible = false;
     if (window.ResizeObserver) new ResizeObserver(() => {

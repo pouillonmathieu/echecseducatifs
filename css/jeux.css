@@ -275,8 +275,9 @@ svg.illus { display: block; fill: none; stroke: none; }
   :root .navigation-coups .bouton-icone, :root .navigation .bouton-icone { width: 34px; height: 34px; border-radius: 10px; }
   :root .navigation-coups .bouton-icone svg, :root .navigation .bouton-icone svg { width: 18px; height: 18px; }
   :root .nav-numero { min-width: 64px; font-size: 15px; }
-  :root .ecran .bouton-principal, :root .ecran .bouton-secondaire { min-height: 40px; padding: 0 14px; border-radius: 12px; font-size: 16px; gap: 6px; }
-  :root .ecran .bouton-principal svg, :root .ecran .bouton-secondaire svg { flex: none; width: 18px; height: 18px; }
+  /* (pas dans Dice chess : il n'a pas d'échiquier, ses boutons gardent leur taille) */
+  :root .ecran:not(.ecran-des) .bouton-principal, :root .ecran:not(.ecran-des) .bouton-secondaire { min-height: 40px; padding: 0 14px; border-radius: 12px; font-size: 16px; gap: 6px; }
+  :root .ecran:not(.ecran-des) .bouton-principal svg, :root .ecran:not(.ecran-des) .bouton-secondaire svg { flex: none; width: 18px; height: 18px; }
   :root .signature { margin-top: -4px; font-size: 11px; }
   :root .score-libre { font-size: 16px; }
   /* l'échiquier : toute la largeur */
