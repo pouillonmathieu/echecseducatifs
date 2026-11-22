@@ -59,7 +59,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle etat) {
         super.onCreate(etat);
-        bordABord();
 
         cadre = new FrameLayout(this);
         cadre.setBackgroundColor(getColor(R.color.fond));
@@ -67,6 +66,7 @@ public class MainActivity extends Activity {
         web.setBackgroundColor(getColor(R.color.fond));
         cadre.addView(web, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         setContentView(cadre);
+        bordABord(); // (après setContentView : la fenêtre doit exister)
         // le contenu s'arrête aux barres du système (et au clavier) ; derrière elles, la couleur du fond de la page
         cadre.setOnApplyWindowInsetsListener((v, insets) -> {
             int g, h, d, b;
