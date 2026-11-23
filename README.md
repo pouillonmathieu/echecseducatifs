@@ -349,8 +349,10 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
 Réglages à faire dans Supabase : *Authentication → URL Configuration* : Site URL
 `https://pouillonmathieu.github.io/echecseducatifs/`, Redirect URLs `https://pouillonmathieu.github.io/echecseducatifs/**`
 et `pomchess://connexion` ; *Authentication → Emails* : le code `{{ .Token }}` dans les modèles « Magic Link » et
-« Confirm signup » (pour se connecter en tapant le code, indispensable dans l'application). C'est fait (modèles
-bilingues) ; le service d'e-mail intégré n'envoie que 2 e-mails par heure : brancher un SMTP avant d'ouvrir aux classes.
+« Confirm signup » (pour se connecter en tapant le code). Sur l'offre gratuite, Supabase ne laisse modifier les
+modèles qu'avec un service d'envoi à soi (SMTP, par exemple Brevo) ; en attendant, la connexion par e-mail se fait par
+le lien (il revient à la page du compte, ou à l'application par `pomchess://connexion`). Le service d'e-mail intégré
+n'envoie que 2 e-mails par heure : brancher un SMTP avant d'ouvrir aux classes.
 
 ## Réglages du site
 

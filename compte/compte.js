@@ -71,8 +71,9 @@
           <button class="bouton-principal" type="submit">${t('Recevoir un code', 'Get a code')}</button>
         </form>
         <form id="form-code" class="form-compte" hidden>
-          <p>${t('Nous venons d\'envoyer un e-mail avec un code (et un lien). Tape le code ici, ou clique sur le lien.', 'We\'ve just sent an e-mail with a code (and a link). Type the code here, or click the link.')}</p>
-          <label>${t('Code reçu', 'Code received')}<input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" maxlength="10" required></label>
+          <p>${t('Nous venons d\'envoyer un e-mail : clique sur le lien qu\'il contient pour te connecter. S\'il contient un code, tu peux aussi le taper ici.', 'We\'ve just sent an e-mail: click the link in it to sign in. If it contains a code, you can also type it here.')}</p>
+          <p class="petit">${t('Rien reçu ? Regarde dans les courriers indésirables.', 'Nothing received? Check your spam folder.')}</p>
+          <label>${t('Code reçu (s\'il y en a un)', 'Code received (if any)')}<input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" maxlength="10" required></label>
           <button class="bouton-principal" type="submit">${t('Se connecter', 'Sign in')}</button>
           <button class="lien-bouton" type="button" id="btn-autre-email">${t('Changer d\'adresse', 'Use another address')}</button>
         </form>
