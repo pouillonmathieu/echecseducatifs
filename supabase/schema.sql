@@ -151,8 +151,15 @@ alter table public.jeux_classe enable row level security;
 alter table public.jeux_enfant enable row level security;
 alter table public.progression enable row level security;
 
--- rien pour les visiteurs sans compte
+-- rien pour les visiteurs sans compte ; pour les comptes connectés, seulement ce qui sert (les projets Supabase récents
+-- n'accordent plus rien par défaut), et les règles ci-dessous choisissent les lignes
 revoke all on public.comptes, public.classes, public.enfants, public.jeux_classe, public.jeux_enfant, public.progression from anon;
+grant select, insert on public.comptes to authenticated;
+grant select, insert, delete on public.classes to authenticated;
+grant select, delete on public.enfants to authenticated;
+grant select, insert, delete on public.jeux_classe to authenticated;
+grant select, insert, update, delete on public.jeux_enfant to authenticated;
+grant select on public.progression to authenticated;
 
 -- comptes : chacun le sien
 drop policy if exists comptes_lire on public.comptes;

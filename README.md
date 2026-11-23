@@ -337,7 +337,9 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
   `comptes`, `enfants`, `classes`, `jeux_classe`, `jeux_enfant`, `progression` ; règles d'accès (RLS) vérifiées par le
   serveur : chacun ne voit que ses données, un parent celles de ses enfants, un enseignant ses classes, leurs élèves
   (prénom, nom, progression, pas l'e-mail du parent) ; un enfant ne change de classe qu'avec le code
-  (`rejoindre_classe`). Les règles ont été testées sur un PostgreSQL local avec une imitation du schéma `auth`.
+  (`rejoindre_classe`). Les droits sur les tables sont accordés explicitement au rôle `authenticated` (les projets
+  Supabase récents n'en donnent plus par défaut). Les règles ont été testées sur un PostgreSQL local avec une imitation
+  du schéma `auth`, puis sur le vrai projet (dans une transaction annulée).
 - **Données personnelles** : `confidentialite.html` (RGPD) : données gardées, finalités, base légale, qui voit quoi,
   sous-traitants (Supabase, fournisseurs de connexion, GitHub Pages, Google Fonts), durée, droits.
 - **Application Android** : la permission Internet ne sert qu'aux comptes (seul `*.supabase.co` est joint) ; la
@@ -346,8 +348,9 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
 
 Réglages à faire dans Supabase : *Authentication → URL Configuration* : Site URL
 `https://pouillonmathieu.github.io/echecseducatifs/`, Redirect URLs `https://pouillonmathieu.github.io/echecseducatifs/**`
-et `pomchess://connexion` ; *Authentication → Emails* : ajouter le code `{{ .Token }}` aux modèles « Magic Link » et
-« Confirm signup » (pour se connecter en tapant le code, indispensable dans l'application).
+et `pomchess://connexion` ; *Authentication → Emails* : le code `{{ .Token }}` dans les modèles « Magic Link » et
+« Confirm signup » (pour se connecter en tapant le code, indispensable dans l'application). C'est fait (modèles
+bilingues) ; le service d'e-mail intégré n'envoie que 2 e-mails par heure : brancher un SMTP avant d'ouvrir aux classes.
 
 ## Réglages du site
 
