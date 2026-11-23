@@ -1,7 +1,8 @@
 # L'application Android
 
 L'application « Pom'chess » : tout le site, embarqué dans
-l'application. Elle marche sans connexion et n'a même pas la permission d'aller sur Internet ; les réglages et les
+l'application. Les jeux marchent sans connexion ; Internet ne sert qu'aux comptes facultatifs (serveur Supabase, voir le
+README du dépôt), et la connexion avec Google, Meta ou LinkedIn revient à l'application par `pomchess://connexion` ; les réglages et les
 records restent sur le téléphone. Android 7.0 ou plus récent.
 
 ## L'installer sur un téléphone
@@ -27,7 +28,7 @@ les réglages sont gardés.
   `SpeechRecognition` qui utilise la reconnaissance vocale du téléphone (`Dictee.java`, SpeechRecognizer) pour la
   dictée des coups de « À l'aveugle », et transmet la couleur du fond (thème clair ou sombre). La permission du micro
   (RECORD_AUDIO) n'est demandée que la première fois qu'on touche le micro ; la reconnaissance est faite par le
-  service du téléphone (souvent l'appli Google), l'application elle-même n'a toujours pas accès à Internet.
+  service du téléphone (souvent l'appli Google), pas par l'application elle-même.
 - Le moteur d'échecs de « À l'aveugle » (Stockfish, fichier `.wasm`) est servi avec le type `application/wasm`.
 - Si le moteur web du téléphone (« Android System WebView ») est plus ancien que Chrome 90, un message propose de le
   mettre à jour depuis le Play Store (avec un moteur trop ancien, l'échiquier ne s'afficherait pas). Dans

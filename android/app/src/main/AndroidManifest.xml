@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pas de permission Internet : tout le site est dans l'application, rien ne sort du téléphone
-     (la dictée de « À l'aveugle » passe par le service de reconnaissance vocale du téléphone).
-     Les liens vers d'autres sites s'ouvrent dans le navigateur. -->
+<!-- Tout le site est dans l'application : les jeux marchent sans connexion. Internet ne sert qu'aux comptes
+     (facultatifs), pour parler au serveur des comptes (Supabase) ; rien d'autre ne sort du téléphone.
+     La dictée de « À l'aveugle » passe par le service de reconnaissance vocale du téléphone.
+     Les liens vers d'autres sites, et la connexion avec Google, Meta ou LinkedIn, s'ouvrent dans le navigateur. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Internet : seulement pour les comptes (serveur Supabase) -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- le micro, seulement pour la dictée des coups dans « À l'aveugle » (demandé la première fois qu'on s'en sert) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -38,6 +41,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- le retour d'une connexion faite dans le navigateur (Google, Meta, LinkedIn, lien de l'e-mail) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="pomchess" android:host="connexion" />
             </intent-filter>
         </activity>
     </application>

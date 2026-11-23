@@ -306,6 +306,49 @@ compressé). Ce dernier est **fabriqué** par `python3 outils/pom/construire.py`
 `outils/pom/animations-pom.html`, la seule source des animations (voir `outils/pom/LISEZMOI.md`) : on règle une
 animation dans l'atelier, puis on relance le script.
 
+## Comptes (facultatifs)
+
+Le site et l'application marchent toujours sans compte. Un compte garde les réglages et la progression sur tous les
+appareils ; il se crée avec Google, Facebook (Meta), LinkedIn ou une adresse e-mail (un code reçu par e-mail, sans
+mot de passe). Le serveur est **Supabase** (projet `eimxxpcwxmvonkrldlfp`, serveurs à Francfort) ; sa clé publique est
+dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de la base qui protègent les données).
+
+- **Trois types de comptes** : *joueur* (basique : tout le site), *élève* (le compte d'un parent, avec un profil par
+  enfant ; chaque enfant rejoint la classe de son enseignant avec un code et n'a que les jeux ouverts par lui, les
+  autres cartes de l'accueil ont un cadenas et le jeu est bloqué par une fenêtre), *enseignant*.
+- **Page enseignant** (`enseignant/`) : ses classes (nom, code à 6 caractères à donner aux parents), et pour une classe
+  la liste des élèves (profil créé le, dernière activité, en ligne si actif depuis moins de 2 minutes, XP, nombre de
+  jeux ouverts), les jeux ouverts pour toute la classe (interrupteurs), et la fiche d'un élève (XP, niveau par jeu,
+  et pour chaque jeu : comme la classe, ouvert pour lui, fermé pour lui). Un espace « Fiches pédagogiques » est en
+  construction.
+- **Page du compte** (`compte/`) : connexion (seuls les fournisseurs activés dans Supabase sont proposés), création
+  du compte (type, prénom, nom, accord pour les données, et pour un compte élève l'accord du parent), profils des
+  enfants (qui joue sur cet appareil, rejoindre ou quitter une classe), progression, et les droits RGPD en libre
+  service : corriger, télécharger ses données (JSON), supprimer son compte (tout est effacé).
+- `js/compte.js`, chargé par toutes les pages, très léger : il ne charge la bibliothèque Supabase (`js/lib/supabase.js`,
+  supabase-js 2.118.0, licence MIT) que si quelqu'un est connecté. Il ajoute le bouton du compte à l'accueil, verrouille
+  les jeux fermés d'un élève (tout de suite, d'après ce qui est gardé dans `echecs.compte.etat`), fait suivre les
+  réglages (toutes les clés `echecs.*` du navigateur, envoyées 1,5 s après un changement ; ceux d'un autre appareil,
+  plus récents, sont repris au chargement), et compte la progression à partir des réactions de Pom' (bonne réponse :
+  5 XP ; fin de défi : 10 XP + 10 par étoile), envoyée par paquets (fonction `noter` de la base), avec la dernière
+  activité de l'enfant (`je_joue`, chaque minute). Niveau d'un jeu : 1 + ⌊√(XP / 40)⌋ (provisoire, en attendant le
+  vrai système d'XP et de succès).
+- **Base de données** : `supabase/schema.sql`, à coller dans l'éditeur SQL de Supabase (on peut le relancer). Tables
+  `comptes`, `enfants`, `classes`, `jeux_classe`, `jeux_enfant`, `progression` ; règles d'accès (RLS) vérifiées par le
+  serveur : chacun ne voit que ses données, un parent celles de ses enfants, un enseignant ses classes, leurs élèves
+  (prénom, nom, progression, pas l'e-mail du parent) ; un enfant ne change de classe qu'avec le code
+  (`rejoindre_classe`). Les règles ont été testées sur un PostgreSQL local avec une imitation du schéma `auth`.
+- **Données personnelles** : `confidentialite.html` (RGPD) : données gardées, finalités, base légale, qui voit quoi,
+  sous-traitants (Supabase, fournisseurs de connexion, GitHub Pages, Google Fonts), durée, droits.
+- **Application Android** : la permission Internet ne sert qu'aux comptes (seul `*.supabase.co` est joint) ; la
+  connexion Google, Meta ou LinkedIn (et le lien de l'e-mail) se fait dans le navigateur du téléphone, qui revient à
+  l'application par `pomchess://connexion?code=…` ; la page du compte échange ce code contre une session (PKCE).
+
+Réglages à faire dans Supabase : *Authentication → URL Configuration* : Site URL
+`https://pouillonmathieu.github.io/echecseducatifs/`, Redirect URLs `https://pouillonmathieu.github.io/echecseducatifs/**`
+et `pomchess://connexion` ; *Authentication → Emails* : ajouter le code `{{ .Token }}` aux modèles « Magic Link » et
+« Confirm signup » (pour se connecter en tapant le code, indispensable dans l'application).
+
 ## Réglages du site
 
 Le menu Réglages de la page d'accueil vaut pour tous les jeux (il est gardé dans le navigateur) ; la langue et le
@@ -380,6 +423,12 @@ js/pom.js             Pom', le coach : sa place dans la page et ses réactions (
 js/pom-moteur.js      le dessin de Pom' et ses animations (fabriqué par outils/pom/construire.py, ne pas modifier)
 outils/pom/           l'atelier des animations de Pom' et ses outils (voir son LISEZMOI)
 android/              l'application Android (le site embarqué ; voir android/README.md)
+js/compte.js          comptes facultatifs (Supabase) : bouton du compte, jeux verrouillés, réglages, progression
+js/lib/supabase.js    bibliothèque supabase-js (chargée seulement si quelqu'un est connecté)
+compte/               page « Mon compte » (connexion, création, enfants, données)
+enseignant/           page « Mes classes » des enseignants
+confidentialite.html  données personnelles (RGPD)
+supabase/schema.sql   la base de données des comptes (à coller dans l'éditeur SQL de Supabase)
 jeux/<nom-du-jeu>/    un dossier par jeu (index.html + .css + .js ; le quiz des ouvertures a aussi fiche.html)
 ```
 

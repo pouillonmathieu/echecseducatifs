@@ -46,8 +46,9 @@ import java.util.Locale;
  *   s'appelle ? » et « À l'aveugle » (la synthèse vocale du navigateur n'existe pas dans une WebView), sa dictée pour
  *   « À l'aveugle » (Dictee.java) et la couleur du fond pour les barres du système.
  * - La police Lexend, demandée à Google Fonts par les pages, est servie depuis l'application (assets/appli/polices).
- * - Les liens vers d'autres sites (Lichess, Wikimedia…) s'ouvrent dans le navigateur du téléphone. L'application n'a
- *   pas la permission d'aller sur Internet : rien ne sort du téléphone.
+ * - Les liens vers d'autres sites (Lichess, Wikimedia…) s'ouvrent dans le navigateur du téléphone. Seul le serveur des
+ *   comptes (Supabase, facultatifs) est joint depuis l'application ; la connexion avec Google, Meta ou LinkedIn se fait
+ *   dans le navigateur, qui revient à l'application par pomchess://connexion (retourConnexion).
  */
 public class MainActivity extends Activity {
     static final String HOTE = "appassets.androidplatform.net";
@@ -109,7 +110,8 @@ public class MainActivity extends Activity {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::retour);
         }
 
-        if (etat == null || web.restoreState(etat) == null) web.loadUrl(pageDAccueil());
+        if (retourConnexion(getIntent())) { /* la page du compte est chargée */ }
+        else if (etat == null || web.restoreState(etat) == null) web.loadUrl(pageDAccueil());
         if (etat == null) verifierMoteur();
     }
 
@@ -132,6 +134,24 @@ public class MainActivity extends Activity {
                 })
                 .setNegativeButton(R.string.moteur_plus_tard, null)
                 .show();
+    }
+
+    /** Le retour d'une connexion faite dans le navigateur : pomchess://connexion?code=… -> la page du compte, avec le
+     *  code (la page l'échange contre une session, avec la clé gardée dans la WebView au départ de la connexion). */
+    private boolean retourConnexion(Intent i) {
+        Uri u = i == null ? null : i.getData();
+        if (u == null || !"pomchess".equals(u.getScheme()) || !"connexion".equals(u.getHost())) return false;
+        String langue = prefs().getString("langue", "fr");
+        String requete = u.getEncodedQuery();
+        web.loadUrl(SITE + (langue.equals("en") ? "en/" : "") + "compte/index.html" + (requete == null ? "" : "?" + requete));
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent i) {
+        super.onNewIntent(i);
+        setIntent(i);
+        retourConnexion(i);
     }
 
     /** La page d'accueil : celle de la dernière langue utilisée, sinon celle du téléphone. */
@@ -245,6 +265,8 @@ public class MainActivity extends Activity {
             String hote = u.getHost() == null ? "" : u.getHost();
             // la police Lexend : depuis l'application
             if (hote.equals("fonts.googleapis.com")) return asset("appli/polices/lexend.css", "text/css");
+            // le serveur des comptes (Supabase) : en ligne, normalement
+            if (hote.endsWith(".supabase.co")) return null;
             // rien d'autre ne sort de l'application
             if (!hote.equals(HOTE)) return new WebResourceResponse("text/plain", "utf-8", 404, "Hors ligne", null, new ByteArrayInputStream(new byte[0]));
             String chemin = u.getPath() == null ? "" : u.getPath();

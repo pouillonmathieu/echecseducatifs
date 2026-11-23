@@ -1,0 +1,141 @@
+/* Pages du compte (compte/index.html) et des classes (enseignant/index.html) */
+.ecran-compte { max-width: 760px; }
+.ecran-enseignant { max-width: 980px; }
+.contenu-compte { display: flex; flex-direction: column; gap: 14px; }
+.chargement { color: var(--encre-douce); text-align: center; padding: 40px 0; }
+
+.carte-compte {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--ligne);
+  border-radius: 20px;
+  background: var(--surface);
+}
+.carte-compte h2 { margin: 0; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.carte-compte h3 { margin: 6px 0 0; font-size: 16px; }
+.carte-compte p { margin: 0; line-height: 1.5; }
+.petit { font-size: 14px; color: var(--encre-douce); }
+.petit a, .carte-compte p a { color: var(--accent); }
+.intro-compte { background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 30%, var(--ligne)); }
+
+/* connexion */
+.fournisseurs { display: flex; flex-direction: column; gap: 8px; }
+.bouton-fournisseur { justify-content: flex-start; gap: 12px; }
+.bouton-fournisseur svg { flex: none; width: 22px; height: 22px; }
+.ou { display: flex; align-items: center; gap: 10px; color: var(--encre-douce); font-size: 13px; }
+.ou::before, .ou::after { content: ""; flex: 1; height: 1px; background: var(--ligne); }
+
+/* formulaires */
+.form-compte { display: flex; flex-direction: column; gap: 10px; }
+.form-compte label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 600; }
+.form-compte input:not([type="radio"]):not([type="checkbox"]), .form-compte select, .rejoindre input, .tableau-jeux-eleve select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--ligne);
+  border-radius: 12px;
+  background: var(--fond);
+  color: var(--encre);
+  font: inherit;
+  font-weight: 500;
+}
+.form-compte input:focus, .rejoindre input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-doux); }
+.etiquette-champ { font-weight: 600; }
+.deux-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ligne-form { flex-direction: row; align-items: flex-end; }
+.ligne-form label { flex: 1; }
+.case-a-cocher { flex-direction: row !important; align-items: flex-start; gap: 10px !important; font-weight: 500 !important; line-height: 1.45; }
+.case-a-cocher input { flex: none; width: 20px; height: 20px; margin-top: 1px; accent-color: var(--accent); }
+.lien-bouton { align-self: center; border: none; background: none; color: var(--encre-douce); font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+.petit-bouton { min-height: 36px !important; padding: 0 12px !important; font-size: 14px !important; }
+.danger { color: var(--alerte) !important; border-color: color-mix(in srgb, var(--alerte) 45%, var(--ligne)) !important; }
+.actions-compte { display: flex; flex-wrap: wrap; gap: 8px; }
+.message-compte { margin: 0; padding: 10px 14px; border-radius: 12px; background: var(--accent-doux); color: var(--encre); font-weight: 500; }
+.message-compte.erreur { background: color-mix(in srgb, var(--alerte) 16%, var(--surface)); }
+
+/* types de compte */
+.types-compte { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; border: none; }
+.types-compte legend { margin-bottom: 6px; font-size: 14px; font-weight: 600; }
+.type-compte { flex-direction: row !important; align-items: flex-start; gap: 12px !important; padding: 12px 14px; border: 2px solid var(--ligne); border-radius: 14px; cursor: pointer; }
+.type-compte:has(input:checked) { border-color: var(--accent); background: var(--accent-doux); }
+.type-compte input { margin-top: 3px; accent-color: var(--accent); }
+.type-compte span { display: flex; flex-direction: column; gap: 2px; }
+.type-compte small { font-weight: 400; color: var(--encre-douce); line-height: 1.4; }
+
+/* tête du compte */
+.tete-compte { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+.badge-type { flex: none; padding: 4px 12px; border-radius: 999px; background: var(--surface-2); font-size: 13px; font-weight: 700; }
+.badge-enseignant { background: color-mix(in srgb, var(--or) 25%, var(--surface)); }
+.badge-eleve { background: var(--accent-doux); color: var(--accent); }
+.carte-enseignant { background: color-mix(in srgb, var(--or) 10%, var(--surface)); }
+.carte-enseignant .bouton-principal { align-self: flex-start; text-decoration: none; }
+
+/* progression */
+.xp-total { font-size: 15px; color: var(--encre-douce); }
+.xp-total b { font-size: 30px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.liste-niveaux { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.liste-niveaux li { display: grid; grid-template-columns: 1fr auto 64px; gap: 10px; align-items: center; padding: 6px 10px; border-radius: 10px; background: var(--fond); font-size: 14px; }
+.liste-niveaux .niveau { font-weight: 700; color: var(--accent); }
+.liste-niveaux .xp { color: var(--encre-douce); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* enfants (compte élève) */
+.liste-enfants { display: flex; flex-direction: column; gap: 10px; }
+.enfant { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 2px solid var(--ligne); border-radius: 16px; background: var(--fond); }
+.enfant.actif { border-color: var(--accent); }
+.enfant-tete { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.enfant-tete > div { flex: 1; min-width: 140px; display: flex; flex-direction: column; }
+.enfant-tete small { color: var(--encre-douce); }
+.avatar-enfant { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--sur-accent); font-weight: 700; font-size: 18px; }
+.badge-actif { padding: 4px 10px; border-radius: 999px; background: var(--accent-doux); color: var(--accent); font-size: 13px; font-weight: 700; }
+.rejoindre { display: flex; gap: 8px; }
+.rejoindre input { text-transform: uppercase; letter-spacing: .08em; }
+.details-enfant summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--encre-douce); }
+.details-enfant[open] { display: flex; flex-direction: column; gap: 10px; }
+.ajout-enfant { padding-top: 10px; border-top: 1px solid var(--ligne); }
+
+/* classes (enseignant) */
+.liste-classes { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.classe-carte { display: flex; flex-direction: column; gap: 4px; padding: 14px; border: 1.5px solid var(--ligne); border-radius: 16px; background: var(--fond); color: var(--encre); text-decoration: none; transition: border-color .15s, transform .1s; }
+.classe-carte:hover { border-color: var(--accent); transform: translateY(-1px); }
+.classe-carte span { font-size: 14px; color: var(--encre-douce); }
+.code-classe { align-self: flex-start; margin-top: 4px; padding: 2px 10px; border-radius: 8px; background: var(--surface-2); color: var(--encre) !important; font-weight: 700; letter-spacing: .12em; font-variant-numeric: tabular-nums; }
+.ajout-classe { flex-direction: row; align-items: flex-end; padding-top: 10px; border-top: 1px solid var(--ligne); }
+.ajout-classe label { flex: 1; }
+.lien-retour { align-self: flex-start; color: var(--accent); font-weight: 600; text-decoration: none; }
+.tete-classe { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.tete-classe > div:first-child { flex: 1 1 300px; display: flex; flex-direction: column; gap: 6px; }
+.code-grand { display: flex; align-items: center; gap: 10px; }
+.code-grand span { padding: 8px 16px; border-radius: 12px; background: var(--fond); border: 2px dashed var(--accent); font-size: 26px; font-weight: 700; letter-spacing: .18em; font-variant-numeric: tabular-nums; }
+.compte-eleves { padding: 2px 10px; border-radius: 999px; background: var(--surface-2); font-size: 14px; }
+.tableau-defile { overflow-x: auto; }
+.tableau-eleves, .tableau-jeux-eleve { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tableau-eleves th, .tableau-jeux-eleve th { padding: 6px 8px; border-bottom: 2px solid var(--ligne); color: var(--encre-douce); font-weight: 600; text-align: left; white-space: nowrap; }
+.tableau-eleves td, .tableau-jeux-eleve td { padding: 8px; border-bottom: 1px solid var(--ligne); white-space: nowrap; }
+.tableau-eleves tbody tr { cursor: pointer; }
+.tableau-eleves tbody tr:hover, .tableau-eleves tbody tr.choisi { background: var(--accent-doux); }
+.statut { color: var(--encre-douce); }
+.statut.en-ligne { color: var(--accent); font-weight: 700; }
+.grille-acces { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
+.acces-jeu { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1.5px solid var(--ligne); border-radius: 12px; background: var(--fond); color: var(--encre); font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; }
+.acces-jeu[aria-checked="true"] { border-color: var(--accent); background: var(--accent-doux); }
+.fiche-eleve { border-color: var(--accent); }
+.fiche-tete { display: flex; align-items: center; justify-content: space-between; }
+.tableau-jeux-eleve select { min-height: 36px; padding: 4px 8px; font-size: 13px; }
+.carte-construction { border-style: dashed; }
+.badge-construction { padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--or) 28%, var(--surface)); font-size: 12px; font-weight: 700; }
+
+@media (max-width: 560px) {
+  .carte-compte { padding: 14px 14px 16px; border-radius: 16px; }
+  .deux-champs { grid-template-columns: 1fr; }
+  .ajout-classe, .ligne-form { flex-direction: column; align-items: stretch; }
+  .code-grand span { font-size: 22px; }
+}
+
+/* page « Données personnelles » */
+.texte-legal .carte-compte { gap: 8px; }
+.liste-legale { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; line-height: 1.5; }
+.contact-legal { font-weight: 700; }
+.maj-legale { text-align: center; }

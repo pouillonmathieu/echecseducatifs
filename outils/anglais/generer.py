@@ -9,7 +9,7 @@
 import json, os, re, sys
 
 RACINE = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..'))
-PAGES = ['index.html'] + sorted('jeux/%s/%s' % (d, f) for d in os.listdir(os.path.join(RACINE, 'jeux'))
+PAGES = ['index.html', 'confidentialite.html', 'compte/index.html', 'enseignant/index.html'] + sorted('jeux/%s/%s' % (d, f) for d in os.listdir(os.path.join(RACINE, 'jeux'))
                                 if os.path.isdir(os.path.join(RACINE, 'jeux', d))
                                 for f in os.listdir(os.path.join(RACINE, 'jeux', d)) if f.endswith('.html'))
 DICO = json.load(open(os.path.join(os.path.dirname(__file__), 'pages.json'), encoding='utf-8'))
