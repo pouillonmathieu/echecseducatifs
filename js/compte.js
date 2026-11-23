@@ -26,7 +26,7 @@
     ['cases', 'Trouve la case', 'Find the square'], ['notation', 'Note le coup', 'Write the move'],
     ['joue', 'Joue le coup', 'Play the move'], ['mots', 'Comment ça s\'appelle ?', 'What\'s it called?'],
     ['balance', 'La balance', 'The scales'], ['cheval', 'Le cheval de la reine', 'The queen\'s horse'],
-    ['ouvertures', 'Quiz des ouvertures', 'Openings quiz'], ['aveugle', 'À l\'aveugle', 'Blindfold'], ['des', 'Dice chess', 'Dice chess'],
+    ['ouvertures', 'Quiz des ouvertures', 'Openings quiz'], ['mer', 'La mer rouge', 'The Red Sea'], ['aveugle', 'À l\'aveugle', 'Blindfold'], ['des', 'Dice chess', 'Dice chess'],
   ].map(([id, fr, en]) => ({ id, nom: EN ? en : fr }));
   const JEU = (location.pathname.match(/\/jeux\/([^/]+)\//) || [])[1] || null;
   // le niveau d'un jeu, d'après l'expérience (1 au départ, puis 40, 160, 360, 640… XP)

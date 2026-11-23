@@ -1,0 +1,105 @@
+/* Jeu : la mer rouge
+   Le dialogue (les pions demandent, Pom' répond) au-dessus de l'échiquier ; les compteurs et « Finir le tour » à côté
+   (dessous sur téléphone). La mer (rangées 3 à 7) est teintée de rouge, la rive d'arrivée (rangée 8) de sable. */
+.ecran-mer { max-width: 1040px; }
+.jeu-mer {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  align-items: center;
+  gap: 28px;
+}
+.plateau-mer {
+  width: min(100%, 560px, calc(100vh - 290px));
+  width: min(100%, 560px, calc(100dvh - 290px));
+}
+.panneau-mer { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+/* ---------- Le dialogue ---------- */
+.dialogue { display: flex; gap: 10px; align-items: stretch; width: min(100%, 560px); min-height: 52px; }
+.bulle-mer {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 12px 8px 48px;
+  border: 1px solid var(--ligne);
+  border-radius: 16px;
+  background: var(--surface);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.bulle-mer::before { content: ""; position: absolute; left: 8px; top: 50%; width: 32px; height: 32px; margin-top: -16px; background: center / contain no-repeat; }
+.bulle-pions::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='%231A1E27' stroke-width='3.2' stroke-linejoin='round'%3E%3Cpath fill='%23F08A24' d='M18 92 H82 A4 4 0 0 0 86 88 V84 A6 6 0 0 0 80 78 H20 A6 6 0 0 0 14 84 V88 A4 4 0 0 0 18 92 Z'/%3E%3Cpath fill='%232F6FE4' d='M33 78 C33 66 39 58 43 52 H57 C61 58 67 66 67 78 Z'/%3E%3Crect fill='%232F6FE4' x='35' y='44' width='30' height='9' rx='4.5'/%3E%3Ccircle fill='%23F5C518' cx='50' cy='29' r='15'/%3E%3C/g%3E%3C/svg%3E"); }
+.bulle-pom::before { background-image: url("pom.png"); width: 36px; height: 36px; margin-top: -18px; }
+.bulle-pom { border-color: var(--c, var(--ligne)); }
+.bulle-mer.parle { animation: parle-mer .45s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes parle-mer { from { opacity: 0; transform: translateY(6px) scale(.95); } }
+.pastille-couleur { display: inline-block; padding: 1px 10px; border-radius: 999px; background: var(--c); color: #fff; font-weight: 800; text-shadow: 0 1px 1px rgba(0, 0, 0, .35); }
+
+/* ---------- La mer et la rive ---------- */
+.plateau-mer .case-e { position: relative; }
+.plateau-mer .case-e[data-case$="3"]::before, .plateau-mer .case-e[data-case$="4"]::before, .plateau-mer .case-e[data-case$="5"]::before,
+.plateau-mer .case-e[data-case$="6"]::before, .plateau-mer .case-e[data-case$="7"]::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; background: rgba(214, 52, 52, .16);
+}
+.plateau-mer .case-e[data-case$="8"]::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: rgba(240, 196, 90, .32); }
+
+/* ---------- Les pièces ---------- */
+.piece-mer { position: absolute; inset: 5%; z-index: 2; pointer-events: none; }
+.piece-mer svg, .piece-mer img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25)); user-select: none; }
+.pom-mer { inset: 0; z-index: 3; }
+.pion-mer.arrive::after {
+  content: "★"; position: absolute; right: -4%; top: -6%; display: grid; place-items: center; width: 38%; height: 38%;
+  border-radius: 50%; background: var(--or); color: #fff; font-size: 2.6cqi; font-weight: 800; box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+.plateau-mer .case-e { cursor: default; }
+.plateau-mer .case-e.jouable-mer { cursor: pointer; }
+.plateau-mer .case-e.jouable-mer::after { opacity: 1; box-shadow: inset 0 0 0 .6cqi rgba(47, 163, 107, .95); background: rgba(47, 163, 107, .18); }
+.plateau-mer .case-e.jouable-mer .pion-mer { animation: sautille 1.4s ease-in-out infinite; }
+@keyframes sautille { 50% { transform: translateY(-5%); } }
+.plateau-mer .case-e.choisi-mer::after { opacity: 1; box-shadow: inset 0 0 0 .8cqi #2FA36B; background: rgba(47, 163, 107, .35); }
+.plateau-mer .case-e.cible-mer { cursor: pointer; }
+.plateau-mer .case-e.cible-mer::after { opacity: 1; background: radial-gradient(circle, rgba(47, 163, 107, .85) 0 18%, transparent 20%); }
+.plateau-mer .case-e.danger-mer .pion-mer::before {
+  content: "!"; position: absolute; left: -4%; top: -6%; z-index: 1; display: grid; place-items: center; width: 36%; height: 36%;
+  border-radius: 50%; background: var(--alerte); color: #fff; font-size: 2.6cqi; font-weight: 800; box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+@media (prefers-reduced-motion: reduce) { .plateau-mer .case-e.jouable-mer .pion-mer { animation: none; } }
+
+/* ---------- Compteurs et boutons ---------- */
+.compteurs-mer { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.compteur-mer { display: flex; flex-direction: column; align-items: center; margin: 0; padding: 10px 6px; border: 1px solid var(--ligne); border-radius: 16px; background: var(--surface); }
+.compteur-mer b { font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.compteur-mer span { font-size: 13px; color: var(--encre-douce); }
+.compteur-mer.arrives b { color: var(--accent); }
+.compteur-mer.attrapes b { color: var(--alerte); }
+.message-mer { min-height: 2.9em; margin: 0; padding: 10px 14px; border-radius: 14px; background: var(--surface-2); font-size: 15px; line-height: 1.4; }
+.message-mer:empty { visibility: hidden; }
+.actions-mer { display: flex; flex-direction: column; gap: 8px; }
+.actions-mer svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.actions-mer .bouton-principal:disabled { opacity: .45; cursor: default; }
+.res-detail-mer { margin: 0 0 6px; color: var(--encre-douce); line-height: 1.45; text-wrap: balance; }
+
+@media (max-width: 860px) {
+  .jeu-mer { grid-template-columns: 1fr; gap: 12px; align-content: start; }
+  .plateau-mer { width: min(100%, 520px, calc(100dvh - 420px)); min-width: min(100%, 260px); }
+  .panneau-mer { width: min(100%, 520px); justify-self: center; gap: 10px; }
+  .actions-mer { flex-direction: row; }
+  .actions-mer > * { flex: 1 1 0; }
+}
+@media (max-width: 560px) {
+  .dialogue { gap: 6px; min-height: 0; }
+  .bulle-mer { padding: 6px 8px 6px 38px; font-size: 13px; border-radius: 12px; }
+  .bulle-mer::before { left: 5px; width: 28px; height: 28px; margin-top: -14px; }
+  .bulle-pom::before { width: 30px; height: 30px; margin-top: -15px; }
+  .compteurs-mer { gap: 6px; }
+  .compteur-mer { flex-direction: row; justify-content: center; gap: 6px; padding: 5px 6px; border-radius: 12px; }
+  .compteur-mer b { font-size: 20px; }
+  .compteur-mer span { font-size: 12px; }
+  .message-mer { min-height: 2.8em; padding: 6px 10px; font-size: 13px; }
+  :root .ecran .actions-mer .bouton-principal, :root .ecran .actions-mer .bouton-secondaire { white-space: nowrap; }
+}

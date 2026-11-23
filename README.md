@@ -156,6 +156,17 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   perdue d'après l'évaluation Lichess ou Stockfish), au plus 3 par joueur, les parties de blitz et de rapide en premier
   (sélection dans `outils/mats-en-un.json`), puis écrit `jeux/mat1/problemes.js` en vérifiant chaque mat, avec la
   raison de chaque coup qui ne mate pas et les explications (français et anglais).
+- **La mer rouge** (`jeux/mer/`) : variante du jeu de cour « Petit poisson, puis-je traverser la mer rouge ? ». Huit
+  pions peints chacun de trois couleurs (tête, corps, socle ; 8 des 10 combinaisons de 3 couleurs parmi bleu, rouge,
+  jaune, vert, orange, au hasard) partent de leur rangée ; Pom' (sa tête et son chapeau, `pom.png`, tiré du dessin de
+  Pom') nage dans la mer (rangées 3 à 7 teintées de rouge) et saute où il veut. Chaque tour, les pions demandent
+  « Petit poisson, peut-on traverser la mer rouge ? » et Pom' répond « À condition d'avoir du… » et une couleur (tirée
+  parmi celles des pions encore en mer ; lu à voix haute, réglage) : seuls les pions de cette couleur avancent, chacun
+  une fois (une case, deux depuis la case de départ ; une case occupée bloque). Puis Pom' part à la chasse : il attrape
+  un pion sans la couleur annoncée, qui a quitté sa case de départ et qu'aucun pion ne défend (en diagonale juste
+  derrière lui), le plus avancé s'il a le choix ; sinon il nage vers une case libre. Les pions arrivés (rangée 8) sont
+  à l'abri. Réglage « Montrer les pions en danger » (un point d'exclamation). Fin quand plus aucun pion n'est en mer :
+  8 arrivés 3 étoiles, 6 ou 7 deux, 4 ou 5 une.
 - **À l'aveugle** (`jeux/aveugle/`) : une partie complète contre l'ordinateur, sans voir l'échiquier. Il est caché en
   permanence par un échiquier vide, vu du même côté, dont les lettres et les chiffres restent toujours affichés (pour se
   repérer dans les cases), avec l'étiquette « Échiquier masqué » au milieu ; le bouton « Coup d'œil », entre l'échiquier et la feuille de partie, le montre tant qu'on le garde
@@ -266,7 +277,7 @@ doucement pour qu'on le remarque. Dice chess ouvre ses règles illustrées, qui 
   page (« Créé par… », « Crédits des photos ») ne comptent pas : ils peuvent passer sous le bas de l'écran. Ce réglage se refait seulement
   quand la largeur change (rotation) : la barre d'adresse du téléphone, qui apparaît et disparaît, ne change que la
   hauteur, et ne doit pas faire rétrécir l'échiquier pendant qu'une explication est affichée.
-- Vérifié : les 13 jeux tiennent sans défiler sur 390 × 844, 360 × 740, 375 × 667 et sur ordinateur, avec l'échiquier
+- Vérifié : les jeux tiennent sans défiler sur 390 × 844, 360 × 740, 375 × 667 et sur ordinateur, avec l'échiquier
   en pleine largeur (sauf « Note le coup » sur 375 × 667, dont le clavier prend de la place).
 
 ## « Suivant » toujours à portée
@@ -375,7 +386,7 @@ couleurs d'échiquier ne montrent que leur dessin, et leur nom est en info-bulle
 ## Page d'accueil
 
 Pom' et sa bulle de bienvenue, puis une carte par jeu (icône simple en SVG, nom, une phrase), toutes visibles sans
-faire défiler : 7 colonnes sur ordinateur (icônes plus petites sur un écran peu haut), 5 sur tablette, 2 colonnes sur
+faire défiler (14 jeux) : 7 colonnes sur ordinateur (icônes plus petites sur un écran peu haut), 5 sur tablette, 2 colonnes sur
 téléphone (icône à gauche du nom, sans la phrase). Si la page dépasse quand même de l'écran, Pom' se fait plus petit.
 
 ## Version anglaise

@@ -148,7 +148,9 @@
   "Clair": "Light",
   "Sombre": "Dark",
   "À l'aveugle": "Blindfold",
-  "Joue une partie contre l'ordinateur sans voir l'échiquier.": "Play a game against the computer without seeing the board."
+  "Joue une partie contre l'ordinateur sans voir l'échiquier.": "Play a game against the computer without seeing the board.",
+  "La mer rouge": "The Red Sea",
+  "Petit poisson, peut-on traverser ? Fais passer tes pions !": "Little fish, may we cross? Get your pawns across!"
  },
  "identiques": [
   "Auto",
@@ -656,5 +658,21 @@
   "Chargement…": "Loading…",
   "Créé par Mathieu Pouillon ·": "Made by Mathieu Pouillon ·",
   "Données personnelles": "Personal data"
+ },
+ "jeux/mer/index.html": {
+  "La mer rouge": "The Red Sea",
+  "Montrer les pions en danger": "Show the pawns in danger",
+  "Ceux que Pom' peut attraper si tu finis le tour": "Those Pom' can catch if you end the turn",
+  "Lire à voix haute": "Read aloud",
+  "La question des pions et la réponse de Pom'": "The pawns' question and Pom's answer",
+  "Petit poisson, peut-on traverser la mer rouge ?": "Little fish, may we cross the Red Sea?",
+  "arrivés": "across",
+  "attrapés": "caught",
+  "tour": "turn",
+  "Finir le tour": "End the turn",
+  "Nouvelle partie": "New game",
+  "Bravo !": "Well done!",
+  "Rejouer": "Play again",
+  "Voir l'échiquier": "See the board"
  }
 }
