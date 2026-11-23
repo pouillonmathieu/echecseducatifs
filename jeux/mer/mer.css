@@ -49,8 +49,9 @@
 .plateau-mer .case-e[data-case$="8"]::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: rgba(240, 196, 90, .32); }
 
 /* ---------- Les pièces ---------- */
-.piece-mer { position: absolute; inset: 5%; z-index: 2; pointer-events: none; }
-.piece-mer svg, .piece-mer img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25)); user-select: none; }
+.piece-mer { position: absolute; inset: 5%; z-index: 2; }
+.pom-mer { pointer-events: none; }
+.piece-mer svg, .piece-mer img, .piece-mer .piece-e { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25)); user-select: none; }
 .pom-mer { inset: 0; z-index: 3; }
 .pion-mer.arrive::after {
   content: "★"; position: absolute; right: -4%; top: -6%; display: grid; place-items: center; width: 38%; height: 38%;

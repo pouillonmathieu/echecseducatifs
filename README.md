@@ -165,8 +165,12 @@ Ouvrir `index.html` dans un navigateur. Aucune installation n'est nécessaire.
   une fois (une case, deux depuis la case de départ ; une case occupée bloque). Puis Pom' part à la chasse : il attrape
   un pion sans la couleur annoncée, qui a quitté sa case de départ et qu'aucun pion ne défend (en diagonale juste
   derrière lui), le plus avancé s'il a le choix ; sinon il nage vers une case libre. Les pions arrivés (rangée 8) sont
-  à l'abri. Réglage « Montrer les pions en danger » (un point d'exclamation). Fin quand plus aucun pion n'est en mer :
-  8 arrivés 3 étoiles, 6 ou 7 deux, 4 ou 5 une.
+  à l'abri. Réglage « Montrer les pions en danger » (un point d'exclamation). On apprend à déplacer les pions : on
+  touche le pion puis sa case, ou on le fait glisser (`js/glisser.js`), même quand une seule case est possible. La
+  réponse de Pom' attend la fin de la question (dans l'application, une nouvelle phrase coupe la précédente). Pom' ne
+  réagit pas pendant la partie (il est déjà sur l'échiquier) : la page a `data-pom="fin"`, et `js/pom.js` ne le met
+  alors jamais à côté de l'échiquier, seulement dans la fenêtre des résultats. Fin quand plus aucun pion n'est en mer :
+  5 arrivés ou plus 3 étoiles, 3 ou 4 deux, 1 ou 2 une.
 - **À l'aveugle** (`jeux/aveugle/`) : une partie complète contre l'ordinateur, sans voir l'échiquier. Il est caché en
   permanence par un échiquier vide, vu du même côté, dont les lettres et les chiffres restent toujours affichés (pour se
   repérer dans les cases), avec l'étiquette « Échiquier masqué » au milieu ; le bouton « Coup d'œil », entre l'échiquier et la feuille de partie, le montre tant qu'on le garde

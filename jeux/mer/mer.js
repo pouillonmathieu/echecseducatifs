@@ -44,7 +44,7 @@
   // ---------- Le dessin d'un pion en trois couleurs : la tête, le corps, le socle ----------
   function dessinPion(p) {
     const [tete, corps, socle] = p.couleurs.map((c) => COULEURS[c].css);
-    return `<svg viewBox="0 0 100 100" aria-hidden="true"><g stroke="#1A1E27" stroke-width="3.2" stroke-linejoin="round">
+    return `<svg class="piece-e" viewBox="0 0 100 100" aria-hidden="true"><g stroke="#1A1E27" stroke-width="3.2" stroke-linejoin="round">
       <path fill="${socle}" d="M18 92 H82 A4 4 0 0 0 86 88 V84 A6 6 0 0 0 80 78 H20 A6 6 0 0 0 14 84 V88 A4 4 0 0 0 18 92 Z"/>
       <path fill="${corps}" d="M33 78 C33 66 39 58 43 52 H57 C61 58 67 66 67 78 Z"/>
       <rect fill="${corps}" x="35" y="44" width="30" height="9" rx="4.5"/>
@@ -131,12 +131,19 @@
 
   // ---------- La voix ----------
   const parole = 'speechSynthesis' in window ? window.speechSynthesis : null;
-  function dire(texte, aigu) {
-    if (!reglages.voix || !parole) return;
+  // dit une phrase ; ensuite() est appelé quand elle est finie (ou tout de suite, sans voix). Dans l'application, une
+  // nouvelle phrase coupe la précédente : la réponse de Pom' attend donc la fin de la question.
+  function dire(texte, aigu, ensuite) {
+    let fait = false;
+    const fin = () => { if (!fait) { fait = true; if (ensuite) ensuite(); } };
+    if (!reglages.voix || !parole) { setTimeout(fin, 1100); return; }
     const u = new SpeechSynthesisUtterance(texte);
     u.lang = EN ? 'en-GB' : 'fr-FR';
     u.rate = 0.95;
     u.pitch = aigu ? 1.35 : 1;
+    u.onend = () => setTimeout(fin, 250);
+    u.onerror = fin;
+    setTimeout(fin, 8000); // (au cas où la voix ne dirait jamais qu'elle a fini)
     parole.speak(u);
   }
 
@@ -155,9 +162,8 @@
     const bp = $('bulle-pions');
     bp.classList.remove('parle'); void bp.offsetWidth; bp.classList.add('parle');
     message('');
-    dire(QUESTION, false);
     placerPieces();
-    setTimeout(() => {
+    dire(QUESTION, false, () => {
       if (gen !== jeu.gen) return;
       const c = COULEURS[jeu.couleur];
       $('reponse-pom').innerHTML = t(`À condition d'avoir ${jeu.couleur === 'orange' ? 'de l\'' : 'du '}`, 'Only if you\'re wearing ') +
@@ -174,9 +180,9 @@
         message(t(`Aucun pion avec ${c.du} ne peut avancer : Pom' part à la chasse.`, `No pawn wearing ${c.du} can move: Pom' goes hunting.`));
         setTimeout(() => { if (gen === jeu.gen) finirTour(); }, 2200);
       } else {
-        message(t(`Touche un pion qui a ${c.du} pour le faire avancer. Puis « Finir le tour ».`, `Tap a pawn wearing ${c.du} to move it forward. Then "End the turn".`));
+        message(t(`Touche un pion qui a ${c.du}, puis la case où il va (ou fais-le glisser). Puis « Finir le tour ».`, `Tap a pawn wearing ${c.du}, then the square it goes to (or drag it). Then "End the turn".`));
       }
-    }, parole && reglages.voix ? 2300 : 1100);
+    });
   }
 
   function avancer(p, rang) {
@@ -186,7 +192,6 @@
     if (rang === 8) {
       p.etat = 'arrive';
       Sons.juste();
-      window.Pom?.bonneReponse();
       message(t(`Le pion ${nomPion(p)} a traversé la mer rouge !`, `The ${nomPion(p)} pawn has crossed the Red Sea!`));
     } else Sons.pose(1);
     placerPieces();
@@ -217,7 +222,6 @@
           if (gen !== jeu.gen) return;
           proie.etat = 'pris';
           Sons.retire();
-          window.Pom?.erreur();
           message(t(`Pom' a attrapé le pion ${nomPion(proie)} ! Il n'avait pas ${COULEURS[jeu.couleur].du} et personne ne le défendait.`, `Pom' caught the ${nomPion(proie)} pawn! It wasn't wearing ${COULEURS[jeu.couleur].du} and nobody was defending it.`));
           placerPieces();
           suite();
@@ -251,8 +255,8 @@
 
   function fin() {
     const n = jeu.pions.filter((p) => p.etat === 'arrive').length;
-    const etoiles = n === 8 ? 3 : n >= 6 ? 2 : n >= 4 ? 1 : 0;
-    $('res-titre').textContent = n === 8 ? t('Tous de l\'autre côté !', 'All across!') : n >= 6 ? t('Bravo !', 'Well done!') : n >= 4 ? t('Bien joué !', 'Nice work!') : t('Pom\' a eu faim…', 'Pom\' was hungry…');
+    const etoiles = n >= 5 ? 3 : n >= 3 ? 2 : n >= 1 ? 1 : 0;
+    $('res-titre').textContent = n === 8 ? t('Tous de l\'autre côté !', 'All across!') : n >= 5 ? t('Bravo !', 'Well done!') : n >= 3 ? t('Bien joué !', 'Nice work!') : n >= 1 ? t('Pas mal !', 'Not bad!') : t('Pom\' a eu faim…', 'Pom\' was hungry…');
     $('res-score').textContent = n;
     $('res-detail').textContent = t(`${n} pion${n > 1 ? 's ont' : ' a'} traversé la mer rouge en ${jeu.tour} tours. Astuce : un pion défendu par un autre, en diagonale juste derrière lui, est à l'abri.`,
       `${n} pawn${n === 1 ? ' has' : 's have'} crossed the Red Sea in ${jeu.tour} turns. Tip: a pawn defended by another one, diagonally just behind it, is safe.`);
@@ -293,9 +297,7 @@
     if (jeu.choisi && jeu.choisi.col === col && cibles(jeu.choisi).includes(rang)) { avancer(jeu.choisi, rang); return; }
     const p = occupant(col, rang);
     if (p && p !== 'pom' && peutBouger(p)) {
-      const cs = cibles(p);
-      // une seule case possible : il y va tout de suite ; deux (premier pas) : on choisit
-      if (cs.length === 1) { avancer(p, cs[0]); return; }
+      // on choisit le pion, puis sa case (on apprend à déplacer les pions : jamais de coup tout seul)
       jeu.choisi = jeu.choisi === p ? null : p;
       Sons.tic();
       placerPieces();
@@ -308,6 +310,23 @@
           : t('Ce pion est bloqué : la case devant lui est occupée.', 'This pawn is blocked: the square in front of it is taken.'));
     }
     if (jeu.choisi) { jeu.choisi = null; placerPieces(); }
+  });
+
+  // ---------- Glisser un pion ----------
+  const pionDe = (nom) => { const p = occupant(COLONNES.indexOf(nom[0]), +nom[1]); return p && p !== 'pom' ? p : null; };
+  window.Glisser({
+    plateau,
+    prendre: (nom) => { const p = pionDe(nom); return !!p && peutBouger(p); },
+    demarrer: (nom) => { jeu.choisi = pionDe(nom); placerPieces(); },
+    lacher: (de, vers) => {
+      const p = pionDe(de);
+      const col = COLONNES.indexOf(vers[0]), rang = +vers[1];
+      if (p && col === p.col && cibles(p).includes(rang)) { avancer(p, rang); return; }
+      Sons.refus();
+      message(t('Un pion avance tout droit : une case, ou deux depuis sa case de départ.', 'A pawn moves straight ahead: one square, or two from its starting square.'));
+      jeu.choisi = null;
+      placerPieces();
+    },
   });
 
   $('btn-fin-tour').addEventListener('click', finirTour);

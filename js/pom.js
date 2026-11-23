@@ -69,7 +69,8 @@
     const libre = r ? r.left - ECART - 6 : 0;
     const e = Math.min(HAUTEUR_MAX / 1300, Math.max(r ? r.height : 0, 300) * 1.05 / 1268, libre / 430);
     // (sur téléphone, jamais à côté de l'échiquier : il apparaît dans la fenêtre des résultats ou sur l'échiquier)
-    if (r && 1300 * e >= HAUTEUR_MIN && window.innerHeight >= 560 && window.innerWidth > 760) {
+    // (une page avec data-pom="fin" ne l'a qu'à la fin, dans la fenêtre des résultats : il est déjà sur l'échiquier)
+    if (r && 1300 * e >= HAUTEUR_MIN && window.innerHeight >= 560 && window.innerWidth > 760 && document.body.dataset.pom !== 'fin') {
       mode = 'pose';
       if (boite.parentNode !== document.body) document.body.appendChild(boite);
       const centre = r.left - ECART - 215 * e; // le milieu du corps
