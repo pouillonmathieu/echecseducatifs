@@ -165,7 +165,8 @@
   "Pom'",
   "Pom'chess",
   "p",
-  "GPL v3"
+  "GPL v3",
+  "pom.chess.7@gmail.com"
  ],
  "jeux/balance/index.html": {
   "La balance des pièces": "The piece scales",
@@ -608,7 +609,6 @@
   "Qui est responsable": "Who is responsible",
   "Le responsable du traitement est Mathieu Pouillon, créateur de Pom'chess, qui agit à titre personnel et non commercial.": "The data controller is Mathieu Pouillon, creator of Pom'chess, acting in a personal, non-commercial capacity.",
   "Pour toute question sur tes données, ou pour exercer tes droits si tu ne peux pas le faire depuis ton compte : écris à l'adresse de contact indiquée ici.": "For any question about your data, or to exercise your rights if you can't do it from your account: write to the contact address given here.",
-  "Adresse de contact : à compléter": "Contact address: to be completed",
   "Les données gardées": "The data we keep",
   "Le titulaire du compte : prénom, nom, adresse e-mail, type de compte (joueur, élève, enseignant) et date de création.": "The account holder: first name, surname, e-mail address, account type (player, pupil, teacher) and creation date.",
   "Les enfants d'un compte élève : prénom, nom, classe rejointe, date de création et date de la dernière activité.": "The children of a pupil account: first name, surname, class joined, creation date and date of last activity.",
@@ -638,7 +638,8 @@
   "Sur ton appareil": "On your device",
   "Pom'chess garde tes réglages et, si tu es connecté, ta session dans le stockage local de ton navigateur ou de l'application. Il n'y a pas de cookie publicitaire ni de mesure d'audience.": "Pom'chess keeps your settings and, if you are signed in, your session in the local storage of your browser or the app. There are no advertising cookies and no audience measurement.",
   "Les échanges avec le serveur sont chiffrés (HTTPS).": "Exchanges with the server are encrypted (HTTPS).",
-  "Dernière mise à jour : 23 novembre 2026.": "Last updated: 23 November 2026."
+  "Dernière mise à jour : 23 novembre 2026.": "Last updated: 23 November 2026.",
+  "Adresse de contact :": "Contact address:"
  },
  "compte/index.html": {
   "Mon compte · Pom'chess": "My account · Pom'chess",

@@ -321,7 +321,8 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
   jeux ouverts), les jeux ouverts pour toute la classe (interrupteurs), et la fiche d'un élève (XP, niveau par jeu,
   et pour chaque jeu : comme la classe, ouvert pour lui, fermé pour lui). Un espace « Fiches pédagogiques » est en
   construction.
-- **Page du compte** (`compte/`) : connexion (seuls les fournisseurs activés dans Supabase sont proposés), création
+- **Page du compte** (`compte/`) : connexion (seuls les fournisseurs activés dans Supabase sont proposés : Google et
+  l'e-mail aujourd'hui ; Facebook et LinkedIn restent à configurer), création
   du compte (type, prénom, nom, accord pour les données, et pour un compte élève l'accord du parent), profils des
   enfants (qui joue sur cet appareil, rejoindre ou quitter une classe), progression, et les droits RGPD en libre
   service : corriger, télécharger ses données (JSON), supprimer son compte (tout est effacé).
@@ -341,7 +342,8 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
   Supabase récents n'en donnent plus par défaut). Les règles ont été testées sur un PostgreSQL local avec une imitation
   du schéma `auth`, puis sur le vrai projet (dans une transaction annulée).
 - **Données personnelles** : `confidentialite.html` (RGPD) : données gardées, finalités, base légale, qui voit quoi,
-  sous-traitants (Supabase, fournisseurs de connexion, GitHub Pages, Google Fonts), durée, droits.
+  sous-traitants (Supabase, fournisseurs de connexion, GitHub Pages, Google Fonts), durée, droits ; contact :
+  pom.chess.7@gmail.com (adresse créée pour Pom'chess).
 - **Application Android** : la permission Internet ne sert qu'aux comptes (seul `*.supabase.co` est joint) ; la
   connexion Google, Meta ou LinkedIn (et le lien de l'e-mail) se fait dans le navigateur du téléphone, qui revient à
   l'application par `pomchess://connexion?code=…` ; la page du compte échange ce code contre une session (PKCE).
