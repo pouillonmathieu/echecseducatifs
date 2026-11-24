@@ -350,6 +350,8 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
   de l'adresse du serveur Supabase. Il faut `https://pomchess.app` dans les « Origines JavaScript autorisées » du
   client OAuth (console Google Cloud), le même client que celui déclaré dans Supabase. Ailleurs (application
   Android, essais en local, ancienne adresse), le bouton garde la redirection par Supabase.
+  Côté Google : application « Pom'chess » publiée (statut En production), marque vérifiée (nom et logo, la tête de
+  Pom' en 120 px), domaine pomchess.app vérifié dans Google Search Console (TXT `google-site-verification` chez OVH).
 - `js/compte.js`, chargé par toutes les pages, très léger : il ne charge la bibliothèque Supabase (`js/lib/supabase.js`,
   supabase-js 2.118.0, licence MIT) que si quelqu'un est connecté. Il ajoute le bouton du compte à l'accueil, verrouille
   les jeux fermés d'un élève (tout de suite, d'après ce qui est gardé dans `echecs.compte.etat`), fait suivre les
@@ -486,7 +488,8 @@ ont été reliées au thème clair/sombre. Les pièces « simples » sont dessin
 Le site est servi par GitHub Pages sous **pomchess.app** (domaine acheté chez OVH ; HTTPS obligatoire, le domaine
 `.app` étant sur la liste HSTS des navigateurs). Zone DNS chez OVH : quatre enregistrements A vers GitHub Pages
 (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`), `www` en CNAME vers
-`pouillonmathieu.github.io.`, et le TXT `_github-pages-challenge-pouillonmathieu` (vérification du domaine). Ne pas
+`pouillonmathieu.github.io.`, le TXT `_github-pages-challenge-pouillonmathieu` (vérification du domaine pour GitHub) et le TXT
+`google-site-verification` à la racine (pour Google). Ne pas
 laisser d'autre A ou AAAA sur le domaine ou sur `www` : OVH remet parfois ceux de son hébergement (`213.186.33.x`,
 `2001:41d0:…`), et GitHub refuse alors le domaine. L'ancienne adresse `pouillonmathieu.github.io/echecseducatifs/`
 redirige vers le domaine.
