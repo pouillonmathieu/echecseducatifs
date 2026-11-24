@@ -343,6 +343,13 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
   du compte (type, prénom, nom, accord pour les données, et pour un compte élève l'accord du parent), profils des
   enfants (qui joue sur cet appareil, rejoindre ou quitter une classe), progression, et les droits RGPD en libre
   service : corriger, télécharger ses données (JSON), supprimer son compte (tout est effacé).
+- **Bouton Google intégré** : sur pomchess.app, le bouton « Continuer avec Google » est celui de Google
+  (Google Identity Services, `accounts.google.com/gsi/client`, chargé seulement sur l'écran de connexion) : Google
+  donne un jeton d'identité à la page, qui le passe à Supabase (`signInWithIdToken`, avec un nonce : haché pour
+  Google, en clair pour Supabase). La connexion se fait donc sur pomchess.app, et Google affiche « Pom'chess » au lieu
+  de l'adresse du serveur Supabase. Il faut `https://pomchess.app` dans les « Origines JavaScript autorisées » du
+  client OAuth (console Google Cloud), le même client que celui déclaré dans Supabase. Ailleurs (application
+  Android, essais en local, ancienne adresse), le bouton garde la redirection par Supabase.
 - `js/compte.js`, chargé par toutes les pages, très léger : il ne charge la bibliothèque Supabase (`js/lib/supabase.js`,
   supabase-js 2.118.0, licence MIT) que si quelqu'un est connecté. Il ajoute le bouton du compte à l'accueil, verrouille
   les jeux fermés d'un élève (tout de suite, d'après ce qui est gardé dans `echecs.compte.etat`), fait suivre les

@@ -631,6 +631,7 @@
   "Supabase : la base de données et la connexion, avec des serveurs dans l'Union européenne (Francfort, Allemagne). Supabase est encadré par un contrat de sous-traitance conforme au RGPD.": "Supabase: the database and sign-in, with servers in the European Union (Frankfurt, Germany). Supabase is bound by a GDPR-compliant data processing agreement.",
   "Si tu choisis de te connecter avec Google, Facebook (Meta) ou LinkedIn : ce service sait que tu t'es connecté à Pom'chess, et nous transmet ton nom et ton adresse e-mail. La connexion par e-mail évite ce passage.": "If you choose to sign in with Google, Facebook (Meta) or LinkedIn: that service knows you signed in to Pom'chess, and passes us your name and e-mail address. Signing in by e-mail avoids this.",
   "Le site est hébergé par GitHub Pages et charge sa police d'écriture depuis Google Fonts : comme pour tout site, ils reçoivent l'adresse IP de ton appareil. L'application Android n'utilise pas Google Fonts.": "The website is hosted by GitHub Pages and loads its font from Google Fonts: as for any website, they receive your device's IP address. The Android app does not use Google Fonts.",
+  "Sur la page de connexion du site, le bouton « Continuer avec Google » est affiché par Google lui-même : Google reçoit alors l'adresse IP de ton appareil, même si tu ne t'en sers pas. L'application Android ne l'affiche pas.": "On the website's sign-in page, the \"Continue with Google\" button is displayed by Google itself: Google then receives your device's IP address, even if you don't use it. The Android app doesn't display it.",
   "Combien de temps": "How long",
   "Les données sont gardées tant que le compte existe. Quand tu supprimes ton compte, tout est effacé tout de suite : le compte, les profils des enfants, les classes et la progression. Les comptes restés sans connexion pendant trois ans pourront être supprimés.": "Data is kept as long as the account exists. When you delete your account, everything is erased immediately: the account, the children's profiles, the classes and the progress. Accounts with no sign-in for three years may be deleted.",
   "Tes droits": "Your rights",
@@ -640,7 +641,7 @@
   "Sur ton appareil": "On your device",
   "Pom'chess garde tes réglages et, si tu es connecté, ta session dans le stockage local de ton navigateur ou de l'application. Il n'y a pas de cookie publicitaire ni de mesure d'audience.": "Pom'chess keeps your settings and, if you are signed in, your session in the local storage of your browser or the app. There are no advertising cookies and no audience measurement.",
   "Les échanges avec le serveur sont chiffrés (HTTPS).": "Exchanges with the server are encrypted (HTTPS).",
-  "Dernière mise à jour : 23 novembre 2026.": "Last updated: 23 November 2026.",
+  "Dernière mise à jour : 24 novembre 2026.": "Last updated: 24 November 2026.",
   "Adresse de contact :": "Contact address:"
  },
  "compte/index.html": {

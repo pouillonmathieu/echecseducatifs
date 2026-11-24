@@ -23,6 +23,8 @@
 /* connexion */
 .fournisseurs { display: flex; flex-direction: column; gap: 8px; }
 .bouton-fournisseur { justify-content: flex-start; gap: 12px; }
+.place-google { display: flex; justify-content: center; min-height: 44px; }
+.place-google > .bouton-fournisseur { width: 100%; }
 .bouton-fournisseur svg { flex: none; width: 22px; height: 22px; }
 .ou { display: flex; align-items: center; gap: 10px; color: var(--encre-douce); font-size: 13px; }
 .ou::before, .ou::after { content: ""; flex: 1; height: 1px; background: var(--ligne); }

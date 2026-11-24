@@ -17,6 +17,54 @@
     ['facebook', 'Facebook', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#1877F2"/><path fill="#fff" d="M13.2 21.9v-7h2.4l.4-2.8h-2.8v-1.8c0-.8.3-1.4 1.4-1.4H16V6.4c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.6v2.2H8v2.8h2.4v7"/></svg>'],
     ['linkedin_oidc', 'LinkedIn', '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" fill="#0A66C2"/><path fill="#fff" d="M7 10h2.6v7.6H7zM8.3 6.2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.2 10h2.5v1.1c.4-.7 1.3-1.3 2.6-1.3 2.7 0 3.2 1.7 3.2 4v3.8h-2.6v-3.4c0-.8 0-1.9-1.2-1.9s-1.4.9-1.4 1.8v3.5h-2.6z"/></svg>'],
   ];
+  // Le bouton de Google lui-même (Google Identity Services) : la connexion se fait sur pomchess.app, et Google
+  // affiche « Pom'chess » au lieu de l'adresse du serveur des comptes. Seulement sur le domaine déclaré dans la
+  // console Google (origine JavaScript autorisée) ; ailleurs (appli Android, essais en local), la redirection.
+  const CLIENT_GOOGLE = '641905281731-jkffurppcggb0oup63i3j7nc25nv971l.apps.googleusercontent.com';
+  const boutonGoogleIntegre = () => !C.appli() && /(^|\.)pomchess\.app$/.test(location.hostname);
+  function chargerGoogle() {
+    if (window.google && google.accounts && google.accounts.id) return Promise.resolve();
+    return new Promise((ok, ko) => {
+      const s = document.createElement('script');
+      s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+      s.onload = ok; s.onerror = ko;
+      document.head.appendChild(s);
+    });
+  }
+  async function hacher(texte) {
+    const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texte));
+    return [...new Uint8Array(h)].map((o) => o.toString(16).padStart(2, '0')).join('');
+  }
+  async function brancherGoogle() {
+    const place = $('place-google');
+    if (!place) return;
+    try { await chargerGoogle(); } catch (err) { return; } // (le bouton de secours reste)
+    // (un nombre au hasard, haché pour Google, en clair pour Supabase, qui vérifie qu'ils correspondent)
+    const nonce = [...crypto.getRandomValues(new Uint8Array(16))].map((o) => o.toString(16).padStart(2, '0')).join('');
+    google.accounts.id.initialize({
+      client_id: CLIENT_GOOGLE,
+      nonce: await hacher(nonce),
+      ux_mode: 'popup',
+      use_fedcm_for_button: true,
+      context: 'signin',
+      callback: async (reponse) => {
+        info(t('Connexion…', 'Signing in…'));
+        const sb = await C.client();
+        const { error } = await sb.auth.signInWithIdToken({ provider: 'google', token: reponse.credential, nonce });
+        if (error) { erreur(t('La connexion n\'a pas abouti : ', 'Sign-in failed: ') + error.message); brancherGoogle(); return; }
+        info('');
+        rafraichir();
+      },
+    });
+    const racine = document.documentElement;
+    const sombre = racine.getAttribute('data-theme') === 'dark' || (racine.getAttribute('data-theme') !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+    const largeur = Math.max(200, Math.min(400, Math.round(place.parentElement.clientWidth)));
+    place.innerHTML = '';
+    google.accounts.id.renderButton(place, {
+      type: 'standard', theme: sombre ? 'filled_black' : 'outline', size: 'large', text: 'continue_with',
+      shape: 'pill', logo_alignment: 'left', width: largeur, locale: EN ? 'en' : 'fr',
+    });
+  }
   const date = (d) => (d ? new Date(d).toLocaleDateString(EN ? 'en-GB' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '');
 
   let etat = null;
@@ -55,8 +103,11 @@
       actifs = (await r.json()).external || {};
     } catch (err) { /* hors ligne */ }
     const erreurRetour = new URLSearchParams(location.search).get('error_description');
-    const boutons = FOURNISSEURS.filter(([id]) => actifs[id]).map(([id, nom, ico]) =>
-      `<button class="bouton-secondaire bouton-fournisseur" type="button" data-fournisseur="${id}">${ico}<span>${t('Continuer avec', 'Continue with')} ${nom}</span></button>`).join('');
+    const integre = boutonGoogleIntegre();
+    const boutons = FOURNISSEURS.filter(([id]) => actifs[id]).map(([id, nom, ico]) => {
+      const bouton = `<button class="bouton-secondaire bouton-fournisseur" type="button" data-fournisseur="${id}">${ico}<span>${t('Continuer avec', 'Continue with')} ${nom}</span></button>`;
+      return id === 'google' && integre ? `<div id="place-google" class="place-google">${bouton}</div>` : bouton;
+    }).join('');
     afficher(`
       <section class="carte-compte intro-compte">
         <h2>${t('Un compte, si tu veux', 'An account, if you like')}</h2>
@@ -89,6 +140,7 @@
       });
       if (error) erreur(error.message);
     }));
+    if (integre && actifs.google) brancherGoogle();
     let adresse = '';
     $('form-email').addEventListener('submit', async (ev) => {
       ev.preventDefault();
