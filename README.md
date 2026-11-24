@@ -4,8 +4,10 @@ Le site et l'application des petits jeux d'échecs éducatifs, avec Pom', leur p
 
 Créé par **Mathieu Pouillon**.
 
+En ligne : **https://pomchess.app** (GitHub Pages ; nom de domaine chez OVH, fichier `CNAME`).
+
 Petits jeux pour faire découvrir les échecs aux enfants, en lien avec d'autres disciplines (calcul, repérage…).
-Le site est statique (HTML, CSS, JavaScript), sans framework, sans compte utilisateur et sans publicité.
+Le site est statique (HTML, CSS, JavaScript), sans framework et sans publicité ; les comptes sont facultatifs.
 Les réglages (thème, son, options des jeux) sont enregistrés dans le navigateur.
 
 ## Lancer le site
@@ -363,9 +365,9 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
   connexion Google, Meta ou LinkedIn (et le lien de l'e-mail) se fait dans le navigateur du téléphone, qui revient à
   l'application par `pomchess://connexion?code=…` ; la page du compte échange ce code contre une session (PKCE).
 
-Réglages à faire dans Supabase : *Authentication → URL Configuration* : Site URL
-`https://pouillonmathieu.github.io/echecseducatifs/`, Redirect URLs `https://pouillonmathieu.github.io/echecseducatifs/**`
-et `pomchess://connexion` ; *Authentication → Emails* : le code `{{ .Token }}` dans les modèles « Magic Link » et
+Réglages à faire dans Supabase : *Authentication → URL Configuration* : Site URL `https://pomchess.app/`,
+Redirect URLs `https://pomchess.app/**`, `https://pouillonmathieu.github.io/echecseducatifs/**` (l'ancienne adresse,
+qui redirige maintenant vers le domaine) et `pomchess://connexion` ; *Authentication → Emails* : le code `{{ .Token }}` dans les modèles « Magic Link » et
 « Confirm signup » (pour se connecter en tapant le code). Sur l'offre gratuite, Supabase ne laisse modifier les
 modèles qu'avec un service d'envoi à soi (SMTP, par exemple Brevo) ; en attendant, la connexion par e-mail se fait par
 le lien (il revient à la page du compte, ou à l'application par `pomchess://connexion`). Le service d'e-mail intégré
@@ -471,3 +473,13 @@ Exception : les pièces « classiques » (`js/pieces.js`, réglage « Pièces »
 via Openverse ; lichess le diffuse sous GPL v2+) ; le crédit est affiché au bas de la page d'accueil. Les tracés viennent des fichiers
 SVG de [lichess-org/lila](https://github.com/lichess-org/lila/tree/master/public/piece/cburnett), seules les couleurs
 ont été reliées au thème clair/sombre. Les pièces « simples » sont dessinées pour le site.
+
+## Nom de domaine
+
+Le site est servi par GitHub Pages sous **pomchess.app** (domaine acheté chez OVH ; HTTPS obligatoire, le domaine
+`.app` étant sur la liste HSTS des navigateurs). Zone DNS chez OVH : quatre enregistrements A vers GitHub Pages
+(`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`), `www` en CNAME vers
+`pouillonmathieu.github.io.`, et le TXT `_github-pages-challenge-pouillonmathieu` (vérification du domaine). Ne pas
+laisser d'autre A ou AAAA sur le domaine ou sur `www` : OVH remet parfois ceux de son hébergement (`213.186.33.x`,
+`2001:41d0:…`), et GitHub refuse alors le domaine. L'ancienne adresse `pouillonmathieu.github.io/echecseducatifs/`
+redirige vers le domaine.
