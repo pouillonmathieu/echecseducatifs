@@ -78,4 +78,8 @@ tasks.configureEach { t -> if (t.name.contains('Assets') && t.name != 'copierSit
 
 dependencies {
     implementation 'androidx.webkit:webkit:1.18.0'
+    // « Continuer avec Google » dans l'application (ConnexionGoogle.java)
+    implementation 'androidx.credentials:credentials:1.5.0'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.5.0'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
 }

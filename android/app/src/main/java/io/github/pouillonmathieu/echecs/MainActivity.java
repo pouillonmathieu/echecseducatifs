@@ -47,8 +47,9 @@ import java.util.Locale;
  *   « À l'aveugle » (Dictee.java) et la couleur du fond pour les barres du système.
  * - La police Lexend, demandée à Google Fonts par les pages, est servie depuis l'application (assets/appli/polices).
  * - Les liens vers d'autres sites (Lichess, Wikimedia…) s'ouvrent dans le navigateur du téléphone. Seul le serveur des
- *   comptes (Supabase, facultatifs) est joint depuis l'application ; la connexion avec Google, Meta ou LinkedIn se fait
- *   dans le navigateur, qui revient à l'application par pomchess://connexion (retourConnexion).
+ *   comptes (Supabase, facultatifs) est joint depuis l'application. La connexion avec Google passe par la fenêtre de
+ *   Google d'Android (ConnexionGoogle) ; celle avec Meta ou LinkedIn (et le lien de l'e-mail) se fait dans le
+ *   navigateur, qui revient à l'application par pomchess://connexion (retourConnexion).
  */
 public class MainActivity extends Activity {
     static final String HOTE = "appassets.androidplatform.net";
@@ -59,6 +60,7 @@ public class MainActivity extends Activity {
     private FrameLayout cadre;
     private Voix voix;
     private Dictee dictee;
+    private ConnexionGoogle google;
     private WebViewAssetLoader chargeur;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -103,6 +105,7 @@ public class MainActivity extends Activity {
         web.setWebViewClient(new Client());
         voix = new Voix(this, web);
         dictee = new Dictee(this, web);
+        google = new ConnexionGoogle(this, web);
         web.addJavascriptInterface(new Pont(), "EchecsAndroid");
 
         // le bouton retour : la page précédente, sinon on quitte
@@ -245,6 +248,8 @@ public class MainActivity extends Activity {
         @JavascriptInterface public boolean dicteePossible() { return dictee.possible(); }
         @JavascriptInterface public void ecouter(String id, String langue, int max, String indices) { dictee.ecouter(id, langue, max, indices); }
         @JavascriptInterface public void arreterEcoute() { dictee.arreter(); }
+        /** « Continuer avec Google » : la fenêtre de connexion de Google d'Android (ConnexionGoogle, page du compte). */
+        @JavascriptInterface public void connexionGoogle(String id, String nonceHache) { google.connecter(id, nonceHache); }
         /** La couleur du fond de la page (#rrggbb) : derrière les barres du système, avec des icônes lisibles. */
         @JavascriptInterface public void fond(String couleur, boolean sombre) {
             runOnUiThread(() -> {

@@ -35,6 +35,27 @@
     const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texte));
     return [...new Uint8Array(h)].map((o) => o.toString(16).padStart(2, '0')).join('');
   }
+  // Dans l'application Android : la fenêtre de connexion de Google d'Android (ConnexionGoogle.java), qui donne le même
+  // jeton d'identité. Si elle ne marche pas (pas de services Google, application pas déclarée chez Google…), on
+  // revient à la connexion par le navigateur. Les anciennes versions de l'application n'ont pas ce pont.
+  const googleNatif = () => C.appli() && window.EchecsAndroid && typeof EchecsAndroid.connexionGoogle === 'function';
+  async function connexionGoogleNative() { // -> true si c'est réglé (connecté, ou annulé), false pour passer au navigateur
+    const nonce = [...crypto.getRandomValues(new Uint8Array(16))].map((o) => o.toString(16).padStart(2, '0')).join('');
+    const id = String(Date.now());
+    const hache = await hacher(nonce);
+    const { jeton, err } = await new Promise((ok) => {
+      window.__connexionGoogle = (pour, j, e) => { if (pour === id) ok({ jeton: j, err: e }); };
+      EchecsAndroid.connexionGoogle(id, hache);
+    });
+    if (!jeton) return /^annule/.test(err || '');
+    info(t('Connexion…', 'Signing in…'));
+    const sb = await C.client();
+    const { error } = await sb.auth.signInWithIdToken({ provider: 'google', token: jeton, nonce });
+    if (error) { erreur(t('La connexion n\'a pas abouti : ', 'Sign-in failed: ') + error.message); return true; }
+    info('');
+    rafraichir();
+    return true;
+  }
   async function brancherGoogle() {
     const place = $('place-google');
     if (!place) return;
@@ -133,6 +154,10 @@
       </section>`);
     if (erreurRetour) erreur(t('La connexion n\'a pas abouti : ', 'Sign-in failed: ') + erreurRetour);
     contenu.querySelectorAll('[data-fournisseur]').forEach((b) => b.addEventListener('click', async () => {
+      if (b.dataset.fournisseur === 'google' && googleNatif()) {
+        b.disabled = true;
+        try { if (await connexionGoogleNative()) return; } catch (err) { /* on passe au navigateur */ } finally { b.disabled = false; }
+      }
       const sb = await C.client();
       const { error } = await sb.auth.signInWithOAuth({
         provider: b.dataset.fournisseur,

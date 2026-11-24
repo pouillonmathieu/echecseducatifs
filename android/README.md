@@ -2,7 +2,7 @@
 
 L'application « Pom'chess » : tout le site, embarqué dans
 l'application. Les jeux marchent sans connexion ; Internet ne sert qu'aux comptes facultatifs (serveur Supabase, voir le
-README du dépôt), et la connexion avec Google, Meta ou LinkedIn revient à l'application par `pomchess://connexion` ; les réglages et les
+README du dépôt), la connexion avec Google passe par la fenêtre de Google d'Android (`ConnexionGoogle.java`, voir le README du dépôt pour le client OAuth « Android » à déclarer), et celle avec Meta ou LinkedIn revient à l'application par `pomchess://connexion` ; les réglages et les
 records restent sur le téléphone. Android 7.0 ou plus récent.
 
 ## L'installer sur un téléphone

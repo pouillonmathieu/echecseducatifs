@@ -370,9 +370,17 @@ dans `js/compte.js` (elle est faite pour être publique : ce sont les règles de
 - **Données personnelles** : `confidentialite.html` (RGPD) : données gardées, finalités, base légale, qui voit quoi,
   sous-traitants (Supabase, fournisseurs de connexion, GitHub Pages, Google Fonts), durée, droits ; contact :
   pom.chess.7@gmail.com (adresse créée pour Pom'chess).
-- **Application Android** : la permission Internet ne sert qu'aux comptes (seul `*.supabase.co` est joint) ; la
-  connexion Google, Meta ou LinkedIn (et le lien de l'e-mail) se fait dans le navigateur du téléphone, qui revient à
-  l'application par `pomchess://connexion?code=…` ; la page du compte échange ce code contre une session (PKCE).
+- **Application Android** : la permission Internet ne sert qu'aux comptes (seul `*.supabase.co` est joint).
+  « Continuer avec Google » ouvre la fenêtre de connexion de Google d'Android (Credential Manager,
+  `ConnexionGoogle.java`, pont `EchecsAndroid.connexionGoogle`) : elle donne un jeton d'identité pour le client OAuth
+  « Web », que la page passe à Supabase (`signInWithIdToken`, avec un nonce), comme le bouton Google du site. Google ne
+  l'accepte que si l'application est déclarée dans le même projet Google par un client OAuth « Android » : paquet
+  `io.github.pouillonmathieu.echecs`, empreinte SHA-1 de la clé qui signe l'application (clé de test :
+  `5D:ED:24:FA:41:3A:63:80:D5:8B:67:5A:E9:54:CC:8B:8E:E3:44:25` ; pour le Play Store, ajouter un client avec
+  l'empreinte de la clé d'App Signing de Google Play). Si la fenêtre n'aboutit pas (pas de services Google, pas de
+  compte…), et pour Meta, LinkedIn et le lien de l'e-mail, la connexion se fait dans le navigateur du téléphone, qui
+  revient à l'application par `pomchess://connexion?code=…` ; la page du compte échange ce code contre une session
+  (PKCE).
 
 Réglages à faire dans Supabase : *Authentication → URL Configuration* : Site URL `https://pomchess.app/`,
 Redirect URLs `https://pomchess.app/**`, `https://pouillonmathieu.github.io/echecseducatifs/**` (l'ancienne adresse,
